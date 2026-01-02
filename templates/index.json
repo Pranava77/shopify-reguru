@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero-banner": {
@@ -7,6 +16,7 @@
         "heading": "SMART WEARABLE.",
         "discount_text": "UP to 80% OFF",
         "cta_text": "Checkout product",
+        "cta_link": "",
         "background_color": "#212844"
       }
     },
@@ -40,11 +50,18 @@
         "card-5": {
           "type": "card",
           "settings": {
-            "title": "Sustainability"
+            "title": "Sustainability",
+            "icon_image": "shopify://shop_images/Layer_3.png"
           }
         }
       },
-      "block_order": ["card-1", "card-2", "card-3", "card-4", "card-5"],
+      "block_order": [
+        "card-1",
+        "card-2",
+        "card-3",
+        "card-4",
+        "card-5"
+      ],
       "settings": {}
     },
     "product-grid": {
@@ -53,37 +70,49 @@
         "tab-1": {
           "type": "category_tab",
           "settings": {
-            "label": "Phone"
+            "label": "Phone",
+            "collection": ""
           }
         },
         "tab-2": {
           "type": "category_tab",
           "settings": {
-            "label": "Laptop"
+            "label": "Laptop",
+            "collection": ""
           }
         },
         "tab-3": {
           "type": "category_tab",
           "settings": {
-            "label": "Monitors"
+            "label": "Monitors",
+            "collection": ""
           }
         },
         "tab-4": {
           "type": "category_tab",
           "settings": {
-            "label": "Headphone"
+            "label": "Headphone",
+            "collection": ""
           }
         },
         "tab-5": {
           "type": "category_tab",
           "settings": {
-            "label": "Television"
+            "label": "Television",
+            "collection": ""
           }
         }
       },
-      "block_order": ["tab-1", "tab-2", "tab-3", "tab-4", "tab-5"],
+      "block_order": [
+        "tab-1",
+        "tab-2",
+        "tab-3",
+        "tab-4",
+        "tab-5"
+      ],
       "settings": {
         "title": "Latest Products",
+        "collection": "",
         "products_to_show": 6
       }
     },
@@ -91,6 +120,7 @@
       "type": "about-us",
       "settings": {
         "heading": "ABOUT US",
+        "description": "",
         "stat_number": "10+"
       }
     },
@@ -119,10 +149,14 @@
           }
         }
       },
-      "block_order": ["testimonial-1", "testimonial-2", "testimonial-3"],
+      "block_order": [
+        "testimonial-1",
+        "testimonial-2",
+        "testimonial-3"
+      ],
       "settings": {
         "heading": "Testimonials",
-        "background_color": "#B1D8FF"
+        "background_color": "#b1d8ff"
       }
     },
     "faq": {
@@ -168,7 +202,14 @@
           }
         }
       },
-      "block_order": ["tab-general", "tab-services", "tab-business", "faq-1", "faq-2", "faq-3"],
+      "block_order": [
+        "tab-general",
+        "tab-services",
+        "tab-business",
+        "faq-1",
+        "faq-2",
+        "faq-3"
+      ],
       "settings": {
         "heading": "FAQs"
       }
