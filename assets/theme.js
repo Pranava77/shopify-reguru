@@ -66,12 +66,30 @@ class ThemeUtils {
     let currentIndex = 0;
     const cards = track.querySelectorAll('.testimonial-card');
     const totalCards = cards.length;
-    const visibleCards = 3;
-    const maxIndex = Math.max(0, totalCards - visibleCards);
+
+    const getVisibleCards = () => {
+      const width = window.innerWidth;
+      if (width <= 768) return 1;
+      if (width <= 992) return 2;
+      return 3;
+    };
+
+    const getGap = () => {
+      const width = window.innerWidth;
+      if (width <= 768) return 16;
+      if (width <= 992) return 16;
+      return 25;
+    };
 
     const updateSlider = () => {
+      const visibleCards = getVisibleCards();
+      const maxIndex = Math.max(0, totalCards - visibleCards);
+      
+      // Clamp currentIndex to valid range
+      currentIndex = Math.min(currentIndex, maxIndex);
+      
       const cardWidth = cards[0]?.offsetWidth || 0;
-      const gap = 25;
+      const gap = getGap();
       const offset = currentIndex * (cardWidth + gap);
       track.style.transform = `translateX(-${offset}px)`;
     };
@@ -82,9 +100,19 @@ class ThemeUtils {
     });
 
     nextBtn.addEventListener('click', () => {
+      const visibleCards = getVisibleCards();
+      const maxIndex = Math.max(0, totalCards - visibleCards);
       currentIndex = Math.min(maxIndex, currentIndex + 1);
       updateSlider();
     });
+
+    // Update slider on resize
+    window.addEventListener('resize', ThemeUtils.debounce(() => {
+      updateSlider();
+    }, 150));
+
+    // Initial update
+    updateSlider();
   }
 
   #initCategoryNav() {

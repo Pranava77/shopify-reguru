@@ -1,74 +1,56 @@
 {%- liquid
   assign heading = section.settings.heading | default: 'Testimonials'
   assign bg_color = section.settings.background_color | default: '#B1D8FF'
-  assign total_testimonials = section.blocks.size
-  if total_testimonials == 0
-    assign total_testimonials = 3
-  endif
 -%}
 
-<section class="testimonials" style="--testimonials-bg: {{ bg_color }};" data-testimonials-section>
+<section class="testimonials" style="--testimonials-bg: {{ bg_color }};">
   <div class="testimonials__container">
     <div class="testimonials__header">
       <h2 class="testimonials__title">{{ heading }}</h2>
     </div>
 
     <div class="testimonials__slider">
-      <div class="testimonials__track" data-testimonials-track>
+      <div class="testimonials__track">
         {%- for block in section.blocks -%}
-          <div class="testimonials__card-wrapper{% if forloop.index > 1 %} testimonials__card--hidden-mobile{% endif %}">
-            {%- render 'testimonial-card',
-              name: block.settings.name,
-              quote: block.settings.quote,
-              image: block.settings.image
-            -%}
-          </div>
+          {%- render 'testimonial-card',
+            name: block.settings.name,
+            quote: block.settings.quote,
+            image: block.settings.image
+          -%}
         {%- endfor -%}
 
         {%- if section.blocks.size == 0 -%}
           {%- assign default_testimonials = 'Ashok Kumar|Priyanka Sharma|gopal krishna' | split: '|' -%}
           {%- for person in default_testimonials -%}
-            <div class="testimonials__card-wrapper{% if forloop.index > 1 %} testimonials__card--hidden-mobile{% endif %}">
-              <article class="testimonial-card card">
-                <div class="testimonial-card__quote-bg"></div>
-                <div class="testimonial-card__content">
-                  <div class="testimonial-card__avatar">
-                    <div class="testimonial-card__avatar-placeholder">
-                      <svg viewBox="0 0 80 112" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="80" height="112" rx="10" fill="#E0E0E0"/>
-                        <circle cx="40" cy="35" r="20" fill="#B0B0B0"/>
-                        <ellipse cx="40" cy="85" rx="30" ry="25" fill="#B0B0B0"/>
-                      </svg>
-                    </div>
-                  </div>
-                  <div class="testimonial-card__divider"></div>
-                  <div class="testimonial-card__text">
-                    <h3 class="testimonial-card__name">{{ person }}</h3>
-                    <p class="testimonial-card__quote">"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet mi nec massa tincidunt"</p>
+            <article class="testimonial-card card">
+              <div class="testimonial-card__quote-bg"></div>
+              <div class="testimonial-card__content">
+                <div class="testimonial-card__avatar">
+                  <div class="testimonial-card__avatar-placeholder">
+                    <svg viewBox="0 0 80 112" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect width="80" height="112" rx="10" fill="#E0E0E0"/>
+                      <circle cx="40" cy="35" r="20" fill="#B0B0B0"/>
+                      <ellipse cx="40" cy="85" rx="30" ry="25" fill="#B0B0B0"/>
+                    </svg>
                   </div>
                 </div>
-                <div class="testimonial-card__icon">
-                  <svg width="34" height="32" viewBox="0 0 34 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M8 16L16 0H10L2 16V32H18V16H8Z" fill="#5294FF"/>
-                    <path d="M24 16L32 0H26L18 16V32H34V16H24Z" fill="#5294FF"/>
-                  </svg>
+                <div class="testimonial-card__divider"></div>
+                <div class="testimonial-card__text">
+                  <h3 class="testimonial-card__name">{{ person }}</h3>
+                  <p class="testimonial-card__quote">"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet mi nec massa tincidunt"</p>
                 </div>
-              </article>
-            </div>
+              </div>
+              <div class="testimonial-card__icon">
+                <svg width="34" height="32" viewBox="0 0 34 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8 16L16 0H10L2 16V32H18V16H8Z" fill="#5294FF"/>
+                  <path d="M24 16L32 0H26L18 16V32H34V16H24Z" fill="#5294FF"/>
+                </svg>
+              </div>
+            </article>
           {%- endfor -%}
         {%- endif -%}
       </div>
     </div>
-
-    {%- if total_testimonials > 1 -%}
-      <button type="button" class="testimonials__show-more btn btn--blue" data-testimonials-toggle aria-expanded="false">
-        <span class="testimonials__show-more-text" data-show-text>Show All ({{ total_testimonials | minus: 1 }} more)</span>
-        <span class="testimonials__show-less-text" data-hide-text>Show Less</span>
-        <svg class="testimonials__toggle-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-    {%- endif -%}
 
     <div class="testimonials__nav">
       <button type="button" class="testimonials__nav-btn btn btn--icon btn--blue" data-testimonial-prev aria-label="Previous testimonial">
@@ -172,129 +154,29 @@
 }
 
 @media screen and (max-width: 768px) {
+  .testimonials {
+    padding: 40px 0;
+  }
+
+  .testimonials__container {
+    gap: 24px;
+  }
+
   .testimonials__title {
     font-size: 28px;
   }
 
   .testimonials__track {
-    flex-direction: column;
-    align-items: center;
+    gap: 16px;
   }
 
-  /* Hide additional cards on mobile by default */
-  .testimonials__card--hidden-mobile {
-    display: none;
-  }
-
-  /* Show all cards when expanded */
-  .testimonials--expanded .testimonials__card--hidden-mobile {
-    display: block;
-    animation: testimonialFadeIn 0.4s ease forwards;
-  }
-
-  /* Show More button - only visible on mobile */
-  .testimonials__show-more {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 24px;
-    font-family: var(--font-heading);
-    font-weight: 500;
-    font-size: 14px;
-    background-color: var(--color-blue);
-    border: 1px solid var(--color-black);
-    border-radius: var(--radius-sm);
-    box-shadow: var(--shadow-sm);
-    color: var(--color-black);
-    cursor: pointer;
-    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
-  }
-
-  .testimonials__show-more:hover {
-    transform: translate(-1px, -1px);
-    box-shadow: 3px 3px 0px 0px var(--color-black);
-  }
-
-  .testimonials__show-more:active {
-    transform: translate(1px, 1px);
-    box-shadow: 1px 1px 0px 0px var(--color-black);
-  }
-
-  .testimonials__toggle-icon {
-    transition: transform 0.3s ease;
-  }
-
-  .testimonials__show-more[aria-expanded="true"] .testimonials__toggle-icon {
-    transform: rotate(180deg);
-  }
-
-  /* Toggle text visibility */
-  .testimonials__show-less-text {
-    display: none;
-  }
-
-  .testimonials__show-more[aria-expanded="true"] .testimonials__show-more-text {
-    display: none;
-  }
-
-  .testimonials__show-more[aria-expanded="true"] .testimonials__show-less-text {
-    display: inline;
-  }
-
-  /* Hide nav arrows on mobile */
-  .testimonials__nav {
-    display: none;
-  }
-}
-
-/* Hide show more button on desktop */
-@media screen and (min-width: 769px) {
-  .testimonials__show-more {
-    display: none;
-  }
-
-  .testimonials__card-wrapper {
-    display: block !important;
-  }
-}
-
-@keyframes testimonialFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  .testimonials__track .testimonial-card {
+    flex: 0 0 100%;
+    min-width: 100%;
+    max-width: 100%;
   }
 }
 {% endstylesheet %}
-
-{% javascript %}
-(function() {
-  const section = document.querySelector('[data-testimonials-section]');
-  if (!section) return;
-
-  const toggleBtn = section.querySelector('[data-testimonials-toggle]');
-  if (!toggleBtn) return;
-
-  toggleBtn.addEventListener('click', function() {
-    const isExpanded = this.getAttribute('aria-expanded') === 'true';
-    
-    // Toggle the expanded state
-    this.setAttribute('aria-expanded', !isExpanded);
-    section.classList.toggle('testimonials--expanded', !isExpanded);
-
-    // Scroll to button if collapsing to ensure user sees the first card
-    if (isExpanded) {
-      const firstCard = section.querySelector('.testimonials__card-wrapper');
-      if (firstCard) {
-        firstCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }
-  });
-})();
-{% endjavascript %}
 
 {% schema %}
 {
