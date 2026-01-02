@@ -16,7 +16,11 @@
         "logo": "shopify://shop_images/gin.png",
         "show_search": true,
         "show_location": true,
-        "location_text": "Bengaluru"
+        "location_text": "Bengaluru",
+        "header_icon_type": "user",
+        "header_custom_icon": "shopify://shop_images/Layer_1_1.png",
+        "header_icon_color_primary": "#1e1a5c",
+        "header_icon_color_accent": "#28d98e"
       }
     },
     "1767389559f2590556": {
