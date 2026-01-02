@@ -1,70 +1,145 @@
 <section class="feature-cards bg-grid-pattern">
   <div class="feature-cards__container">
-    <div class="feature-cards__grid">
-      {%- for block in section.blocks -%}
-        <div class="feature-card" {{ block.shopify_attributes }}>
-          <div class="feature-card__bg" style="background-image: url('{{ block.settings.background_image | image_url: width: 400 }}');">
-            <div class="feature-card__overlay"></div>
-          </div>
-          <div class="feature-card__content">
-            <h3 class="feature-card__title">{{ block.settings.title }}</h3>
-          </div>
-          {%- if block.settings.icon_image != blank -%}
-            <div class="feature-card__icon">
-              <img 
-                src="{{ block.settings.icon_image | image_url: width: 200 }}" 
-                alt="{{ block.settings.title }}"
-                loading="lazy"
-              >
-            </div>
-          {%- endif -%}
-        </div>
-      {%- endfor -%}
-
-      {%- if section.blocks.size == 0 -%}
-        {%- assign default_cards = 'RRR Policy|Affordable|Online & Offline Model|Tailored Solutions|Sustainability' | split: '|' -%}
-        {%- for card in default_cards -%}
-          <div class="feature-card">
-            <div class="feature-card__bg feature-card__bg--gradient-{{ forloop.index }}">
+    <div class="feature-cards__carousel" id="feature-carousel-{{ section.id }}">
+      <div class="feature-cards__track">
+        {%- for block in section.blocks -%}
+          <div class="feature-card" {{ block.shopify_attributes }} data-index="{{ forloop.index0 }}">
+            <div class="feature-card__bg" style="background-image: url('{{ block.settings.background_image | image_url: width: 400 }}');">
               <div class="feature-card__overlay"></div>
             </div>
             <div class="feature-card__content">
-              <h3 class="feature-card__title">{{ card }}</h3>
+              <h3 class="feature-card__title">{{ block.settings.title }}</h3>
             </div>
-            <div class="feature-card__icon feature-card__icon--placeholder">
-              {%- case forloop.index -%}
-                {%- when 1 -%}
-                  <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <text x="20" y="60" font-size="40" font-weight="bold" fill="#1BDE8F">RRR</text>
-                  </svg>
-                {%- when 2 -%}
-                  <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="50" cy="50" r="30" stroke="#1BDE8F" stroke-width="4"/>
-                    <text x="35" y="58" font-size="24" fill="#1BDE8F">₹</text>
-                  </svg>
-                {%- when 3 -%}
-                  <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="15" y="30" width="30" height="40" rx="5" fill="#1BDE8F"/>
-                    <rect x="55" y="30" width="30" height="40" rx="5" stroke="#1BDE8F" stroke-width="3"/>
-                  </svg>
-                {%- when 4 -%}
-                  <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M50 20 L80 40 L80 70 L50 90 L20 70 L20 40 Z" stroke="#1BDE8F" stroke-width="3" fill="none"/>
-                    <circle cx="50" cy="55" r="15" fill="#1BDE8F"/>
-                  </svg>
-                {%- when 5 -%}
-                  <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M50 20 C30 30 25 50 50 80 C75 50 70 30 50 20" fill="#1BDE8F"/>
-                    <path d="M50 35 L55 50 L70 50 L58 60 L62 75 L50 65 L38 75 L42 60 L30 50 L45 50 Z" fill="#212844"/>
-                  </svg>
-              {%- endcase -%}
-            </div>
+            {%- if block.settings.icon_image != blank -%}
+              <div class="feature-card__icon">
+                <img 
+                  src="{{ block.settings.icon_image | image_url: width: 200 }}" 
+                  alt="{{ block.settings.title }}"
+                  loading="lazy"
+                >
+              </div>
+            {%- endif -%}
           </div>
         {%- endfor -%}
+
+        {%- if section.blocks.size == 0 -%}
+          {%- assign default_cards = 'RRR Policy|Affordable|Online & Offline Model|Tailored Solutions|Sustainability' | split: '|' -%}
+          {%- for card in default_cards -%}
+            <div class="feature-card" data-index="{{ forloop.index0 }}">
+              <div class="feature-card__bg feature-card__bg--gradient-{{ forloop.index }}">
+                <div class="feature-card__overlay"></div>
+              </div>
+              <div class="feature-card__content">
+                <h3 class="feature-card__title">{{ card }}</h3>
+              </div>
+              <div class="feature-card__icon feature-card__icon--placeholder">
+                {%- case forloop.index -%}
+                  {%- when 1 -%}
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <text x="20" y="60" font-size="40" font-weight="bold" fill="#1BDE8F">RRR</text>
+                    </svg>
+                  {%- when 2 -%}
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="50" cy="50" r="30" stroke="#1BDE8F" stroke-width="4"/>
+                      <text x="35" y="58" font-size="24" fill="#1BDE8F">₹</text>
+                    </svg>
+                  {%- when 3 -%}
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="15" y="30" width="30" height="40" rx="5" fill="#1BDE8F"/>
+                      <rect x="55" y="30" width="30" height="40" rx="5" stroke="#1BDE8F" stroke-width="3"/>
+                    </svg>
+                  {%- when 4 -%}
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M50 20 L80 40 L80 70 L50 90 L20 70 L20 40 Z" stroke="#1BDE8F" stroke-width="3" fill="none"/>
+                      <circle cx="50" cy="55" r="15" fill="#1BDE8F"/>
+                    </svg>
+                  {%- when 5 -%}
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M50 20 C30 30 25 50 50 80 C75 50 70 30 50 20" fill="#1BDE8F"/>
+                      <path d="M50 35 L55 50 L70 50 L58 60 L62 75 L50 65 L38 75 L42 60 L30 50 L45 50 Z" fill="#212844"/>
+                    </svg>
+                {%- endcase -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </div>
+
+    <!-- Carousel Navigation Dots (Mobile Only) -->
+    <div class="feature-cards__dots" id="feature-dots-{{ section.id }}">
+      {%- assign card_count = section.blocks.size -%}
+      {%- if card_count == 0 -%}
+        {%- assign card_count = 5 -%}
       {%- endif -%}
+      {%- for i in (1..card_count) -%}
+        <button 
+          class="feature-cards__dot{% if forloop.first %} feature-cards__dot--active{% endif %}" 
+          aria-label="Go to slide {{ forloop.index }}"
+          data-index="{{ forloop.index0 }}"
+        ></button>
+      {%- endfor -%}
     </div>
   </div>
 </section>
+
+<script>
+  (function() {
+    const sectionId = '{{ section.id }}';
+    const carousel = document.getElementById('feature-carousel-' + sectionId);
+    const dotsContainer = document.getElementById('feature-dots-' + sectionId);
+    
+    if (!carousel || !dotsContainer) return;
+    
+    const track = carousel.querySelector('.feature-cards__track');
+    const dots = dotsContainer.querySelectorAll('.feature-cards__dot');
+    const cards = track.querySelectorAll('.feature-card');
+    
+    // Only enable carousel functionality on mobile
+    const isMobile = () => window.innerWidth <= 768;
+    
+    // Update active dot based on scroll position
+    const updateActiveDot = () => {
+      if (!isMobile()) return;
+      
+      const scrollLeft = track.scrollLeft;
+      const cardWidth = cards[0]?.offsetWidth || 180;
+      const gap = 20;
+      const activeIndex = Math.round(scrollLeft / (cardWidth + gap));
+      
+      dots.forEach((dot, index) => {
+        dot.classList.toggle('feature-cards__dot--active', index === activeIndex);
+      });
+    };
+    
+    // Scroll to specific card when dot is clicked
+    dots.forEach((dot) => {
+      dot.addEventListener('click', () => {
+        if (!isMobile()) return;
+        
+        const index = parseInt(dot.dataset.index, 10);
+        const cardWidth = cards[0]?.offsetWidth || 180;
+        const gap = 20;
+        const scrollPosition = index * (cardWidth + gap);
+        
+        track.scrollTo({
+          left: scrollPosition,
+          behavior: 'smooth'
+        });
+      });
+    });
+    
+    // Listen for scroll events on the track
+    let scrollTimeout;
+    track.addEventListener('scroll', () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(updateActiveDot, 50);
+    });
+    
+    // Update on resize
+    window.addEventListener('resize', updateActiveDot);
+  })();
+</script>
 
 {% stylesheet %}
 .feature-cards {
@@ -77,7 +152,11 @@
   padding: 0 var(--container-padding);
 }
 
-.feature-cards__grid {
+.feature-cards__carousel {
+  overflow: visible;
+}
+
+.feature-cards__track {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 46px;
@@ -93,6 +172,7 @@
   overflow: visible;
   cursor: pointer;
   transition: transform var(--transition-base);
+  flex-shrink: 0;
 }
 
 .feature-card:hover {
@@ -181,36 +261,108 @@
   height: auto;
 }
 
+/* Navigation Dots - Hidden on Desktop */
+.feature-cards__dots {
+  display: none;
+}
+
 @media screen and (max-width: 1200px) {
-  .feature-cards__grid {
+  .feature-cards__track {
     grid-template-columns: repeat(3, 1fr);
     gap: 30px;
   }
 }
 
+/* Mobile Carousel Styles */
 @media screen and (max-width: 768px) {
-  .feature-cards__grid {
-    grid-template-columns: repeat(2, 1fr);
+  .feature-cards {
+    padding: 40px 0;
+  }
+
+  .feature-cards__container {
+    padding: 0;
+  }
+
+  .feature-cards__carousel {
+    overflow: hidden;
+    padding: 0 20px;
+  }
+
+  .feature-cards__track {
+    display: flex;
     gap: 20px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: 10px 0 20px;
+  }
+
+  .feature-cards__track::-webkit-scrollbar {
+    display: none;
   }
 
   .feature-card {
+    scroll-snap-align: start;
+    min-width: 160px;
     max-width: 160px;
   }
 
+  .feature-card:hover {
+    transform: none;
+  }
+
   .feature-card__title {
-    font-size: 16px;
+    font-size: 15px;
+  }
+
+  /* Show Navigation Dots on Mobile */
+  .feature-cards__dots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 16px;
+    padding: 0 20px;
+  }
+
+  .feature-cards__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--color-navy);
+    opacity: 0.3;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .feature-cards__dot--active {
+    opacity: 1;
+    transform: scale(1.2);
+    background-color: var(--color-accent);
+  }
+
+  .feature-cards__dot:focus {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
   }
 }
 
 @media screen and (max-width: 480px) {
-  .feature-cards__grid {
-    grid-template-columns: 1fr;
+  .feature-card {
+    min-width: 150px;
+    max-width: 150px;
   }
 
-  .feature-card {
-    max-width: 200px;
-    margin: 0 auto;
+  .feature-card__title {
+    font-size: 14px;
+  }
+
+  .feature-cards__dot {
+    width: 8px;
+    height: 8px;
   }
 }
 {% endstylesheet %}
@@ -284,4 +436,3 @@
   ]
 }
 {% endschema %}
-
