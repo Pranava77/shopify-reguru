@@ -132,7 +132,7 @@
       ],
       "settings": {
         "title": "Latest Products",
-        "collection": "",
+        "collection": "apple",
         "products_to_show": 3
       }
     },
