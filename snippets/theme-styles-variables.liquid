@@ -102,5 +102,12 @@
   }
 {% endstyle %}
 
-{{ font_heading | font_face: font_display: 'swap' }}
-{{ font_body | font_face: font_display: 'swap' }}
+{%- comment -%}
+  Only generate font-face once if both fonts are the same to avoid duplicates
+{%- endcomment -%}
+{%- if font_heading.family == font_body.family and font_heading.weight == font_body.weight and font_heading.style == font_body.style -%}
+  {{ font_heading | font_face: font_display: 'swap' }}
+{%- else -%}
+  {{ font_heading | font_face: font_display: 'swap' }}
+  {{ font_body | font_face: font_display: 'swap' }}
+{%- endif -%}
