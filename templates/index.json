@@ -20,7 +20,9 @@
         "header_icon_type": "user",
         "header_custom_icon": "shopify://shop_images/Layer_1_1.png",
         "header_icon_color_primary": "#1e1a5c",
-        "header_icon_color_accent": "#b1d8ff"
+        "header_icon_color_accent": "#b1d8ff",
+        "franchise_page": "franchise",
+        "franchise_url": ""
       }
     },
     "1767389559f2590556": {
@@ -136,7 +138,7 @@
         "cta_text": "Checkout product",
         "cta_link": "",
         "image": "shopify://shop_images/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTEyL3Jhd3BpeGVsX29mZmljZV8zNV9waG90b2dyYXBoX29mX2xhcHRvcF9tb2NrdXBfd2l0aF93aGl0ZV9zY3JlZV9kNTFiNjVlZS02Y2RkLTQ0N2UtYmRmZS01MzdiZWZlNmY5NTIucG5.png",
-        "background_color": "#6B7280"
+        "background_color": "#6b7280"
       }
     },
     "feature-cards": {
