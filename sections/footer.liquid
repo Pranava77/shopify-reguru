@@ -2,10 +2,46 @@
   assign logo = section.settings.logo
   assign address = section.settings.address
   assign bg_color = section.settings.background_color | default: '#041C66'
+  assign laptop_image = section.settings.laptop_image
 -%}
 
-<footer class="footer" style="--footer-bg: {{ bg_color }};">
-  <div class="footer__container">
+<footer class="footer-wrapper">
+  <!-- Laptop Illustration -->
+  <div class="footer__laptop-illustration">
+    {%- if laptop_image != blank -%}
+      <img 
+        src="{{ laptop_image | image_url: width: 240 }}"
+        alt="Laptop illustration"
+        width="120"
+        height="120"
+        loading="lazy"
+        class="footer__laptop-img"
+      >
+    {%- else -%}
+      <svg class="footer__laptop-img" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Laptop Base -->
+        <rect x="15" y="75" width="90" height="6" rx="2" fill="#4A5568" stroke="#000" stroke-width="1.5"/>
+        <!-- Laptop Screen Frame -->
+        <rect x="22" y="28" width="76" height="50" rx="3" fill="#2D3748" stroke="#000" stroke-width="1.5"/>
+        <!-- Laptop Screen -->
+        <rect x="26" y="32" width="68" height="42" rx="1" fill="#E2E8F0"/>
+        <!-- Screen Content - Lines -->
+        <rect x="32" y="40" width="35" height="3" rx="1" fill="#A0AEC0"/>
+        <rect x="32" y="48" width="45" height="3" rx="1" fill="#A0AEC0"/>
+        <rect x="32" y="56" width="28" height="3" rx="1" fill="#A0AEC0"/>
+        <!-- Checkmark Circle -->
+        <circle cx="73" cy="54" r="14" fill="#28D98E" stroke="#000" stroke-width="1.5"/>
+        <!-- Checkmark -->
+        <path d="M66 54L71 59L81 49" stroke="#FFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Laptop Stand -->
+        <path d="M50 81L45 95H75L70 81" fill="#4A5568" stroke="#000" stroke-width="1.5"/>
+        <ellipse cx="60" cy="95" rx="18" ry="3" fill="#2D3748" stroke="#000" stroke-width="1"/>
+      </svg>
+    {%- endif -%}
+  </div>
+
+  <div class="footer" style="--footer-bg: {{ bg_color }};">
+    <div class="footer__container">
     <div class="footer__grid">
       <!-- Logo & Contact Column -->
       <div class="footer__brand">
@@ -134,9 +170,40 @@
       </div>
     </div>
   </div>
+  </div>
 </footer>
 
 {% stylesheet %}
+.footer-wrapper {
+  position: relative;
+  padding-top: 60px;
+}
+
+.footer__laptop-illustration {
+  position: absolute;
+  top: 0;
+  right: 8%;
+  z-index: 10;
+  transform: rotate(-4.5deg);
+  animation: laptopFloat 3s ease-in-out infinite;
+}
+
+.footer__laptop-img {
+  width: 120px;
+  height: 120px;
+  display: block;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+@keyframes laptopFloat {
+  0%, 100% {
+    transform: rotate(-4.5deg) translateY(0);
+  }
+  50% {
+    transform: rotate(-4.5deg) translateY(-6px);
+  }
+}
+
 .footer {
   padding: 60px 0;
   background-color: var(--footer-bg);
@@ -272,7 +339,26 @@
   }
 }
 
+@media screen and (max-width: 768px) {
+  .footer-wrapper {
+    padding-top: 50px;
+  }
+
+  .footer__laptop-illustration {
+    right: 5%;
+  }
+
+  .footer__laptop-img {
+    width: 100px;
+    height: 100px;
+  }
+}
+
 @media screen and (max-width: 576px) {
+  .footer-wrapper {
+    padding-top: 45px;
+  }
+
   .footer__grid {
     grid-template-columns: 1fr;
   }
@@ -288,6 +374,15 @@
 
   .footer__social {
     gap: 20px;
+  }
+
+  .footer__laptop-illustration {
+    right: 3%;
+  }
+
+  .footer__laptop-img {
+    width: 80px;
+    height: 80px;
   }
 }
 {% endstylesheet %}
@@ -312,8 +407,18 @@
     {
       "type": "color",
       "id": "background_color",
-      "label": "Background Color",
+      "label": "Background color",
       "default": "#041C66"
+    },
+    {
+      "type": "header",
+      "content": "Laptop illustration"
+    },
+    {
+      "type": "image_picker",
+      "id": "laptop_image",
+      "label": "Laptop image",
+      "info": "Decorative laptop illustration shown above the footer. Leave empty for default SVG."
     }
   ],
   "blocks": [
