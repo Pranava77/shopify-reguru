@@ -179,13 +179,34 @@ class ThemeUtils {
       const tabs = grid.querySelectorAll('.product-grid__tab');
       const productContainers = grid.querySelectorAll('[data-tab-content]');
       
+      // Only initialize if we have both tabs and containers
       if (tabs.length === 0 || productContainers.length === 0) continue;
       
+      // Ensure first tab and container are active/visible on load
+      if (tabs.length > 0 && productContainers.length > 0) {
+        const firstTab = tabs[0];
+        const firstContainer = productContainers[0];
+        
+        if (firstTab && !firstTab.classList.contains('active')) {
+          firstTab.classList.add('active');
+        }
+        if (firstContainer && firstContainer.classList.contains('hidden')) {
+          firstContainer.classList.remove('hidden');
+        }
+      }
+      
+      // Add click handlers to all tabs
       for (const tab of tabs) {
-        tab.addEventListener('click', () => {
+        tab.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          
           const targetHandle = tab.getAttribute('data-tab-target');
           
-          if (!targetHandle) return;
+          if (!targetHandle) {
+            console.warn('Tab missing data-tab-target attribute');
+            return;
+          }
           
           // Remove active class from all tabs
           for (const t of tabs) {
@@ -204,6 +225,8 @@ class ThemeUtils {
           const targetContainer = grid.querySelector(`[data-tab-content="${targetHandle}"]`);
           if (targetContainer) {
             targetContainer.classList.remove('hidden');
+          } else {
+            console.warn(`No container found for tab target: ${targetHandle}`);
           }
         });
       }

@@ -9,61 +9,57 @@
     <div class="product-grid__header">
       <h2 class="product-grid__title section__title">{{ section_title }}</h2>
       
-      <div class="product-grid__tabs tabs">
-        {%- for block in section.blocks -%}
-          {%- assign tab_collection_handle = block.settings.collection -%}
-          {%- if tab_collection_handle != blank -%}
-            {%- assign tab_collection = collections[tab_collection_handle] -%}
-            {%- if tab_collection != blank -%}
-              {%- assign tab_handle = tab_collection.handle -%}
-            {%- else -%}
-              {%- assign tab_handle = tab_collection_handle -%}
-            {%- endif -%}
-          {%- else -%}
-            {%- assign tab_collection = blank -%}
-            {%- assign tab_handle = 'tab-' | append: forloop.index -%}
-          {%- endif -%}
-          <button 
-            type="button" 
-            class="product-grid__tab tab{% if forloop.first %} active{% endif %}"
-            data-tab-target="{{ tab_handle }}"
-            {{ block.shopify_attributes }}
-          >
-            {{ block.settings.label | default: tab_collection.title | default: 'Category' }}
-          </button>
-        {%- endfor -%}
-
-        {%- if section.blocks.size == 0 -%}
-          {%- assign default_tabs = 'Phone,Laptop,Monitors,Headphone,Television' | split: ',' -%}
-          {%- for tab in default_tabs -%}
+      {%- if section.blocks.size > 0 -%}
+        <div class="product-grid__tabs tabs">
+          {%- for block in section.blocks -%}
+            {%- liquid
+              assign tab_collection_handle = block.settings.collection
+              assign tab_collection = blank
+              assign tab_handle = ''
+              
+              if tab_collection_handle != blank
+                assign tab_collection = collections[tab_collection_handle]
+                if tab_collection != blank
+                  assign tab_handle = tab_collection.handle
+                else
+                  assign tab_handle = tab_collection_handle | handleize
+                endif
+              else
+                assign tab_handle = 'tab-' | append: forloop.index
+              endif
+            -%}
             <button 
               type="button" 
               class="product-grid__tab tab{% if forloop.first %} active{% endif %}"
-              data-tab-target="{{ tab | handleize }}"
+              data-tab-target="{{ tab_handle }}"
+              {{ block.shopify_attributes }}
             >
-              {{ tab }}
+              {{ block.settings.label | default: tab_collection.title | default: 'Category' }}
             </button>
           {%- endfor -%}
-        {%- endif -%}
-      </div>
+        </div>
+      {%- endif -%}
     </div>
 
     <div class="product-grid__content">
       {%- if section.blocks.size > 0 -%}
         {%- for block in section.blocks -%}
-          {%- assign tab_collection_handle = block.settings.collection -%}
-          {%- if tab_collection_handle != blank -%}
-            {%- assign tab_collection = collections[tab_collection_handle] -%}
-            {%- if tab_collection != blank -%}
-              {%- assign tab_handle = tab_collection.handle -%}
-            {%- else -%}
-              {%- assign tab_handle = tab_collection_handle -%}
-              {%- assign tab_collection = blank -%}
-            {%- endif -%}
-          {%- else -%}
-            {%- assign tab_collection = blank -%}
-            {%- assign tab_handle = 'tab-' | append: forloop.index -%}
-          {%- endif -%}
+          {%- liquid
+            assign tab_collection_handle = block.settings.collection
+            assign tab_collection = blank
+            assign tab_handle = ''
+            
+            if tab_collection_handle != blank
+              assign tab_collection = collections[tab_collection_handle]
+              if tab_collection != blank
+                assign tab_handle = tab_collection.handle
+              else
+                assign tab_handle = tab_collection_handle | handleize
+              endif
+            else
+              assign tab_handle = 'tab-' | append: forloop.index
+            endif
+          -%}
           <div 
             class="product-grid__items{% unless forloop.first %} hidden{% endunless %}" 
             data-tab-content="{{ tab_handle }}"
@@ -73,16 +69,18 @@
               {%- for product in tab_collection.products limit: products_to_show -%}
                 {%- render 'product-card', product: product -%}
               {%- endfor -%}
-            {%- elsif collection != blank -%}
+            {%- elsif collection != blank and collection.products.size > 0 -%}
               {%- for product in collection.products limit: products_to_show -%}
                 {%- render 'product-card', product: product -%}
               {%- endfor -%}
+            {%- else -%}
+              <p class="product-grid__empty">No products available in this category.</p>
             {%- endif -%}
           </div>
         {%- endfor -%}
       {%- else -%}
         {%- comment -%} No blocks: Show default collection {%- endcomment -%}
-        {%- if collection != blank -%}
+        {%- if collection != blank and collection.products.size > 0 -%}
           <div class="product-grid__items">
             {%- for product in collection.products limit: products_to_show -%}
               {%- render 'product-card', product: product -%}
@@ -159,6 +157,15 @@
   display: none;
 }
 
+.product-grid__empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px 20px;
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--color-text-secondary);
+}
+
 
 @media screen and (max-width: 992px) {
   .product-grid__tabs {
@@ -191,40 +198,6 @@
 }
 {% endstylesheet %}
 
-{% javascript %}
-(function() {
-  'use strict';
-  
-  function initProductGridTabs() {
-    document.querySelectorAll('.product-grid').forEach(function(grid) {
-      const tabs = grid.querySelectorAll('.product-grid__tab');
-      const containers = grid.querySelectorAll('[data-tab-content]');
-      
-      if (!tabs.length || !containers.length) return;
-      
-      tabs.forEach(function(tab) {
-        tab.addEventListener('click', function() {
-          const target = this.getAttribute('data-tab-target');
-          if (!target) return;
-          
-          tabs.forEach(function(t) { t.classList.remove('active'); });
-          this.classList.add('active');
-          
-          containers.forEach(function(container) {
-            container.classList.toggle('hidden', container.getAttribute('data-tab-content') !== target);
-          });
-        });
-      });
-    });
-  }
-  
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initProductGridTabs);
-  } else {
-    initProductGridTabs();
-  }
-})();
-{% endjavascript %}
 
 {% schema %}
 {
