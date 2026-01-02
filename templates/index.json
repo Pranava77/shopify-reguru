@@ -13,6 +13,7 @@
       "type": "header",
       "name": "Header",
       "settings": {
+        "logo": "shopify://shop_images/gin.png",
         "show_search": true,
         "show_location": true,
         "location_text": "Bengaluru"
@@ -141,7 +142,7 @@
       "settings": {
         "title": "Latest Products",
         "collection": "",
-        "products_to_show": 6
+        "products_to_show": 3
       }
     },
     "about-us": {
@@ -197,18 +198,6 @@
             "label": "General"
           }
         },
-        "tab-services": {
-          "type": "tab",
-          "settings": {
-            "label": "Services"
-          }
-        },
-        "tab-business": {
-          "type": "tab",
-          "settings": {
-            "label": "Business"
-          }
-        },
         "faq-1": {
           "type": "faq_item",
           "settings": {
@@ -233,8 +222,6 @@
       },
       "block_order": [
         "tab-general",
-        "tab-services",
-        "tab-business",
         "faq-1",
         "faq-2",
         "faq-3"
@@ -323,8 +310,9 @@
       ],
       "name": "Footer",
       "settings": {
+        "logo": "shopify://shop_images/gin.png",
         "address": "Address: 2nd floor central complex sv road near mantri mall seshadripuram bengaluru 560020",
-        "background_color": "#041c66"
+        "background_color": "#1e1a5c"
       }
     }
   },
