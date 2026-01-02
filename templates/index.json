@@ -26,45 +26,64 @@
         "discount_text": "UP to 80% OFF",
         "cta_text": "Checkout product",
         "cta_link": "",
+        "image": "shopify://shop_images/images__2_-removebg-preview.png",
         "background_color": "#212844"
       }
     },
     "feature-cards": {
       "type": "feature-cards",
       "blocks": {
+        "card_VfNmec": {
+          "type": "card",
+          "settings": {
+            "title": "Feature",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "icon_image": "shopify://shop_images/Group_176.png"
+          }
+        },
         "card-1": {
           "type": "card",
           "settings": {
-            "title": "RRR Policy"
+            "title": "RRR Policy",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "icon_image": "shopify://shop_images/Layer_3.png"
           }
         },
         "card-2": {
           "type": "card",
           "settings": {
-            "title": "Affordable"
+            "title": "Affordable",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "icon_image": "shopify://shop_images/Group_159.png"
           }
         },
         "card-3": {
           "type": "card",
           "settings": {
-            "title": "Online & Offline Model"
+            "title": "Online & Offline Model",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "icon_image": "shopify://shop_images/Group_173.png"
           }
         },
         "card-4": {
           "type": "card",
           "settings": {
-            "title": "Tailored Solutions"
+            "title": "Tailored Solutions",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "icon_image": "shopify://shop_images/Group_161_a7347467-55ed-4553-95c7-978f9bf1b501.png"
           }
         },
         "card-5": {
           "type": "card",
           "settings": {
             "title": "Sustainability",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
             "icon_image": "shopify://shop_images/Layer_3.png"
           }
         }
       },
       "block_order": [
+        "card_VfNmec",
         "card-1",
         "card-2",
         "card-3",
@@ -305,7 +324,7 @@
       "name": "Footer",
       "settings": {
         "address": "Address: 2nd floor central complex sv road near mantri mall seshadripuram bengaluru 560020",
-        "background_color": "#041C66"
+        "background_color": "#041c66"
       }
     }
   },
