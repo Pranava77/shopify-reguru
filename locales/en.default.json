@@ -30,6 +30,13 @@
   "accessibility": {
     "skip_to_content": "Skip to content",
     "close": "Close",
+    "menu": "Menu",
+    "main_navigation": "Main navigation",
+    "toggle_menu": "Toggle menu",
+    "close_menu": "Close menu",
+    "expand_submenu": "Expand submenu"
+  },
+  "navigation": {
     "menu": "Menu"
   },
   "customer": {
