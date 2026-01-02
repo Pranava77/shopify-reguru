@@ -206,15 +206,21 @@
   "class": "product-grid-section",
   "settings": [
     {
+      "type": "header",
+      "content": "Section Settings"
+    },
+    {
       "type": "text",
       "id": "title",
       "label": "Section Title",
-      "default": "Latest Products"
+      "default": "Latest Products",
+      "info": "The heading displayed above the product grid"
     },
     {
       "type": "collection",
       "id": "collection",
-      "label": "Default Collection"
+      "label": "Default Collection",
+      "info": "Used as fallback when category tabs don't have a collection assigned, or when no tabs are configured"
     },
     {
       "type": "range",
@@ -223,7 +229,8 @@
       "min": 3,
       "max": 12,
       "step": 1,
-      "default": 6
+      "default": 6,
+      "info": "Number of products to display per tab"
     }
   ],
   "blocks": [
@@ -234,12 +241,15 @@
         {
           "type": "text",
           "id": "label",
-          "label": "Tab Label"
+          "label": "Tab Label",
+          "default": "Category",
+          "info": "The text displayed on the tab button"
         },
         {
           "type": "collection",
           "id": "collection",
-          "label": "Collection"
+          "label": "Collection",
+          "info": "Products from this collection will be shown when this tab is active. If left empty, the default collection will be used."
         }
       ]
     }
@@ -247,6 +257,10 @@
   "presets": [
     {
       "name": "Product Grid",
+      "settings": {
+        "title": "Latest Products",
+        "products_to_show": 6
+      },
       "blocks": [
         {
           "type": "category_tab",
