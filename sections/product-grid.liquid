@@ -11,17 +11,20 @@
       
       <div class="product-grid__tabs tabs">
         {%- for block in section.blocks -%}
+          {%- assign tab_collection = block.settings.collection -%}
+          {%- assign tab_handle = tab_collection.handle | default: 'all' -%}
           <button 
             type="button" 
             class="product-grid__tab tab{% if forloop.first %} active{% endif %}"
-            data-tab-target="{{ block.settings.collection.handle | default: 'all' }}"
+            data-tab-target="{{ tab_handle }}"
             {{ block.shopify_attributes }}
           >
-            {{ block.settings.label | default: block.settings.collection.title | default: 'Category' }}
+            {{ block.settings.label | default: tab_collection.title | default: 'Category' }}
           </button>
         {%- endfor -%}
 
         {%- if section.blocks.size == 0 -%}
+          {%- comment -%} Default tabs - these won't have functionality without collections {%- endcomment -%}
           {%- assign default_tabs = 'Phone,Laptop,Monitors,Headphone,Television' | split: ',' -%}
           {%- for tab in default_tabs -%}
             <button 
@@ -40,7 +43,11 @@
       {%- if section.blocks.size > 0 -%}
         {%- for block in section.blocks -%}
           {%- assign tab_collection = block.settings.collection -%}
-          {%- assign tab_handle = tab_collection.handle | default: 'all' -%}
+          {%- if tab_collection != blank -%}
+            {%- assign tab_handle = tab_collection.handle -%}
+          {%- else -%}
+            {%- assign tab_handle = 'all' -%}
+          {%- endif -%}
           <div 
             class="product-grid__items{% unless forloop.first %} hidden{% endunless %}" 
             data-tab-content="{{ tab_handle }}"
