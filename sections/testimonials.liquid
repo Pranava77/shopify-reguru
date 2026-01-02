@@ -101,12 +101,14 @@
   width: 100%;
   max-width: 1281px;
   overflow: hidden;
+  position: relative;
 }
 
 .testimonials__track {
   display: flex;
   gap: 25px;
   transition: transform 0.4s ease;
+  will-change: transform;
 }
 
 .testimonials__nav {
@@ -168,12 +170,6 @@
 
   .testimonials__track {
     gap: 16px;
-  }
-
-  .testimonials__track .testimonial-card {
-    flex: 0 0 100%;
-    min-width: 100%;
-    max-width: 100%;
   }
 }
 {% endstylesheet %}

@@ -54,18 +54,21 @@ class ThemeUtils {
   }
 
   #initTestimonialSlider() {
-    const slider = document.querySelector('.testimonials__slider');
-    if (!slider) return;
+    const container = document.querySelector('.testimonials__container');
+    if (!container) return;
 
-    const prevBtn = slider.parentElement.querySelector('[data-testimonial-prev]');
-    const nextBtn = slider.parentElement.querySelector('[data-testimonial-next]');
-    const track = slider.querySelector('.testimonials__track');
+    const slider = container.querySelector('.testimonials__slider');
+    const prevBtn = container.querySelector('[data-testimonial-prev]');
+    const nextBtn = container.querySelector('[data-testimonial-next]');
+    const track = container.querySelector('.testimonials__track');
     
-    if (!track || !prevBtn || !nextBtn) return;
+    if (!slider || !track || !prevBtn || !nextBtn) return;
 
     let currentIndex = 0;
     const cards = track.querySelectorAll('.testimonial-card');
     const totalCards = cards.length;
+
+    if (totalCards === 0) return;
 
     const getVisibleCards = () => {
       const width = window.innerWidth;
@@ -81,29 +84,57 @@ class ThemeUtils {
       return 25;
     };
 
+    const getCardWidth = () => {
+      // Get computed width of first card including border
+      const card = cards[0];
+      if (!card) return 394;
+      const style = window.getComputedStyle(card);
+      return card.offsetWidth || parseFloat(style.width) || 394;
+    };
+
     const updateSlider = () => {
       const visibleCards = getVisibleCards();
       const maxIndex = Math.max(0, totalCards - visibleCards);
       
       // Clamp currentIndex to valid range
       currentIndex = Math.min(currentIndex, maxIndex);
+      currentIndex = Math.max(0, currentIndex);
       
-      const cardWidth = cards[0]?.offsetWidth || 0;
+      const cardWidth = getCardWidth();
       const gap = getGap();
       const offset = currentIndex * (cardWidth + gap);
       track.style.transform = `translateX(-${offset}px)`;
+      
+      // Update button states visually
+      prevBtn.style.opacity = currentIndex === 0 ? '0.5' : '1';
+      nextBtn.style.opacity = currentIndex >= maxIndex ? '0.5' : '1';
     };
 
-    prevBtn.addEventListener('click', () => {
-      currentIndex = Math.max(0, currentIndex - 1);
-      updateSlider();
-    });
+    const goToPrev = () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateSlider();
+      }
+    };
 
-    nextBtn.addEventListener('click', () => {
+    const goToNext = () => {
       const visibleCards = getVisibleCards();
       const maxIndex = Math.max(0, totalCards - visibleCards);
-      currentIndex = Math.min(maxIndex, currentIndex + 1);
-      updateSlider();
+      if (currentIndex < maxIndex) {
+        currentIndex++;
+        updateSlider();
+      }
+    };
+
+    // Use arrow functions to maintain correct 'this' context
+    prevBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      goToPrev();
+    });
+
+    nextBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      goToNext();
     });
 
     // Update slider on resize
@@ -111,8 +142,10 @@ class ThemeUtils {
       updateSlider();
     }, 150));
 
-    // Initial update
-    updateSlider();
+    // Initial update after a small delay to ensure layout is complete
+    requestAnimationFrame(() => {
+      updateSlider();
+    });
   }
 
   #initCategoryNav() {
