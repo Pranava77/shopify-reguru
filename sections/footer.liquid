@@ -10,10 +10,10 @@
   <div class="footer__laptop-illustration">
     {%- if laptop_image != blank -%}
       <img 
-        src="{{ laptop_image | image_url: width: 240 }}"
+        src="{{ laptop_image | image_url: width: 480 }}"
         alt="Laptop illustration"
-        width="120"
-        height="120"
+        width="240"
+        height="240"
         loading="lazy"
         class="footer__laptop-img"
       >
@@ -176,7 +176,7 @@
 {% stylesheet %}
 .footer-wrapper {
   position: relative;
-  padding-top: 60px;
+  padding-top: 120px;
 }
 
 .footer__laptop-illustration {
@@ -189,8 +189,8 @@
 }
 
 .footer__laptop-img {
-  width: 120px;
-  height: 120px;
+  width: 240px;
+  height: 240px;
   display: block;
   filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
 }
@@ -341,7 +341,7 @@
 
 @media screen and (max-width: 768px) {
   .footer-wrapper {
-    padding-top: 50px;
+    padding-top: 100px;
   }
 
   .footer__laptop-illustration {
@@ -349,8 +349,8 @@
   }
 
   .footer__laptop-img {
-    width: 100px;
-    height: 100px;
+    width: 200px;
+    height: 200px;
   }
 }
 
@@ -381,8 +381,8 @@
   }
 
   .footer__laptop-img {
-    width: 80px;
-    height: 80px;
+    width: 160px;
+    height: 160px;
   }
 }
 {% endstylesheet %}
