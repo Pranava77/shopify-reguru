@@ -120,14 +120,16 @@
       {%- endif -%}
 
       <!-- Login/Account Button -->
-      {%- if customer -%}
-        <a href="{{ routes.account_url }}" class="header__login">
-          {{ 'customer.account.title' | t | default: 'Account' }}
-        </a>
-      {%- else -%}
-        <a href="{{ routes.account_login_url }}" class="header__login">
-          {{ 'customer.login.sign_in' | t | default: 'Login' }}
-        </a>
+      {%- if shop.customer_accounts_enabled -%}
+        {%- if customer -%}
+          <a href="{{ routes.account_url }}" class="header__login" rel="nofollow">
+            {{ 'customer.account.title' | t | default: 'Account' }}
+          </a>
+        {%- else -%}
+          <a href="{{ routes.account_login_url }}" class="header__login" rel="nofollow">
+            {{ 'customer.login.sign_in' | t | default: 'Login' }}
+          </a>
+        {%- endif -%}
       {%- endif -%}
     </div>
   </div>
