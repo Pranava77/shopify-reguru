@@ -9,6 +9,16 @@
  */
 {
   "sections": {
+    "header_8wjj8i": {
+      "type": "header",
+      "name": "Header",
+      "settings": {
+        "menu": "main-menu",
+        "show_search": true,
+        "show_location": true,
+        "location_text": "Bengaluru"
+      }
+    },
     "hero-banner": {
       "type": "hero-banner",
       "settings": {
@@ -216,6 +226,7 @@
     }
   },
   "order": [
+    "header_8wjj8i",
     "hero-banner",
     "feature-cards",
     "product-grid",
