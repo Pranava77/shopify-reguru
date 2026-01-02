@@ -4,10 +4,10 @@
       {%- if settings.logo != blank -%}
         <a href="{{ routes.root_url }}" class="header__logo-link">
           <img
-            src="{{ settings.logo | image_url: width: settings.logo_width }}"
+            src="{{ settings.logo | image_url: width: 140 }}"
             alt="{{ shop.name }}"
-            width="{{ settings.logo_width }}"
-            height="auto"
+            width="140"
+            height="41"
             loading="eager"
             class="header__logo-image"
           >
@@ -29,7 +29,7 @@
           aria-label="{{ 'general.search.placeholder' | t }}"
         >
         <button type="submit" class="search-form__button">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM19 19l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </button>
@@ -37,20 +37,42 @@
     </div>
 
     <div class="header__actions">
-      <button type="button" class="header__cart-toggle" aria-label="{{ 'cart.general.title' | t }}" data-cart-toggle>
-        <svg class="header__cart-icon" width="42" height="43" viewBox="0 0 42 43" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="42" height="43" rx="4" fill="white"/>
-          <path d="M14 16H28L26.5 25H15.5L14 16Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="16.5" cy="28.5" r="1.5" fill="black"/>
-          <circle cx="25.5" cy="28.5" r="1.5" fill="black"/>
-          <rect x="1" y="1" width="40" height="41" rx="3" stroke="black" stroke-width="0.5" stroke-dasharray="2 2"/>
+      <a href="#" class="header__store-icon" aria-label="Store locations">
+        <svg width="37" height="38" viewBox="0 0 37 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Store/Branch Icon - Three buildings connected -->
+          <rect x="2" y="15" width="8" height="12" fill="#1BDE8F" stroke="#1BDE8F" stroke-width="1"/>
+          <rect x="4" y="17" width="2" height="2" fill="white"/>
+          <rect x="6" y="17" width="2" height="2" fill="white"/>
+          <rect x="4" y="20" width="2" height="2" fill="white"/>
+          <rect x="6" y="20" width="2" height="2" fill="white"/>
+          <path d="M6 8L2 15H10L6 8Z" fill="#1BDE8F"/>
+          
+          <rect x="14.5" y="12" width="8" height="15" fill="#1BDE8F" stroke="#1BDE8F" stroke-width="1"/>
+          <rect x="16.5" y="14" width="2" height="2" fill="white"/>
+          <rect x="18.5" y="14" width="2" height="2" fill="white"/>
+          <rect x="16.5" y="17" width="2" height="2" fill="white"/>
+          <rect x="18.5" y="17" width="2" height="2" fill="white"/>
+          <path d="M18.5 5L14.5 12H22.5L18.5 5Z" fill="#1BDE8F"/>
+          
+          <rect x="27" y="15" width="8" height="12" fill="#1BDE8F" stroke="#1BDE8F" stroke-width="1"/>
+          <rect x="29" y="17" width="2" height="2" fill="white"/>
+          <rect x="31" y="17" width="2" height="2" fill="white"/>
+          <rect x="29" y="20" width="2" height="2" fill="white"/>
+          <rect x="31" y="20" width="2" height="2" fill="white"/>
+          <path d="M31 8L27 15H35L31 8Z" fill="#1BDE8F"/>
+          
+          <!-- Connection lines -->
+          <line x1="10" y1="21" x2="14.5" y2="19.5" stroke="#1BDE8F" stroke-width="1.5"/>
+          <line x1="22.5" y1="19.5" x2="27" y2="21" stroke="#1BDE8F" stroke-width="1.5"/>
         </svg>
-        <span class="header__cart-count" data-cart-count>{{ cart.item_count }}</span>
-      </button>
+      </a>
 
       {%- if section.settings.show_location -%}
         <div class="header__location">
           <span class="header__location-text">{{ section.settings.location }}</span>
+          <svg class="header__location-chevron" width="13" height="7" viewBox="0 0 13 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 1L6.5 6L12 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </div>
       {%- endif -%}
 
@@ -76,7 +98,7 @@
 {% stylesheet %}
   .header {
     background-color: var(--color-white);
-    box-shadow: 4px 4px 3.9px 0px var(--color-primary);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
     position: relative;
     z-index: var(--z-sticky);
   }
@@ -90,9 +112,9 @@
   .header__container {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 40px;
-    padding: 19px 71px;
+    justify-content: center;
+    gap: 69px;
+    padding: 19px 60px;
     max-width: var(--container-max-width);
     margin: 0 auto;
     min-height: 80px;
@@ -100,11 +122,15 @@
 
   .header__logo {
     flex-shrink: 0;
+    width: 140px;
+    height: 41px;
   }
 
   .header__logo-link {
     display: block;
     line-height: 0;
+    width: 100%;
+    height: 100%;
   }
 
   .header__logo-text {
@@ -127,12 +153,13 @@
 
   .header__logo-image {
     height: 41px;
-    width: auto;
+    width: 140px;
+    object-fit: contain;
   }
 
   .header__search {
-    flex: 1;
-    max-width: 765px;
+    flex-shrink: 0;
+    width: 688px;
   }
 
   .search-form {
@@ -144,9 +171,9 @@
   .search-form__input {
     width: 100%;
     height: 41px;
-    padding: 0 3rem 0 1rem;
+    padding: 0 3.5rem 0 1rem;
     border: 1px solid var(--color-black);
-    border-radius: 9px;
+    border-radius: 30px;
     font-size: 0.875rem;
     font-family: var(--font-body);
     background: var(--color-white);
@@ -164,7 +191,7 @@
 
   .search-form__button {
     position: absolute;
-    right: 0.75rem;
+    right: 10px;
     background: none;
     border: none;
     padding: 0.5rem;
@@ -173,69 +200,74 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 21px;
+    height: 21px;
   }
 
   .search-form__button:hover {
     color: var(--color-primary);
   }
 
+  .search-form__button svg {
+    width: 21px;
+    height: 21px;
+  }
+
   .header__actions {
     display: flex;
     align-items: center;
-    gap: 24px;
+    gap: 10px;
+    flex-shrink: 0;
   }
 
-  .header__cart-toggle {
-    position: relative;
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: pointer;
+  .header__store-icon {
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 37px;
+    height: 37.712px;
+    flex-shrink: 0;
+    cursor: pointer;
+    text-decoration: none;
   }
 
-  .header__cart-icon {
-    width: 42px;
-    height: 43px;
-  }
-
-  .header__cart-count {
-    position: absolute;
-    top: -4px;
-    right: -4px;
-    background-color: var(--color-accent);
-    color: var(--color-black);
-    font-size: 0.625rem;
-    font-weight: var(--font-weight-bold);
-    padding: 0.125rem 0.375rem;
-    border-radius: 10px;
-    min-width: 18px;
-    text-align: center;
+  .header__store-icon svg {
+    width: 37px;
+    height: 37.712px;
   }
 
   .header__location {
     display: flex;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0;
+    width: 90px;
+    flex-shrink: 0;
   }
 
   .header__location-text {
     font-family: var(--font-mono);
-    font-size: 16px;
+    font-size: 12px;
     font-weight: var(--font-weight-bold);
     color: var(--color-black);
+    line-height: normal;
+  }
+
+  .header__location-chevron {
+    width: 13px;
+    height: 7px;
+    margin-left: auto;
+    color: var(--color-black);
+    flex-shrink: 0;
   }
 
   .header__login-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 89px;
+    width: 89px;
     height: 32px;
     padding: 8px 25px;
-    background-color: var(--color-primary);
+    background-color: #1e1a5c;
     color: var(--color-white);
     font-family: var(--font-mono);
     font-size: 12px;
@@ -243,6 +275,8 @@
     text-decoration: none;
     box-shadow: 2px 2px 0px 0px var(--color-black);
     transition: all var(--transition-fast);
+    flex-shrink: 0;
+    text-transform: lowercase;
   }
 
   .header__login-btn:hover {
@@ -284,6 +318,19 @@
     bottom: -8px;
   }
 
+  @media screen and (max-width: 1440px) {
+    .header__container {
+      padding: 19px 60px;
+      gap: 40px;
+    }
+
+    .header__search {
+      width: 100%;
+      max-width: 688px;
+      flex: 1;
+    }
+  }
+
   @media screen and (max-width: 1024px) {
     .header__container {
       padding: 15px 30px;
@@ -298,9 +345,24 @@
   @media screen and (max-width: 768px) {
     .header__container {
       padding: 12px 16px;
+      gap: 15px;
+    }
+
+    .header__logo {
+      width: 100px;
+      height: auto;
+    }
+
+    .header__logo-image {
+      width: 100px;
+      height: auto;
     }
 
     .header__search {
+      display: none;
+    }
+
+    .header__store-icon {
       display: none;
     }
 
@@ -334,7 +396,7 @@
       "type": "text",
       "id": "location",
       "label": "Store Location",
-      "default": "Bangalore"
+      "default": "Bengaluru"
     }
   ]
 }
