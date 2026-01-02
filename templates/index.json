@@ -13,6 +13,7 @@
       "type": "header",
       "name": "Header",
       "settings": {
+        "logo": "shopify://shop_images/gin.png",
         "show_search": true,
         "show_location": true,
         "location_text": "Bengaluru"
@@ -106,7 +107,7 @@
           "type": "category_tab",
           "settings": {
             "label": "Laptop",
-            "collection": ""
+            "collection": "apple"
           }
         },
         "tab-3": {
