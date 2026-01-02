@@ -20,8 +20,8 @@
               {%- assign tab_handle = tab_collection_handle -%}
             {%- endif -%}
           {%- else -%}
-            {%- assign tab_handle = 'all' -%}
             {%- assign tab_collection = blank -%}
+            {%- assign tab_handle = 'tab-' | append: forloop.index -%}
           {%- endif -%}
           <button 
             type="button" 
@@ -58,10 +58,11 @@
               {%- assign tab_handle = tab_collection.handle -%}
             {%- else -%}
               {%- assign tab_handle = tab_collection_handle -%}
+              {%- assign tab_collection = blank -%}
             {%- endif -%}
           {%- else -%}
-            {%- assign tab_handle = 'all' -%}
             {%- assign tab_collection = blank -%}
+            {%- assign tab_handle = 'tab-' | append: forloop.index -%}
           {%- endif -%}
           <div 
             class="product-grid__items{% unless forloop.first %} hidden{% endunless %}" 
