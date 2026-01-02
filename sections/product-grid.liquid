@@ -11,11 +11,17 @@
       
       <div class="product-grid__tabs tabs">
         {%- for block in section.blocks -%}
-          {%- assign tab_collection = block.settings.collection -%}
-          {%- if tab_collection != blank -%}
-            {%- assign tab_handle = tab_collection.handle -%}
+          {%- assign tab_collection_handle = block.settings.collection -%}
+          {%- if tab_collection_handle != blank -%}
+            {%- assign tab_collection = collections[tab_collection_handle] -%}
+            {%- if tab_collection != blank -%}
+              {%- assign tab_handle = tab_collection.handle -%}
+            {%- else -%}
+              {%- assign tab_handle = tab_collection_handle -%}
+            {%- endif -%}
           {%- else -%}
             {%- assign tab_handle = 'all' -%}
+            {%- assign tab_collection = blank -%}
           {%- endif -%}
           <button 
             type="button" 
@@ -45,11 +51,17 @@
     <div class="product-grid__content">
       {%- if section.blocks.size > 0 -%}
         {%- for block in section.blocks -%}
-          {%- assign tab_collection = block.settings.collection -%}
-          {%- if tab_collection != blank -%}
-            {%- assign tab_handle = tab_collection.handle -%}
+          {%- assign tab_collection_handle = block.settings.collection -%}
+          {%- if tab_collection_handle != blank -%}
+            {%- assign tab_collection = collections[tab_collection_handle] -%}
+            {%- if tab_collection != blank -%}
+              {%- assign tab_handle = tab_collection.handle -%}
+            {%- else -%}
+              {%- assign tab_handle = tab_collection_handle -%}
+            {%- endif -%}
           {%- else -%}
             {%- assign tab_handle = 'all' -%}
+            {%- assign tab_collection = blank -%}
           {%- endif -%}
           <div 
             class="product-grid__items{% unless forloop.first %} hidden{% endunless %}" 
