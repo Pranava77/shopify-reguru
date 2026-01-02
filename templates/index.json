@@ -201,7 +201,7 @@
           "type": "category_tab",
           "settings": {
             "label": "Phone",
-            "collection": ""
+            "collection": "tele"
           }
         },
         "tab-2": {
