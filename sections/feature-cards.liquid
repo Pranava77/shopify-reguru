@@ -98,14 +98,21 @@
     // Only enable carousel functionality on mobile
     const isMobile = () => window.innerWidth <= 768;
     
+    // Get the width of one card (full viewport width on mobile)
+    const getCardWidth = () => {
+      if (cards[0]) {
+        return cards[0].offsetWidth;
+      }
+      return track.offsetWidth;
+    };
+    
     // Update active dot based on scroll position
     const updateActiveDot = () => {
       if (!isMobile()) return;
       
       const scrollLeft = track.scrollLeft;
-      const cardWidth = cards[0]?.offsetWidth || 180;
-      const gap = 20;
-      const activeIndex = Math.round(scrollLeft / (cardWidth + gap));
+      const cardWidth = getCardWidth();
+      const activeIndex = Math.round(scrollLeft / cardWidth);
       
       dots.forEach((dot, index) => {
         dot.classList.toggle('feature-cards__dot--active', index === activeIndex);
@@ -118,9 +125,8 @@
         if (!isMobile()) return;
         
         const index = parseInt(dot.dataset.index, 10);
-        const cardWidth = cards[0]?.offsetWidth || 180;
-        const gap = 20;
-        const scrollPosition = index * (cardWidth + gap);
+        const cardWidth = getCardWidth();
+        const scrollPosition = index * cardWidth;
         
         track.scrollTo({
           left: scrollPosition,
@@ -285,12 +291,11 @@
 
   .feature-cards__carousel {
     overflow: hidden;
-    padding: 0 20px;
   }
 
   .feature-cards__track {
     display: flex;
-    gap: 20px;
+    gap: 0;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
@@ -304,9 +309,45 @@
   }
 
   .feature-card {
-    scroll-snap-align: start;
-    min-width: 160px;
-    max-width: 160px;
+    scroll-snap-align: center;
+    flex: 0 0 100%;
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    aspect-ratio: auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
+
+  /* Inner card wrapper to maintain aspect ratio */
+  .feature-card__bg {
+    position: relative;
+    width: 60vw;
+    max-width: 220px;
+    aspect-ratio: 0.63;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+  }
+
+  .feature-card__content {
+    position: absolute;
+    top: 15%;
+    left: 10%;
+    right: 25%;
+    z-index: 2;
+  }
+
+  .feature-card__icon {
+    position: absolute;
+    bottom: -10%;
+    right: -20%;
+    width: 60%;
+    z-index: 3;
   }
 
   .feature-card:hover {
@@ -314,15 +355,15 @@
   }
 
   .feature-card__title {
-    font-size: 15px;
+    font-size: 18px;
   }
 
   /* Show Navigation Dots on Mobile */
   .feature-cards__dots {
     display: flex;
     justify-content: center;
-    gap: 10px;
-    margin-top: 16px;
+    gap: 12px;
+    margin-top: 24px;
     padding: 0 20px;
   }
 
@@ -330,7 +371,7 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background-color: var(--color-navy);
+    background-color: var(--color-navy, #1E1A5C);
     opacity: 0.3;
     border: none;
     padding: 0;
@@ -340,24 +381,24 @@
 
   .feature-cards__dot--active {
     opacity: 1;
-    transform: scale(1.2);
-    background-color: var(--color-accent);
+    transform: scale(1.3);
+    background-color: var(--color-accent, #28D98E);
   }
 
   .feature-cards__dot:focus {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid var(--color-accent, #28D98E);
     outline-offset: 2px;
   }
 }
 
 @media screen and (max-width: 480px) {
-  .feature-card {
-    min-width: 150px;
-    max-width: 150px;
+  .feature-card__bg {
+    width: 55vw;
+    max-width: 200px;
   }
 
   .feature-card__title {
-    font-size: 14px;
+    font-size: 16px;
   }
 
   .feature-cards__dot {

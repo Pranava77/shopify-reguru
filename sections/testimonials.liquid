@@ -1,21 +1,16 @@
 {%- liquid
   assign heading = section.settings.heading | default: 'Testimonials'
   assign bg_color = section.settings.background_color | default: '#B1D8FF'
-  assign visible_cards = section.settings.visible_cards | default: 3
-  assign total_blocks = section.blocks.size
-  if total_blocks == 0
-    assign total_blocks = 3
-  endif
 -%}
 
-<section class="testimonials" style="--testimonials-bg: {{ bg_color }};" id="testimonials-{{ section.id }}">
+<section class="testimonials" style="--testimonials-bg: {{ bg_color }};">
   <div class="testimonials__container">
     <div class="testimonials__header">
       <h2 class="testimonials__title">{{ heading }}</h2>
     </div>
 
-    <div class="testimonials__slider" data-testimonials-slider>
-      <div class="testimonials__track" data-testimonials-track>
+    <div class="testimonials__slider">
+      <div class="testimonials__track">
         {%- for block in section.blocks -%}
           {%- render 'testimonial-card',
             name: block.settings.name,
@@ -25,7 +20,7 @@
         {%- endfor -%}
 
         {%- if section.blocks.size == 0 -%}
-          {%- assign default_testimonials = 'Ashok Kumar|Priyanka Sharma|Gopal Krishna' | split: '|' -%}
+          {%- assign default_testimonials = 'Ashok Kumar|Priyanka Sharma|gopal krishna' | split: '|' -%}
           {%- for person in default_testimonials -%}
             <article class="testimonial-card card">
               <div class="testimonial-card__quote-bg"></div>
@@ -57,210 +52,20 @@
       </div>
     </div>
 
-    <div class="testimonials__controls">
-      <div class="testimonials__nav">
-        <button 
-          type="button" 
-          class="testimonials__nav-btn btn btn--icon btn--blue" 
-          data-testimonials-prev 
-          aria-label="Previous testimonials"
-          {% if total_blocks <= visible_cards %}disabled{% endif %}
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-        <button 
-          type="button" 
-          class="testimonials__nav-btn btn btn--icon btn--blue" 
-          data-testimonials-next 
-          aria-label="Next testimonials"
-          {% if total_blocks <= visible_cards %}disabled{% endif %}
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-      </div>
-
-      {%- if total_blocks > visible_cards -%}
-        <div class="testimonials__pagination" data-testimonials-pagination>
-          {%- assign max_slides = total_blocks | minus: visible_cards | plus: 1 -%}
-          {%- for i in (1..max_slides) -%}
-            <button 
-              class="testimonials__dot{% if forloop.first %} testimonials__dot--active{% endif %}" 
-              data-slide-index="{{ forloop.index0 }}"
-              aria-label="Go to slide {{ forloop.index }}"
-            ></button>
-          {%- endfor -%}
-        </div>
-      {%- endif -%}
+    <div class="testimonials__nav">
+      <button type="button" class="testimonials__nav-btn btn btn--icon btn--blue" data-testimonial-prev aria-label="Previous testimonial">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button type="button" class="testimonials__nav-btn btn btn--icon btn--blue" data-testimonial-next aria-label="Next testimonial">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
     </div>
   </div>
 </section>
-
-<script>
-  (function() {
-    const section = document.getElementById('testimonials-{{ section.id }}');
-    if (!section) return;
-
-    const slider = section.querySelector('[data-testimonials-slider]');
-    const track = section.querySelector('[data-testimonials-track]');
-    const prevBtn = section.querySelector('[data-testimonials-prev]');
-    const nextBtn = section.querySelector('[data-testimonials-next]');
-    const pagination = section.querySelector('[data-testimonials-pagination]');
-    const cards = track.querySelectorAll('.testimonial-card');
-
-    if (cards.length === 0) return;
-
-    let currentIndex = 0;
-    let visibleCards = {{ visible_cards }};
-    const totalCards = cards.length;
-    const gap = 25; // Gap between cards in pixels
-
-    // Calculate how many cards to show based on screen size
-    const getVisibleCards = () => {
-      if (window.innerWidth <= 768) return 1;
-      if (window.innerWidth <= 992) return 2;
-      return {{ visible_cards }};
-    };
-
-    // Calculate card width including gap
-    const getCardWidth = () => {
-      const card = cards[0];
-      if (!card) return 0;
-      return card.offsetWidth + gap;
-    };
-
-    // Calculate maximum slide index
-    const getMaxIndex = () => {
-      visibleCards = getVisibleCards();
-      return Math.max(0, totalCards - visibleCards);
-    };
-
-    // Update track position
-    const updateTrackPosition = () => {
-      const cardWidth = getCardWidth();
-      const offset = currentIndex * cardWidth;
-      track.style.transform = `translateX(-${offset}px)`;
-    };
-
-    // Update button states
-    const updateButtonStates = () => {
-      const maxIndex = getMaxIndex();
-      
-      prevBtn.disabled = currentIndex === 0;
-      nextBtn.disabled = currentIndex >= maxIndex;
-
-      prevBtn.classList.toggle('testimonials__nav-btn--disabled', currentIndex === 0);
-      nextBtn.classList.toggle('testimonials__nav-btn--disabled', currentIndex >= maxIndex);
-    };
-
-    // Update pagination dots
-    const updatePagination = () => {
-      if (!pagination) return;
-      
-      const dots = pagination.querySelectorAll('.testimonials__dot');
-      dots.forEach((dot, index) => {
-        dot.classList.toggle('testimonials__dot--active', index === currentIndex);
-      });
-    };
-
-    // Go to specific slide
-    const goToSlide = (index) => {
-      const maxIndex = getMaxIndex();
-      currentIndex = Math.max(0, Math.min(index, maxIndex));
-      updateTrackPosition();
-      updateButtonStates();
-      updatePagination();
-    };
-
-    // Previous slide
-    const prevSlide = () => {
-      if (currentIndex > 0) {
-        goToSlide(currentIndex - 1);
-      }
-    };
-
-    // Next slide
-    const nextSlide = () => {
-      const maxIndex = getMaxIndex();
-      if (currentIndex < maxIndex) {
-        goToSlide(currentIndex + 1);
-      }
-    };
-
-    // Event listeners
-    prevBtn.addEventListener('click', prevSlide);
-    nextBtn.addEventListener('click', nextSlide);
-
-    // Pagination dot clicks
-    if (pagination) {
-      const dots = pagination.querySelectorAll('.testimonials__dot');
-      dots.forEach((dot) => {
-        dot.addEventListener('click', () => {
-          const index = parseInt(dot.dataset.slideIndex, 10);
-          goToSlide(index);
-        });
-      });
-    }
-
-    // Touch/swipe support for mobile
-    let touchStartX = 0;
-    let touchEndX = 0;
-
-    slider.addEventListener('touchstart', (e) => {
-      touchStartX = e.changedTouches[0].screenX;
-    }, { passive: true });
-
-    slider.addEventListener('touchend', (e) => {
-      touchEndX = e.changedTouches[0].screenX;
-      handleSwipe();
-    }, { passive: true });
-
-    const handleSwipe = () => {
-      const swipeThreshold = 50;
-      const diff = touchStartX - touchEndX;
-
-      if (Math.abs(diff) > swipeThreshold) {
-        if (diff > 0) {
-          // Swiped left - go next
-          nextSlide();
-        } else {
-          // Swiped right - go prev
-          prevSlide();
-        }
-      }
-    };
-
-    // Handle window resize
-    let resizeTimeout;
-    window.addEventListener('resize', () => {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(() => {
-        const maxIndex = getMaxIndex();
-        if (currentIndex > maxIndex) {
-          currentIndex = maxIndex;
-        }
-        updateTrackPosition();
-        updateButtonStates();
-      }, 100);
-    });
-
-    // Keyboard navigation
-    section.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowLeft') {
-        prevSlide();
-      } else if (e.key === 'ArrowRight') {
-        nextSlide();
-      }
-    });
-
-    // Initialize
-    updateButtonStates();
-    updatePagination();
-  })();
-</script>
 
 {% stylesheet %}
 .testimonials {
@@ -301,14 +106,7 @@
 .testimonials__track {
   display: flex;
   gap: 25px;
-  transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
-}
-
-.testimonials__controls {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
+  transition: transform 0.4s ease;
 }
 
 .testimonials__nav {
@@ -327,64 +125,22 @@
   box-shadow: var(--shadow-sm);
   color: var(--color-black);
   cursor: pointer;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast), opacity var(--transition-fast);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.testimonials__nav-btn:hover:not(:disabled) {
+.testimonials__nav-btn:hover {
   transform: translate(-1px, -1px);
   box-shadow: 3px 3px 0px 0px var(--color-black);
 }
 
-.testimonials__nav-btn:active:not(:disabled) {
+.testimonials__nav-btn:active {
   transform: translate(1px, 1px);
   box-shadow: 1px 1px 0px 0px var(--color-black);
-}
-
-.testimonials__nav-btn:disabled,
-.testimonials__nav-btn--disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
 }
 
 .testimonials__nav-btn svg {
   width: 16px;
   height: 16px;
-}
-
-.testimonials__pagination {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.testimonials__dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: var(--color-navy);
-  opacity: 0.3;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
-}
-
-.testimonials__dot--active {
-  opacity: 1;
-  transform: scale(1.3);
-  background-color: var(--color-dark-blue);
-}
-
-.testimonials__dot:hover:not(.testimonials__dot--active) {
-  opacity: 0.6;
-}
-
-.testimonials__dot:focus {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
 }
 
 @media screen and (max-width: 992px) {
@@ -398,29 +154,13 @@
 }
 
 @media screen and (max-width: 768px) {
-  .testimonials {
-    padding: 40px 0;
-  }
-
   .testimonials__title {
     font-size: 28px;
   }
 
   .testimonials__track {
-    gap: 20px;
-  }
-
-  .testimonials__controls {
-    gap: 16px;
-  }
-
-  .testimonials__nav {
-    gap: 16px;
-  }
-
-  .testimonials__dot {
-    width: 8px;
-    height: 8px;
+    flex-direction: column;
+    align-items: center;
   }
 }
 {% endstylesheet %}
@@ -442,15 +182,6 @@
       "id": "background_color",
       "label": "Background Color",
       "default": "#B1D8FF"
-    },
-    {
-      "type": "range",
-      "id": "visible_cards",
-      "min": 1,
-      "max": 4,
-      "step": 1,
-      "label": "Visible Cards (Desktop)",
-      "default": 3
     }
   ],
   "blocks": [
