@@ -1,0 +1,245 @@
+<div class="hero-banner" style="--section-bg: {{ section.settings.background_color }};">
+  <div class="hero-banner__container container">
+    <div class="hero-banner__content">
+      {%- if section.settings.subtitle != blank -%}
+        <p class="hero-banner__subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+      
+      {%- if section.settings.title != blank -%}
+        <h1 class="hero-banner__title">{{ section.settings.title }}</h1>
+      {%- endif -%}
+      
+      {%- if section.settings.discount_text != blank -%}
+        <p class="hero-banner__discount">{{ section.settings.discount_text }}</p>
+      {%- endif -%}
+      
+      {%- if section.settings.button_text != blank and section.settings.button_link != blank -%}
+        <a href="{{ section.settings.button_link }}" class="hero-banner__button">
+          {{ section.settings.button_text }}
+        </a>
+      {%- endif -%}
+    </div>
+    
+    <div class="hero-banner__image">
+      {%- if section.settings.image != blank -%}
+        <img
+          src="{{ section.settings.image | image_url: width: 600 }}"
+          alt="{{ section.settings.image.alt | escape }}"
+          width="600"
+          height="auto"
+          loading="eager"
+          class="hero-banner__image-element"
+        >
+      {%- else -%}
+        <div class="hero-banner__placeholder">
+          {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+        </div>
+      {%- endif -%}
+      
+      <div class="hero-banner__decoration">
+        <div class="hero-banner__circle hero-banner__circle--1"></div>
+        <div class="hero-banner__circle hero-banner__circle--2"></div>
+        <div class="hero-banner__circle hero-banner__circle--3"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .hero-banner {
+    background: linear-gradient(135deg, var(--section-bg, #1E3A8A) 0%, #6366F1 100%);
+    padding: var(--spacing-xl) 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-banner__container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xl);
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-banner__content {
+    color: white;
+  }
+
+  .hero-banner__subtitle {
+    font-size: 1rem;
+    margin-bottom: var(--spacing-sm);
+    opacity: 0.9;
+  }
+
+  .hero-banner__title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: var(--spacing-md);
+  }
+
+  .hero-banner__discount {
+    font-size: 1.25rem;
+    margin-bottom: var(--spacing-lg);
+    font-weight: 500;
+  }
+
+  .hero-banner__button {
+    display: inline-block;
+    padding: 0.875rem 2rem;
+    background-color: white;
+    color: var(--color-primary);
+    text-decoration: none;
+    border-radius: var(--border-radius-md);
+    font-weight: 600;
+    transition: all var(--transition-speed);
+    box-shadow: var(--shadow-md);
+  }
+
+  .hero-banner__button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .hero-banner__image {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-banner__image-element {
+    max-width: 100%;
+    height: auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-banner__placeholder {
+    width: 300px;
+    height: 300px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius-lg);
+  }
+
+  .hero-banner__decoration {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  .hero-banner__circle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .hero-banner__circle--1 {
+    width: 480px;
+    height: 480px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .hero-banner__circle--2 {
+    width: 516px;
+    height: 516px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .hero-banner__circle--3 {
+    width: 148px;
+    height: 148px;
+    bottom: -20px;
+    right: 10%;
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  @media screen and (max-width: 1024px) {
+    .hero-banner__title {
+      font-size: 2.5rem;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .hero-banner__container {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-lg);
+    }
+
+    .hero-banner__title {
+      font-size: 2rem;
+    }
+
+    .hero-banner__image {
+      order: -1;
+    }
+
+    .hero-banner__circle--1,
+    .hero-banner__circle--2 {
+      width: 300px;
+      height: 300px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Hero Banner",
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#1E3A8A"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Best Deal Online on smart watches"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "SMART WEARABLE."
+    },
+    {
+      "type": "text",
+      "id": "discount_text",
+      "label": "Discount Text",
+      "default": "UP to 80% OFF"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Product Image"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Checkout product"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Banner"
+    }
+  ]
+}
+{% endschema %}
+
+

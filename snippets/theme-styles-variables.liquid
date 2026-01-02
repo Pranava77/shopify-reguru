@@ -1,0 +1,65 @@
+{% liquid
+  assign font_heading = settings.font_heading
+  assign font_body = settings.font_body
+%}
+
+{% style %}
+  :root {
+    /* Colors */
+    --color-primary: {{ settings.color_primary }};
+    --color-accent: {{ settings.color_accent }};
+    --color-background: {{ settings.color_background }};
+    --color-text: {{ settings.color_text }};
+    --color-text-light: {{ settings.color_text_light }};
+    --color-border: {{ settings.color_border }};
+    --color-footer-bg: {{ settings.footer_background }};
+    --color-footer-text: {{ settings.footer_text_color }};
+
+    /* Typography */
+    --font-heading: {{ font_heading.family }}, {{ font_heading.fallback_families }};
+    --font-body: {{ font_body.family }}, {{ font_body.fallback_families }};
+    --font-size-base: {{ settings.font_size_base }}px;
+    --font-weight-normal: {{ font_body.weight }};
+    --font-weight-bold: {{ font_heading.weight }};
+
+    /* Spacing */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+    --spacing-2xl: 4rem;
+
+    /* Layout */
+    --container-max-width: 1440px;
+    --container-padding: 1rem;
+    --header-height: 80px;
+
+    /* Borders */
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+    --border-width: 1px;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+    /* Transitions */
+    --transition-speed: 0.3s;
+    --transition-timing: ease-in-out;
+
+    /* Z-index */
+    --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-modal-backdrop: 1040;
+    --z-modal: 1050;
+    --z-toast: 1060;
+  }
+{% endstyle %}
+
+{{ font_heading | font_face: font_display: 'swap' }}
+{{ font_body | font_face: font_display: 'swap' }}
+
+

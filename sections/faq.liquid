@@ -1,0 +1,268 @@
+<div class="faq">
+  <div class="faq__container container">
+    <h2 class="faq__heading">{{ section.settings.heading }}</h2>
+    
+    {%- if section.blocks.size > 0 -%}
+      <div class="faq__tabs" data-faq-tabs>
+        {%- assign tab_blocks = section.blocks | where: 'type', 'tab' -%}
+        {%- for block in tab_blocks -%}
+          <button
+            type="button"
+            class="faq__tab{% if forloop.first %} faq__tab--active{% endif %}"
+            data-faq-tab="{{ block.id }}"
+            {{ block.shopify_attributes }}
+          >
+            {{ block.settings.label }}
+          </button>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    <div class="faq__content">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'faq_item' -%}
+            <div class="faq__item" data-faq-item {{ block.shopify_attributes }}>
+              <button type="button" class="faq__question" data-faq-toggle>
+                <span class="faq__number">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+                <span class="faq__question-text">{{ block.settings.question }}</span>
+                <svg class="faq__icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M18 15l-6-6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <div class="faq__answer" data-faq-answer>
+                <div class="faq__answer-content">
+                  {{ block.settings.answer }}
+                </div>
+              </div>
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .faq {
+    padding: var(--spacing-2xl) 0;
+    background-color: var(--color-background);
+  }
+
+  .faq__container {
+    max-width: 1000px;
+  }
+
+  .faq__heading {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-md);
+    color: var(--color-text);
+    position: relative;
+  }
+
+  .faq__heading::after {
+    content: '';
+    display: block;
+    width: 280px;
+    height: 2px;
+    background-color: var(--color-primary);
+    margin: var(--spacing-md) auto 0;
+  }
+
+  .faq__tabs {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    margin: var(--spacing-xl) 0;
+    flex-wrap: wrap;
+  }
+
+  .faq__tab {
+    padding: 0.625rem 1.5rem;
+    background-color: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-family: var(--font-body);
+    color: var(--color-text);
+    transition: all var(--transition-speed);
+  }
+
+  .faq__tab:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .faq__tab--active {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+  }
+
+  .faq__content {
+    background-color: white;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg);
+  }
+
+  .faq__item {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .faq__item:last-child {
+    border-bottom: none;
+  }
+
+  .faq__question {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) 0;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    font-family: var(--font-body);
+  }
+
+  .faq__number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  .faq__question-text {
+    flex: 1;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-text);
+  }
+
+  .faq__icon {
+    flex-shrink: 0;
+    color: var(--color-text-light);
+    transition: transform var(--transition-speed);
+  }
+
+  .faq__item.is-open .faq__icon {
+    transform: rotate(180deg);
+  }
+
+  .faq__answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height var(--transition-speed) ease;
+  }
+
+  .faq__item.is-open .faq__answer {
+    max-height: 500px;
+  }
+
+  .faq__answer-content {
+    padding: 0 0 var(--spacing-md) calc(1.5rem + var(--spacing-md) + 1rem);
+    color: var(--color-text-light);
+    line-height: 1.6;
+  }
+
+  @media screen and (max-width: 768px) {
+    .faq__heading {
+      font-size: 2rem;
+    }
+
+    .faq__question-text {
+      font-size: 0.9375rem;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "FAQ",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "FAQs"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "General"
+        }
+      ]
+    },
+    {
+      "type": "faq_item",
+      "name": "FAQ Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "How does it work?"
+        },
+        {
+          "type": "textarea",
+          "id": "answer",
+          "label": "Answer",
+          "default": "This is the answer to the question."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ",
+      "blocks": [
+        {
+          "type": "tab",
+          "settings": {
+            "label": "General"
+          }
+        },
+        {
+          "type": "tab",
+          "settings": {
+            "label": "Service"
+          }
+        },
+        {
+          "type": "tab",
+          "settings": {
+            "label": "Warranty"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "How does Reguru work?",
+            "answer": "Reguru provides certified refurbished electronics with quality assurance and warranty."
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "How does your agency approach digital marketing strategy?",
+            "answer": "We create comprehensive strategies tailored to your business needs."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+

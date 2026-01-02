@@ -1,0 +1,174 @@
+{
+  "sections": {
+    "hero-banner": {
+      "type": "hero-banner",
+      "settings": {
+        "subtitle": "Best Deal Online on smart watches",
+        "title": "SMART WEARABLE.",
+        "discount_text": "UP to 80% OFF",
+        "button_text": "Checkout product",
+        "button_link": "/collections/all"
+      }
+    },
+    "category-icons": {
+      "type": "category-icons",
+      "blocks": {
+        "icon-1": {
+          "type": "icon_card",
+          "settings": {
+            "label": "Best Policy"
+          }
+        },
+        "icon-2": {
+          "type": "icon_card",
+          "settings": {
+            "label": "Affordable"
+          }
+        },
+        "icon-3": {
+          "type": "icon_card",
+          "settings": {
+            "label": "Online & Offline"
+          }
+        },
+        "icon-4": {
+          "type": "icon_card",
+          "settings": {
+            "label": "Online & Offline"
+          }
+        },
+        "icon-5": {
+          "type": "icon_card",
+          "settings": {
+            "label": "Online & Offline"
+          }
+        }
+      },
+      "block_order": ["icon-1", "icon-2", "icon-3", "icon-4", "icon-5"]
+    },
+    "featured-products": {
+      "type": "featured-products",
+      "settings": {
+        "heading": "Latest Products",
+        "products_per_page": 6
+      },
+      "blocks": {
+        "tab-1": {
+          "type": "tab",
+          "settings": {
+            "label": "Phone"
+          }
+        },
+        "tab-2": {
+          "type": "tab",
+          "settings": {
+            "label": "Laptop"
+          }
+        },
+        "tab-3": {
+          "type": "tab",
+          "settings": {
+            "label": "Television"
+          }
+        },
+        "tab-4": {
+          "type": "tab",
+          "settings": {
+            "label": "Handphones"
+          }
+        },
+        "tab-5": {
+          "type": "tab",
+          "settings": {
+            "label": "Television"
+          }
+        }
+      },
+      "block_order": ["tab-1", "tab-2", "tab-3", "tab-4", "tab-5"]
+    },
+    "about-us": {
+      "type": "about-us",
+      "settings": {
+        "heading": "About Us",
+        "text": "<p>Reguru leads India's refurbished electronics revolution with certified quality, steep discounts, and total assurance. As the nation's sole offline chain, we equip individuals, businesses, schools, and corporates affordably while slashing e-waste</p>"
+      }
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "settings": {
+        "heading": "Testimonials"
+      },
+      "blocks": {
+        "testimonial-1": {
+          "type": "testimonial",
+          "settings": {
+            "customer_name": "Alice Grace",
+            "rating": 5,
+            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+          }
+        },
+        "testimonial-2": {
+          "type": "testimonial",
+          "settings": {
+            "customer_name": "Prateep Sharma",
+            "rating": 5,
+            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+          }
+        },
+        "testimonial-3": {
+          "type": "testimonial",
+          "settings": {
+            "customer_name": "Kajol Malkin",
+            "rating": 5,
+            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+          }
+        }
+      },
+      "block_order": ["testimonial-1", "testimonial-2", "testimonial-3"]
+    },
+    "faq": {
+      "type": "faq",
+      "settings": {
+        "heading": "FAQs"
+      },
+      "blocks": {
+        "tab-1": {
+          "type": "tab",
+          "settings": {
+            "label": "General"
+          }
+        },
+        "tab-2": {
+          "type": "tab",
+          "settings": {
+            "label": "Service"
+          }
+        },
+        "tab-3": {
+          "type": "tab",
+          "settings": {
+            "label": "Warranty"
+          }
+        },
+        "faq-1": {
+          "type": "faq_item",
+          "settings": {
+            "question": "How does Reguru work?",
+            "answer": "Reguru provides certified refurbished electronics with quality assurance and warranty."
+          }
+        },
+        "faq-2": {
+          "type": "faq_item",
+          "settings": {
+            "question": "How does your agency approach digital marketing strategy?",
+            "answer": "We create comprehensive strategies tailored to your business needs."
+          }
+        }
+      },
+      "block_order": ["tab-1", "tab-2", "tab-3", "faq-1", "faq-2"]
+    }
+  },
+  "order": ["hero-banner", "category-icons", "featured-products", "about-us", "testimonials", "faq"]
+}
+
+

@@ -1,0 +1,16 @@
+{
+  "sections": {
+    "product-template": {
+      "type": "product-template"
+    },
+    "product-recommendations": {
+      "type": "featured-products",
+      "settings": {
+        "heading": "You May Also Like"
+      }
+    }
+  },
+  "order": ["product-template", "product-recommendations"]
+}
+
+

@@ -1,0 +1,281 @@
+<header class="header{% if section.settings.sticky_header %} header--sticky{% endif %}" id="Header">
+  <div class="header__container container">
+    <div class="header__logo">
+      {%- if settings.logo != blank -%}
+        <a href="{{ routes.root_url }}" class="header__logo-link">
+          <img
+            src="{{ settings.logo | image_url: width: settings.logo_width }}"
+            alt="{{ shop.name }}"
+            width="{{ settings.logo_width }}"
+            height="auto"
+            loading="eager"
+            class="header__logo-image"
+          >
+        </a>
+      {%- else -%}
+        <a href="{{ routes.root_url }}" class="header__logo-text">
+          {{ shop.name }}
+        </a>
+      {%- endif -%}
+    </div>
+
+    <div class="header__search">
+      <form action="{{ routes.search_url }}" method="get" role="search" class="search-form">
+        <input
+          type="search"
+          name="q"
+          placeholder="{{ 'general.search.placeholder' | t }}"
+          class="search-form__input"
+          aria-label="{{ 'general.search.placeholder' | t }}"
+        >
+        <button type="submit" class="search-form__button">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM19 19l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </form>
+    </div>
+
+    <div class="header__actions">
+      {%- if section.settings.show_location -%}
+        <div class="header__location">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="header__location-icon">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="header__location-text">{{ section.settings.location }}</span>
+        </div>
+      {%- endif -%}
+
+      <div class="header__account">
+        {%- if customer -%}
+          <a href="{{ routes.account_url }}" class="header__account-link">
+            {{ 'customer.account.title' | t }}
+          </a>
+        {%- else -%}
+          <a href="{{ routes.account_login_url }}" class="header__account-link">
+            {{ 'customer.login.title' | t }}
+          </a>
+        {%- endif -%}
+      </div>
+
+      <button type="button" class="header__cart-toggle" aria-label="{{ 'cart.general.title' | t }}" data-cart-toggle>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M9 2L7 6M17 2l2 4M3 6h18M19 6l-1 14H6L5 6M10 11v6M14 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="header__cart-count" data-cart-count>{{ cart.item_count }}</span>
+      </button>
+
+      <button type="button" class="header__mobile-toggle" aria-label="{{ 'general.accessibility.menu' | t }}" data-mobile-toggle>
+        <span class="header__mobile-toggle-icon"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+{% stylesheet %}
+  .header {
+    background-color: var(--color-background);
+    border-bottom: 1px solid var(--color-border);
+    position: relative;
+    z-index: var(--z-sticky);
+  }
+
+  .header--sticky {
+    position: sticky;
+    top: 0;
+    transition: transform var(--transition-speed) var(--transition-timing);
+  }
+
+  .header__container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm) var(--container-padding);
+    min-height: var(--header-height);
+  }
+
+  .header__logo {
+    flex-shrink: 0;
+  }
+
+  .header__logo-link {
+    display: block;
+    line-height: 0;
+  }
+
+  .header__logo-text {
+    font-size: 1.5rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .header__search {
+    flex: 1;
+    max-width: 600px;
+  }
+
+  .search-form {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-form__input {
+    width: 100%;
+    padding: 0.75rem 3rem 0.75rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    font-size: 0.875rem;
+    font-family: var(--font-body);
+  }
+
+  .search-form__input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+  }
+
+  .search-form__button {
+    position: absolute;
+    right: 0.5rem;
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: var(--color-text-light);
+  }
+
+  .header__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+  }
+
+  .header__location {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .header__location-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--color-text-light);
+  }
+
+  .header__account-link {
+    padding: 0.5rem 1.5rem;
+    border: 1px solid var(--color-primary);
+    border-radius: var(--border-radius-md);
+    color: var(--color-primary);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: all var(--transition-speed);
+  }
+
+  .header__account-link:hover {
+    background-color: var(--color-primary);
+    color: white;
+  }
+
+  .header__cart-toggle {
+    position: relative;
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: var(--color-text);
+  }
+
+  .header__cart-count {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: var(--color-accent);
+    color: white;
+    font-size: 0.625rem;
+    padding: 0.125rem 0.375rem;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
+  }
+
+  .header__mobile-toggle {
+    display: none;
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+  }
+
+  .header__mobile-toggle-icon {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background-color: var(--color-text);
+    position: relative;
+  }
+
+  .header__mobile-toggle-icon::before,
+  .header__mobile-toggle-icon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--color-text);
+  }
+
+  .header__mobile-toggle-icon::before {
+    top: -8px;
+  }
+
+  .header__mobile-toggle-icon::after {
+    bottom: -8px;
+  }
+
+  @media screen and (max-width: 768px) {
+    .header__search {
+      display: none;
+    }
+
+    .header__location {
+      display: none;
+    }
+
+    .header__mobile-toggle {
+      display: block;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "sticky_header",
+      "label": "Enable Sticky Header",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_location",
+      "label": "Show Location Selector",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "location",
+      "label": "Store Location",
+      "default": "Bangalore"
+    }
+  ]
+}
+{% endschema %}
+
+

@@ -1,0 +1,175 @@
+<div class="category-icons">
+  <div class="category-icons__container container">
+    <div class="category-icons__grid">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'icon_card' -%}
+            <div class="category-icons__card" {{ block.shopify_attributes }}>
+              {%- if block.settings.icon != blank -%}
+                <div class="category-icons__icon">
+                  <img
+                    src="{{ block.settings.icon | image_url: width: 120 }}"
+                    alt="{{ block.settings.label | escape }}"
+                    width="120"
+                    height="auto"
+                    loading="lazy"
+                  >
+                </div>
+              {%- else -%}
+                <div class="category-icons__icon-placeholder">
+                  {{ 'image' | placeholder_svg_tag }}
+                </div>
+              {%- endif -%}
+              
+              {%- if block.settings.label != blank -%}
+                <p class="category-icons__label">{{ block.settings.label }}</p>
+              {%- endif -%}
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .category-icons {
+    padding: var(--spacing-xl) 0;
+    background-color: var(--color-background);
+  }
+
+  .category-icons__grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--spacing-lg);
+  }
+
+  .category-icons__card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background-color: var(--color-primary);
+    border-radius: var(--border-radius-lg);
+    text-align: center;
+    transition: transform var(--transition-speed);
+  }
+
+  .category-icons__card:hover {
+    transform: translateY(-5px);
+  }
+
+  .category-icons__icon {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .category-icons__icon img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .category-icons__icon-placeholder {
+    width: 80px;
+    height: 80px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: var(--border-radius-md);
+  }
+
+  .category-icons__label {
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin: 0;
+  }
+
+  @media screen and (max-width: 1024px) {
+    .category-icons__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .category-icons__grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacing-md);
+    }
+
+    .category-icons__card {
+      padding: var(--spacing-sm);
+    }
+
+    .category-icons__icon {
+      width: 60px;
+      height: 60px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Category Icons",
+  "max_blocks": 10,
+  "blocks": [
+    {
+      "type": "icon_card",
+      "name": "Icon Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon Image"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Category"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Category Icons",
+      "blocks": [
+        {
+          "type": "icon_card",
+          "settings": {
+            "label": "Best Policy"
+          }
+        },
+        {
+          "type": "icon_card",
+          "settings": {
+            "label": "Affordable"
+          }
+        },
+        {
+          "type": "icon_card",
+          "settings": {
+            "label": "Online & Offline"
+          }
+        },
+        {
+          "type": "icon_card",
+          "settings": {
+            "label": "Online & Offline"
+          }
+        },
+        {
+          "type": "icon_card",
+          "settings": {
+            "label": "Online & Offline"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+
