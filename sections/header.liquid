@@ -55,10 +55,11 @@
 
       <!-- Franchise Icon -->
       {%- liquid
+        assign franchise_url = '/pages/franchise'
         if pages['franchise'] != blank
           assign franchise_url = pages['franchise'].url
-        else
-          assign franchise_url = '/pages/franchise'
+        elsif pages['Franchise'] != blank
+          assign franchise_url = pages['Franchise'].url
         endif
       -%}
       <a href="{{ franchise_url }}" class="header__cart" aria-label="Franchise">
