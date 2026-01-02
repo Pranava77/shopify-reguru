@@ -1,84 +1,85 @@
 {%- liquid
   assign section_title = section.settings.title | default: 'Latest Products'
-  assign default_collection = section.settings.collection
+  assign collection = section.settings.collection
   assign products_to_show = section.settings.products_to_show | default: 6
 -%}
 
-<section class="product-grid bg-grid-pattern" data-product-grid>
+<section class="product-grid bg-grid-pattern">
   <div class="product-grid__container">
     <div class="product-grid__header">
       <h2 class="product-grid__title section__title">{{ section_title }}</h2>
       
-      <div class="product-grid__tabs">
+      <div class="product-grid__tabs tabs">
         {%- for block in section.blocks -%}
           {%- assign tab_collection = block.settings.collection -%}
-          {%- assign tab_id = 'tab-' | append: forloop.index -%}
+          {%- if tab_collection != blank -%}
+            {%- assign tab_handle = tab_collection.handle -%}
+          {%- else -%}
+            {%- assign tab_handle = 'all' -%}
+          {%- endif -%}
           <button 
             type="button" 
-            class="product-grid__tab{% if forloop.first %} active{% endif %}"
-            data-tab-target="{{ tab_id }}"
+            class="product-grid__tab tab{% if forloop.first %} active{% endif %}"
+            data-tab-target="{{ tab_handle }}"
             {{ block.shopify_attributes }}
           >
             {{ block.settings.label | default: tab_collection.title | default: 'Category' }}
           </button>
         {%- endfor -%}
+
+        {%- if section.blocks.size == 0 -%}
+          {%- assign default_tabs = 'Phone,Laptop,Monitors,Headphone,Television' | split: ',' -%}
+          {%- for tab in default_tabs -%}
+            <button 
+              type="button" 
+              class="product-grid__tab tab{% if forloop.first %} active{% endif %}"
+              data-tab-target="{{ tab | handleize }}"
+            >
+              {{ tab }}
+            </button>
+          {%- endfor -%}
+        {%- endif -%}
       </div>
     </div>
 
     <div class="product-grid__content">
-      {%- for block in section.blocks -%}
-        {%- assign tab_collection = block.settings.collection -%}
-        {%- assign tab_id = 'tab-' | append: forloop.index -%}
-        <div 
-          class="product-grid__items{% unless forloop.first %} hidden{% endunless %}" 
-          data-tab-content="{{ tab_id }}"
-          {{ block.shopify_attributes }}
-        >
-          {%- if tab_collection != blank and tab_collection.products.size > 0 -%}
-            {%- for product in tab_collection.products limit: products_to_show -%}
-              {%- render 'product-card', product: product -%}
-            {%- endfor -%}
-          {%- elsif default_collection != blank -%}
-            {%- for product in default_collection.products limit: products_to_show -%}
-              {%- render 'product-card', product: product -%}
-            {%- endfor -%}
+      {%- if section.blocks.size > 0 -%}
+        {%- for block in section.blocks -%}
+          {%- assign tab_collection = block.settings.collection -%}
+          {%- if tab_collection != blank -%}
+            {%- assign tab_handle = tab_collection.handle -%}
           {%- else -%}
-            <p class="product-grid__empty">No products available. Please assign a collection to this tab.</p>
+            {%- assign tab_handle = 'all' -%}
           {%- endif -%}
-        </div>
-      {%- endfor -%}
+          <div 
+            class="product-grid__items{% unless forloop.first %} hidden{% endunless %}" 
+            data-tab-content="{{ tab_handle }}"
+            {{ block.shopify_attributes }}
+          >
+            {%- if tab_collection != blank and tab_collection.products.size > 0 -%}
+              {%- for product in tab_collection.products limit: products_to_show -%}
+                {%- render 'product-card', product: product -%}
+              {%- endfor -%}
+            {%- elsif collection != blank -%}
+              {%- for product in collection.products limit: products_to_show -%}
+                {%- render 'product-card', product: product -%}
+              {%- endfor -%}
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      {%- else -%}
+        {%- comment -%} No blocks: Show default collection {%- endcomment -%}
+        {%- if collection != blank -%}
+          <div class="product-grid__items">
+            {%- for product in collection.products limit: products_to_show -%}
+              {%- render 'product-card', product: product -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      {%- endif -%}
     </div>
   </div>
 </section>
-
-<script>
-(function() {
-  const section = document.querySelector('[data-product-grid]');
-  if (!section) return;
-  
-  const tabs = section.querySelectorAll('.product-grid__tab');
-  const panels = section.querySelectorAll('[data-tab-content]');
-  
-  tabs.forEach(function(tab) {
-    tab.addEventListener('click', function() {
-      const target = this.getAttribute('data-tab-target');
-      
-      // Update active tab
-      tabs.forEach(function(t) { t.classList.remove('active'); });
-      this.classList.add('active');
-      
-      // Show/hide panels
-      panels.forEach(function(panel) {
-        if (panel.getAttribute('data-tab-content') === target) {
-          panel.classList.remove('hidden');
-        } else {
-          panel.classList.add('hidden');
-        }
-      });
-    });
-  });
-})();
-</script>
 
 {% stylesheet %}
 .product-grid {
@@ -145,12 +146,6 @@
   display: none;
 }
 
-.product-grid__empty {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 40px;
-  color: var(--color-text-secondary);
-}
 
 @media screen and (max-width: 992px) {
   .product-grid__tabs {
@@ -182,6 +177,41 @@
   }
 }
 {% endstylesheet %}
+
+{% javascript %}
+(function() {
+  'use strict';
+  
+  function initProductGridTabs() {
+    document.querySelectorAll('.product-grid').forEach(function(grid) {
+      const tabs = grid.querySelectorAll('.product-grid__tab');
+      const containers = grid.querySelectorAll('[data-tab-content]');
+      
+      if (!tabs.length || !containers.length) return;
+      
+      tabs.forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          const target = this.getAttribute('data-tab-target');
+          if (!target) return;
+          
+          tabs.forEach(function(t) { t.classList.remove('active'); });
+          this.classList.add('active');
+          
+          containers.forEach(function(container) {
+            container.classList.toggle('hidden', container.getAttribute('data-tab-content') !== target);
+          });
+        });
+      });
+    });
+  }
+  
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initProductGridTabs);
+  } else {
+    initProductGridTabs();
+  }
+})();
+{% endjavascript %}
 
 {% schema %}
 {
@@ -267,3 +297,4 @@
   ]
 }
 {% endschema %}
+

@@ -30,6 +30,9 @@ class ThemeUtils {
     
     // Initialize mega menu
     this.#initMegaMenu();
+    
+    // Initialize product grid tabs
+    this.#initProductGridTabs();
   }
 
   #initAccordions() {
@@ -164,6 +167,44 @@ class ThemeUtils {
         
         item.addEventListener('mouseleave', () => {
           dropdown.classList.remove('is-visible');
+        });
+      }
+    }
+  }
+
+  #initProductGridTabs() {
+    const productGrids = document.querySelectorAll('.product-grid');
+    
+    for (const grid of productGrids) {
+      const tabs = grid.querySelectorAll('.product-grid__tab');
+      const productContainers = grid.querySelectorAll('[data-tab-content]');
+      
+      if (tabs.length === 0 || productContainers.length === 0) continue;
+      
+      for (const tab of tabs) {
+        tab.addEventListener('click', () => {
+          const targetHandle = tab.getAttribute('data-tab-target');
+          
+          if (!targetHandle) return;
+          
+          // Remove active class from all tabs
+          for (const t of tabs) {
+            t.classList.remove('active');
+          }
+          
+          // Add active class to clicked tab
+          tab.classList.add('active');
+          
+          // Hide all product containers
+          for (const container of productContainers) {
+            container.classList.add('hidden');
+          }
+          
+          // Show the target product container
+          const targetContainer = grid.querySelector(`[data-tab-content="${targetHandle}"]`);
+          if (targetContainer) {
+            targetContainer.classList.remove('hidden');
+          }
         });
       }
     }
