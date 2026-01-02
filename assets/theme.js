@@ -179,27 +179,13 @@ class ThemeUtils {
       const tabs = grid.querySelectorAll('.product-grid__tab');
       const productContainers = grid.querySelectorAll('[data-tab-content]');
       
-      if (tabs.length === 0) {
-        console.warn('Product Grid: No tabs found');
-        continue;
-      }
-      
-      if (productContainers.length === 0) {
-        console.warn('Product Grid: No product containers found. Make sure each tab has a collection assigned.');
-        continue;
-      }
-      
-      // Log for debugging
-      console.log(`Product Grid: Found ${tabs.length} tabs and ${productContainers.length} containers`);
+      if (tabs.length === 0 || productContainers.length === 0) continue;
       
       for (const tab of tabs) {
         tab.addEventListener('click', () => {
           const targetHandle = tab.getAttribute('data-tab-target');
           
-          if (!targetHandle) {
-            console.warn('Product Grid: Tab missing data-tab-target attribute');
-            return;
-          }
+          if (!targetHandle) return;
           
           // Remove active class from all tabs
           for (const t of tabs) {
@@ -218,9 +204,6 @@ class ThemeUtils {
           const targetContainer = grid.querySelector(`[data-tab-content="${targetHandle}"]`);
           if (targetContainer) {
             targetContainer.classList.remove('hidden');
-            console.log(`Product Grid: Showing container for "${targetHandle}"`);
-          } else {
-            console.warn(`Product Grid: No container found for handle "${targetHandle}"`);
           }
         });
       }
