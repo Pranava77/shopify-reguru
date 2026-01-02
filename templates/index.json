@@ -148,6 +148,13 @@
     "testimonials": {
       "type": "testimonials",
       "blocks": {
+        "testimonial_FxJQgB": {
+          "type": "testimonial",
+          "settings": {
+            "name": "Customer Name",
+            "quote": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet mi nec massa tincidunt"
+          }
+        },
         "testimonial-1": {
           "type": "testimonial",
           "settings": {
@@ -171,6 +178,7 @@
         }
       },
       "block_order": [
+        "testimonial_FxJQgB",
         "testimonial-1",
         "testimonial-2",
         "testimonial-3"
