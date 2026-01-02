@@ -1,0 +1,178 @@
+{%- comment -%}
+  Category Navigation Section
+  Displays category links with dropdown arrows
+{%- endcomment -%}
+
+<nav class="category-nav">
+  <div class="category-nav__inner">
+    <ul class="category-nav__list">
+      {%- for link in section.settings.menu.links -%}
+        <li class="category-nav__item">
+          <a href="{{ link.url }}" class="category-nav__link">
+            <svg class="category-nav__arrow" width="13" height="7" viewBox="0 0 13 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1 1L6.5 6L12 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>{{ link.title }}</span>
+          </a>
+          {%- if link.links.size > 0 -%}
+            <ul class="category-nav__dropdown">
+              {%- for child_link in link.links -%}
+                <li>
+                  <a href="{{ child_link.url }}">{{ child_link.title }}</a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+
+      {%- if section.settings.menu == blank -%}
+        {%- assign category_items = 'smart speaker,ear buds,Tablet,Laptop,Phone,Earbuds' | split: ',' -%}
+        {%- for item in category_items -%}
+          <li class="category-nav__item">
+            <a href="{{ routes.collections_url }}/{{ item | handleize }}" class="category-nav__link">
+              <svg class="category-nav__arrow" width="13" height="7" viewBox="0 0 13 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 1L6.5 6L12 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>{{ item }}</span>
+            </a>
+          </li>
+        {%- endfor -%}
+      {%- endif -%}
+    </ul>
+  </div>
+</nav>
+
+{% stylesheet %}
+.category-nav {
+  position: sticky;
+  top: 76px;
+  z-index: 99;
+  width: 100%;
+  background-color: var(--color-white);
+  box-shadow: 4px 4px 3.9px 0px var(--color-navy);
+}
+
+.category-nav__inner {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+.category-nav__list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 114px;
+  padding: 20px 0;
+}
+
+.category-nav__item {
+  position: relative;
+}
+
+.category-nav__link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 16px;
+  color: var(--color-navy);
+  transition: color var(--transition-fast);
+}
+
+.category-nav__link:hover {
+  color: var(--color-blue);
+}
+
+.category-nav__arrow {
+  width: 13px;
+  height: 7px;
+  transition: transform var(--transition-fast);
+}
+
+.category-nav__item:hover .category-nav__arrow {
+  transform: rotate(180deg);
+}
+
+.category-nav__dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 180px;
+  padding: 12px 0;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-black);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all var(--transition-fast);
+  z-index: 10;
+}
+
+.category-nav__item:hover .category-nav__dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.category-nav__dropdown li a {
+  display: block;
+  padding: 8px 16px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-black);
+  transition: background-color var(--transition-fast);
+}
+
+.category-nav__dropdown li a:hover {
+  background-color: var(--color-light-blue);
+}
+
+@media screen and (max-width: 992px) {
+  .category-nav {
+    top: auto;
+    position: relative;
+  }
+
+  .category-nav__list {
+    gap: 16px 40px;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .category-nav__list {
+    gap: 12px 24px;
+  }
+
+  .category-nav__link {
+    font-size: 14px;
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Category Navigation",
+  "tag": "nav",
+  "class": "category-nav-section",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Category Menu",
+      "default": "main-menu"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Category Navigation"
+    }
+  ]
+}
+{% endschema %}
+

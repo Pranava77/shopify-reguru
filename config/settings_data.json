@@ -14,21 +14,36 @@
         "sections": {
           "announcement-bar": {
             "type": "announcement-bar",
-            "settings": {}
+            "settings": {
+              "text": "Welcome To ReGuru",
+              "background_color": "#1E1A5C",
+              "text_color": "#28D98E"
+            }
           },
           "header": {
             "type": "header",
+            "settings": {
+              "show_search": true,
+              "show_location": true,
+              "location_text": "Bengaluru"
+            }
+          },
+          "category-nav": {
+            "type": "category-nav",
             "settings": {}
           }
         },
-        "order": ["announcement-bar", "header"]
+        "order": ["announcement-bar", "header", "category-nav"]
       },
       "footer-group": {
         "type": "footer-group",
         "sections": {
           "footer": {
             "type": "footer",
-            "settings": {}
+            "settings": {
+              "address": "Address: 2nd floor central complex sv road near mantri mall seshadripuram bengaluru 560020",
+              "background_color": "#041C66"
+            }
           }
         },
         "order": ["footer"]

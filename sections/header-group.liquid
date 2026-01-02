@@ -1,6 +1,6 @@
 {%- comment -%}
   Header Group Section
-  Contains the announcement bar and main header navigation
+  Contains the announcement bar, main header navigation, and category navigation
 {%- endcomment -%}
 
 {%- for block in section.blocks -%}
@@ -20,9 +20,11 @@
     },
     "header": {
       "type": "header"
+    },
+    "category-nav": {
+      "type": "category-nav"
     }
   },
-  "order": ["announcement-bar", "header"]
+  "order": ["announcement-bar", "header", "category-nav"]
 }
 {% endschema %}
-
