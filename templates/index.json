@@ -324,8 +324,9 @@
       ],
       "name": "Footer",
       "settings": {
+        "logo": "shopify://shop_images/gin.png",
         "address": "Address: 2nd floor central complex sv road near mantri mall seshadripuram bengaluru 560020",
-        "background_color": "#041c66"
+        "background_color": "#b1d8ff"
       }
     }
   },
