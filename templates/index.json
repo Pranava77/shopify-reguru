@@ -37,7 +37,7 @@
         "card_VfNmec": {
           "type": "card",
           "settings": {
-            "title": "Feature",
+            "title": "sustainability",
             "background_image": "shopify://shop_images/Rectangle_7.png",
             "icon_image": "shopify://shop_images/Group_176.png"
           }
@@ -73,14 +73,6 @@
             "background_image": "shopify://shop_images/Rectangle_7.png",
             "icon_image": "shopify://shop_images/Group_161_a7347467-55ed-4553-95c7-978f9bf1b501.png"
           }
-        },
-        "card-5": {
-          "type": "card",
-          "settings": {
-            "title": "Sustainability",
-            "background_image": "shopify://shop_images/Rectangle_7.png",
-            "icon_image": "shopify://shop_images/Layer_3.png"
-          }
         }
       },
       "block_order": [
@@ -88,8 +80,7 @@
         "card-1",
         "card-2",
         "card-3",
-        "card-4",
-        "card-5"
+        "card-4"
       ],
       "settings": {}
     },
