@@ -110,28 +110,19 @@
       </a>
 
       <!-- Franchise Icon -->
-      {%- liquid
-        if section.settings.franchise_page != blank
-          assign franchise_url = section.settings.franchise_page.url
-        elsif pages['franchise'] != blank
-          assign franchise_url = pages['franchise'].url
-        elsif section.settings.franchise_url != blank
-          assign franchise_url = section.settings.franchise_url
-        else
-          assign franchise_url = '/pages/franchise'
-        endif
-      -%}
-      <a href="{{ franchise_url }}" class="header__franchise" aria-label="Franchise">
-        <svg width="37" height="38" viewBox="0 0 37 38" fill="none" xmlns="http://www.w3.org/2000/svg" class="header__franchise-svg">
-          <path d="M4 6H33V32H4V6Z" stroke="{{ icon_color_primary }}" stroke-width="2"/>
-          <path d="M4 14H33" stroke="{{ icon_color_primary }}" stroke-width="2"/>
-          <path d="M10 14V32" stroke="{{ icon_color_primary }}" stroke-width="2"/>
-          <path d="M18 14V32" stroke="{{ icon_color_primary }}" stroke-width="2"/>
-          <path d="M26 14V32" stroke="{{ icon_color_primary }}" stroke-width="2"/>
-          <circle cx="18.5" cy="10" r="2" fill="{{ icon_color_accent }}"/>
-          <path d="M12 20H15M20 20H23M28 20H31" stroke="{{ icon_color_primary }}" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </a>
+      {%- if section.settings.show_franchise -%}
+        <a href="{{ section.settings.franchise_url | default: '/pages/franchise' }}" class="header__franchise" aria-label="Franchise">
+          <svg width="37" height="38" viewBox="0 0 37 38" fill="none" xmlns="http://www.w3.org/2000/svg" class="header__franchise-svg">
+            <path d="M4 6H33V32H4V6Z" stroke="{{ icon_color_primary }}" stroke-width="2"/>
+            <path d="M4 14H33" stroke="{{ icon_color_primary }}" stroke-width="2"/>
+            <path d="M10 14V32" stroke="{{ icon_color_primary }}" stroke-width="2"/>
+            <path d="M18 14V32" stroke="{{ icon_color_primary }}" stroke-width="2"/>
+            <path d="M26 14V32" stroke="{{ icon_color_primary }}" stroke-width="2"/>
+            <circle cx="18.5" cy="10" r="2" fill="{{ icon_color_accent }}"/>
+            <path d="M12 20H15M20 20H23M28 20H31" stroke="{{ icon_color_primary }}" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </a>
+      {%- endif -%}
 
       <!-- Location Selector -->
       {%- if show_location -%}
@@ -513,16 +504,17 @@
       "content": "Franchise Link"
     },
     {
-      "type": "page",
-      "id": "franchise_page",
-      "label": "Franchise Page",
-      "info": "Select the franchise page. If not set, will use the URL below."
+      "type": "checkbox",
+      "id": "show_franchise",
+      "label": "Show Franchise Icon",
+      "default": true
     },
     {
       "type": "url",
       "id": "franchise_url",
       "label": "Franchise Page URL",
-      "info": "Custom URL for franchise page (only used if page is not selected above)"
+      "default": "/pages/franchise",
+      "info": "URL to the franchise page"
     }
   ],
   "presets": [
