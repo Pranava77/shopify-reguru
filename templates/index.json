@@ -13,7 +13,6 @@
       "type": "header",
       "name": "Header",
       "settings": {
-        "menu": "main-menu",
         "show_search": true,
         "show_location": true,
         "location_text": "Bengaluru"
@@ -27,45 +26,64 @@
         "discount_text": "UP to 80% OFF",
         "cta_text": "Checkout product",
         "cta_link": "",
+        "image": "shopify://shop_images/images__2_-removebg-preview.png",
         "background_color": "#212844"
       }
     },
     "feature-cards": {
       "type": "feature-cards",
       "blocks": {
+        "card_VfNmec": {
+          "type": "card",
+          "settings": {
+            "title": "Feature",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "icon_image": "shopify://shop_images/Group_176.png"
+          }
+        },
         "card-1": {
           "type": "card",
           "settings": {
-            "title": "RRR Policy"
+            "title": "RRR Policy",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "icon_image": "shopify://shop_images/Layer_3.png"
           }
         },
         "card-2": {
           "type": "card",
           "settings": {
-            "title": "Affordable"
+            "title": "Affordable",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "icon_image": "shopify://shop_images/Group_159.png"
           }
         },
         "card-3": {
           "type": "card",
           "settings": {
-            "title": "Online & Offline Model"
+            "title": "Online & Offline Model",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "icon_image": "shopify://shop_images/Group_173.png"
           }
         },
         "card-4": {
           "type": "card",
           "settings": {
-            "title": "Tailored Solutions"
+            "title": "Tailored Solutions",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "icon_image": "shopify://shop_images/Group_161_a7347467-55ed-4553-95c7-978f9bf1b501.png"
           }
         },
         "card-5": {
           "type": "card",
           "settings": {
             "title": "Sustainability",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
             "icon_image": "shopify://shop_images/Layer_3.png"
           }
         }
       },
       "block_order": [
+        "card_VfNmec",
         "card-1",
         "card-2",
         "card-3",
@@ -131,6 +149,7 @@
       "settings": {
         "heading": "ABOUT US",
         "description": "",
+        "image": "shopify://shop_images/images__2_-removebg-preview.png",
         "stat_number": "10+"
       }
     },
@@ -223,6 +242,90 @@
       "settings": {
         "heading": "FAQs"
       }
+    },
+    "footer_jLdtia": {
+      "type": "footer",
+      "blocks": {
+        "category_link_pVNXeV": {
+          "type": "category_link",
+          "settings": {
+            "label": "Sofa",
+            "link": ""
+          }
+        },
+        "category_link_8UjE6b": {
+          "type": "category_link",
+          "settings": {
+            "label": "Armchair",
+            "link": ""
+          }
+        },
+        "category_link_z3fjGw": {
+          "type": "category_link",
+          "settings": {
+            "label": "Desk Chair",
+            "link": ""
+          }
+        },
+        "category_link_mdtnBL": {
+          "type": "category_link",
+          "settings": {
+            "label": "wooden Chair",
+            "link": ""
+          }
+        },
+        "category_link_hGPDBQ": {
+          "type": "category_link",
+          "settings": {
+            "label": "Park Bench",
+            "link": ""
+          }
+        },
+        "support_link_kDzaEd": {
+          "type": "support_link",
+          "settings": {
+            "label": "Help & Support",
+            "link": ""
+          }
+        },
+        "support_link_ecDc6Q": {
+          "type": "support_link",
+          "settings": {
+            "label": "Terms & Conditions",
+            "link": ""
+          }
+        },
+        "support_link_qwQWL4": {
+          "type": "support_link",
+          "settings": {
+            "label": "Privacy Policy",
+            "link": ""
+          }
+        },
+        "support_link_RF3aYT": {
+          "type": "support_link",
+          "settings": {
+            "label": "Help",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "category_link_pVNXeV",
+        "category_link_8UjE6b",
+        "category_link_z3fjGw",
+        "category_link_mdtnBL",
+        "category_link_hGPDBQ",
+        "support_link_kDzaEd",
+        "support_link_ecDc6Q",
+        "support_link_qwQWL4",
+        "support_link_RF3aYT"
+      ],
+      "name": "Footer",
+      "settings": {
+        "address": "Address: 2nd floor central complex sv road near mantri mall seshadripuram bengaluru 560020",
+        "background_color": "#041c66"
+      }
     }
   },
   "order": [
@@ -232,6 +335,7 @@
     "product-grid",
     "about-us",
     "testimonials",
-    "faq"
+    "faq",
+    "footer_jLdtia"
   ]
 }
