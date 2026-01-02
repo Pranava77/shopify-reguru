@@ -1,171 +1,84 @@
 {%- liquid
   assign section_title = section.settings.title | default: 'Latest Products'
-  assign collection = section.settings.collection
+  assign default_collection = section.settings.collection
   assign products_to_show = section.settings.products_to_show | default: 6
 -%}
 
-<section class="product-grid bg-grid-pattern">
+<section class="product-grid bg-grid-pattern" data-product-grid>
   <div class="product-grid__container">
     <div class="product-grid__header">
       <h2 class="product-grid__title section__title">{{ section_title }}</h2>
       
-      <div class="product-grid__tabs tabs">
+      <div class="product-grid__tabs">
         {%- for block in section.blocks -%}
           {%- assign tab_collection = block.settings.collection -%}
-          {%- if tab_collection != blank -%}
-            {%- assign tab_handle = tab_collection.handle -%}
-          {%- else -%}
-            {%- assign tab_handle = 'all' -%}
-          {%- endif -%}
+          {%- assign tab_id = 'tab-' | append: forloop.index -%}
           <button 
             type="button" 
-            class="product-grid__tab tab{% if forloop.first %} active{% endif %}"
-            data-tab-target="{{ tab_handle }}"
+            class="product-grid__tab{% if forloop.first %} active{% endif %}"
+            data-tab-target="{{ tab_id }}"
             {{ block.shopify_attributes }}
           >
             {{ block.settings.label | default: tab_collection.title | default: 'Category' }}
           </button>
         {%- endfor -%}
-
-        {%- if section.blocks.size == 0 -%}
-          {%- assign default_tabs = 'Phone,Laptop,Monitors,Headphone,Television' | split: ',' -%}
-          {%- for tab in default_tabs -%}
-            <button 
-              type="button" 
-              class="product-grid__tab tab{% if forloop.first %} active{% endif %}"
-              data-tab-target="{{ tab | handleize }}"
-            >
-              {{ tab }}
-            </button>
-          {%- endfor -%}
-        {%- endif -%}
       </div>
     </div>
 
     <div class="product-grid__content">
-      {%- if section.blocks.size > 0 -%}
-        {%- for block in section.blocks -%}
-          {%- assign tab_collection = block.settings.collection -%}
-          {%- if tab_collection != blank -%}
-            {%- assign tab_handle = tab_collection.handle -%}
-          {%- else -%}
-            {%- assign tab_handle = 'all' -%}
-          {%- endif -%}
-          <div 
-            class="product-grid__items{% unless forloop.first %} hidden{% endunless %}" 
-            data-tab-content="{{ tab_handle }}"
-            {{ block.shopify_attributes }}
-          >
-            {%- if tab_collection != blank and tab_collection.products.size > 0 -%}
-              {%- for product in tab_collection.products limit: products_to_show -%}
-                {%- render 'product-card', product: product -%}
-              {%- endfor -%}
-            {%- else -%}
-              {%- comment -%} Fallback: Show default collection if tab collection is empty {%- endcomment -%}
-              {%- if collection != blank -%}
-                {%- for product in collection.products limit: products_to_show -%}
-                  {%- render 'product-card', product: product -%}
-                {%- endfor -%}
-              {%- else -%}
-                {%- comment -%} Placeholder products {%- endcomment -%}
-                {%- for i in (1..products_to_show) -%}
-                  <article class="product-card card--sm">
-                    <div class="product-card__badge">50% off</div>
-                    <a href="#" class="product-card__link">
-                      <div class="product-card__image">
-                        <div class="product-card__placeholder product-card__placeholder--laptop">
-                          <svg viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect x="30" y="20" width="140" height="90" rx="5" fill="#E8E8E8"/>
-                            <rect x="40" y="30" width="120" height="70" rx="3" fill="#D0D0D0"/>
-                            <rect x="20" y="110" width="160" height="15" rx="3" fill="#C0C0C0"/>
-                            <ellipse cx="100" cy="65" rx="25" ry="20" fill="#B0B0B0"/>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="product-card__info">
-                        <div class="product-card__header">
-                          <h3 class="product-card__title">MacBook Pro M2</h3>
-                          <div class="product-card__rating">
-                            {%- for star in (1..5) -%}
-                              <svg class="product-card__star product-card__star--filled" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M7 1L8.5 5H12.5L9 8L10.5 12L7 9.5L3.5 12L5 8L1.5 5H5.5L7 1Z" fill="currentColor"/>
-                              </svg>
-                            {%- endfor -%}
-                          </div>
-                        </div>
-                        <p class="product-card__description">
-                          Apple 2025 MacBook Air (13-inch, Apple M4 chip with 10-core CPU and 8-core GPU, 16GB Unified Memory, 256GB) - Sky Blue
-                        </p>
-                        <div class="product-card__footer">
-                          <div class="product-card__price btn btn--green">₹ 21736.00</div>
-                          <div class="product-card__actions">
-                            <button type="button" class="product-card__btn btn btn--secondary">Buy Now</button>
-                            <button type="button" class="product-card__btn btn btn--blue">Add to cart</button>
-                          </div>
-                        </div>
-                      </div>
-                    </a>
-                  </article>
-                {%- endfor -%}
-              {%- endif -%}
-            {%- endif -%}
-          </div>
-        {%- endfor -%}
-      {%- else -%}
-        {%- comment -%} No blocks: Show default collection {%- endcomment -%}
-        {%- if collection != blank -%}
-          <div class="product-grid__items">
-            {%- for product in collection.products limit: products_to_show -%}
+      {%- for block in section.blocks -%}
+        {%- assign tab_collection = block.settings.collection -%}
+        {%- assign tab_id = 'tab-' | append: forloop.index -%}
+        <div 
+          class="product-grid__items{% unless forloop.first %} hidden{% endunless %}" 
+          data-tab-content="{{ tab_id }}"
+          {{ block.shopify_attributes }}
+        >
+          {%- if tab_collection != blank and tab_collection.products.size > 0 -%}
+            {%- for product in tab_collection.products limit: products_to_show -%}
               {%- render 'product-card', product: product -%}
             {%- endfor -%}
-          </div>
-        {%- else -%}
-          <div class="product-grid__items">
-            {%- for i in (1..products_to_show) -%}
-              <article class="product-card card--sm">
-                <div class="product-card__badge">50% off</div>
-                <a href="#" class="product-card__link">
-                  <div class="product-card__image">
-                    <div class="product-card__placeholder product-card__placeholder--laptop">
-                      <svg viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="30" y="20" width="140" height="90" rx="5" fill="#E8E8E8"/>
-                        <rect x="40" y="30" width="120" height="70" rx="3" fill="#D0D0D0"/>
-                        <rect x="20" y="110" width="160" height="15" rx="3" fill="#C0C0C0"/>
-                        <ellipse cx="100" cy="65" rx="25" ry="20" fill="#B0B0B0"/>
-                      </svg>
-                    </div>
-                  </div>
-                  <div class="product-card__info">
-                    <div class="product-card__header">
-                      <h3 class="product-card__title">MacBook Pro M2</h3>
-                      <div class="product-card__rating">
-                        {%- for star in (1..5) -%}
-                          <svg class="product-card__star product-card__star--filled" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M7 1L8.5 5H12.5L9 8L10.5 12L7 9.5L3.5 12L5 8L1.5 5H5.5L7 1Z" fill="currentColor"/>
-                          </svg>
-                        {%- endfor -%}
-                      </div>
-                    </div>
-                    <p class="product-card__description">
-                      Apple 2025 MacBook Air (13-inch, Apple M4 chip with 10-core CPU and 8-core GPU, 16GB Unified Memory, 256GB) - Sky Blue
-                    </p>
-                    <div class="product-card__footer">
-                      <div class="product-card__price btn btn--green">₹ 21736.00</div>
-                      <div class="product-card__actions">
-                        <button type="button" class="product-card__btn btn btn--secondary">Buy Now</button>
-                        <button type="button" class="product-card__btn btn btn--blue">Add to cart</button>
-                      </div>
-                    </div>
-                  </div>
-                </a>
-              </article>
+          {%- elsif default_collection != blank -%}
+            {%- for product in default_collection.products limit: products_to_show -%}
+              {%- render 'product-card', product: product -%}
             {%- endfor -%}
-          </div>
-        {%- endif -%}
-      {%- endif -%}
+          {%- else -%}
+            <p class="product-grid__empty">No products available. Please assign a collection to this tab.</p>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
     </div>
   </div>
 </section>
+
+<script>
+(function() {
+  const section = document.querySelector('[data-product-grid]');
+  if (!section) return;
+  
+  const tabs = section.querySelectorAll('.product-grid__tab');
+  const panels = section.querySelectorAll('[data-tab-content]');
+  
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      const target = this.getAttribute('data-tab-target');
+      
+      // Update active tab
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      this.classList.add('active');
+      
+      // Show/hide panels
+      panels.forEach(function(panel) {
+        if (panel.getAttribute('data-tab-content') === target) {
+          panel.classList.remove('hidden');
+        } else {
+          panel.classList.add('hidden');
+        }
+      });
+    });
+  });
+})();
+</script>
 
 {% stylesheet %}
 .product-grid {
@@ -232,18 +145,11 @@
   display: none;
 }
 
-.product-card__placeholder--laptop {
-  background-color: #F5F5F5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.product-card__placeholder--laptop svg {
-  width: 100%;
-  height: 100%;
-  opacity: 0.8;
+.product-grid__empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+  color: var(--color-text-secondary);
 }
 
 @media screen and (max-width: 992px) {
@@ -276,55 +182,6 @@
   }
 }
 {% endstylesheet %}
-
-{% javascript %}
-(function() {
-  function initProductGridTabs() {
-    const productGrids = document.querySelectorAll('.product-grid');
-    
-    for (const grid of productGrids) {
-      const tabs = grid.querySelectorAll('.product-grid__tab');
-      const productContainers = grid.querySelectorAll('[data-tab-content]');
-      
-      if (tabs.length === 0 || productContainers.length === 0) continue;
-      
-      for (const tab of tabs) {
-        tab.addEventListener('click', function() {
-          const targetHandle = this.getAttribute('data-tab-target');
-          
-          if (!targetHandle) return;
-          
-          // Remove active class from all tabs
-          for (const t of tabs) {
-            t.classList.remove('active');
-          }
-          
-          // Add active class to clicked tab
-          this.classList.add('active');
-          
-          // Hide all product containers
-          for (const container of productContainers) {
-            container.classList.add('hidden');
-          }
-          
-          // Show the target product container
-          const targetContainer = grid.querySelector('[data-tab-content="' + targetHandle + '"]');
-          if (targetContainer) {
-            targetContainer.classList.remove('hidden');
-          }
-        });
-      }
-    }
-  }
-  
-  // Initialize when DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initProductGridTabs);
-  } else {
-    initProductGridTabs();
-  }
-})();
-{% endjavascript %}
 
 {% schema %}
 {
@@ -410,4 +267,3 @@
   ]
 }
 {% endschema %}
-
