@@ -56,7 +56,11 @@
       <!-- Franchise Icon -->
       {%- liquid
         assign franchise_url = '/pages/franchise'
-        if pages['franchise'] != blank
+        if section.settings.franchise_page != blank
+          assign franchise_url = section.settings.franchise_page.url
+        elsif section.settings.franchise_url != blank
+          assign franchise_url = section.settings.franchise_url
+        elsif pages['franchise'] != blank
           assign franchise_url = pages['franchise'].url
         elsif pages['Franchise'] != blank
           assign franchise_url = pages['Franchise'].url
@@ -469,6 +473,22 @@
       "label": "Icon Accent Color",
       "default": "#28D98E",
       "info": "Accent/fill color for icon details"
+    },
+    {
+      "type": "header",
+      "content": "Franchise Link"
+    },
+    {
+      "type": "page",
+      "id": "franchise_page",
+      "label": "Franchise Page",
+      "info": "Select the franchise page. If not set, will use the URL below or try to find a page with handle 'franchise'."
+    },
+    {
+      "type": "url",
+      "id": "franchise_url",
+      "label": "Franchise Page URL",
+      "info": "Custom URL for franchise page (only used if page is not selected above). Default: /pages/franchise"
     }
   ],
   "presets": [
