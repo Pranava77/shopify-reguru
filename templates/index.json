@@ -229,7 +229,7 @@
           "type": "category_tab",
           "settings": {
             "label": "Television",
-            "collection": ""
+            "collection": "tele"
           }
         }
       },
