@@ -3,7 +3,7 @@
   assign products_to_show = section.settings.products_per_page
 -%}
 
-<div class="featured-products">
+<section class="featured-products">
   <div class="featured-products__container container">
     <h2 class="featured-products__heading">{{ section.settings.heading }}</h2>
     
@@ -38,75 +38,116 @@
       {%- endif -%}
     </div>
   </div>
-</div>
+</section>
 
 {% stylesheet %}
   .featured-products {
     padding: var(--spacing-2xl) 0;
-    background-color: var(--color-background);
+    background-color: var(--color-white);
+    position: relative;
+  }
+
+  .featured-products::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--grid-pattern);
+    background-repeat: repeat;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  .featured-products__container {
+    position: relative;
+    z-index: 1;
   }
 
   .featured-products__heading {
     text-align: center;
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: var(--spacing-xl);
-    color: var(--color-text);
+    font-family: var(--font-heading);
+    font-size: 30px;
+    font-weight: var(--font-weight-bold);
+    margin: 0 0 var(--spacing-lg) 0;
+    color: var(--color-primary);
   }
 
   .featured-products__tabs {
     display: flex;
     justify-content: center;
-    gap: var(--spacing-sm);
+    gap: 10px;
     margin-bottom: var(--spacing-xl);
     flex-wrap: wrap;
   }
 
   .featured-products__tab {
-    padding: 0.625rem 1.5rem;
-    background-color: transparent;
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius-md);
+    padding: 10px 25px;
+    background-color: var(--color-white);
+    border: 0.68px solid var(--color-black);
+    border-radius: 34px;
     cursor: pointer;
-    font-size: 0.875rem;
-    font-family: var(--font-body);
-    color: var(--color-text);
-    transition: all var(--transition-speed);
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: var(--font-weight-medium);
+    color: var(--color-black);
+    box-shadow: 2.73px 2.73px 0px 0px var(--color-black);
+    transition: all var(--transition-fast);
   }
 
   .featured-products__tab:hover {
-    border-color: var(--color-primary);
-    color: var(--color-primary);
+    transform: translate(-1px, -1px);
+    box-shadow: 3.5px 3.5px 0px 0px var(--color-black);
   }
 
   .featured-products__tab--active {
-    background-color: var(--color-primary);
-    border-color: var(--color-primary);
-    color: white;
+    background-color: var(--color-accent);
+    color: var(--color-black);
   }
 
   .featured-products__grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--spacing-lg);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 44px;
   }
 
-  @media screen and (max-width: 1024px) {
+  @media screen and (max-width: 1200px) {
     .featured-products__grid {
-      grid-template-columns: repeat(2, 1fr);
+      gap: 30px;
     }
   }
 
   @media screen and (max-width: 768px) {
     .featured-products__heading {
-      font-size: 2rem;
+      font-size: 24px;
+    }
+
+    .featured-products__tabs {
+      gap: 8px;
+    }
+
+    .featured-products__tab {
+      padding: 8px 16px;
+      font-size: 11px;
     }
 
     .featured-products__grid {
-      grid-template-columns: 1fr;
+      gap: 20px;
+      justify-content: center;
     }
   }
 {% endstylesheet %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const tabs = document.querySelectorAll('[data-tab-button]');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', function() {
+        tabs.forEach(t => t.classList.remove('featured-products__tab--active'));
+        this.classList.add('featured-products__tab--active');
+      });
+    });
+  });
+</script>
 
 {% schema %}
 {
@@ -191,5 +232,3 @@
   ]
 }
 {% endschema %}
-
-

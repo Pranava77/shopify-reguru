@@ -2,15 +2,60 @@
   "order": ["announcement-bar", "header", "main-navigation"],
   "sections": {
     "announcement-bar": {
-      "type": "announcement-bar"
+      "type": "announcement-bar",
+      "settings": {
+        "message": "Welcome To ReGuru"
+      }
     },
     "header": {
-      "type": "header"
+      "type": "header",
+      "settings": {
+        "sticky_header": true,
+        "show_location": true,
+        "location": "Bangalore"
+      }
     },
     "main-navigation": {
-      "type": "main-navigation"
+      "type": "main-navigation",
+      "blocks": {
+        "nav-1": {
+          "type": "nav_link",
+          "settings": {
+            "label": "smart speaker"
+          }
+        },
+        "nav-2": {
+          "type": "nav_link",
+          "settings": {
+            "label": "ear buds"
+          }
+        },
+        "nav-3": {
+          "type": "nav_link",
+          "settings": {
+            "label": "Tablet"
+          }
+        },
+        "nav-4": {
+          "type": "nav_link",
+          "settings": {
+            "label": "Laptop"
+          }
+        },
+        "nav-5": {
+          "type": "nav_link",
+          "settings": {
+            "label": "Phone"
+          }
+        },
+        "nav-6": {
+          "type": "nav_link",
+          "settings": {
+            "label": "Earbuds"
+          }
+        }
+      },
+      "block_order": ["nav-1", "nav-2", "nav-3", "nav-4", "nav-5", "nav-6"]
     }
   }
 }
-
-

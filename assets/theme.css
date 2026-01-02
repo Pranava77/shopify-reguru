@@ -59,6 +59,201 @@ button {
 }
 
 /* ==========================================================================
+   Neo-Brutalist Utilities
+   ========================================================================== */
+
+/* Grid Background Pattern */
+.grid-bg {
+  background-image: var(--grid-pattern);
+  background-repeat: repeat;
+}
+
+.grid-bg-overlay {
+  position: relative;
+}
+
+.grid-bg-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--grid-pattern);
+  background-repeat: repeat;
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Neo-Brutalist Box Shadows */
+.shadow-brutal {
+  box-shadow: var(--shadow-brutal-md);
+}
+
+.shadow-brutal-sm {
+  box-shadow: var(--shadow-brutal-sm);
+}
+
+.shadow-brutal-lg {
+  box-shadow: var(--shadow-brutal-lg);
+}
+
+.shadow-brutal-primary {
+  box-shadow: var(--shadow-brutal-primary);
+}
+
+.shadow-brutal-green {
+  box-shadow: var(--shadow-brutal-green);
+}
+
+.shadow-brutal-blue {
+  box-shadow: var(--shadow-brutal-blue);
+}
+
+/* Neo-Brutalist Borders */
+.border-brutal {
+  border: 1px solid var(--color-black);
+}
+
+.border-brutal-thick {
+  border: 2px solid var(--color-black);
+}
+
+/* Neo-Brutalist Cards */
+.card-brutal {
+  background: var(--color-white);
+  border: 1px solid var(--color-black);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-brutal-md);
+  overflow: hidden;
+}
+
+.card-brutal:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px var(--color-black);
+}
+
+/* Neo-Brutalist Buttons */
+.btn-brutal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-medium);
+  font-size: 0.875rem;
+  text-decoration: none;
+  border: 1px solid var(--color-black);
+  border-radius: var(--border-radius-sm);
+  box-shadow: var(--shadow-brutal-sm);
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.btn-brutal:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px 0px var(--color-black);
+}
+
+.btn-brutal:active {
+  transform: translate(0, 0);
+  box-shadow: none;
+}
+
+.btn-brutal-primary {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.btn-brutal-accent {
+  background-color: var(--color-accent);
+  color: var(--color-black);
+}
+
+.btn-brutal-blue {
+  background-color: var(--color-accent-blue);
+  color: var(--color-black);
+}
+
+.btn-brutal-white {
+  background-color: var(--color-white);
+  color: var(--color-black);
+}
+
+/* Neo-Brutalist Pill Buttons */
+.btn-pill {
+  border-radius: var(--border-radius-pill);
+  padding: 0.5rem 1.5rem;
+}
+
+/* Feature Card Gradient */
+.gradient-blue {
+  background: var(--gradient-blue);
+}
+
+/* Text Shadow for Feature Cards */
+.text-shadow-dark {
+  text-shadow: 0.625px 0.625px 0px rgba(6, 24, 58, 0.97);
+}
+
+/* Typography Utilities */
+.font-heading {
+  font-family: var(--font-heading);
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-poppins {
+  font-family: var(--font-poppins);
+}
+
+.font-roboto {
+  font-family: var(--font-roboto);
+}
+
+/* Text Colors */
+.text-primary {
+  color: var(--color-primary);
+}
+
+.text-accent {
+  color: var(--color-accent);
+}
+
+.text-white {
+  color: var(--color-white);
+}
+
+.text-light {
+  color: var(--color-text-light);
+}
+
+/* Background Colors */
+.bg-primary {
+  background-color: var(--color-primary);
+}
+
+.bg-accent {
+  background-color: var(--color-accent);
+}
+
+.bg-white {
+  background-color: var(--color-white);
+}
+
+.bg-hero-dark {
+  background-color: var(--color-hero-dark);
+}
+
+/* ==========================================================================
    Accessibility
    ========================================================================== */
 
@@ -93,6 +288,24 @@ button {
   border-width: 0;
 }
 
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
 /* ==========================================================================
    Loading States
    ========================================================================== */
@@ -118,6 +331,23 @@ button {
 }
 
 /* ==========================================================================
+   Marquee Animation
+   ========================================================================== */
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-animate {
+  animation: marquee 20s linear infinite;
+}
+
+/* ==========================================================================
    Responsive Media Queries
    ========================================================================== */
 
@@ -133,4 +363,8 @@ button {
   }
 }
 
-
+@media screen and (min-width: 1025px) {
+  :root {
+    --container-padding: 4rem;
+  }
+}

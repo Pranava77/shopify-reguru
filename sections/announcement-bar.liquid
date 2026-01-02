@@ -1,21 +1,57 @@
 <div class="announcement-bar">
-  <div class="announcement-bar__message">
-    {{ section.settings.message }}
+  <div class="announcement-bar__container">
+    <p class="announcement-bar__message">
+      {{ section.settings.message }}
+    </p>
   </div>
 </div>
 
 {% stylesheet %}
   .announcement-bar {
-    background-color: {{ section.settings.background_color }};
-    color: {{ section.settings.text_color }};
+    background-color: var(--color-accent, #1BDE8F);
+    height: 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .announcement-bar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--grid-pattern);
+    background-repeat: repeat;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  .announcement-bar__container {
+    max-width: var(--container-max-width);
+    width: 100%;
     text-align: center;
-    padding: 0.75rem 1rem;
-    font-size: 0.875rem;
+    position: relative;
+    z-index: 1;
   }
 
   .announcement-bar__message {
-    max-width: var(--container-max-width);
-    margin: 0 auto;
+    font-family: var(--font-heading);
+    font-size: 14px;
+    font-weight: var(--font-weight-medium);
+    color: var(--color-white);
+    margin: 0;
+    letter-spacing: 0.5px;
+  }
+
+  @media screen and (max-width: 768px) {
+    .announcement-bar {
+      height: 36px;
+    }
+
+    .announcement-bar__message {
+      font-size: 12px;
+    }
   }
 {% endstylesheet %}
 
@@ -28,21 +64,12 @@
       "id": "message",
       "label": "Message",
       "default": "Welcome To ReGuru"
-    },
+    }
+  ],
+  "presets": [
     {
-      "type": "color",
-      "id": "background_color",
-      "label": "Background Color",
-      "default": "#1E3A8A"
-    },
-    {
-      "type": "color",
-      "id": "text_color",
-      "label": "Text Color",
-      "default": "#FFFFFF"
+      "name": "Announcement Bar"
     }
   ]
 }
 {% endschema %}
-
-

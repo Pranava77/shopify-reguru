@@ -1,37 +1,16 @@
-<nav class="main-navigation" role="navigation">
-  <div class="main-navigation__container container">
-    <ul class="main-navigation__list">
+<nav class="main-nav">
+  <div class="main-nav__container">
+    <ul class="main-nav__list">
       {%- for block in section.blocks -%}
         {%- case block.type -%}
-          {%- when 'menu_item' -%}
-            <li class="main-navigation__item" {{ block.shopify_attributes }}>
-              {%- if block.settings.link != blank -%}
-                <a href="{{ block.settings.link }}" class="main-navigation__link">
-                  <span>{{ block.settings.label }}</span>
-                  {%- if block.settings.show_dropdown -%}
-                    <svg class="main-navigation__dropdown-icon" width="13" height="7" viewBox="0 0 13 7" fill="none">
-                      <path d="M1 1L6.5 6L12 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  {%- endif -%}
-                </a>
-              {%- else -%}
-                <button type="button" class="main-navigation__link main-navigation__link--button">
-                  <span>{{ block.settings.label }}</span>
-                  {%- if block.settings.show_dropdown -%}
-                    <svg class="main-navigation__dropdown-icon" width="13" height="7" viewBox="0 0 13 7" fill="none">
-                      <path d="M1 1L6.5 6L12 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  {%- endif -%}
-                </button>
-              {%- endif -%}
-              
-              {%- if block.settings.show_dropdown and block.settings.mega_menu != blank -%}
-                <div class="main-navigation__dropdown">
-                  <div class="main-navigation__dropdown-content">
-                    {{ linklists[block.settings.mega_menu].links | map: 'title' | join: ', ' }}
-                  </div>
-                </div>
-              {%- endif -%}
+          {%- when 'nav_link' -%}
+            <li class="main-nav__item" {{ block.shopify_attributes }}>
+              <a href="{{ block.settings.link }}" class="main-nav__link">
+                <svg class="main-nav__chevron" width="13" height="7" viewBox="0 0 13 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1 1L6.5 6L12 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="main-nav__text">{{ block.settings.label }}</span>
+              </a>
             </li>
         {%- endcase -%}
       {%- endfor -%}
@@ -40,87 +19,77 @@
 </nav>
 
 {% stylesheet %}
-  .main-navigation {
-    background-color: var(--color-background);
-    border-bottom: 1px solid var(--color-border);
+  .main-nav {
+    background-color: var(--color-white);
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   }
 
-  .main-navigation__container {
-    padding: 0 var(--container-padding);
+  .main-nav__container {
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    padding: 0 142px;
   }
 
-  .main-navigation__list {
+  .main-nav__list {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: var(--spacing-lg);
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 114px;
     list-style: none;
     margin: 0;
     padding: 0;
   }
 
-  .main-navigation__item {
+  .main-nav__item {
     position: relative;
   }
 
-  .main-navigation__link {
+  .main-nav__link {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: var(--spacing-sm) 0;
+    gap: 10px;
     text-decoration: none;
-    color: var(--color-text);
-    font-size: 0.9375rem;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-family: var(--font-body);
-    transition: color var(--transition-speed);
-  }
-
-  .main-navigation__link:hover {
     color: var(--color-primary);
+    font-family: var(--font-heading);
+    font-size: 16px;
+    font-weight: var(--font-weight-medium);
+    transition: color var(--transition-fast);
   }
 
-  .main-navigation__dropdown-icon {
+  .main-nav__link:hover {
+    color: var(--color-accent-blue);
+  }
+
+  .main-nav__chevron {
     width: 13px;
     height: 7px;
-    transition: transform var(--transition-speed);
+    flex-shrink: 0;
   }
 
-  .main-navigation__item:hover .main-navigation__dropdown-icon {
-    transform: rotate(180deg);
+  .main-nav__text {
+    white-space: nowrap;
   }
 
-  .main-navigation__dropdown {
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: white;
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius-md);
-    box-shadow: var(--shadow-lg);
-    padding: var(--spacing-md);
-    min-width: 200px;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity var(--transition-speed), visibility var(--transition-speed);
-    z-index: var(--z-dropdown);
+  /* Special styling for last item (could be different font) */
+  .main-nav__item:last-child .main-nav__link {
+    font-family: var(--font-mono);
+    font-weight: var(--font-weight-bold);
   }
 
-  .main-navigation__item:hover .main-navigation__dropdown {
-    opacity: 1;
-    visibility: visible;
-  }
+  @media screen and (max-width: 1200px) {
+    .main-nav__container {
+      padding: 0 40px;
+    }
 
-  .main-navigation__dropdown-content {
-    font-size: 0.875rem;
-    color: var(--color-text);
+    .main-nav__list {
+      gap: 40px;
+    }
   }
 
   @media screen and (max-width: 768px) {
-    .main-navigation {
+    .main-nav {
       display: none;
     }
   }
@@ -132,30 +101,19 @@
   "max_blocks": 10,
   "blocks": [
     {
-      "type": "menu_item",
-      "name": "Menu Item",
+      "type": "nav_link",
+      "name": "Navigation Link",
       "settings": [
         {
           "type": "text",
           "id": "label",
           "label": "Label",
-          "default": "Menu Item"
+          "default": "Category"
         },
         {
           "type": "url",
           "id": "link",
           "label": "Link"
-        },
-        {
-          "type": "checkbox",
-          "id": "show_dropdown",
-          "label": "Show Dropdown Arrow",
-          "default": false
-        },
-        {
-          "type": "link_list",
-          "id": "mega_menu",
-          "label": "Mega Menu"
         }
       ]
     }
@@ -165,45 +123,39 @@
       "name": "Main Navigation",
       "blocks": [
         {
-          "type": "menu_item",
+          "type": "nav_link",
           "settings": {
-            "label": "Smart Speaker",
-            "show_dropdown": true
+            "label": "smart speaker"
           }
         },
         {
-          "type": "menu_item",
+          "type": "nav_link",
           "settings": {
-            "label": "Ear Buds",
-            "show_dropdown": true
+            "label": "ear buds"
           }
         },
         {
-          "type": "menu_item",
+          "type": "nav_link",
           "settings": {
-            "label": "Tablet",
-            "show_dropdown": true
+            "label": "Tablet"
           }
         },
         {
-          "type": "menu_item",
+          "type": "nav_link",
           "settings": {
-            "label": "Laptop",
-            "show_dropdown": true
+            "label": "Laptop"
           }
         },
         {
-          "type": "menu_item",
+          "type": "nav_link",
           "settings": {
-            "label": "Phone",
-            "show_dropdown": true
+            "label": "Phone"
           }
         },
         {
-          "type": "menu_item",
+          "type": "nav_link",
           "settings": {
-            "label": "Earbuds",
-            "show_dropdown": true
+            "label": "Earbuds"
           }
         }
       ]
@@ -211,5 +163,3 @@
   ]
 }
 {% endschema %}
-
-

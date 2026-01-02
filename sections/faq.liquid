@@ -1,115 +1,152 @@
-<div class="faq">
+<section class="faq">
   <div class="faq__container container">
-    <h2 class="faq__heading">{{ section.settings.heading }}</h2>
-    
-    {%- if section.blocks.size > 0 -%}
-      <div class="faq__tabs" data-faq-tabs>
+    <div class="faq__card">
+      <div class="faq__header">
+        <h2 class="faq__heading">{{ section.settings.heading }}</h2>
+        
         {%- assign tab_blocks = section.blocks | where: 'type', 'tab' -%}
-        {%- for block in tab_blocks -%}
-          <button
-            type="button"
-            class="faq__tab{% if forloop.first %} faq__tab--active{% endif %}"
-            data-faq-tab="{{ block.id }}"
-            {{ block.shopify_attributes }}
-          >
-            {{ block.settings.label }}
-          </button>
-        {%- endfor -%}
-      </div>
-    {%- endif -%}
-
-    <div class="faq__content">
-      {%- for block in section.blocks -%}
-        {%- case block.type -%}
-          {%- when 'faq_item' -%}
-            <div class="faq__item" data-faq-item {{ block.shopify_attributes }}>
-              <button type="button" class="faq__question" data-faq-toggle>
-                <span class="faq__number">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
-                <span class="faq__question-text">{{ block.settings.question }}</span>
-                <svg class="faq__icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M18 15l-6-6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+        {%- if tab_blocks.size > 0 -%}
+          <div class="faq__tabs" data-faq-tabs>
+            {%- for block in tab_blocks -%}
+              <button
+                type="button"
+                class="faq__tab{% if forloop.first %} faq__tab--active{% endif %}"
+                data-faq-tab="{{ block.id }}"
+                {{ block.shopify_attributes }}
+              >
+                {{ block.settings.label }}
               </button>
-              <div class="faq__answer" data-faq-answer>
-                <div class="faq__answer-content">
-                  {{ block.settings.answer }}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="faq__content">
+        {%- assign faq_index = 0 -%}
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'faq_item' -%}
+              {%- assign faq_index = faq_index | plus: 1 -%}
+              <div class="faq__item" data-faq-item {{ block.shopify_attributes }}>
+                <button type="button" class="faq__question" data-faq-toggle>
+                  <span class="faq__number">{{ faq_index | prepend: '0' | slice: -2, 2 }}</span>
+                  <span class="faq__question-text">{{ block.settings.question }}</span>
+                  <svg class="faq__icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M5 7.5l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="faq__answer" data-faq-answer>
+                  <div class="faq__answer-content">
+                    {{ block.settings.answer }}
+                  </div>
                 </div>
               </div>
-            </div>
-        {%- endcase -%}
-      {%- endfor -%}
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
     </div>
   </div>
-</div>
+</section>
 
 {% stylesheet %}
   .faq {
     padding: var(--spacing-2xl) 0;
-    background-color: var(--color-background);
+    background-color: var(--color-white);
+    position: relative;
+  }
+
+  .faq::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--grid-pattern);
+    background-repeat: repeat;
+    opacity: 0.3;
+    pointer-events: none;
   }
 
   .faq__container {
+    position: relative;
+    z-index: 1;
     max-width: 1000px;
+    padding: 0 119px;
+  }
+
+  .faq__card {
+    background-color: var(--color-white);
+    border: 0.5px solid var(--color-black);
+    border-radius: 4px;
+    box-shadow: 5px 4px 0px 0px var(--color-black);
+    padding: 30px 40px;
+  }
+
+  .faq__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
   }
 
   .faq__heading {
-    text-align: center;
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: var(--spacing-md);
-    color: var(--color-text);
+    font-family: var(--font-heading);
+    font-size: 28px;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-primary);
+    margin: 0;
     position: relative;
+    padding-bottom: 8px;
   }
 
   .faq__heading::after {
     content: '';
-    display: block;
-    width: 280px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
     height: 2px;
     background-color: var(--color-primary);
-    margin: var(--spacing-md) auto 0;
   }
 
   .faq__tabs {
     display: flex;
-    justify-content: center;
-    gap: var(--spacing-sm);
-    margin: var(--spacing-xl) 0;
+    gap: 12px;
     flex-wrap: wrap;
   }
 
   .faq__tab {
-    padding: 0.625rem 1.5rem;
-    background-color: transparent;
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius-md);
+    padding: 8px 20px;
+    background-color: var(--color-white);
+    border: 0.5px solid var(--color-black);
+    border-radius: 26px;
     cursor: pointer;
-    font-size: 0.875rem;
-    font-family: var(--font-body);
-    color: var(--color-text);
-    transition: all var(--transition-speed);
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: var(--font-weight-medium);
+    color: var(--color-black);
+    box-shadow: 2px 2px 0px 0px var(--color-black);
+    transition: all var(--transition-fast);
+    text-transform: capitalize;
   }
 
   .faq__tab:hover {
-    border-color: var(--color-primary);
-    color: var(--color-primary);
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0px 0px var(--color-black);
   }
 
   .faq__tab--active {
-    background-color: var(--color-primary);
-    border-color: var(--color-primary);
-    color: white;
+    background-color: var(--color-accent);
+    color: var(--color-black);
   }
 
   .faq__content {
-    background-color: white;
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius-lg);
-    padding: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
   }
 
   .faq__item {
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
   }
 
   .faq__item:last-child {
@@ -120,32 +157,40 @@
     width: 100%;
     display: flex;
     align-items: center;
-    gap: var(--spacing-md);
-    padding: var(--spacing-md) 0;
+    gap: 20px;
+    padding: 20px 0;
     background: none;
     border: none;
     text-align: left;
     cursor: pointer;
     font-family: var(--font-body);
+    transition: opacity var(--transition-fast);
+  }
+
+  .faq__question:hover {
+    opacity: 0.8;
   }
 
   .faq__number {
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-family: var(--font-heading);
+    font-size: 20px;
+    font-weight: var(--font-weight-semibold);
     color: var(--color-primary);
     flex-shrink: 0;
+    min-width: 30px;
   }
 
   .faq__question-text {
     flex: 1;
-    font-size: 1rem;
-    font-weight: 500;
-    color: var(--color-text);
+    font-family: var(--font-heading);
+    font-size: 15px;
+    font-weight: var(--font-weight-medium);
+    color: var(--color-black);
   }
 
   .faq__icon {
     flex-shrink: 0;
-    color: var(--color-text-light);
+    color: var(--color-black);
     transition: transform var(--transition-speed);
   }
 
@@ -164,21 +209,102 @@
   }
 
   .faq__answer-content {
-    padding: 0 0 var(--spacing-md) calc(1.5rem + var(--spacing-md) + 1rem);
+    padding: 0 0 20px 50px;
+    font-family: var(--font-display);
+    font-size: 13px;
     color: var(--color-text-light);
     line-height: 1.6;
   }
 
+  @media screen and (max-width: 1024px) {
+    .faq__container {
+      padding: 0 40px;
+    }
+
+    .faq__card {
+      padding: 25px 30px;
+    }
+  }
+
   @media screen and (max-width: 768px) {
+    .faq__container {
+      padding: 0 16px;
+    }
+
+    .faq__card {
+      padding: 20px;
+    }
+
+    .faq__header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+    }
+
     .faq__heading {
-      font-size: 2rem;
+      font-size: 22px;
+    }
+
+    .faq__tabs {
+      width: 100%;
+      justify-content: flex-start;
+    }
+
+    .faq__tab {
+      font-size: 10px;
+      padding: 6px 14px;
+    }
+
+    .faq__question {
+      gap: 15px;
+      padding: 15px 0;
+    }
+
+    .faq__number {
+      font-size: 16px;
     }
 
     .faq__question-text {
-      font-size: 0.9375rem;
+      font-size: 13px;
+    }
+
+    .faq__answer-content {
+      padding-left: 40px;
+      font-size: 12px;
     }
   }
 {% endstylesheet %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const faqItems = document.querySelectorAll('[data-faq-item]');
+    const faqTabs = document.querySelectorAll('[data-faq-tab]');
+    
+    faqItems.forEach(item => {
+      const toggle = item.querySelector('[data-faq-toggle]');
+      if (toggle) {
+        toggle.addEventListener('click', function() {
+          const isOpen = item.classList.contains('is-open');
+          
+          // Close all items
+          faqItems.forEach(i => i.classList.remove('is-open'));
+          
+          // Open clicked item if it was closed
+          if (!isOpen) {
+            item.classList.add('is-open');
+          }
+        });
+      }
+    });
+
+    faqTabs.forEach(tab => {
+      tab.addEventListener('click', function() {
+        faqTabs.forEach(t => t.classList.remove('faq__tab--active'));
+        this.classList.add('faq__tab--active');
+      });
+    });
+  });
+</script>
 
 {% schema %}
 {
@@ -236,27 +362,27 @@
         {
           "type": "tab",
           "settings": {
-            "label": "Service"
+            "label": "Services"
           }
         },
         {
           "type": "tab",
           "settings": {
-            "label": "Warranty"
+            "label": "Business"
           }
         },
         {
           "type": "faq_item",
           "settings": {
             "question": "How does Reguru work?",
-            "answer": "Reguru provides certified refurbished electronics with quality assurance and warranty."
+            "answer": "Reguru provides certified refurbished electronics with quality assurance and warranty. We source products from trusted suppliers, thoroughly test and certify them, and offer them at discounted prices with full warranty support."
           }
         },
         {
           "type": "faq_item",
           "settings": {
             "question": "How does your agency approach digital marketing strategy?",
-            "answer": "We create comprehensive strategies tailored to your business needs."
+            "answer": "We create comprehensive strategies tailored to your business needs, focusing on customer acquisition, retention, and brand awareness through multiple channels."
           }
         }
       ]
@@ -264,5 +390,3 @@
   ]
 }
 {% endschema %}
-
-

@@ -1,5 +1,5 @@
 <header class="header{% if section.settings.sticky_header %} header--sticky{% endif %}" id="Header">
-  <div class="header__container container">
+  <div class="header__container">
     <div class="header__logo">
       {%- if settings.logo != blank -%}
         <a href="{{ routes.root_url }}" class="header__logo-link">
@@ -14,7 +14,7 @@
         </a>
       {%- else -%}
         <a href="{{ routes.root_url }}" class="header__logo-text">
-          {{ shop.name }}
+          <span class="header__logo-re">RE</span><span class="header__logo-guru">GURU</span>
         </a>
       {%- endif -%}
     </div>
@@ -37,34 +37,34 @@
     </div>
 
     <div class="header__actions">
+      <button type="button" class="header__cart-toggle" aria-label="{{ 'cart.general.title' | t }}" data-cart-toggle>
+        <svg class="header__cart-icon" width="42" height="43" viewBox="0 0 42 43" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="42" height="43" rx="4" fill="white"/>
+          <path d="M14 16H28L26.5 25H15.5L14 16Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="16.5" cy="28.5" r="1.5" fill="black"/>
+          <circle cx="25.5" cy="28.5" r="1.5" fill="black"/>
+          <rect x="1" y="1" width="40" height="41" rx="3" stroke="black" stroke-width="0.5" stroke-dasharray="2 2"/>
+        </svg>
+        <span class="header__cart-count" data-cart-count>{{ cart.item_count }}</span>
+      </button>
+
       {%- if section.settings.show_location -%}
         <div class="header__location">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="header__location-icon">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
           <span class="header__location-text">{{ section.settings.location }}</span>
         </div>
       {%- endif -%}
 
       <div class="header__account">
         {%- if customer -%}
-          <a href="{{ routes.account_url }}" class="header__account-link">
+          <a href="{{ routes.account_url }}" class="header__login-btn">
             {{ 'customer.account.title' | t }}
           </a>
         {%- else -%}
-          <a href="{{ routes.account_login_url }}" class="header__account-link">
-            {{ 'customer.login.title' | t }}
+          <a href="{{ routes.account_login_url }}" class="header__login-btn">
+            login
           </a>
         {%- endif -%}
       </div>
-
-      <button type="button" class="header__cart-toggle" aria-label="{{ 'cart.general.title' | t }}" data-cart-toggle>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M9 2L7 6M17 2l2 4M3 6h18M19 6l-1 14H6L5 6M10 11v6M14 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <span class="header__cart-count" data-cart-count>{{ cart.item_count }}</span>
-      </button>
 
       <button type="button" class="header__mobile-toggle" aria-label="{{ 'general.accessibility.menu' | t }}" data-mobile-toggle>
         <span class="header__mobile-toggle-icon"></span>
@@ -75,8 +75,8 @@
 
 {% stylesheet %}
   .header {
-    background-color: var(--color-background);
-    border-bottom: 1px solid var(--color-border);
+    background-color: var(--color-white);
+    box-shadow: 4px 4px 3.9px 0px var(--color-primary);
     position: relative;
     z-index: var(--z-sticky);
   }
@@ -91,9 +91,11 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--spacing-md);
-    padding: var(--spacing-sm) var(--container-padding);
-    min-height: var(--header-height);
+    gap: 40px;
+    padding: 19px 71px;
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    min-height: 80px;
   }
 
   .header__logo {
@@ -106,15 +108,31 @@
   }
 
   .header__logo-text {
-    font-size: 1.5rem;
+    font-family: var(--font-heading);
+    font-size: 1.75rem;
     font-weight: var(--font-weight-bold);
     color: var(--color-text);
     text-decoration: none;
+    display: flex;
+    align-items: center;
+  }
+
+  .header__logo-re {
+    color: var(--color-primary);
+  }
+
+  .header__logo-guru {
+    color: var(--color-accent);
+  }
+
+  .header__logo-image {
+    height: 41px;
+    width: auto;
   }
 
   .header__search {
     flex: 1;
-    max-width: 600px;
+    max-width: 765px;
   }
 
   .search-form {
@@ -125,11 +143,14 @@
 
   .search-form__input {
     width: 100%;
-    padding: 0.75rem 3rem 0.75rem 1rem;
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius-md);
+    height: 41px;
+    padding: 0 3rem 0 1rem;
+    border: 1px solid var(--color-black);
+    border-radius: 9px;
     font-size: 0.875rem;
     font-family: var(--font-body);
+    background: var(--color-white);
+    box-shadow: 2px 2px 0px 0px var(--color-black);
   }
 
   .search-form__input:focus {
@@ -137,70 +158,96 @@
     border-color: var(--color-primary);
   }
 
+  .search-form__input::placeholder {
+    color: var(--color-text-light);
+  }
+
   .search-form__button {
     position: absolute;
-    right: 0.5rem;
+    right: 0.75rem;
     background: none;
     border: none;
     padding: 0.5rem;
     cursor: pointer;
     color: var(--color-text-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .search-form__button:hover {
+    color: var(--color-primary);
   }
 
   .header__actions {
     display: flex;
     align-items: center;
-    gap: var(--spacing-md);
-  }
-
-  .header__location {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-  }
-
-  .header__location-icon {
-    width: 18px;
-    height: 18px;
-    color: var(--color-text-light);
-  }
-
-  .header__account-link {
-    padding: 0.5rem 1.5rem;
-    border: 1px solid var(--color-primary);
-    border-radius: var(--border-radius-md);
-    color: var(--color-primary);
-    text-decoration: none;
-    font-size: 0.875rem;
-    transition: all var(--transition-speed);
-  }
-
-  .header__account-link:hover {
-    background-color: var(--color-primary);
-    color: white;
+    gap: 24px;
   }
 
   .header__cart-toggle {
     position: relative;
     background: none;
     border: none;
-    padding: 0.5rem;
+    padding: 0;
     cursor: pointer;
-    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .header__cart-icon {
+    width: 42px;
+    height: 43px;
   }
 
   .header__cart-count {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: -4px;
+    right: -4px;
     background-color: var(--color-accent);
-    color: white;
+    color: var(--color-black);
     font-size: 0.625rem;
+    font-weight: var(--font-weight-bold);
     padding: 0.125rem 0.375rem;
     border-radius: 10px;
     min-width: 18px;
     text-align: center;
+  }
+
+  .header__location {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .header__location-text {
+    font-family: var(--font-mono);
+    font-size: 16px;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-black);
+  }
+
+  .header__login-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 89px;
+    height: 32px;
+    padding: 8px 25px;
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: var(--font-weight-bold);
+    text-decoration: none;
+    box-shadow: 2px 2px 0px 0px var(--color-black);
+    transition: all var(--transition-fast);
+  }
+
+  .header__login-btn:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0px 0px var(--color-black);
   }
 
   .header__mobile-toggle {
@@ -237,7 +284,22 @@
     bottom: -8px;
   }
 
+  @media screen and (max-width: 1024px) {
+    .header__container {
+      padding: 15px 30px;
+      gap: 20px;
+    }
+
+    .header__search {
+      max-width: 400px;
+    }
+  }
+
   @media screen and (max-width: 768px) {
+    .header__container {
+      padding: 12px 16px;
+    }
+
     .header__search {
       display: none;
     }
@@ -277,5 +339,3 @@
   ]
 }
 {% endschema %}
-
-

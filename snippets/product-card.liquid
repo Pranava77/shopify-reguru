@@ -7,14 +7,16 @@
     assign product_available = product.available
     assign product_image = product.featured_image
     assign product_vendor = product.vendor
+    assign product_description = product.description | strip_html | truncate: 120
   else
     assign product_title = 'MacBook Pro M2'
     assign product_url = '#'
-    assign product_price = 99999
-    assign product_compare_price = 199999
+    assign product_price = 2173600
+    assign product_compare_price = 4347200
     assign product_available = true
     assign product_image = null
     assign product_vendor = 'Apple'
+    assign product_description = 'Apple 2025 MacBook Air (13-inch, Apple M4 chip with 10-core CPU and 8-core GPU, 16GB Unified Memory, 256GB) - Sky Blue'
   endif
 
   assign has_discount = false
@@ -36,13 +38,15 @@
       <img
         src="{{ product_image | image_url: width: 400 }}"
         alt="{{ product_title | escape }}"
-        width="400"
-        height="auto"
+        width="249"
+        height="165"
         loading="lazy"
         class="product-card__image"
       >
     {%- else -%}
-      {{ 'product-1' | placeholder_svg_tag: 'product-card__placeholder' }}
+      <div class="product-card__placeholder">
+        {{ 'product-1' | placeholder_svg_tag: 'product-card__placeholder-svg' }}
+      </div>
     {%- endif -%}
   </a>
 
@@ -51,48 +55,44 @@
       <h3 class="product-card__title">
         <a href="{{ product_url }}">{{ product_title }}</a>
       </h3>
-      {%- if settings.product_show_vendor and product_vendor != blank -%}
-        <div class="product-card__vendor">
-          <span class="product-card__vendor-badge">{{ product_vendor }}</span>
+      {%- if product_vendor != blank -%}
+        <div class="product-card__rating">
+          <svg width="14" height="13" viewBox="0 0 14 13" fill="#FFB800">
+            <path d="M7 0l1.76 5.41h5.69l-4.6 3.34 1.76 5.41L7 10.82l-4.6 3.34 1.76-5.41-4.6-3.34h5.69L7 0z"/>
+          </svg>
+          <svg width="14" height="13" viewBox="0 0 14 13" fill="#FFB800">
+            <path d="M7 0l1.76 5.41h5.69l-4.6 3.34 1.76 5.41L7 10.82l-4.6 3.34 1.76-5.41-4.6-3.34h5.69L7 0z"/>
+          </svg>
+          <svg width="14" height="13" viewBox="0 0 14 13" fill="#FFB800">
+            <path d="M7 0l1.76 5.41h5.69l-4.6 3.34 1.76 5.41L7 10.82l-4.6 3.34 1.76-5.41-4.6-3.34h5.69L7 0z"/>
+          </svg>
+          <svg width="14" height="13" viewBox="0 0 14 13" fill="#FFB800">
+            <path d="M7 0l1.76 5.41h5.69l-4.6 3.34 1.76 5.41L7 10.82l-4.6 3.34 1.76-5.41-4.6-3.34h5.69L7 0z"/>
+          </svg>
+          <svg width="14" height="13" viewBox="0 0 14 13" fill="#E0E0E0">
+            <path d="M7 0l1.76 5.41h5.69l-4.6 3.34 1.76 5.41L7 10.82l-4.6 3.34 1.76-5.41-4.6-3.34h5.69L7 0z"/>
+          </svg>
         </div>
       {%- endif -%}
     </div>
 
-    {%- if product.description != blank -%}
-      <p class="product-card__description">
-        {{ product.description | strip_html | truncate: 100 }}
-      </p>
-    {%- else -%}
-      <p class="product-card__description">
-        Apple 2025 MacBook Air (13-inch, Apple M4 chip with 10-core CPU and 8-core GPU, 16GB Unified Memory, 256GB) - Sky Blue
-      </p>
-    {%- endif -%}
-
-    <div class="product-card__price">
-      {%- if has_discount -%}
-        <span class="product-card__price-compare">{{ product_compare_price | money }}</span>
-      {%- endif -%}
-      <span class="product-card__price-current">{{ product_price | money }}</span>
-    </div>
+    <p class="product-card__description">
+      {{ product_description }}
+    </p>
 
     <div class="product-card__actions">
-      <button type="button" class="product-card__button product-card__button--wishlist" data-wishlist-toggle data-product-id="{{ product.id }}">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
+      <div class="product-card__price-btn">
+        <span>₹ {{ product_price | money_without_currency | remove: ',' }}</span>
+      </div>
       
-      <button type="button" class="product-card__button product-card__button--heart" data-wishlist-toggle data-product-id="{{ product.id }}">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-      
-      <button type="button" class="product-card__button product-card__button--cart" data-add-to-cart data-product-id="{{ product.id }}">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 1 1-8 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
+      <div class="product-card__buttons">
+        <a href="{{ product_url }}" class="product-card__btn product-card__btn--buy">
+          Buy Now
+        </a>
+        <button type="button" class="product-card__btn product-card__btn--cart" data-add-to-cart data-product-id="{{ product.id }}">
+          Add to cart
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -100,76 +100,94 @@
 {% stylesheet %}
   .product-card {
     position: relative;
-    background-color: white;
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius-lg);
+    background-color: var(--color-white);
+    border: 0.5px solid var(--color-black);
+    border-radius: 3px;
+    box-shadow: 4px 4px 0px 0px var(--color-black);
     overflow: hidden;
-    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+    display: flex;
+    flex-direction: column;
+    width: 322px;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
   }
 
   .product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-lg);
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px 0px var(--color-black);
   }
 
   .product-card__badge {
     position: absolute;
-    top: var(--spacing-sm);
-    right: var(--spacing-sm);
-    background-color: var(--color-accent);
-    color: white;
-    padding: 0.25rem 0.75rem;
-    border-radius: var(--border-radius-md);
-    font-size: 0.75rem;
-    font-weight: 600;
-    z-index: 1;
+    top: 0;
+    right: 0;
+    background-color: #3B68AC;
+    color: var(--color-white);
+    padding: 5px 8px;
+    border-radius: 0 0 0 2px;
+    font-family: var(--font-display);
+    font-size: 13.66px;
+    font-weight: var(--font-weight-medium);
+    line-height: 1.2;
+    z-index: 2;
+    box-shadow: 1px 2px 0px 0.455px var(--color-black);
   }
 
   .product-card__image-wrapper {
     display: block;
     position: relative;
-    padding-top: 75%;
-    overflow: hidden;
-    background-color: #f9fafb;
+    padding: 17px;
+    padding-bottom: 0;
+    height: 165px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-white);
   }
 
   .product-card__image {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
   }
 
   .product-card__placeholder {
-    position: absolute;
-    top: 0;
-    left: 0;
+    width: 200px;
+    height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .product-card__placeholder-svg {
     width: 100%;
     height: 100%;
+    opacity: 0.3;
   }
 
   .product-card__content {
-    padding: var(--spacing-md);
+    padding: 12px 17px 17px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
 
   .product-card__header {
     display: flex;
     justify-content: space-between;
-    align-items: start;
-    gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-xs);
+    align-items: center;
+    gap: 10px;
   }
 
   .product-card__title {
     margin: 0;
-    font-size: 1rem;
-    font-weight: 600;
+    font-family: var(--font-body);
+    font-size: 17px;
+    font-weight: var(--font-weight-bold);
+    line-height: 1.2;
   }
 
   .product-card__title a {
-    color: var(--color-text);
+    color: var(--color-black);
     text-decoration: none;
   }
 
@@ -177,74 +195,108 @@
     color: var(--color-primary);
   }
 
-  .product-card__vendor-badge {
-    display: inline-block;
-    padding: 0.125rem 0.5rem;
-    background-color: #f3f4f6;
-    border-radius: var(--border-radius-sm);
-    font-size: 0.75rem;
+  .product-card__rating {
+    display: flex;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+
+  .product-card__rating svg {
+    width: 14px;
+    height: 13px;
   }
 
   .product-card__description {
-    font-size: 0.875rem;
-    color: var(--color-text-light);
-    margin: var(--spacing-xs) 0;
+    font-family: var(--font-body);
+    font-size: 8px;
+    font-weight: var(--font-weight-medium);
+    color: var(--color-black);
+    margin: 0;
     line-height: 1.4;
-  }
-
-  .product-card__price {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xs);
-    margin: var(--spacing-sm) 0;
-  }
-
-  .product-card__price-compare {
-    text-decoration: line-through;
-    color: var(--color-text-light);
-    font-size: 0.875rem;
-  }
-
-  .product-card__price-current {
-    font-size: 1.125rem;
-    font-weight: 700;
-    color: var(--color-primary);
   }
 
   .product-card__actions {
     display: flex;
-    gap: var(--spacing-xs);
-    margin-top: var(--spacing-sm);
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-top: auto;
   }
 
-  .product-card__button {
-    flex: 1;
-    padding: 0.5rem;
-    background-color: transparent;
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius-md);
-    cursor: pointer;
-    display: flex;
+  .product-card__price-btn {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: var(--color-text);
-    transition: all var(--transition-speed);
+    padding: 4.5px 9px;
+    background-color: var(--color-accent);
+    color: var(--color-black);
+    font-family: var(--font-display);
+    font-size: 11.36px;
+    font-weight: var(--font-weight-medium);
+    line-height: 1;
+    border: 1.14px solid var(--color-black);
+    border-radius: 3px;
+    box-shadow: 2.27px 2.27px 0px 0px var(--color-black);
   }
 
-  .product-card__button:hover {
-    border-color: var(--color-primary);
-    color: var(--color-primary);
+  .product-card__buttons {
+    display: flex;
+    gap: 6px;
   }
 
-  .product-card__button--cart {
-    background-color: var(--color-primary);
-    border-color: var(--color-primary);
-    color: white;
+  .product-card__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4.5px 9px;
+    font-family: var(--font-body);
+    font-size: 8px;
+    font-weight: var(--font-weight-medium);
+    line-height: 1;
+    border: 1.14px solid var(--color-black);
+    border-radius: 3px;
+    box-shadow: 2.27px 2.27px 0px 0px var(--color-black);
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
   }
 
-  .product-card__button--cart:hover {
-    background-color: #1E3A8A;
+  .product-card__btn:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0px 0px var(--color-black);
+  }
+
+  .product-card__btn--buy {
+    background-color: var(--color-white);
+    color: var(--color-black);
+  }
+
+  .product-card__btn--cart {
+    background-color: var(--color-accent-blue);
+    color: var(--color-black);
+  }
+
+  @media screen and (max-width: 768px) {
+    .product-card {
+      width: 100%;
+      max-width: 280px;
+    }
+
+    .product-card__image-wrapper {
+      height: 140px;
+    }
+
+    .product-card__title {
+      font-size: 14px;
+    }
+
+    .product-card__description {
+      font-size: 10px;
+    }
+
+    .product-card__btn {
+      font-size: 10px;
+      padding: 6px 10px;
+    }
   }
 {% endstylesheet %}
-
-

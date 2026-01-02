@@ -1,79 +1,251 @@
-<div class="about-us">
+<section class="about-us">
   <div class="about-us__container container">
     <h2 class="about-us__heading">{{ section.settings.heading }}</h2>
     
     <div class="about-us__content">
-      <div class="about-us__image">
-        {%- if section.settings.image != blank -%}
-          <img
-            src="{{ section.settings.image | image_url: width: 600 }}"
-            alt="{{ section.settings.heading | escape }}"
-            width="600"
-            height="auto"
-            loading="lazy"
-          >
-        {%- else -%}
-          {{ 'lifestyle-1' | placeholder_svg_tag: 'about-us__placeholder' }}
-        {%- endif -%}
-      </div>
-      
       <div class="about-us__text">
         {%- if section.settings.text != blank -%}
           <div class="about-us__description">{{ section.settings.text }}</div>
         {%- endif -%}
       </div>
+      
+      <div class="about-us__images">
+        <div class="about-us__image-grid">
+          <div class="about-us__image about-us__image--main">
+            {%- if section.settings.image_main != blank -%}
+              <img
+                src="{{ section.settings.image_main | image_url: width: 380 }}"
+                alt="{{ section.settings.heading | escape }}"
+                width="381"
+                height="222"
+                loading="lazy"
+              >
+            {%- else -%}
+              <div class="about-us__placeholder">
+                {{ 'lifestyle-1' | placeholder_svg_tag: 'about-us__placeholder-svg' }}
+              </div>
+            {%- endif -%}
+          </div>
+          
+          <div class="about-us__image about-us__image--secondary">
+            {%- if section.settings.image_secondary != blank -%}
+              <img
+                src="{{ section.settings.image_secondary | image_url: width: 180 }}"
+                alt="{{ section.settings.heading | escape }}"
+                width="188"
+                height="106"
+                loading="lazy"
+              >
+            {%- else -%}
+              <div class="about-us__placeholder about-us__placeholder--small">
+                {{ 'lifestyle-2' | placeholder_svg_tag: 'about-us__placeholder-svg' }}
+              </div>
+            {%- endif -%}
+          </div>
+          
+          <div class="about-us__image about-us__image--tertiary">
+            {%- if section.settings.image_tertiary != blank -%}
+              <img
+                src="{{ section.settings.image_tertiary | image_url: width: 180 }}"
+                alt="{{ section.settings.heading | escape }}"
+                width="188"
+                height="106"
+                loading="lazy"
+              >
+            {%- else -%}
+              <div class="about-us__placeholder about-us__placeholder--small">
+                {{ 'lifestyle-2' | placeholder_svg_tag: 'about-us__placeholder-svg' }}
+              </div>
+            {%- endif -%}
+          </div>
+          
+          <div class="about-us__counter">
+            <span class="about-us__counter-number">{{ section.settings.counter_number }}</span>
+            <span class="about-us__counter-label">{{ section.settings.counter_label }}</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+</section>
 
 {% stylesheet %}
   .about-us {
     padding: var(--spacing-2xl) 0;
-    background-color: var(--color-background);
+    background-color: var(--color-white);
+    position: relative;
+  }
+
+  .about-us::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--grid-pattern);
+    background-repeat: repeat;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  .about-us__container {
+    position: relative;
+    z-index: 1;
+    padding: 0 119px;
   }
 
   .about-us__heading {
     text-align: center;
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: var(--spacing-xl);
-    color: var(--color-text);
+    font-family: var(--font-heading);
+    font-size: 30px;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 9.9px;
+    margin: 0 0 var(--spacing-xl) 0;
+    color: var(--color-primary);
+    text-transform: uppercase;
   }
 
   .about-us__content {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-2xl);
+    gap: 100px;
     align-items: center;
   }
 
-  .about-us__image {
-    width: 100%;
-  }
-
-  .about-us__image img {
-    width: 100%;
-    height: auto;
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-md);
-  }
-
-  .about-us__placeholder {
-    width: 100%;
-    height: 420px;
-    background-color: #f3f4f6;
-    border-radius: var(--border-radius-lg);
+  .about-us__text {
+    max-width: 528px;
   }
 
   .about-us__description {
-    font-size: 1.125rem;
-    line-height: 1.7;
-    color: var(--color-text-light);
+    font-family: var(--font-heading);
+    font-size: 19px;
+    font-weight: var(--font-weight-normal);
+    line-height: 28.5px;
+    color: var(--color-black);
+  }
+
+  .about-us__description p {
+    margin: 0;
+  }
+
+  .about-us__images {
+    position: relative;
+  }
+
+  .about-us__image-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 10px;
+    position: relative;
+  }
+
+  .about-us__image {
+    position: relative;
+  }
+
+  .about-us__image--main {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+
+  .about-us__image--main img,
+  .about-us__image--main .about-us__placeholder {
+    width: 100%;
+    max-width: 381px;
+    height: 222px;
+    object-fit: cover;
+    border-radius: 4px;
+    box-shadow: 6px 6px 0px 0px var(--color-primary);
+    border: 1px solid var(--color-black);
+  }
+
+  .about-us__image--secondary,
+  .about-us__image--tertiary {
+    position: relative;
+  }
+
+  .about-us__image--secondary img,
+  .about-us__image--secondary .about-us__placeholder--small,
+  .about-us__image--tertiary img,
+  .about-us__image--tertiary .about-us__placeholder--small {
+    width: 100%;
+    max-width: 188px;
+    height: 106px;
+    object-fit: cover;
+    border-radius: 4px;
+    box-shadow: 6px 6px 0px 0px var(--color-primary);
+    border: 1px solid var(--color-black);
+  }
+
+  .about-us__placeholder {
+    background-color: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .about-us__placeholder-svg {
+    width: 50%;
+    height: 50%;
+    opacity: 0.3;
+  }
+
+  .about-us__counter {
+    position: absolute;
+    bottom: 20px;
+    right: 0;
+    width: 113px;
+    height: 113px;
+    background-color: var(--color-white);
+    border-radius: 50%;
+    border: 1px solid var(--color-black);
+    box-shadow: 4px 4px 0px 0px var(--color-primary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    z-index: 10;
+  }
+
+  .about-us__counter-number {
+    font-family: var(--font-heading);
+    font-size: 37px;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-black);
+    line-height: 1;
+  }
+
+  .about-us__counter-label {
+    font-family: var(--font-heading);
+    font-size: 16px;
+    font-weight: var(--font-weight-medium);
+    color: var(--color-black);
+    line-height: 1.2;
+  }
+
+  @media screen and (max-width: 1200px) {
+    .about-us__container {
+      padding: 0 40px;
+    }
+
+    .about-us__content {
+      gap: 50px;
+    }
+
+    .about-us__description {
+      font-size: 16px;
+      line-height: 1.5;
+    }
   }
 
   @media screen and (max-width: 768px) {
+    .about-us__container {
+      padding: 0 16px;
+    }
+
     .about-us__heading {
-      font-size: 2rem;
+      font-size: 24px;
+      letter-spacing: 4px;
     }
 
     .about-us__content {
@@ -81,8 +253,47 @@
       gap: var(--spacing-lg);
     }
 
+    .about-us__text {
+      max-width: 100%;
+      order: 2;
+    }
+
+    .about-us__images {
+      order: 1;
+    }
+
     .about-us__description {
-      font-size: 1rem;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .about-us__image--main img,
+    .about-us__image--main .about-us__placeholder {
+      max-width: 100%;
+      height: auto;
+      aspect-ratio: 381 / 222;
+    }
+
+    .about-us__image--secondary img,
+    .about-us__image--secondary .about-us__placeholder--small,
+    .about-us__image--tertiary img,
+    .about-us__image--tertiary .about-us__placeholder--small {
+      max-width: 100%;
+      height: auto;
+      aspect-ratio: 188 / 106;
+    }
+
+    .about-us__counter {
+      width: 80px;
+      height: 80px;
+    }
+
+    .about-us__counter-number {
+      font-size: 24px;
+    }
+
+    .about-us__counter-label {
+      font-size: 12px;
     }
   }
 {% endstylesheet %}
@@ -95,18 +306,40 @@
       "type": "text",
       "id": "heading",
       "label": "Heading",
-      "default": "About Us"
+      "default": "ABOUT US"
     },
     {
       "type": "image_picker",
-      "id": "image",
-      "label": "Image"
+      "id": "image_main",
+      "label": "Main Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_secondary",
+      "label": "Secondary Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_tertiary",
+      "label": "Tertiary Image"
     },
     {
       "type": "richtext",
       "id": "text",
       "label": "Text",
       "default": "<p>Reguru leads India's refurbished electronics revolution with certified quality, steep discounts, and total assurance. As the nation's sole offline chain, we equip individuals, businesses, schools, and corporates affordably while slashing e-waste</p>"
+    },
+    {
+      "type": "text",
+      "id": "counter_number",
+      "label": "Counter Number",
+      "default": "10+"
+    },
+    {
+      "type": "text",
+      "id": "counter_label",
+      "label": "Counter Label",
+      "default": "Places"
     }
   ],
   "presets": [
@@ -116,5 +349,3 @@
   ]
 }
 {% endschema %}
-
-

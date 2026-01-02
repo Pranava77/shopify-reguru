@@ -2,9 +2,27 @@
   "order": ["footer"],
   "sections": {
     "footer": {
-      "type": "footer"
+      "type": "footer",
+      "settings": {
+        "address": "Unit 508, 5th Floor, Logix cyber Park, Sector 62, Noida, Uttar Pradesh. 201301",
+        "social_facebook": "#",
+        "social_instagram": "#"
+      },
+      "blocks": {
+        "links-1": {
+          "type": "link_list",
+          "settings": {
+            "heading": "Category"
+          }
+        },
+        "links-2": {
+          "type": "link_list",
+          "settings": {
+            "heading": "Support"
+          }
+        }
+      },
+      "block_order": ["links-1", "links-2"]
     }
   }
 }
-
-
