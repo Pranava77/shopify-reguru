@@ -41,7 +41,7 @@
   },
   "customer": {
     "login": {
-      "sign_in": "login"
+      "sign_in": "Login"
     },
     "account": {
       "title": "Account"
