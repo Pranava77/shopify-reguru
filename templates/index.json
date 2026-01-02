@@ -16,7 +16,11 @@
         "logo": "shopify://shop_images/gin.png",
         "show_search": true,
         "show_location": true,
-        "location_text": "Bengaluru"
+        "location_text": "Bengaluru",
+        "header_icon_type": "user",
+        "header_custom_icon": "shopify://shop_images/Layer_1_1.png",
+        "header_icon_color_primary": "#1e1a5c",
+        "header_icon_color_accent": "#28d98e"
       }
     },
     "1767389559f2590556": {
@@ -131,8 +135,8 @@
         "discount_text": "UP to 80% OFF",
         "cta_text": "Checkout product",
         "cta_link": "",
-        "image": "shopify://shop_images/images__2_-removebg-preview.png",
-        "background_color": "#212844"
+        "image": "shopify://shop_images/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTEyL3Jhd3BpeGVsX29mZmljZV8zNV9waG90b2dyYXBoX29mX2xhcHRvcF9tb2NrdXBfd2l0aF93aGl0ZV9zY3JlZV9kNTFiNjVlZS02Y2RkLTQ0N2UtYmRmZS01MzdiZWZlNmY5NTIucG5.png",
+        "background_color": "#6B7280"
       }
     },
     "feature-cards": {
@@ -245,7 +249,7 @@
       "settings": {
         "heading": "ABOUT US",
         "description": "",
-        "image": "shopify://shop_images/images__2_-removebg-preview.png",
+        "image": "shopify://shop_images/pngimg.com_-_headphones_PNG7645.png",
         "stat_number": "10+"
       }
     },
