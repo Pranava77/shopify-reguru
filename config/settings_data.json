@@ -1,26 +1,38 @@
 {
   "current": {
-    "color_primary": "#1E3A8A",
-    "color_accent": "#8B5CF6",
+    "color_primary": "#1E1A5C",
+    "color_secondary": "#041C66",
+    "color_accent": "#28D98E",
+    "color_accent_blue": "#5294FF",
+    "color_text": "#151875",
+    "color_text_secondary": "#636270",
     "color_background": "#FFFFFF",
-    "color_text": "#1F2937",
-    "color_text_light": "#6B7280",
-    "color_border": "#E5E7EB",
-    "font_size_base": 16,
-    "header_sticky": true,
-    "header_location": "Bangalore",
-    "header_show_location": true,
-    "footer_background": "#1E3A8A",
-    "footer_text_color": "#FFFFFF",
-    "footer_address": "2nd floor central complex sv road near mantri mall seshadripuram bengaluru 560020",
-    "product_show_vendor": true,
-    "product_show_badge": true,
-    "product_enable_wishlist": true,
-    "product_image_ratio": "natural",
-    "cart_type": "drawer",
-    "cart_show_vendor": false
+    "color_background_dark": "#212844",
+    "sections": {
+      "header-group": {
+        "type": "header-group",
+        "sections": {
+          "announcement-bar": {
+            "type": "announcement-bar",
+            "settings": {}
+          },
+          "header": {
+            "type": "header",
+            "settings": {}
+          }
+        },
+        "order": ["announcement-bar", "header"]
+      },
+      "footer-group": {
+        "type": "footer-group",
+        "sections": {
+          "footer": {
+            "type": "footer",
+            "settings": {}
+          }
+        },
+        "order": ["footer"]
+      }
+    }
   }
 }
-
-
-

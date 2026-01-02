@@ -1,411 +1,399 @@
-<header class="header{% if section.settings.sticky_header %} header--sticky{% endif %}" id="Header">
-  <div class="header__container">
-    <div class="header__logo">
-      {%- if settings.logo != blank -%}
-        <a href="{{ routes.root_url }}" class="header__logo-link">
-          <img
-            src="{{ settings.logo | image_url: width: 140 }}"
+{%- liquid
+  assign logo = section.settings.logo
+  assign show_search = section.settings.show_search
+  assign show_location = section.settings.show_location
+  assign location_text = section.settings.location_text | default: 'Bengaluru'
+-%}
+
+<header class="header">
+  <div class="header__inner">
+    <div class="header__content">
+      <!-- Logo -->
+      <a href="{{ routes.root_url }}" class="header__logo">
+        {%- if logo != blank -%}
+          <img 
+            src="{{ logo | image_url: width: 140 }}" 
             alt="{{ shop.name }}"
             width="140"
             height="41"
             loading="eager"
-            class="header__logo-image"
           >
-        </a>
-      {%- else -%}
-        <a href="{{ routes.root_url }}" class="header__logo-text">
-          <span class="header__logo-re">RE</span><span class="header__logo-guru">GURU</span>
-        </a>
-      {%- endif -%}
-    </div>
-
-    <div class="header__search">
-      <form action="{{ routes.search_url }}" method="get" role="search" class="search-form">
-        <input
-          type="search"
-          name="q"
-          placeholder="{{ 'general.search.placeholder' | t }}"
-          class="search-form__input"
-          aria-label="{{ 'general.search.placeholder' | t }}"
-        >
-        <button type="submit" class="search-form__button">
-          <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM19 19l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-      </form>
-    </div>
-
-    <div class="header__actions">
-      <div class="header__actions-group">
-        <a href="#" class="header__store-icon" aria-label="Store locations">
-          <svg width="37" height="38" viewBox="0 0 37 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Store/Branch Icon - Three buildings connected -->
-            <rect x="2" y="15" width="8" height="12" fill="#1BDE8F" stroke="#1BDE8F" stroke-width="1"/>
-            <rect x="4" y="17" width="2" height="2" fill="white"/>
-            <rect x="6" y="17" width="2" height="2" fill="white"/>
-            <rect x="4" y="20" width="2" height="2" fill="white"/>
-            <rect x="6" y="20" width="2" height="2" fill="white"/>
-            <path d="M6 8L2 15H10L6 8Z" fill="#1BDE8F"/>
-            
-            <rect x="14.5" y="12" width="8" height="15" fill="#1BDE8F" stroke="#1BDE8F" stroke-width="1"/>
-            <rect x="16.5" y="14" width="2" height="2" fill="white"/>
-            <rect x="18.5" y="14" width="2" height="2" fill="white"/>
-            <rect x="16.5" y="17" width="2" height="2" fill="white"/>
-            <rect x="18.5" y="17" width="2" height="2" fill="white"/>
-            <path d="M18.5 5L14.5 12H22.5L18.5 5Z" fill="#1BDE8F"/>
-            
-            <rect x="27" y="15" width="8" height="12" fill="#1BDE8F" stroke="#1BDE8F" stroke-width="1"/>
-            <rect x="29" y="17" width="2" height="2" fill="white"/>
-            <rect x="31" y="17" width="2" height="2" fill="white"/>
-            <rect x="29" y="20" width="2" height="2" fill="white"/>
-            <rect x="31" y="20" width="2" height="2" fill="white"/>
-            <path d="M31 8L27 15H35L31 8Z" fill="#1BDE8F"/>
-            
-            <!-- Connection lines -->
-            <line x1="10" y1="21" x2="14.5" y2="19.5" stroke="#1BDE8F" stroke-width="1.5"/>
-            <line x1="22.5" y1="19.5" x2="27" y2="21" stroke="#1BDE8F" stroke-width="1.5"/>
-          </svg>
-        </a>
-
-        {%- if section.settings.show_location -%}
-          <div class="header__location">
-            <span class="header__location-text">{{ section.settings.location }}</span>
-            <svg class="header__location-chevron" width="13" height="7" viewBox="0 0 13 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M1 1L6.5 6L12 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-        {%- endif -%}
-      </div>
-
-      <div class="header__account">
-        {%- if customer -%}
-          <a href="{{ routes.account_url }}" class="header__login-btn">
-            {{ 'customer.account.title' | t }}
-          </a>
         {%- else -%}
-          <a href="{{ routes.account_login_url }}" class="header__login-btn">
-            login
-          </a>
+          <span class="header__logo-text">{{ shop.name }}</span>
         {%- endif -%}
-      </div>
+      </a>
 
-      <button type="button" class="header__mobile-toggle" aria-label="{{ 'general.accessibility.menu' | t }}" data-mobile-toggle>
-        <span class="header__mobile-toggle-icon"></span>
-      </button>
+      <!-- Search Bar -->
+      {%- if show_search -%}
+        <form action="{{ routes.search_url }}" method="get" class="header__search">
+          <input 
+            type="search" 
+            name="q" 
+            class="header__search-input"
+            placeholder="{{ 'general.search.placeholder' | t }}"
+            aria-label="{{ 'general.search.placeholder' | t }}"
+          >
+          <button type="submit" class="header__search-btn" aria-label="{{ 'general.search.submit' | t }}">
+            <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="2"/>
+              <path d="M14 14L19 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </form>
+      {%- endif -%}
+
+      <!-- Cart Icon -->
+      <a href="{{ routes.cart_url }}" class="header__cart">
+        <svg width="37" height="38" viewBox="0 0 37 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 12H32L29 24H13L10 12Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <circle cx="15" cy="30" r="2" fill="currentColor"/>
+          <circle cx="27" cy="30" r="2" fill="currentColor"/>
+          <path d="M5 6H10L13 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="header__cart-count">{{ cart.item_count }}</span>
+      </a>
+
+      <!-- Location -->
+      {%- if show_location -%}
+        <div class="header__location">
+          <span class="header__location-text">{{ location_text }}</span>
+          <svg class="header__location-arrow" width="13" height="7" viewBox="0 0 13 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 1L6.5 6L12 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      {%- endif -%}
+
+      <!-- Login Button -->
+      <a href="{{ routes.account_login_url }}" class="header__login btn btn--primary">
+        {{ 'customer.login.sign_in' | t | default: 'login' }}
+      </a>
     </div>
   </div>
 </header>
 
+<!-- Category Navigation -->
+<nav class="category-nav">
+  <div class="category-nav__inner">
+    <ul class="category-nav__list">
+      {%- for link in section.settings.menu.links -%}
+        <li class="category-nav__item">
+          <a href="{{ link.url }}" class="category-nav__link">
+            <svg class="category-nav__arrow" width="13" height="7" viewBox="0 0 13 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1 1L6.5 6L12 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>{{ link.title }}</span>
+          </a>
+          {%- if link.links.size > 0 -%}
+            <ul class="category-nav__dropdown">
+              {%- for child_link in link.links -%}
+                <li>
+                  <a href="{{ child_link.url }}">{{ child_link.title }}</a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+
+      {%- if section.settings.menu == blank -%}
+        {%- assign category_items = 'smart speaker,ear buds,Tablet,Laptop,Phone,Earbuds' | split: ',' -%}
+        {%- for item in category_items -%}
+          <li class="category-nav__item">
+            <a href="{{ routes.collections_url }}/{{ item | handleize }}" class="category-nav__link">
+              <svg class="category-nav__arrow" width="13" height="7" viewBox="0 0 13 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 1L6.5 6L12 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>{{ item }}</span>
+            </a>
+          </li>
+        {%- endfor -%}
+      {%- endif -%}
+    </ul>
+  </div>
+</nav>
+
 {% stylesheet %}
-  .header {
-    background-color: var(--color-white);
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-    position: relative;
-    z-index: var(--z-sticky);
-  }
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  background-color: var(--color-white);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
 
-  .header--sticky {
-    position: sticky;
-    top: 0;
-    transition: transform var(--transition-speed) var(--transition-timing);
-  }
+.header__inner {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
 
-  .header__container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 69px;
-    padding: 19px 60px;
-    max-width: var(--container-max-width);
-    margin: 0 auto;
-    min-height: 80px;
-  }
+.header__content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 54px;
+  height: 76px;
+}
 
-  .header__logo {
-    flex-shrink: 0;
-    width: 140px;
-    height: 41px;
-  }
+.header__logo {
+  flex-shrink: 0;
+  width: 140px;
+  height: 41px;
+}
 
-  .header__logo-link {
-    display: block;
-    line-height: 0;
-    width: 100%;
-    height: 100%;
-  }
+.header__logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
 
-  .header__logo-text {
-    font-family: var(--font-heading);
-    font-size: 1.75rem;
-    font-weight: var(--font-weight-bold);
-    color: var(--color-text);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-  }
+.header__logo-text {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 24px;
+  color: var(--color-navy);
+}
 
-  .header__logo-re {
-    color: var(--color-primary);
-  }
+.header__search {
+  position: relative;
+  flex: 1;
+  max-width: 688px;
+}
 
-  .header__logo-guru {
-    color: var(--color-accent);
-  }
+.header__search-input {
+  width: 100%;
+  height: 41px;
+  padding: 0 50px 0 20px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-black);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-sm);
+}
 
-  .header__logo-image {
-    height: 41px;
-    width: 140px;
-    object-fit: contain;
+.header__search-input:focus {
+  outline: none;
+  box-shadow: var(--shadow-md);
+}
+
+.header__search-btn {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-black);
+}
+
+.header__cart {
+  position: relative;
+  color: var(--color-black);
+}
+
+.header__cart-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-white);
+  background-color: var(--color-green);
+  border-radius: 50%;
+}
+
+.header__location {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.header__location-text {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--color-black);
+}
+
+.header__location-arrow {
+  width: 13px;
+  height: 7px;
+}
+
+.header__login {
+  height: 32px;
+  min-width: 89px;
+}
+
+/* Category Navigation */
+.category-nav {
+  position: sticky;
+  top: 76px;
+  z-index: 99;
+  width: 100%;
+  background-color: var(--color-white);
+  box-shadow: 4px 4px 3.9px 0px var(--color-navy);
+}
+
+.category-nav__inner {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+.category-nav__list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 114px;
+  padding: 20px 0;
+}
+
+.category-nav__item {
+  position: relative;
+}
+
+.category-nav__link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 16px;
+  color: var(--color-navy);
+  transition: color var(--transition-fast);
+}
+
+.category-nav__link:hover {
+  color: var(--color-blue);
+}
+
+.category-nav__arrow {
+  width: 13px;
+  height: 7px;
+  transition: transform var(--transition-fast);
+}
+
+.category-nav__item:hover .category-nav__arrow {
+  transform: rotate(180deg);
+}
+
+.category-nav__dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 180px;
+  padding: 12px 0;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-black);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all var(--transition-fast);
+}
+
+.category-nav__dropdown.is-visible,
+.category-nav__item:hover .category-nav__dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.category-nav__dropdown li a {
+  display: block;
+  padding: 8px 16px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-black);
+  transition: background-color var(--transition-fast);
+}
+
+.category-nav__dropdown li a:hover {
+  background-color: var(--color-light-blue);
+}
+
+@media screen and (max-width: 992px) {
+  .header__content {
+    gap: 20px;
+    flex-wrap: wrap;
+    height: auto;
+    padding: 16px 0;
   }
 
   .header__search {
-    flex-shrink: 0;
-    width: 688px;
+    order: 10;
+    flex: 0 0 100%;
+    max-width: 100%;
   }
 
-  .search-form {
-    position: relative;
-    display: flex;
-    align-items: center;
+  .category-nav__list {
+    gap: 16px 40px;
   }
+}
 
-  .search-form__input {
-    width: 100%;
-    height: 41px;
-    padding: 0 3.5rem 0 1rem;
-    border: 1px solid var(--color-black);
-    border-radius: 30px;
-    font-size: 0.875rem;
-    font-family: var(--font-body);
-    background: var(--color-white);
-    box-shadow: 2px 2px 0px 0px var(--color-black);
-  }
-
-  .search-form__input:focus {
-    outline: none;
-    border-color: var(--color-primary);
-  }
-
-  .search-form__input::placeholder {
-    color: var(--color-text-light);
-  }
-
-  .search-form__button {
-    position: absolute;
-    right: 10px;
-    background: none;
-    border: none;
-    padding: 0.5rem;
-    cursor: pointer;
-    color: var(--color-text-light);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 21px;
-    height: 21px;
-  }
-
-  .search-form__button:hover {
-    color: var(--color-primary);
-  }
-
-  .search-form__button svg {
-    width: 21px;
-    height: 21px;
-  }
-
-  .header__actions {
-    display: flex;
-    align-items: center;
-    gap: 69px;
-    flex-shrink: 0;
-  }
-
-  .header__actions-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .header__store-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 37px;
-    height: 37.712px;
-    flex-shrink: 0;
-    cursor: pointer;
-    text-decoration: none;
-  }
-
-  .header__store-icon svg {
-    width: 37px;
-    height: 37.712px;
-  }
-
+@media screen and (max-width: 768px) {
   .header__location {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    width: 90px;
-    flex-shrink: 0;
-  }
-
-  .header__location-text {
-    font-family: var(--font-mono);
-    font-size: 12px;
-    font-weight: var(--font-weight-bold);
-    color: var(--color-black);
-    line-height: normal;
-  }
-
-  .header__location-chevron {
-    width: 13px;
-    height: 7px;
-    margin-left: auto;
-    color: var(--color-black);
-    flex-shrink: 0;
-  }
-
-  .header__login-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 89px;
-    height: 32px;
-    padding: 8px 25px;
-    background-color: #1e1a5c;
-    color: var(--color-white);
-    font-family: var(--font-mono);
-    font-size: 12px;
-    font-weight: var(--font-weight-bold);
-    text-decoration: none;
-    box-shadow: 2px 2px 0px 0px var(--color-black);
-    transition: all var(--transition-fast);
-    flex-shrink: 0;
-    text-transform: lowercase;
-  }
-
-  .header__login-btn:hover {
-    transform: translate(-1px, -1px);
-    box-shadow: 3px 3px 0px 0px var(--color-black);
-  }
-
-  .header__mobile-toggle {
     display: none;
-    background: none;
-    border: none;
-    padding: 0.5rem;
-    cursor: pointer;
   }
-
-  .header__mobile-toggle-icon {
-    display: block;
-    width: 24px;
-    height: 2px;
-    background-color: var(--color-text);
-    position: relative;
-  }
-
-  .header__mobile-toggle-icon::before,
-  .header__mobile-toggle-icon::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background-color: var(--color-text);
-  }
-
-  .header__mobile-toggle-icon::before {
-    top: -8px;
-  }
-
-  .header__mobile-toggle-icon::after {
-    bottom: -8px;
-  }
-
-  @media screen and (max-width: 1440px) {
-    .header__container {
-      padding: 19px 60px;
-      gap: 40px;
-    }
-
-    .header__search {
-      width: 100%;
-      max-width: 688px;
-      flex: 1;
-    }
-  }
-
-  @media screen and (max-width: 1024px) {
-    .header__container {
-      padding: 15px 30px;
-      gap: 20px;
-    }
-
-    .header__search {
-      max-width: 400px;
-    }
-  }
-
-  @media screen and (max-width: 768px) {
-    .header__container {
-      padding: 12px 16px;
-      gap: 15px;
-    }
-
-    .header__logo {
-      width: 100px;
-      height: auto;
-    }
-
-    .header__logo-image {
-      width: 100px;
-      height: auto;
-    }
-
-    .header__search {
-      display: none;
-    }
-
-    .header__store-icon {
-      display: none;
-    }
-
-    .header__location {
-      display: none;
-    }
-
-    .header__mobile-toggle {
-      display: block;
-    }
-  }
+}
 {% endstylesheet %}
 
 {% schema %}
 {
   "name": "Header",
+  "tag": "section",
+  "class": "header-section",
   "settings": [
     {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Category Menu",
+      "default": "main-menu"
+    },
+    {
       "type": "checkbox",
-      "id": "sticky_header",
-      "label": "Enable Sticky Header",
+      "id": "show_search",
+      "label": "Show Search",
       "default": true
     },
     {
       "type": "checkbox",
       "id": "show_location",
-      "label": "Show Location Selector",
+      "label": "Show Location",
       "default": true
     },
     {
       "type": "text",
-      "id": "location",
-      "label": "Store Location",
+      "id": "location_text",
+      "label": "Location Text",
       "default": "Bengaluru"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Header"
     }
   ]
 }
 {% endschema %}
+

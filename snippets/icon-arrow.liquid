@@ -1,0 +1,43 @@
+{%- comment -%}
+  Icon Arrow Snippet
+  
+  Accepts:
+  - direction: {String} Arrow direction (up, down, left, right)
+  - size: {Number} Size in pixels (default: 16)
+  - color: {String} Color (default: currentColor)
+{%- endcomment -%}
+
+{%- liquid
+  assign direction = direction | default: 'down'
+  assign size = size | default: 16
+  assign color = color | default: 'currentColor'
+  
+  case direction
+    when 'up'
+      assign rotation = '180deg'
+    when 'left'
+      assign rotation = '90deg'
+    when 'right'
+      assign rotation = '-90deg'
+    else
+      assign rotation = '0deg'
+  endcase
+-%}
+
+<svg 
+  width="{{ size }}" 
+  height="{{ size }}" 
+  viewBox="0 0 16 16" 
+  fill="none" 
+  xmlns="http://www.w3.org/2000/svg"
+  style="transform: rotate({{ rotation }})"
+>
+  <path 
+    d="M4 6L8 10L12 6" 
+    stroke="{{ color }}" 
+    stroke-width="2" 
+    stroke-linecap="round" 
+    stroke-linejoin="round"
+  />
+</svg>
+

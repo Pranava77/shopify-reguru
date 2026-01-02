@@ -1,121 +1,140 @@
-// Main Theme JavaScript
-document.addEventListener('DOMContentLoaded', () => {
-  initTheme();
-});
+/**
+ * ReGuru Theme - Main JavaScript
+ * Neobrutalist E-commerce Theme
+ */
 
-function initTheme() {
-  // Initialize sticky header
-  initStickyHeader();
-  
-  // Initialize cart
-  if (window.theme.cartType === 'drawer') {
-    initCartDrawer();
+class ThemeUtils {
+  constructor() {
+    this.init();
   }
-}
 
-function initStickyHeader() {
-  const header = document.getElementById('Header');
-  if (!header || !header.classList.contains('header--sticky')) return;
+  init() {
+    this.#setupEventListeners();
+  }
 
-  let lastScrollTop = 0;
-  const headerHeight = header.offsetHeight;
+  #setupEventListeners() {
+    document.addEventListener('DOMContentLoaded', () => {
+      this.#initializeComponents();
+    });
+  }
 
-  window.addEventListener('scroll', () => {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  #initializeComponents() {
+    // Initialize FAQ accordions
+    this.#initAccordions();
+    
+    // Initialize testimonial slider
+    this.#initTestimonialSlider();
+    
+    // Initialize category navigation
+    this.#initCategoryNav();
+  }
 
-    if (scrollTop > headerHeight) {
-      if (scrollTop > lastScrollTop) {
-        header.style.transform = 'translateY(-100%)';
-      } else {
-        header.style.transform = 'translateY(0)';
+  #initAccordions() {
+    const accordions = document.querySelectorAll('.faq__item');
+    
+    for (const accordion of accordions) {
+      const trigger = accordion.querySelector('.faq__question');
+      
+      if (trigger) {
+        trigger.addEventListener('click', () => {
+          const isOpen = accordion.classList.contains('is-open');
+          
+          // Close all other accordions
+          for (const item of accordions) {
+            item.classList.remove('is-open');
+          }
+          
+          // Toggle current
+          if (!isOpen) {
+            accordion.classList.add('is-open');
+          }
+        });
       }
     }
-
-    lastScrollTop = scrollTop;
-  });
-}
-
-function initCartDrawer() {
-  const cartDrawer = document.getElementById('CartDrawer');
-  if (!cartDrawer) return;
-
-  const toggleButtons = document.querySelectorAll('[data-cart-toggle]');
-  const overlay = cartDrawer.querySelector('[data-cart-overlay]');
-  const closeButton = cartDrawer.querySelector('[data-cart-close]');
-
-  const openDrawer = () => {
-    cartDrawer.setAttribute('data-open', '');
-    cartDrawer.hidden = false;
-    document.body.style.overflow = 'hidden';
-  };
-
-  const closeDrawer = () => {
-    cartDrawer.removeAttribute('data-open');
-    document.body.style.overflow = '';
-    setTimeout(() => {
-      cartDrawer.hidden = true;
-    }, 300);
-  };
-
-  toggleButtons.forEach(button => {
-    button.addEventListener('click', openDrawer);
-  });
-
-  if (overlay) {
-    overlay.addEventListener('click', closeDrawer);
   }
 
-  if (closeButton) {
-    closeButton.addEventListener('click', closeDrawer);
+  #initTestimonialSlider() {
+    const slider = document.querySelector('.testimonials__slider');
+    if (!slider) return;
+
+    const prevBtn = slider.parentElement.querySelector('[data-testimonial-prev]');
+    const nextBtn = slider.parentElement.querySelector('[data-testimonial-next]');
+    const track = slider.querySelector('.testimonials__track');
+    
+    if (!track || !prevBtn || !nextBtn) return;
+
+    let currentIndex = 0;
+    const cards = track.querySelectorAll('.testimonial-card');
+    const totalCards = cards.length;
+    const visibleCards = 3;
+    const maxIndex = Math.max(0, totalCards - visibleCards);
+
+    const updateSlider = () => {
+      const cardWidth = cards[0]?.offsetWidth || 0;
+      const gap = 25;
+      const offset = currentIndex * (cardWidth + gap);
+      track.style.transform = `translateX(-${offset}px)`;
+    };
+
+    prevBtn.addEventListener('click', () => {
+      currentIndex = Math.max(0, currentIndex - 1);
+      updateSlider();
+    });
+
+    nextBtn.addEventListener('click', () => {
+      currentIndex = Math.min(maxIndex, currentIndex + 1);
+      updateSlider();
+    });
   }
-}
 
-// Utility functions
-window.theme = window.theme || {};
-
-window.theme.formatMoney = (cents, format) => {
-  if (typeof cents === 'string') {
-    cents = cents.replace('.', '');
-  }
-  let value = '';
-  const placeholderRegex = /\{\{\s*(\w+)\s*\}\}/;
-  const formatString = format || window.theme.moneyFormat;
-
-  const formatWithDelimiters = (number, precision, thousands, decimal) => {
-    precision = precision || 2;
-    thousands = thousands || ',';
-    decimal = decimal || '.';
-
-    if (isNaN(number) || number === null) {
-      return 0;
+  #initCategoryNav() {
+    const categoryItems = document.querySelectorAll('.category-nav__item');
+    
+    for (const item of categoryItems) {
+      const dropdown = item.querySelector('.category-nav__dropdown');
+      
+      if (dropdown) {
+        item.addEventListener('mouseenter', () => {
+          dropdown.classList.add('is-visible');
+        });
+        
+        item.addEventListener('mouseleave', () => {
+          dropdown.classList.remove('is-visible');
+        });
+      }
     }
-
-    number = (number / 100.0).toFixed(precision);
-
-    const parts = number.split('.');
-    const dollarsAmount = parts[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1' + thousands);
-    const centsAmount = parts[1] ? decimal + parts[1] : '';
-
-    return dollarsAmount + centsAmount;
-  };
-
-  switch (formatString.match(placeholderRegex)[1]) {
-    case 'amount':
-      value = formatWithDelimiters(cents, 2);
-      break;
-    case 'amount_no_decimals':
-      value = formatWithDelimiters(cents, 0);
-      break;
-    case 'amount_with_comma_separator':
-      value = formatWithDelimiters(cents, 2, '.', ',');
-      break;
-    case 'amount_no_decimals_with_comma_separator':
-      value = formatWithDelimiters(cents, 0, '.', ',');
-      break;
   }
 
-  return formatString.replace(placeholderRegex, value);
-};
+  /**
+   * Debounce utility function
+   */
+  static debounce(fn, delay = 300) {
+    let timeoutId;
+    return (...args) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => fn.apply(this, args), delay);
+    };
+  }
 
+  /**
+   * Throttle utility function
+   */
+  static throttle(fn, limit = 300) {
+    let inThrottle;
+    return (...args) => {
+      if (!inThrottle) {
+        fn.apply(this, args);
+        inThrottle = true;
+        setTimeout(() => inThrottle = false, limit);
+      }
+    };
+  }
+}
 
+// Initialize theme
+const theme = new ThemeUtils();
 
+// Export for module usage
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { ThemeUtils };
+}

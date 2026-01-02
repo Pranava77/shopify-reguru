@@ -1,0 +1,113 @@
+{%- comment -%}
+  FAQ Item Snippet
+  
+  Accepts:
+  - index: {Number} FAQ item index
+  - question: {String} FAQ question
+  - answer: {String} FAQ answer
+{%- endcomment -%}
+
+<details class="faq__item">
+  <summary class="faq__question">
+    <span class="faq__number">{{ index | prepend: '0' | slice: -2, 2 }}</span>
+    <span class="faq__question-text">{{ question }}</span>
+    <span class="faq__icon">
+      <svg width="41" height="43" viewBox="0 0 41 43" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 17L20.5 27L31 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+  </summary>
+  <div class="faq__answer">
+    <p>{{ answer }}</p>
+  </div>
+</details>
+
+{% stylesheet %}
+.faq__item {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  padding: 14px 0;
+}
+
+.faq__item:last-child {
+  border-bottom: none;
+}
+
+.faq__question {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.faq__question::-webkit-details-marker {
+  display: none;
+}
+
+.faq__number {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 1.31;
+  color: var(--color-black);
+}
+
+.faq__question-text {
+  flex: 1;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 1.31;
+  color: var(--color-black);
+}
+
+.faq__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 41px;
+  height: 43px;
+  transition: transform var(--transition-fast);
+}
+
+.faq__item[open] .faq__icon {
+  transform: rotate(180deg);
+}
+
+.faq__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.faq__answer {
+  padding: 16px 0 8px 43px;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+.faq__answer p {
+  margin: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .faq__number {
+    font-size: 22px;
+  }
+
+  .faq__question-text {
+    font-size: 18px;
+  }
+
+  .faq__icon {
+    width: 32px;
+    height: 34px;
+  }
+
+  .faq__answer {
+    padding-left: 35px;
+  }
+}
+{% endstylesheet %}
+

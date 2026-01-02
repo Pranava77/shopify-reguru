@@ -1,0 +1,155 @@
+{%- comment -%}
+  Testimonial Card Snippet
+  
+  Accepts:
+  - name: {String} Customer name
+  - quote: {String} Testimonial quote
+  - image: {Object} Customer image (optional)
+{%- endcomment -%}
+
+<article class="testimonial-card card">
+  <div class="testimonial-card__quote-bg"></div>
+  
+  <div class="testimonial-card__content">
+    <div class="testimonial-card__avatar">
+      {%- if image != blank -%}
+        <img 
+          src="{{ image | image_url: width: 160 }}"
+          alt="{{ name }}"
+          width="80"
+          height="112"
+          loading="lazy"
+        >
+      {%- else -%}
+        <div class="testimonial-card__avatar-placeholder">
+          <svg viewBox="0 0 80 112" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="80" height="112" rx="10" fill="#E0E0E0"/>
+            <circle cx="40" cy="35" r="20" fill="#B0B0B0"/>
+            <ellipse cx="40" cy="85" rx="30" ry="25" fill="#B0B0B0"/>
+          </svg>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="testimonial-card__divider"></div>
+
+    <div class="testimonial-card__text">
+      <h3 class="testimonial-card__name">{{ name }}</h3>
+      <p class="testimonial-card__quote">"{{ quote }}"</p>
+    </div>
+  </div>
+
+  <div class="testimonial-card__icon">
+    <svg width="34" height="32" viewBox="0 0 34 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M8 16L16 0H10L2 16V32H18V16H8Z" fill="#5294FF"/>
+      <path d="M24 16L32 0H26L18 16V32H34V16H24Z" fill="#5294FF"/>
+    </svg>
+  </div>
+</article>
+
+{% stylesheet %}
+.testimonial-card {
+  position: relative;
+  width: 394px;
+  height: 162px;
+  padding: 20px;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-black);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.testimonial-card__quote-bg {
+  position: absolute;
+  top: 14px;
+  left: 2px;
+  width: 391px;
+  height: 124px;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 391 124' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 62L100 0H80L30 62V124H110V62H50Z' fill='%23F0F0F0' opacity='0.5'/%3E%3Cpath d='M150 62L200 0H180L130 62V124H210V62H150Z' fill='%23F0F0F0' opacity='0.5'/%3E%3C/svg%3E");
+  background-size: cover;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.testimonial-card__content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 27px;
+  height: 100%;
+  z-index: 1;
+}
+
+.testimonial-card__avatar {
+  flex-shrink: 0;
+  width: 79px;
+  height: 112px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.testimonial-card__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.testimonial-card__avatar-placeholder {
+  width: 100%;
+  height: 100%;
+}
+
+.testimonial-card__avatar-placeholder svg {
+  width: 100%;
+  height: 100%;
+}
+
+.testimonial-card__divider {
+  width: 1px;
+  height: 122px;
+  background-color: var(--color-black);
+  opacity: 0.2;
+}
+
+.testimonial-card__text {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  flex: 1;
+}
+
+.testimonial-card__name {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 1.31;
+  color: var(--color-black);
+  margin: 0;
+}
+
+.testimonial-card__quote {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  text-transform: capitalize;
+  margin: 0;
+}
+
+.testimonial-card__icon {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  transform: rotate(90deg);
+}
+
+@media screen and (max-width: 768px) {
+  .testimonial-card {
+    width: 100%;
+    max-width: 360px;
+  }
+}
+{% endstylesheet %}
+

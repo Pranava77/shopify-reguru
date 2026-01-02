@@ -1,64 +1,105 @@
 {
   "general": {
-    "accessibility": {
-      "skip_to_text": "Skip to content",
-      "close": "Close",
-      "menu": "Menu"
-    },
-    "meta": {
-      "tags": "Tagged \"{{ tags }}\"",
-      "page": "Page {{ page }}"
-    },
     "search": {
-      "placeholder": "Search products..."
+      "placeholder": "Search for products...",
+      "submit": "Search"
+    },
+    "cart": {
+      "title": "Cart",
+      "empty": "Your cart is empty",
+      "view": "View cart",
+      "checkout": "Checkout"
+    },
+    "currency": {
+      "dropdown_label": "Currency"
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next"
     }
   },
+  "accessibility": {
+    "skip_to_content": "Skip to content",
+    "close": "Close",
+    "menu": "Menu"
+  },
   "customer": {
-    "account": {
-      "title": "My Account"
-    },
     "login": {
-      "title": "Login"
+      "sign_in": "login"
+    },
+    "account": {
+      "title": "Account"
     }
   },
   "products": {
     "product": {
-      "add_to_cart": "Add to Cart",
-      "sold_out": "Sold Out",
+      "add_to_cart": "Add to cart",
+      "buy_now": "Buy Now",
+      "sold_out": "Sold out",
       "unavailable": "Unavailable",
-      "quantity": "Quantity",
-      "description": "Description"
+      "price": {
+        "regular_price": "Regular price",
+        "sale_price": "Sale price",
+        "from_price_html": "From {{ price }}"
+      }
     }
   },
-  "cart": {
-    "general": {
-      "title": "Your Cart",
-      "empty": "Your cart is currently empty.",
-      "continue_shopping": "Continue Shopping",
-      "subtotal": "Subtotal",
-      "checkout": "Checkout",
-      "view_cart": "View Cart",
-      "remove": "Remove"
-    }
-  },
-  "collections": {
-    "general": {
-      "items_count": "{{ count }} products",
-      "no_matches": "No products found"
+  "sections": {
+    "announcement_bar": {
+      "welcome": "Welcome To ReGuru"
     },
-    "sorting": {
-      "title": "Sort by",
-      "featured": "Featured",
-      "best_selling": "Best Selling",
-      "az": "Alphabetically, A-Z",
-      "za": "Alphabetically, Z-A",
-      "price_ascending": "Price, low to high",
-      "price_descending": "Price, high to low",
-      "date_ascending": "Date, old to new",
-      "date_descending": "Date, new to old"
+    "hero_banner": {
+      "subheading": "Best Deal Online on smart watches",
+      "heading": "SMART WEARABLE.",
+      "discount": "UP to 80% OFF",
+      "cta": "Checkout product"
+    },
+    "feature_cards": {
+      "rrr_policy": "RRR Policy",
+      "affordable": "Affordable",
+      "online_offline": "Online & Offline Model",
+      "tailored_solutions": "Tailored Solutions",
+      "sustainability": "Sustainability"
+    },
+    "product_grid": {
+      "title": "Latest Products",
+      "phone": "Phone",
+      "laptop": "Laptop",
+      "monitors": "Monitors",
+      "headphone": "Headphone",
+      "television": "Television"
+    },
+    "about_us": {
+      "heading": "ABOUT US",
+      "description_1": "Reguru leads India's refurbished electronics revolution with certified quality, steep discounts, and total assurance.",
+      "description_2": "As the nation's sole offline chain, we equip individuals, businesses, schools, and corporates affordably while slashing e-waste"
+    },
+    "testimonials": {
+      "title": "Testimonials"
+    },
+    "faq": {
+      "title": "FAQs",
+      "general": "General",
+      "services": "Services",
+      "business": "Business",
+      "question_1": "Do ReGuru products come with warranty?",
+      "answer_1": "Yes, all ReGuru products come with a comprehensive warranty. Our refurbished electronics are thoroughly tested and certified, ensuring quality and reliability."
     }
+  },
+  "footer": {
+    "category": "Category",
+    "support": "Support",
+    "help_support": "Help & Support",
+    "terms_conditions": "Terms & Conditions",
+    "privacy_policy": "Privacy Policy",
+    "help": "Help"
+  },
+  "categories": {
+    "smart_speaker": "smart speaker",
+    "ear_buds": "ear buds",
+    "tablet": "Tablet",
+    "laptop": "Laptop",
+    "phone": "Phone",
+    "earbuds": "Earbuds"
   }
 }
-
-
-

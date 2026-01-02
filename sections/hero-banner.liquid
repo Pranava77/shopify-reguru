@@ -1,310 +1,201 @@
-<section class="hero-banner">
-  <div class="hero-banner__container container">
-    <div class="hero-banner__card">
-      <div class="hero-banner__content">
-        {%- if section.settings.subtitle != blank -%}
-          <p class="hero-banner__subtitle">{{ section.settings.subtitle }}</p>
-        {%- endif -%}
-        
-        {%- if section.settings.title != blank -%}
-          <h1 class="hero-banner__title">{{ section.settings.title }}</h1>
-        {%- endif -%}
-        
-        {%- if section.settings.discount_text != blank -%}
-          <p class="hero-banner__discount">{{ section.settings.discount_text }}</p>
-        {%- endif -%}
-        
-        {%- if section.settings.button_text != blank and section.settings.button_link != blank -%}
-          <a href="{{ section.settings.button_link }}" class="hero-banner__button">
-            {{ section.settings.button_text }}
-          </a>
-        {%- endif -%}
-      </div>
-      
-      <div class="hero-banner__image-wrapper">
-        <div class="hero-banner__decoration">
-          <div class="hero-banner__circle hero-banner__circle--outer"></div>
-          <div class="hero-banner__circle hero-banner__circle--inner"></div>
-          <div class="hero-banner__circle hero-banner__circle--small-outer"></div>
-          <div class="hero-banner__circle hero-banner__circle--small-inner"></div>
+{%- liquid
+  assign heading = section.settings.heading | default: 'SMART WEARABLE.'
+  assign subheading = section.settings.subheading | default: 'Best Deal Online on smart watches'
+  assign discount_text = section.settings.discount_text | default: 'UP to 80% OFF'
+  assign cta_text = section.settings.cta_text | default: 'Checkout product'
+  assign cta_link = section.settings.cta_link | default: routes.collections_url
+  assign image = section.settings.image
+  assign bg_color = section.settings.background_color | default: '#212844'
+-%}
+
+<section class="hero-banner" style="--hero-bg: {{ bg_color }};">
+  <div class="hero-banner__container">
+    <div class="hero-banner__content">
+      <p class="hero-banner__subheading">{{ subheading }}</p>
+      <h1 class="hero-banner__heading">{{ heading }}</h1>
+      <p class="hero-banner__discount">{{ discount_text }}</p>
+      <a href="{{ cta_link }}" class="hero-banner__cta">
+        {{ cta_text }}
+      </a>
+    </div>
+    <div class="hero-banner__image">
+      {%- if image != blank -%}
+        <img 
+          src="{{ image | image_url: width: 600 }}"
+          alt="{{ image.alt | default: heading }}"
+          width="600"
+          height="400"
+          loading="eager"
+        >
+      {%- else -%}
+        <div class="hero-banner__placeholder">
+          <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="200" height="200" fill="#2A3050"/>
+            <rect x="60" y="30" width="80" height="100" rx="10" fill="#1BDE8F"/>
+            <rect x="70" y="40" width="60" height="60" rx="5" fill="#212844"/>
+            <circle cx="100" cy="70" r="20" stroke="#28D98E" stroke-width="3"/>
+            <rect x="65" y="140" width="70" height="20" rx="5" fill="#28D98E"/>
+            <circle cx="100" cy="180" r="10" fill="#5294FF"/>
+          </svg>
         </div>
-        
-        <div class="hero-banner__image">
-          {%- if section.settings.image != blank -%}
-            <img
-              src="{{ section.settings.image | image_url: width: 600 }}"
-              alt="{{ section.settings.image.alt | escape }}"
-              width="268"
-              height="270"
-              loading="eager"
-              class="hero-banner__image-element"
-            >
-          {%- else -%}
-            <div class="hero-banner__placeholder">
-              {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
-            </div>
-          {%- endif -%}
-        </div>
-      </div>
+      {%- endif -%}
     </div>
   </div>
 </section>
 
 {% stylesheet %}
-  .hero-banner {
-    padding: var(--spacing-lg) 0;
-    background: var(--color-white);
-    position: relative;
-  }
+.hero-banner {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 24px auto;
+  padding: 0 var(--container-padding);
+}
 
-  .hero-banner::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: var(--grid-pattern);
-    background-repeat: repeat;
-    opacity: 0.5;
-    pointer-events: none;
-  }
+.hero-banner__container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 270px;
+  padding: 40px 60px;
+  background-color: var(--hero-bg);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
 
+.hero-banner__content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 574px;
+  color: var(--color-white);
+}
+
+.hero-banner__subheading {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 1;
+  margin: 0;
+}
+
+.hero-banner__heading {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 63px;
+  line-height: 1;
+  color: var(--color-white);
+  margin: 0;
+}
+
+.hero-banner__discount {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 1;
+  margin: 0;
+}
+
+.hero-banner__cta {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 18px;
+  color: var(--color-white);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.hero-banner__cta:hover {
+  color: var(--color-green);
+}
+
+.hero-banner__image {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40%;
+  max-width: 400px;
+  z-index: 1;
+}
+
+.hero-banner__image img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.hero-banner__placeholder {
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+.hero-banner__placeholder svg {
+  width: 100%;
+  height: 100%;
+}
+
+@media screen and (max-width: 992px) {
   .hero-banner__container {
-    position: relative;
-    z-index: 1;
-    padding: 0 119px;
-  }
-
-  .hero-banner__card {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-xl);
-    align-items: center;
-    background-color: #212844;
-    border-radius: 16px;
-    padding: 40px 90px;
-    min-height: 316px;
-    position: relative;
-    overflow: hidden;
+    flex-direction: column;
+    text-align: center;
+    padding: 40px 30px;
   }
 
   .hero-banner__content {
-    color: var(--color-white);
-    position: relative;
-    z-index: 2;
-  }
-
-  .hero-banner__subtitle {
-    font-family: var(--font-heading);
-    font-size: 30px;
-    font-weight: var(--font-weight-normal);
-    line-height: 1;
-    margin: 0 0 10px 0;
-    opacity: 0.95;
-  }
-
-  .hero-banner__title {
-    font-family: var(--font-heading);
-    font-size: 63px;
-    font-weight: var(--font-weight-normal);
-    line-height: 63px;
-    margin: 0 0 20px 0;
-    color: var(--color-white);
-  }
-
-  .hero-banner__discount {
-    font-family: var(--font-heading);
-    font-size: 30px;
-    font-weight: var(--font-weight-normal);
-    line-height: 30px;
-    margin: 0;
-  }
-
-  .hero-banner__button {
-    display: inline-block;
-    margin-top: var(--spacing-md);
-    padding: 0.875rem 2rem;
-    background-color: var(--color-white);
-    color: var(--color-primary);
-    text-decoration: none;
-    border-radius: var(--border-radius-md);
-    font-family: var(--font-heading);
-    font-weight: var(--font-weight-semibold);
-    transition: all var(--transition-speed);
-    box-shadow: var(--shadow-brutal-sm);
-    border: 1px solid var(--color-black);
-  }
-
-  .hero-banner__button:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 4px 4px 0px 0px var(--color-black);
-  }
-
-  .hero-banner__image-wrapper {
-    position: relative;
-    display: flex;
     align-items: center;
-    justify-content: center;
-    min-height: 316px;
   }
 
-  .hero-banner__decoration {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    overflow: hidden;
+  .hero-banner__heading {
+    font-size: 42px;
   }
 
-  .hero-banner__circle {
-    position: absolute;
-    border-radius: 50%;
-  }
-
-  .hero-banner__circle--outer {
-    width: 516px;
-    height: 516px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-  }
-
-  .hero-banner__circle--inner {
-    width: 480px;
-    height: 480px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(255, 255, 255, 0.05);
-  }
-
-  .hero-banner__circle--small-outer {
-    width: 177px;
-    height: 177px;
-    bottom: -30px;
-    right: 10%;
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-  }
-
-  .hero-banner__circle--small-inner {
-    width: 148px;
-    height: 147px;
-    bottom: -15px;
-    right: calc(10% + 15px);
-    background: rgba(255, 255, 255, 0.08);
+  .hero-banner__subheading,
+  .hero-banner__discount {
+    font-size: 22px;
   }
 
   .hero-banner__image {
     position: relative;
-    z-index: 2;
-    width: 268px;
-    height: 270px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    right: auto;
+    top: auto;
+    transform: none;
+    width: 60%;
+    margin-top: 30px;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .hero-banner__heading {
+    font-size: 32px;
   }
 
-  .hero-banner__image-element {
-    max-width: 100%;
-    height: auto;
-    object-fit: contain;
+  .hero-banner__subheading,
+  .hero-banner__discount {
+    font-size: 18px;
   }
-
-  .hero-banner__placeholder {
-    width: 200px;
-    height: 200px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: var(--border-radius-lg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .hero-banner__placeholder svg {
-    width: 100px;
-    height: 100px;
-    opacity: 0.5;
-  }
-
-  @media screen and (max-width: 1200px) {
-    .hero-banner__container {
-      padding: 0 40px;
-    }
-
-    .hero-banner__card {
-      padding: 30px 50px;
-    }
-
-    .hero-banner__title {
-      font-size: 48px;
-      line-height: 1.1;
-    }
-
-    .hero-banner__subtitle,
-    .hero-banner__discount {
-      font-size: 24px;
-    }
-  }
-
-  @media screen and (max-width: 768px) {
-    .hero-banner__container {
-      padding: 0 16px;
-    }
-
-    .hero-banner__card {
-      grid-template-columns: 1fr;
-      gap: var(--spacing-lg);
-      padding: 30px 24px;
-      text-align: center;
-    }
-
-    .hero-banner__title {
-      font-size: 32px;
-      line-height: 1.1;
-    }
-
-    .hero-banner__subtitle,
-    .hero-banner__discount {
-      font-size: 18px;
-    }
-
-    .hero-banner__image-wrapper {
-      min-height: 250px;
-      order: -1;
-    }
-
-    .hero-banner__circle--outer,
-    .hero-banner__circle--inner {
-      width: 280px;
-      height: 280px;
-    }
-
-    .hero-banner__circle--small-outer,
-    .hero-banner__circle--small-inner {
-      display: none;
-    }
-
-    .hero-banner__image {
-      width: 180px;
-      height: 180px;
-    }
-  }
+}
 {% endstylesheet %}
 
 {% schema %}
 {
   "name": "Hero Banner",
+  "tag": "section",
+  "class": "hero-banner-section",
   "settings": [
     {
       "type": "text",
-      "id": "subtitle",
-      "label": "Subtitle",
+      "id": "subheading",
+      "label": "Subheading",
       "default": "Best Deal Online on smart watches"
     },
     {
       "type": "text",
-      "id": "title",
-      "label": "Title",
+      "id": "heading",
+      "label": "Heading",
       "default": "SMART WEARABLE."
     },
     {
@@ -314,20 +205,26 @@
       "default": "UP to 80% OFF"
     },
     {
-      "type": "image_picker",
-      "id": "image",
-      "label": "Product Image"
-    },
-    {
       "type": "text",
-      "id": "button_text",
+      "id": "cta_text",
       "label": "Button Text",
       "default": "Checkout product"
     },
     {
       "type": "url",
-      "id": "button_link",
+      "id": "cta_link",
       "label": "Button Link"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Product Image"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#212844"
     }
   ],
   "presets": [

@@ -1,314 +1,264 @@
+{%- liquid
+  assign heading = section.settings.heading | default: 'FAQs'
+-%}
+
 <section class="faq">
-  <div class="faq__container container">
-    <div class="faq__card">
+  <div class="faq__container">
+    <div class="faq__card card--lg">
       <div class="faq__header">
-        <h2 class="faq__heading">{{ section.settings.heading }}</h2>
-        
-        {%- assign tab_blocks = section.blocks | where: 'type', 'tab' -%}
-        {%- if tab_blocks.size > 0 -%}
-          <div class="faq__tabs" data-faq-tabs>
-            {%- for block in tab_blocks -%}
-              <button
-                type="button"
-                class="faq__tab{% if forloop.first %} faq__tab--active{% endif %}"
-                data-faq-tab="{{ block.id }}"
-                {{ block.shopify_attributes }}
-              >
-                {{ block.settings.label }}
-              </button>
-            {%- endfor -%}
-          </div>
+        <h2 class="faq__title">{{ heading }}</h2>
+        <div class="faq__decoration"></div>
+      </div>
+
+      <div class="faq__tabs">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'tab' -%}
+            <button 
+              type="button" 
+              class="faq__tab tab--pill{% if forloop.first %} active{% endif %}"
+              data-tab-id="{{ block.id }}"
+              {{ block.shopify_attributes }}
+            >
+              {{ block.settings.label }}
+            </button>
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- if section.blocks.size == 0 -%}
+          <button type="button" class="faq__tab tab--pill active" data-tab-id="general">General</button>
+          <button type="button" class="faq__tab tab--pill" data-tab-id="services">services</button>
+          <button type="button" class="faq__tab tab--pill" data-tab-id="business">Business</button>
         {%- endif -%}
       </div>
 
       <div class="faq__content">
         {%- assign faq_index = 0 -%}
         {%- for block in section.blocks -%}
-          {%- case block.type -%}
-            {%- when 'faq_item' -%}
-              {%- assign faq_index = faq_index | plus: 1 -%}
-              <div class="faq__item" data-faq-item {{ block.shopify_attributes }}>
-                <button type="button" class="faq__question" data-faq-toggle>
-                  <span class="faq__number">{{ faq_index | prepend: '0' | slice: -2, 2 }}</span>
-                  <span class="faq__question-text">{{ block.settings.question }}</span>
-                  <svg class="faq__icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path d="M5 7.5l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </button>
-                <div class="faq__answer" data-faq-answer>
-                  <div class="faq__answer-content">
-                    {{ block.settings.answer }}
-                  </div>
-                </div>
-              </div>
-          {%- endcase -%}
+          {%- if block.type == 'faq_item' -%}
+            {%- assign faq_index = faq_index | plus: 1 -%}
+            {%- render 'faq-item',
+              index: faq_index,
+              question: block.settings.question,
+              answer: block.settings.answer
+            -%}
+          {%- endif -%}
         {%- endfor -%}
+
+        {%- if section.blocks.size == 0 -%}
+          {%- assign default_faqs = 'Do ReGuru products come with warranty?|What is the return policy for ReGuru products?|Do ReGuru products come with warranty?' | split: '|' -%}
+          {%- for faq in default_faqs -%}
+            <details class="faq__item">
+              <summary class="faq__question">
+                <span class="faq__number">0{{ forloop.index }}</span>
+                <span class="faq__question-text">{{ faq }}</span>
+                <span class="faq__icon">
+                  <svg width="41" height="43" viewBox="0 0 41 43" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 17L20.5 27L31 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+              </summary>
+              <div class="faq__answer">
+                <p>Yes, all ReGuru products come with a comprehensive warranty. Our refurbished electronics are thoroughly tested and certified, ensuring quality and reliability. Specific warranty terms vary by product category.</p>
+              </div>
+            </details>
+          {%- endfor -%}
+        {%- endif -%}
       </div>
     </div>
   </div>
 </section>
 
 {% stylesheet %}
-  .faq {
-    padding: var(--spacing-2xl) 0;
-    background-color: var(--color-white);
-    position: relative;
-  }
+.faq {
+  padding: 60px 0;
+}
 
-  .faq::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: var(--grid-pattern);
-    background-repeat: repeat;
-    opacity: 0.3;
-    pointer-events: none;
-  }
+.faq__container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+  display: flex;
+  justify-content: center;
+}
 
-  .faq__container {
-    position: relative;
-    z-index: 1;
-    max-width: 1000px;
-    padding: 0 119px;
-  }
+.faq__card {
+  width: 100%;
+  max-width: 977px;
+  padding: 32px 40px 48px;
+  background-color: var(--color-white);
+  border: 2px solid var(--color-black);
+  border-radius: 12px;
+  box-shadow: 5px 4px 0px 0px var(--color-black);
+}
 
+.faq__header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.faq__title {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 47px;
+  line-height: 1.31;
+  color: var(--color-black);
+  margin: 0 0 16px;
+}
+
+.faq__decoration {
+  width: 273px;
+  height: 2px;
+  margin: 0 auto;
+  background: linear-gradient(90deg, transparent 0%, var(--color-black) 50%, transparent 100%);
+}
+
+.faq__tabs {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.faq__tab {
+  padding: 8px 21px;
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 18px;
+  color: var(--color-black);
+  background-color: var(--color-white);
+  border: 0.5px solid var(--color-black);
+  border-radius: var(--radius-pill);
+  box-shadow: 3px 3px 0px 0px var(--color-black);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.faq__tab:hover {
+  background-color: var(--color-light-blue);
+}
+
+.faq__tab.active {
+  background-color: var(--color-blue);
+  color: var(--color-white);
+}
+
+.faq__content {
+  max-width: 602px;
+  margin: 0 auto;
+}
+
+/* FAQ Item Styles */
+.faq__item {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  padding: 14px 0;
+}
+
+.faq__item:last-child {
+  border-bottom: none;
+}
+
+.faq__question {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.faq__question::-webkit-details-marker {
+  display: none;
+}
+
+.faq__number {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 1.31;
+  color: var(--color-black);
+}
+
+.faq__question-text {
+  flex: 1;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 1.31;
+  color: var(--color-black);
+}
+
+.faq__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 41px;
+  height: 43px;
+  transition: transform var(--transition-fast);
+}
+
+.faq__item[open] .faq__icon {
+  transform: rotate(180deg);
+}
+
+.faq__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.faq__answer {
+  padding: 16px 0 8px 43px;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+.faq__answer p {
+  margin: 0;
+}
+
+@media screen and (max-width: 768px) {
   .faq__card {
-    background-color: var(--color-white);
-    border: 0.5px solid var(--color-black);
-    border-radius: 4px;
-    box-shadow: 5px 4px 0px 0px var(--color-black);
-    padding: 30px 40px;
+    padding: 24px 20px 32px;
   }
 
-  .faq__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    margin-bottom: 30px;
-    flex-wrap: wrap;
-  }
-
-  .faq__heading {
-    font-family: var(--font-heading);
-    font-size: 28px;
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-primary);
-    margin: 0;
-    position: relative;
-    padding-bottom: 8px;
-  }
-
-  .faq__heading::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background-color: var(--color-primary);
+  .faq__title {
+    font-size: 32px;
   }
 
   .faq__tabs {
-    display: flex;
-    gap: 12px;
     flex-wrap: wrap;
+    gap: 12px;
   }
 
   .faq__tab {
-    padding: 8px 20px;
-    background-color: var(--color-white);
-    border: 0.5px solid var(--color-black);
-    border-radius: 26px;
-    cursor: pointer;
-    font-family: var(--font-display);
-    font-size: 11px;
-    font-weight: var(--font-weight-medium);
-    color: var(--color-black);
-    box-shadow: 2px 2px 0px 0px var(--color-black);
-    transition: all var(--transition-fast);
-    text-transform: capitalize;
-  }
-
-  .faq__tab:hover {
-    transform: translate(-1px, -1px);
-    box-shadow: 3px 3px 0px 0px var(--color-black);
-  }
-
-  .faq__tab--active {
-    background-color: var(--color-accent);
-    color: var(--color-black);
-  }
-
-  .faq__content {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .faq__item {
-    border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
-  }
-
-  .faq__item:last-child {
-    border-bottom: none;
-  }
-
-  .faq__question {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    padding: 20px 0;
-    background: none;
-    border: none;
-    text-align: left;
-    cursor: pointer;
-    font-family: var(--font-body);
-    transition: opacity var(--transition-fast);
-  }
-
-  .faq__question:hover {
-    opacity: 0.8;
+    font-size: 14px;
+    padding: 6px 16px;
   }
 
   .faq__number {
-    font-family: var(--font-heading);
-    font-size: 20px;
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-primary);
-    flex-shrink: 0;
-    min-width: 30px;
+    font-size: 22px;
   }
 
   .faq__question-text {
-    flex: 1;
-    font-family: var(--font-heading);
-    font-size: 15px;
-    font-weight: var(--font-weight-medium);
-    color: var(--color-black);
+    font-size: 18px;
   }
 
   .faq__icon {
-    flex-shrink: 0;
-    color: var(--color-black);
-    transition: transform var(--transition-speed);
-  }
-
-  .faq__item.is-open .faq__icon {
-    transform: rotate(180deg);
+    width: 32px;
+    height: 34px;
   }
 
   .faq__answer {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height var(--transition-speed) ease;
+    padding-left: 35px;
   }
-
-  .faq__item.is-open .faq__answer {
-    max-height: 500px;
-  }
-
-  .faq__answer-content {
-    padding: 0 0 20px 50px;
-    font-family: var(--font-display);
-    font-size: 13px;
-    color: var(--color-text-light);
-    line-height: 1.6;
-  }
-
-  @media screen and (max-width: 1024px) {
-    .faq__container {
-      padding: 0 40px;
-    }
-
-    .faq__card {
-      padding: 25px 30px;
-    }
-  }
-
-  @media screen and (max-width: 768px) {
-    .faq__container {
-      padding: 0 16px;
-    }
-
-    .faq__card {
-      padding: 20px;
-    }
-
-    .faq__header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 15px;
-    }
-
-    .faq__heading {
-      font-size: 22px;
-    }
-
-    .faq__tabs {
-      width: 100%;
-      justify-content: flex-start;
-    }
-
-    .faq__tab {
-      font-size: 10px;
-      padding: 6px 14px;
-    }
-
-    .faq__question {
-      gap: 15px;
-      padding: 15px 0;
-    }
-
-    .faq__number {
-      font-size: 16px;
-    }
-
-    .faq__question-text {
-      font-size: 13px;
-    }
-
-    .faq__answer-content {
-      padding-left: 40px;
-      font-size: 12px;
-    }
-  }
+}
 {% endstylesheet %}
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const faqItems = document.querySelectorAll('[data-faq-item]');
-    const faqTabs = document.querySelectorAll('[data-faq-tab]');
-    
-    faqItems.forEach(item => {
-      const toggle = item.querySelector('[data-faq-toggle]');
-      if (toggle) {
-        toggle.addEventListener('click', function() {
-          const isOpen = item.classList.contains('is-open');
-          
-          // Close all items
-          faqItems.forEach(i => i.classList.remove('is-open'));
-          
-          // Open clicked item if it was closed
-          if (!isOpen) {
-            item.classList.add('is-open');
-          }
-        });
-      }
-    });
-
-    faqTabs.forEach(tab => {
-      tab.addEventListener('click', function() {
-        faqTabs.forEach(t => t.classList.remove('faq__tab--active'));
-        this.classList.add('faq__tab--active');
-      });
-    });
-  });
-</script>
 
 {% schema %}
 {
   "name": "FAQ",
+  "tag": "section",
+  "class": "faq-section",
   "settings": [
     {
       "type": "text",
@@ -320,12 +270,12 @@
   "blocks": [
     {
       "type": "tab",
-      "name": "Tab",
+      "name": "Category Tab",
       "settings": [
         {
           "type": "text",
           "id": "label",
-          "label": "Label",
+          "label": "Tab Label",
           "default": "General"
         }
       ]
@@ -338,13 +288,13 @@
           "type": "text",
           "id": "question",
           "label": "Question",
-          "default": "How does it work?"
+          "default": "Do ReGuru products come with warranty?"
         },
         {
           "type": "textarea",
           "id": "answer",
           "label": "Answer",
-          "default": "This is the answer to the question."
+          "default": "Yes, all ReGuru products come with a comprehensive warranty. Our refurbished electronics are thoroughly tested and certified, ensuring quality and reliability."
         }
       ]
     }
@@ -374,15 +324,22 @@
         {
           "type": "faq_item",
           "settings": {
-            "question": "How does Reguru work?",
-            "answer": "Reguru provides certified refurbished electronics with quality assurance and warranty. We source products from trusted suppliers, thoroughly test and certify them, and offer them at discounted prices with full warranty support."
+            "question": "Do ReGuru products come with warranty?",
+            "answer": "Yes, all ReGuru products come with a comprehensive warranty. Our refurbished electronics are thoroughly tested and certified, ensuring quality and reliability."
           }
         },
         {
           "type": "faq_item",
           "settings": {
-            "question": "How does your agency approach digital marketing strategy?",
-            "answer": "We create comprehensive strategies tailored to your business needs, focusing on customer acquisition, retention, and brand awareness through multiple channels."
+            "question": "Do ReGuru products come with warranty?",
+            "answer": "Yes, all ReGuru products come with a comprehensive warranty. Our refurbished electronics are thoroughly tested and certified, ensuring quality and reliability."
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do ReGuru products come with warranty?",
+            "answer": "Yes, all ReGuru products come with a comprehensive warranty. Our refurbished electronics are thoroughly tested and certified, ensuring quality and reliability."
           }
         }
       ]

@@ -1,0 +1,287 @@
+<section class="feature-cards bg-grid-pattern">
+  <div class="feature-cards__container">
+    <div class="feature-cards__grid">
+      {%- for block in section.blocks -%}
+        <div class="feature-card" {{ block.shopify_attributes }}>
+          <div class="feature-card__bg" style="background-image: url('{{ block.settings.background_image | image_url: width: 400 }}');">
+            <div class="feature-card__overlay"></div>
+          </div>
+          <div class="feature-card__content">
+            <h3 class="feature-card__title">{{ block.settings.title }}</h3>
+          </div>
+          {%- if block.settings.icon_image != blank -%}
+            <div class="feature-card__icon">
+              <img 
+                src="{{ block.settings.icon_image | image_url: width: 200 }}" 
+                alt="{{ block.settings.title }}"
+                loading="lazy"
+              >
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+
+      {%- if section.blocks.size == 0 -%}
+        {%- assign default_cards = 'RRR Policy|Affordable|Online & Offline Model|Tailored Solutions|Sustainability' | split: '|' -%}
+        {%- for card in default_cards -%}
+          <div class="feature-card">
+            <div class="feature-card__bg feature-card__bg--gradient-{{ forloop.index }}">
+              <div class="feature-card__overlay"></div>
+            </div>
+            <div class="feature-card__content">
+              <h3 class="feature-card__title">{{ card }}</h3>
+            </div>
+            <div class="feature-card__icon feature-card__icon--placeholder">
+              {%- case forloop.index -%}
+                {%- when 1 -%}
+                  <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <text x="20" y="60" font-size="40" font-weight="bold" fill="#1BDE8F">RRR</text>
+                  </svg>
+                {%- when 2 -%}
+                  <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="30" stroke="#1BDE8F" stroke-width="4"/>
+                    <text x="35" y="58" font-size="24" fill="#1BDE8F">₹</text>
+                  </svg>
+                {%- when 3 -%}
+                  <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="15" y="30" width="30" height="40" rx="5" fill="#1BDE8F"/>
+                    <rect x="55" y="30" width="30" height="40" rx="5" stroke="#1BDE8F" stroke-width="3"/>
+                  </svg>
+                {%- when 4 -%}
+                  <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M50 20 L80 40 L80 70 L50 90 L20 70 L20 40 Z" stroke="#1BDE8F" stroke-width="3" fill="none"/>
+                    <circle cx="50" cy="55" r="15" fill="#1BDE8F"/>
+                  </svg>
+                {%- when 5 -%}
+                  <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M50 20 C30 30 25 50 50 80 C75 50 70 30 50 20" fill="#1BDE8F"/>
+                    <path d="M50 35 L55 50 L70 50 L58 60 L62 75 L50 65 L38 75 L42 60 L30 50 L45 50 Z" fill="#212844"/>
+                  </svg>
+              {%- endcase -%}
+            </div>
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.feature-cards {
+  padding: 60px 0;
+}
+
+.feature-cards__container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+.feature-cards__grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 46px;
+  justify-items: center;
+}
+
+.feature-card {
+  position: relative;
+  width: 100%;
+  max-width: 187px;
+  aspect-ratio: 0.63;
+  border-radius: 6px;
+  overflow: visible;
+  cursor: pointer;
+  transition: transform var(--transition-base);
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+}
+
+.feature-card__bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 15%;
+  bottom: 10%;
+  border-radius: 6px;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 2.86px 2.86px 0px 0px var(--color-black);
+  border: 0.5px solid var(--color-black);
+}
+
+.feature-card__bg--gradient-1 {
+  background: linear-gradient(135deg, #4A90D9 0%, #667eea 100%);
+}
+
+.feature-card__bg--gradient-2 {
+  background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+}
+
+.feature-card__bg--gradient-3 {
+  background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+}
+
+.feature-card__bg--gradient-4 {
+  background: linear-gradient(135deg, #A770EF 0%, #CF8BF3 100%);
+}
+
+.feature-card__bg--gradient-5 {
+  background: linear-gradient(135deg, #11998E 0%, #38EF7D 100%);
+}
+
+.feature-card__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+}
+
+.feature-card__content {
+  position: absolute;
+  top: 15%;
+  left: 10%;
+  right: 25%;
+  z-index: 2;
+}
+
+.feature-card__title {
+  font-family: var(--font-accent);
+  font-weight: 500;
+  font-size: 19px;
+  line-height: 1.2;
+  color: var(--color-white);
+  text-shadow: 0.6px 0.6px 0px rgba(6, 24, 58, 0.97);
+  letter-spacing: 0.96px;
+  text-transform: capitalize;
+  margin: 0;
+}
+
+.feature-card__icon {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 60%;
+  z-index: 3;
+}
+
+.feature-card__icon img {
+  width: 100%;
+  height: auto;
+}
+
+.feature-card__icon--placeholder {
+  width: 50%;
+}
+
+.feature-card__icon--placeholder svg {
+  width: 100%;
+  height: auto;
+}
+
+@media screen and (max-width: 1200px) {
+  .feature-cards__grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .feature-cards__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .feature-card {
+    max-width: 160px;
+  }
+
+  .feature-card__title {
+    font-size: 16px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .feature-cards__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-card {
+    max-width: 200px;
+    margin: 0 auto;
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Feature Cards",
+  "tag": "section",
+  "class": "feature-cards-section",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Feature Card",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Feature"
+        },
+        {
+          "type": "image_picker",
+          "id": "background_image",
+          "label": "Background Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_image",
+          "label": "Icon Image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Feature Cards",
+      "blocks": [
+        {
+          "type": "card",
+          "settings": {
+            "title": "RRR Policy"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "title": "Affordable"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "title": "Online & Offline Model"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "title": "Tailored Solutions"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "title": "Sustainability"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+

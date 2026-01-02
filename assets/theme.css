@@ -1,200 +1,218 @@
 /* ==========================================================================
-   Base Styles & Reset
+   ReGuru Theme - Main Stylesheet
+   Neobrutalist Design System
    ========================================================================== */
 
+/* --------------------------------------------------------------------------
+   CSS Variables / Design Tokens
+   -------------------------------------------------------------------------- */
+:root {
+  /* Colors */
+  --color-navy: #1E1A5C;
+  --color-dark-blue: #041C66;
+  --color-green: #28D98E;
+  --color-green-alt: #1BDE8F;
+  --color-blue: #5294FF;
+  --color-dark-bg: #212844;
+  --color-text: #151875;
+  --color-text-secondary: #636270;
+  --color-light-blue: #B1D8FF;
+  --color-white: #FFFFFF;
+  --color-black: #000000;
+  --color-gray: #D9D9D9;
+
+  /* Typography */
+  --font-heading: 'Syne', sans-serif;
+  --font-body: 'Overpass', sans-serif;
+  --font-mono: 'Overpass Mono', monospace;
+  --font-product: 'DM Sans', sans-serif;
+  --font-accent: 'Poppins', sans-serif;
+
+  /* Shadows - Neobrutalist style */
+  --shadow-xs: 1px 1px 0px 0px var(--color-black);
+  --shadow-sm: 2px 2px 0px 0px var(--color-black);
+  --shadow-md: 4px 4px 0px 0px var(--color-black);
+  --shadow-lg: 6px 6px 0px 0px var(--color-black);
+  --shadow-xl: 8px 8px 0px 0px var(--color-black);
+  --shadow-navy: 6px 6px 0px 0px var(--color-navy);
+
+  /* Border Radius */
+  --radius-xs: 2px;
+  --radius-sm: 5px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+  --radius-pill: 30px;
+  --radius-full: 9999px;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-3xl: 64px;
+
+  /* Container */
+  --container-max: 1440px;
+  --container-padding: 24px;
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
+}
+
+/* --------------------------------------------------------------------------
+   Reset & Base Styles
+   -------------------------------------------------------------------------- */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
+* {
+  margin: 0;
+  padding: 0;
+}
+
 html {
-  font-size: var(--font-size-base);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
 }
 
 body {
-  margin: 0;
   font-family: var(--font-body);
-  color: var(--color-text);
-  background-color: var(--color-background);
-  line-height: 1.6;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-black);
+  background-color: var(--color-white);
+  min-height: 100vh;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
-  line-height: 1.2;
-  margin-top: 0;
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
 }
 
 a {
   color: inherit;
-  transition: color var(--transition-speed);
+  text-decoration: none;
 }
 
-img {
-  max-width: 100%;
+ul,
+ol {
+  list-style: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-text);
+}
+
+/* --------------------------------------------------------------------------
+   Utility Classes
+   -------------------------------------------------------------------------- */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-to-content-link:focus {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 9999;
+  padding: 10px 20px;
+  background: var(--color-navy);
+  color: var(--color-white);
+  clip: auto;
+  width: auto;
   height: auto;
-  display: block;
 }
-
-button {
-  font-family: inherit;
-}
-
-/* ==========================================================================
-   Layout
-   ========================================================================== */
 
 .container {
-  max-width: var(--container-max-width);
-  margin: 0 auto;
-  padding: 0 var(--container-padding);
+  width: 100%;
+  max-width: var(--container-max);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
 }
 
-.main-content {
-  min-height: 60vh;
+.flex {
+  display: flex;
 }
 
-/* ==========================================================================
-   Neo-Brutalist Utilities
-   ========================================================================== */
-
-/* Grid Background Pattern */
-.grid-bg {
-  background-image: var(--grid-pattern);
-  background-repeat: repeat;
+.flex-col {
+  flex-direction: column;
 }
 
-.grid-bg-overlay {
-  position: relative;
-}
-
-.grid-bg-overlay::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: var(--grid-pattern);
-  background-repeat: repeat;
-  opacity: 0.5;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Neo-Brutalist Box Shadows */
-.shadow-brutal {
-  box-shadow: var(--shadow-brutal-md);
-}
-
-.shadow-brutal-sm {
-  box-shadow: var(--shadow-brutal-sm);
-}
-
-.shadow-brutal-lg {
-  box-shadow: var(--shadow-brutal-lg);
-}
-
-.shadow-brutal-primary {
-  box-shadow: var(--shadow-brutal-primary);
-}
-
-.shadow-brutal-green {
-  box-shadow: var(--shadow-brutal-green);
-}
-
-.shadow-brutal-blue {
-  box-shadow: var(--shadow-brutal-blue);
-}
-
-/* Neo-Brutalist Borders */
-.border-brutal {
-  border: 1px solid var(--color-black);
-}
-
-.border-brutal-thick {
-  border: 2px solid var(--color-black);
-}
-
-/* Neo-Brutalist Cards */
-.card-brutal {
-  background: var(--color-white);
-  border: 1px solid var(--color-black);
-  border-radius: var(--border-radius-md);
-  box-shadow: var(--shadow-brutal-md);
-  overflow: hidden;
-}
-
-.card-brutal:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px 0px var(--color-black);
-}
-
-/* Neo-Brutalist Buttons */
-.btn-brutal {
-  display: inline-flex;
+.items-center {
   align-items: center;
+}
+
+.justify-center {
   justify-content: center;
-  padding: 0.5rem 1rem;
-  font-family: var(--font-body);
-  font-weight: var(--font-weight-medium);
-  font-size: 0.875rem;
-  text-decoration: none;
-  border: 1px solid var(--color-black);
-  border-radius: var(--border-radius-sm);
-  box-shadow: var(--shadow-brutal-sm);
-  cursor: pointer;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.btn-brutal:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0px 0px var(--color-black);
+.justify-between {
+  justify-content: space-between;
 }
 
-.btn-brutal:active {
-  transform: translate(0, 0);
-  box-shadow: none;
+.gap-sm {
+  gap: var(--spacing-sm);
 }
 
-.btn-brutal-primary {
-  background-color: var(--color-primary);
-  color: var(--color-white);
+.gap-md {
+  gap: var(--spacing-md);
 }
 
-.btn-brutal-accent {
-  background-color: var(--color-accent);
-  color: var(--color-black);
+.gap-lg {
+  gap: var(--spacing-lg);
 }
 
-.btn-brutal-blue {
-  background-color: var(--color-accent-blue);
-  color: var(--color-black);
+.gap-xl {
+  gap: var(--spacing-xl);
 }
 
-.btn-brutal-white {
-  background-color: var(--color-white);
-  color: var(--color-black);
+.text-center {
+  text-align: center;
 }
 
-/* Neo-Brutalist Pill Buttons */
-.btn-pill {
-  border-radius: var(--border-radius-pill);
-  padding: 0.5rem 1.5rem;
-}
-
-/* Feature Card Gradient */
-.gradient-blue {
-  background: var(--gradient-blue);
-}
-
-/* Text Shadow for Feature Cards */
-.text-shadow-dark {
-  text-shadow: 0.625px 0.625px 0px rgba(6, 24, 58, 0.97);
-}
-
-/* Typography Utilities */
+/* --------------------------------------------------------------------------
+   Typography Utilities
+   -------------------------------------------------------------------------- */
 .font-heading {
   font-family: var(--font-heading);
 }
@@ -207,164 +225,276 @@ button {
   font-family: var(--font-mono);
 }
 
-.font-display {
-  font-family: var(--font-display);
+.font-product {
+  font-family: var(--font-product);
 }
 
-.font-poppins {
-  font-family: var(--font-poppins);
+.font-accent {
+  font-family: var(--font-accent);
 }
 
-.font-roboto {
-  font-family: var(--font-roboto);
+.text-navy {
+  color: var(--color-navy);
 }
 
-/* Text Colors */
-.text-primary {
-  color: var(--color-primary);
+.text-green {
+  color: var(--color-green);
 }
 
-.text-accent {
-  color: var(--color-accent);
+.text-blue {
+  color: var(--color-blue);
 }
 
 .text-white {
   color: var(--color-white);
 }
 
-.text-light {
-  color: var(--color-text-light);
+.text-primary {
+  color: var(--color-text);
 }
 
-/* Background Colors */
-.bg-primary {
-  background-color: var(--color-primary);
+.text-secondary {
+  color: var(--color-text-secondary);
 }
 
-.bg-accent {
-  background-color: var(--color-accent);
-}
-
-.bg-white {
-  background-color: var(--color-white);
-}
-
-.bg-hero-dark {
-  background-color: var(--color-hero-dark);
-}
-
-/* ==========================================================================
-   Accessibility
-   ========================================================================== */
-
-.skip-to-content-link {
-  position: absolute;
-  top: -100px;
-  left: 0;
-  background-color: var(--color-primary);
-  color: white;
-  padding: 0.5rem 1rem;
-  text-decoration: none;
-  z-index: 9999;
-}
-
-.skip-to-content-link:focus {
-  top: 0;
-}
-
-/* ==========================================================================
-   Utility Classes
-   ========================================================================== */
-
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
-}
-
-.flex-center {
-  display: flex;
+/* --------------------------------------------------------------------------
+   Button Styles - Neobrutalist
+   -------------------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  padding: 8px 25px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1;
+  border: 1px solid var(--color-black);
+  border-radius: var(--radius-xs);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.text-center {
+.btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px 0px var(--color-black);
+}
+
+.btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px 0px var(--color-black);
+}
+
+.btn--primary {
+  background-color: var(--color-navy);
+  color: var(--color-white);
+}
+
+.btn--secondary {
+  background-color: var(--color-white);
+  color: var(--color-black);
+}
+
+.btn--green {
+  background-color: var(--color-green);
+  color: var(--color-black);
+}
+
+.btn--blue {
+  background-color: var(--color-blue);
+  color: var(--color-black);
+}
+
+.btn--icon {
+  padding: 8px;
+  border-radius: var(--radius-sm);
+}
+
+/* --------------------------------------------------------------------------
+   Card Styles - Neobrutalist
+   -------------------------------------------------------------------------- */
+.card {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-black);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.card--sm {
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+}
+
+.card--lg {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+/* --------------------------------------------------------------------------
+   Input Styles
+   -------------------------------------------------------------------------- */
+.input {
+  width: 100%;
+  padding: 10px 16px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-black);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-fast);
+}
+
+.input:focus {
+  outline: none;
+  box-shadow: var(--shadow-md);
+}
+
+.input--search {
+  border-radius: var(--radius-pill);
+}
+
+/* --------------------------------------------------------------------------
+   Tab Styles
+   -------------------------------------------------------------------------- */
+.tabs {
+  display: flex;
+  align-items: center;
+}
+
+.tab {
+  padding: 10px 25px;
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 400;
+  background-color: var(--color-white);
+  border: 0.6px solid var(--color-black);
+  box-shadow: 4px 4px 0px 0px var(--color-black);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.tab:first-child {
+  border-radius: 7px 0 0 7px;
+}
+
+.tab:last-child {
+  border-radius: 0 7px 7px 0;
+}
+
+.tab:hover,
+.tab.active {
+  color: var(--color-text);
+}
+
+.tab--pill {
+  border-radius: var(--radius-pill);
+  padding: 8px 21px;
+  font-size: 18px;
+  box-shadow: 3px 3px 0px 0px var(--color-black);
+}
+
+/* --------------------------------------------------------------------------
+   Section Styles
+   -------------------------------------------------------------------------- */
+.section {
+  padding: var(--spacing-3xl) 0;
+}
+
+.section__header {
   text-align: center;
+  margin-bottom: var(--spacing-2xl);
 }
 
-.uppercase {
-  text-transform: uppercase;
+.section__title {
+  font-size: 42px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--spacing-lg);
 }
 
-.capitalize {
-  text-transform: capitalize;
+.section__title--lg {
+  font-size: 48px;
 }
 
-/* ==========================================================================
-   Loading States
-   ========================================================================== */
-
-.loading {
-  opacity: 0.5;
-  pointer-events: none;
+/* --------------------------------------------------------------------------
+   Grid System
+   -------------------------------------------------------------------------- */
+.grid {
+  display: grid;
+  gap: var(--spacing-lg);
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+.grid--2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid--3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.grid--4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.grid--5 {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+/* --------------------------------------------------------------------------
+   Main Content
+   -------------------------------------------------------------------------- */
+.main-content {
+  min-height: 50vh;
+}
+
+/* --------------------------------------------------------------------------
+   Background Patterns
+   -------------------------------------------------------------------------- */
+.bg-grid-pattern {
+  background-image: 
+    linear-gradient(rgba(177, 216, 255, 0.42) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(177, 216, 255, 0.42) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+@media screen and (max-width: 1200px) {
+  .grid--5 {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
-.spinner {
-  width: 24px;
-  height: 24px;
-  border: 3px solid rgba(0, 0, 0, 0.1);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-}
-
-/* ==========================================================================
-   Marquee Animation
-   ========================================================================== */
-
-@keyframes marquee {
-  0% {
-    transform: translateX(0);
+@media screen and (max-width: 992px) {
+  .grid--4 {
+    grid-template-columns: repeat(2, 1fr);
   }
-  100% {
-    transform: translateX(-50%);
+  
+  .grid--3 {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
-
-.marquee-animate {
-  animation: marquee 20s linear infinite;
-}
-
-/* ==========================================================================
-   Responsive Media Queries
-   ========================================================================== */
 
 @media screen and (max-width: 768px) {
   :root {
-    --container-padding: 1rem;
+    --container-padding: 16px;
   }
-}
-
-@media screen and (min-width: 769px) and (max-width: 1024px) {
-  :root {
-    --container-padding: 2rem;
+  
+  .section {
+    padding: var(--spacing-2xl) 0;
   }
-}
-
-@media screen and (min-width: 1025px) {
-  :root {
-    --container-padding: 4rem;
+  
+  .section__title {
+    font-size: 32px;
+  }
+  
+  .grid--5,
+  .grid--4,
+  .grid--3,
+  .grid--2 {
+    grid-template-columns: 1fr;
   }
 }
