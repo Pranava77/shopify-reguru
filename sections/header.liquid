@@ -109,6 +109,21 @@
         {%- endif -%}
       </a>
 
+      <!-- Franchise Icon -->
+      {%- if section.settings.show_franchise -%}
+        <a href="{{ section.settings.franchise_url | default: '/pages/franchise' }}" class="header__franchise" aria-label="Franchise">
+          <svg width="37" height="38" viewBox="0 0 37 38" fill="none" xmlns="http://www.w3.org/2000/svg" class="header__franchise-svg">
+            <path d="M4 6H33V32H4V6Z" stroke="{{ icon_color_primary }}" stroke-width="2"/>
+            <path d="M4 14H33" stroke="{{ icon_color_primary }}" stroke-width="2"/>
+            <path d="M10 14V32" stroke="{{ icon_color_primary }}" stroke-width="2"/>
+            <path d="M18 14V32" stroke="{{ icon_color_primary }}" stroke-width="2"/>
+            <path d="M26 14V32" stroke="{{ icon_color_primary }}" stroke-width="2"/>
+            <circle cx="18.5" cy="10" r="2" fill="{{ icon_color_accent }}"/>
+            <path d="M12 20H15M20 20H23M28 20H31" stroke="{{ icon_color_primary }}" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </a>
+      {%- endif -%}
+
       <!-- Location Selector -->
       {%- if show_location -%}
         <div class="header__location">
@@ -337,6 +352,25 @@
   box-shadow: 1px 1px 0px 0px var(--color-black);
 }
 
+.header__franchise {
+  position: relative;
+  flex-shrink: 0;
+  width: 37px;
+  height: 38px;
+  color: var(--color-navy);
+  transition: transform var(--transition-fast);
+}
+
+.header__franchise:hover {
+  transform: scale(1.05);
+}
+
+.header__franchise svg,
+.header__franchise-svg {
+  width: 100%;
+  height: 100%;
+}
+
 /* Responsive Styles */
 @media screen and (max-width: 1200px) {
   .header__content {
@@ -464,6 +498,23 @@
       "label": "Icon Accent Color",
       "default": "#28D98E",
       "info": "Accent/fill color for icon details"
+    },
+    {
+      "type": "header",
+      "content": "Franchise Link"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_franchise",
+      "label": "Show Franchise Icon",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "franchise_url",
+      "label": "Franchise Page URL",
+      "default": "/pages/franchise",
+      "info": "URL to the franchise page"
     }
   ],
   "presets": [
