@@ -25,7 +25,7 @@
                   assign tab_handle = tab_collection_handle | handleize
                 endif
               else
-                assign tab_handle = 'tab-' | append: forloop.index
+                assign tab_handle = 'tab-' | append: block.id
               endif
             -%}
             <button 
@@ -56,9 +56,9 @@
               else
                 assign tab_handle = tab_collection_handle | handleize
               endif
-            else
-              assign tab_handle = 'tab-' | append: forloop.index
-            endif
+              else
+                assign tab_handle = 'tab-' | append: block.id
+              endif
           -%}
           <div 
             class="product-grid__items{% unless forloop.first %} hidden{% endunless %}" 
