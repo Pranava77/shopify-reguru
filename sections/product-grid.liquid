@@ -28,13 +28,21 @@
                 assign tab_handle = 'tab-' | append: block.id
               endif
             -%}
+            {%- liquid
+              assign tab_label = block.settings.label
+              if tab_label == blank and tab_collection != blank
+                assign tab_label = tab_collection.title
+              elsif tab_label == blank
+                assign tab_label = 'Category'
+              endif
+            -%}
             <button 
               type="button" 
               class="product-grid__tab tab{% if forloop.first %} active{% endif %}"
               data-tab-target="{{ tab_handle }}"
               {{ block.shopify_attributes }}
             >
-              {{ block.settings.label | default: tab_collection.title | default: 'Category' }}
+              {{ tab_label }}
             </button>
           {%- endfor -%}
         </div>
