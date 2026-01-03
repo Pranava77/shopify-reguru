@@ -53,20 +53,26 @@
         </form>
       {%- endif -%}
 
-      <!-- Franchise Icon -->
+      <!-- Cart/Franchise Icon -->
       {%- liquid
-        assign franchise_url = '/pages/franchise'
-        if section.settings.franchise_page != blank
-          assign franchise_url = section.settings.franchise_page.url
-        elsif section.settings.franchise_url != blank
-          assign franchise_url = section.settings.franchise_url
-        elsif pages['franchise'] != blank
-          assign franchise_url = pages['franchise'].url
-        elsif pages['Franchise'] != blank
-          assign franchise_url = pages['Franchise'].url
+        if icon_type == 'cart'
+          assign icon_url = routes.cart_url
+          assign icon_aria_label = 'Cart'
+        else
+          assign icon_url = '/pages/franchise'
+          if section.settings.franchise_page != blank
+            assign icon_url = section.settings.franchise_page.url
+          elsif section.settings.franchise_url != blank
+            assign icon_url = section.settings.franchise_url
+          elsif pages['franchise'] != blank
+            assign icon_url = pages['franchise'].url
+          elsif pages['Franchise'] != blank
+            assign icon_url = pages['Franchise'].url
+          endif
+          assign icon_aria_label = 'Franchise'
         endif
       -%}
-      <a href="{{ franchise_url }}" class="header__cart" aria-label="Franchise">
+      <a href="{{ icon_url }}" class="header__cart" aria-label="{{ icon_aria_label }}">
         {%- if custom_icon != blank -%}
           <img 
             src="{{ custom_icon | image_url: width: 74 }}" 
