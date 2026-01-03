@@ -4,7 +4,6 @@
   assign empty_cart_text = section.settings.empty_text | default: 'Continue shopping to add items to your cart.'
   assign continue_shopping_text = section.settings.continue_shopping_text | default: 'Continue Shopping'
   assign checkout_text = section.settings.checkout_text | default: 'Checkout'
-  assign update_text = section.settings.update_text | default: 'Update'
   
   # Calculate total item-level discounts
   assign total_item_discounts = 0
@@ -149,9 +148,6 @@
               </div>
 
               <div class="cart-summary__actions">
-                <button type="submit" name="update" class="btn btn--secondary cart-summary__update">
-                  {{ update_text }}
-                </button>
                 <button type="submit" name="checkout" class="btn btn--blue cart-summary__checkout">
                   {{ checkout_text }}
                 </button>
@@ -413,7 +409,7 @@
       }
     };
 
-    // Handle quantity changes
+    // Handle quantity changes via buttons
     const quantityButtons = cartForm.querySelectorAll('[data-increase-quantity], [data-decrease-quantity]');
     
     for (const button of quantityButtons) {
@@ -434,9 +430,11 @@
 
         if (newValue === currentValue) return;
 
+        // Update input value immediately for better UX
+        input.value = newValue;
+
         // Disable button during update
         button.disabled = true;
-        const originalText = button.textContent;
 
         try {
           const response = await fetch('/cart/change.js', {
@@ -464,6 +462,75 @@
           alert('Failed to update cart. Please try again.');
         } finally {
           button.disabled = false;
+        }
+      });
+    }
+
+    // Handle live quantity updates from input field
+    const quantityInputs = cartForm.querySelectorAll('.cart-item__quantity-input');
+    
+    for (const input of quantityInputs) {
+      // Store original value for error recovery
+      let originalValue = parseInt(input.value, 10) || 0;
+      
+      // Handle input change (when user types and leaves field)
+      input.addEventListener('change', async () => {
+        const key = input.getAttribute('data-key');
+        if (!key) return;
+
+        let newValue = parseInt(input.value, 10);
+        
+        // Validate and sanitize input
+        if (isNaN(newValue) || newValue < 0) {
+          newValue = 0;
+          input.value = 0;
+        }
+
+        // If value hasn't changed, do nothing
+        if (newValue === originalValue) return;
+
+        // Update original value for next change
+        const previousValue = originalValue;
+        originalValue = newValue;
+
+        // Disable input during update
+        input.disabled = true;
+
+        try {
+          const response = await fetch('/cart/change.js', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id: key,
+              quantity: newValue
+            })
+          });
+
+          if (response.ok) {
+            // Update cart without reload
+            await refreshCart();
+          } else {
+            const error = await response.json();
+            throw new Error(error.description || 'Failed to update cart');
+          }
+        } catch (error) {
+          console.error('Error updating cart:', error);
+          // Revert input value on error
+          input.value = previousValue;
+          originalValue = previousValue;
+          alert('Failed to update cart. Please try again.');
+        } finally {
+          input.disabled = false;
+        }
+      });
+
+      // Handle Enter key to prevent form submission
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          input.blur(); // Trigger change event
         }
       });
     }
@@ -521,6 +588,15 @@
         }
       });
     }
+
+    // Prevent form submission on Enter key (only allow checkout button)
+    cartForm.addEventListener('submit', (e) => {
+      const submitButton = e.submitter;
+      // Only allow checkout button to submit
+      if (!submitButton || submitButton.name !== 'checkout') {
+        e.preventDefault();
+      }
+    });
     };
     
     // Initialize when DOM is ready
@@ -827,7 +903,6 @@
   margin-top: 24px;
 }
 
-.cart-summary__update,
 .cart-summary__checkout {
   width: 100%;
   padding: 12px 24px;
@@ -959,12 +1034,6 @@
       "id": "checkout_text",
       "label": "Checkout Button Text",
       "default": "Checkout"
-    },
-    {
-      "type": "text",
-      "id": "update_text",
-      "label": "Update Button Text",
-      "default": "Update"
     }
   ],
   "presets": [
