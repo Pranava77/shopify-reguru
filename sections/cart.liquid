@@ -66,7 +66,6 @@
                       class="cart-item__quantity-btn" 
                       data-decrease-quantity
                       data-key="{{ item.key }}"
-                      data-variant-id="{{ item.variant_id }}"
                       aria-label="Decrease quantity"
                     >
                       <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -81,14 +80,12 @@
                       min="0" 
                       class="cart-item__quantity-input"
                       data-key="{{ item.key }}"
-                      data-variant-id="{{ item.variant_id }}"
                     >
                     <button 
                       type="button" 
                       class="cart-item__quantity-btn" 
                       data-increase-quantity
                       data-key="{{ item.key }}"
-                      data-variant-id="{{ item.variant_id }}"
                       aria-label="Increase quantity"
                     >
                       <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -107,7 +104,6 @@
                     class="cart-item__remove" 
                     data-remove-item
                     data-key="{{ item.key }}"
-                    data-variant-id="{{ item.variant_id }}"
                     aria-label="Remove {{ item.product.title }}"
                   >
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -413,6 +409,29 @@
       }
     };
 
+    // Update cart using Liquid form structure
+    const updateCart = async () => {
+      const formData = new FormData(cartForm);
+      
+      try {
+        const response = await fetch('/cart/update.js', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (response.ok) {
+          // Update cart without reload
+          await refreshCart();
+        } else {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.description || 'Failed to update cart');
+        }
+      } catch (error) {
+        console.error('Error updating cart:', error);
+        throw error;
+      }
+    };
+
     // Handle quantity changes via buttons
     const quantityButtons = cartForm.querySelectorAll('[data-increase-quantity], [data-decrease-quantity]');
     
@@ -420,9 +439,8 @@
       button.addEventListener('click', async (e) => {
         e.preventDefault();
         const key = button.getAttribute('data-key');
-        const variantId = button.getAttribute('data-variant-id');
         const input = cartForm.querySelector(`input[data-key="${key}"]`);
-        if (!input || !variantId) return;
+        if (!input) return;
 
         const currentValue = parseInt(input.value, 10) || 0;
         const isIncrease = button.hasAttribute('data-increase-quantity');
@@ -442,26 +460,8 @@
         button.disabled = true;
 
         try {
-          const response = await fetch('/cart/change.js', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              id: parseInt(variantId, 10),
-              quantity: newValue
-            })
-          });
-
-          if (response.ok) {
-            // Update cart without reload
-            await refreshCart();
-          } else {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.description || 'Failed to update cart');
-          }
+          await updateCart();
         } catch (error) {
-          console.error('Error updating cart:', error);
           // Revert input value on error
           input.value = currentValue;
           alert('Failed to update cart. Please try again.');
@@ -480,10 +480,6 @@
       
       // Handle input change (when user types and leaves field)
       input.addEventListener('change', async () => {
-        const key = input.getAttribute('data-key');
-        const variantId = input.getAttribute('data-variant-id');
-        if (!key || !variantId) return;
-
         let newValue = parseInt(input.value, 10);
         
         // Validate and sanitize input
@@ -503,26 +499,8 @@
         input.disabled = true;
 
         try {
-          const response = await fetch('/cart/change.js', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              id: parseInt(variantId, 10),
-              quantity: newValue
-            })
-          });
-
-          if (response.ok) {
-            // Update cart without reload
-            await refreshCart();
-          } else {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.description || 'Failed to update cart');
-          }
+          await updateCart();
         } catch (error) {
-          console.error('Error updating cart:', error);
           // Revert input value on error
           input.value = previousValue;
           originalValue = previousValue;
@@ -548,49 +526,38 @@
       button.addEventListener('click', async (e) => {
         e.preventDefault();
         const key = button.getAttribute('data-key');
-        const variantId = button.getAttribute('data-variant-id');
+        const input = cartForm.querySelector(`input[data-key="${key}"]`);
         const itemRow = cartForm.querySelector(`[data-line-item="${key}"]`);
 
-        if (!variantId) {
-          console.error('Variant ID missing for remove button');
-          return;
+        if (!input) return;
+
+        // Set quantity to 0 to remove item
+        const previousValue = parseInt(input.value, 10) || 0;
+        input.value = 0;
+
+        // Remove item row immediately for better UX
+        if (itemRow) {
+          itemRow.style.opacity = '0.5';
+          itemRow.style.transition = 'opacity 0.3s';
         }
 
         // Disable button during update
         button.disabled = true;
 
         try {
-          const response = await fetch('/cart/change.js', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              id: parseInt(variantId, 10),
-              quantity: 0
-            })
-          });
-
-          if (response.ok) {
-            // Remove item row immediately for better UX
-            if (itemRow) {
-              itemRow.style.opacity = '0.5';
-              itemRow.style.transition = 'opacity 0.3s';
-            }
-            
-            // Update cart
-            const cart = await refreshCart();
-            
-            // If cart is empty, reload to show empty state
-            if (!cart || !cart.items || cart.items.length === 0) {
-              location.reload();
-            }
-          } else {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.description || 'Failed to remove item');
+          await updateCart();
+          
+          // Update cart
+          const cart = await refreshCart();
+          
+          // If cart is empty, reload to show empty state
+          if (!cart || !cart.items || cart.items.length === 0) {
+            location.reload();
           }
         } catch (error) {
           console.error('Error removing item:', error);
+          // Revert input value on error
+          input.value = previousValue;
           if (itemRow) {
             itemRow.style.opacity = '1';
           }
