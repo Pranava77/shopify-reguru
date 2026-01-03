@@ -13,9 +13,15 @@ class ThemeUtils {
   }
 
   #setupEventListeners() {
-    document.addEventListener('DOMContentLoaded', () => {
+    // Handle both cases: script loaded before or after DOMContentLoaded
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        this.#initializeComponents();
+      });
+    } else {
+      // DOM already loaded
       this.#initializeComponents();
-    });
+    }
   }
 
   #initializeComponents() {
@@ -33,6 +39,15 @@ class ThemeUtils {
     
     // Initialize product grid tabs
     this.#initProductGridTabs();
+    
+    // Initialize cart functionality
+    this.#initCart();
+    
+    // Initialize FAQ tabs
+    this.#initFaqTabs();
+    
+    // Initialize cart count on page load
+    this.#updateCartCount();
   }
 
   #initAccordions() {
@@ -229,6 +244,215 @@ class ThemeUtils {
             console.warn(`No container found for tab target: ${targetHandle}`);
           }
         });
+      }
+    }
+  }
+
+  #initCart() {
+    // Handle add to cart buttons
+    const addToCartButtons = document.querySelectorAll('[data-add-to-cart]');
+    
+    for (const button of addToCartButtons) {
+      button.addEventListener('click', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const variantId = button.getAttribute('data-variant-id');
+        if (!variantId) {
+          console.warn('Add to cart button missing variant ID');
+          return;
+        }
+        
+        // Disable button during request
+        const originalText = button.textContent;
+        button.disabled = true;
+        button.textContent = 'Adding...';
+        
+        try {
+          const response = await fetch('/cart/add.js', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id: variantId,
+              quantity: 1
+            })
+          });
+          
+          if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.description || 'Failed to add item to cart');
+          }
+          
+          // Optimistic UI update - update cart count
+          this.#updateCartCount();
+          
+          // Reset button state
+          button.disabled = false;
+          button.textContent = originalText;
+          
+          // Optional: Show success message or open cart drawer
+          this.#showCartNotification('Item added to cart');
+          
+        } catch (error) {
+          console.error('Error adding to cart:', error);
+          button.disabled = false;
+          button.textContent = originalText;
+          alert('Failed to add item to cart. Please try again.');
+        }
+      });
+    }
+    
+    // Handle buy now buttons - redirect to product page
+    const buyNowButtons = document.querySelectorAll('[data-product-id]');
+    
+    for (const button of buyNowButtons) {
+      // Skip if it's an add to cart button
+      if (button.hasAttribute('data-add-to-cart')) continue;
+      
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const productId = button.getAttribute('data-product-id');
+        if (!productId) {
+          console.warn('Buy now button missing product ID');
+          return;
+        }
+        
+        // Find the product card link to get the product URL
+        const productCard = button.closest('.product-card');
+        if (productCard) {
+          const productLink = productCard.querySelector('.product-card__link');
+          if (productLink && productLink.href) {
+            window.location.href = productLink.href;
+          }
+        }
+      });
+    }
+  }
+
+  #updateCartCount() {
+    // Fetch current cart and update cart count display
+    fetch('/cart.js')
+      .then(response => response.json())
+      .then(cart => {
+        const cartCount = cart.item_count || 0;
+        const cartCountElements = document.querySelectorAll('[data-cart-count]');
+        
+        for (const element of cartCountElements) {
+          element.textContent = cartCount;
+        }
+        
+        // Dispatch custom event for other components
+        document.dispatchEvent(new CustomEvent('cart:updated', {
+          detail: { cart }
+        }));
+      })
+      .catch(error => {
+        console.error('Error fetching cart:', error);
+      });
+  }
+
+  #showCartNotification(message) {
+    // Simple notification - can be enhanced with a toast component
+    const notification = document.createElement('div');
+    notification.textContent = message;
+    notification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--color-blue, #3B68AC);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 4px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      z-index: 10000;
+      font-family: var(--font-body, sans-serif);
+      font-size: 14px;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+      notification.style.opacity = '0';
+      notification.style.transition = 'opacity 0.3s';
+      setTimeout(() => {
+        document.body.removeChild(notification);
+      }, 300);
+    }, 2000);
+  }
+
+  #initFaqTabs() {
+    const faqSections = document.querySelectorAll('.faq');
+    
+    for (const section of faqSections) {
+      const tabs = section.querySelectorAll('.faq__tab');
+      const faqItemContainers = section.querySelectorAll('[data-tab-id]');
+      
+      if (tabs.length === 0) continue;
+      
+      const filterFaqItems = (tabId) => {
+        let hasVisibleItems = false;
+        
+        for (const container of faqItemContainers) {
+          const containerTabId = container.getAttribute('data-tab-id');
+          
+          if (containerTabId === tabId) {
+            container.style.display = '';
+            hasVisibleItems = true;
+          } else {
+            container.style.display = 'none';
+          }
+        }
+        
+        // If no items match and we have default tabs, show all items with 'general' or no tab
+        if (!hasVisibleItems && (tabId === 'general' || !tabId)) {
+          for (const container of faqItemContainers) {
+            const containerTabId = container.getAttribute('data-tab-id');
+            if (!containerTabId || containerTabId === 'general') {
+              container.style.display = '';
+            }
+          }
+        }
+      };
+      
+      for (const tab of tabs) {
+        tab.addEventListener('click', (e) => {
+          e.preventDefault();
+          
+          const tabId = tab.getAttribute('data-tab-id');
+          if (!tabId) return;
+          
+          // Remove active class from all tabs
+          for (const t of tabs) {
+            t.classList.remove('active');
+          }
+          
+          // Add active class to clicked tab
+          tab.classList.add('active');
+          
+          // Filter FAQ items based on tab
+          filterFaqItems(tabId);
+        });
+      }
+      
+      // Initialize: show items for the first active tab
+      const activeTab = section.querySelector('.faq__tab.active');
+      if (activeTab) {
+        const activeTabId = activeTab.getAttribute('data-tab-id');
+        if (activeTabId) {
+          filterFaqItems(activeTabId);
+        }
+      } else if (tabs.length > 0) {
+        // If no tab is active, activate the first one
+        const firstTab = tabs[0];
+        firstTab.classList.add('active');
+        const firstTabId = firstTab.getAttribute('data-tab-id');
+        if (firstTabId) {
+          filterFaqItems(firstTabId);
+        }
       }
     }
   }

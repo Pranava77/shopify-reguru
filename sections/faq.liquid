@@ -33,34 +33,41 @@
 
       <div class="faq__content">
         {%- assign faq_index = 0 -%}
+        {%- assign current_tab_id = blank -%}
         {%- for block in section.blocks -%}
-          {%- if block.type == 'faq_item' -%}
+          {%- if block.type == 'tab' -%}
+            {%- assign current_tab_id = block.id -%}
+          {%- elsif block.type == 'faq_item' -%}
             {%- assign faq_index = faq_index | plus: 1 -%}
-            {%- render 'faq-item',
-              index: faq_index,
-              question: block.settings.question,
-              answer: block.settings.answer
-            -%}
+            <div data-tab-id="{{ current_tab_id | default: 'general' }}">
+              {%- render 'faq-item',
+                index: faq_index,
+                question: block.settings.question,
+                answer: block.settings.answer
+              -%}
+            </div>
           {%- endif -%}
         {%- endfor -%}
 
         {%- if section.blocks.size == 0 -%}
           {%- assign default_faqs = 'Do ReGuru products come with warranty?|What is the return policy for ReGuru products?|Do ReGuru products come with warranty?' | split: '|' -%}
           {%- for faq in default_faqs -%}
-            <details class="faq__item">
-              <summary class="faq__question">
-                <span class="faq__number">0{{ forloop.index }}</span>
-                <span class="faq__question-text">{{ faq }}</span>
-                <span class="faq__icon">
-                  <svg width="41" height="43" viewBox="0 0 41 43" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M10 17L20.5 27L31 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </span>
-              </summary>
-              <div class="faq__answer">
-                <p>Yes, all ReGuru products come with a comprehensive warranty. Our refurbished electronics are thoroughly tested and certified, ensuring quality and reliability. Specific warranty terms vary by product category.</p>
-              </div>
-            </details>
+            <div data-tab-id="general">
+              <details class="faq__item">
+                <summary class="faq__question">
+                  <span class="faq__number">0{{ forloop.index }}</span>
+                  <span class="faq__question-text">{{ faq }}</span>
+                  <span class="faq__icon">
+                    <svg width="41" height="43" viewBox="0 0 41 43" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M10 17L20.5 27L31 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </span>
+                </summary>
+                <div class="faq__answer">
+                  <p>Yes, all ReGuru products come with a comprehensive warranty. Our refurbished electronics are thoroughly tested and certified, ensuring quality and reliability. Specific warranty terms vary by product category.</p>
+                </div>
+              </details>
+            </div>
           {%- endfor -%}
         {%- endif -%}
       </div>

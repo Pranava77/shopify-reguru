@@ -83,6 +83,7 @@
             <circle cx="13" cy="32" r="3" fill="{{ icon_color_accent }}"/>
             <circle cx="27" cy="32" r="3" fill="{{ icon_color_accent }}"/>
           </svg>
+          <span class="header__cart-count" data-cart-count>{{ cart.item_count }}</span>
         {%- elsif icon_type == 'store' -%}
           <!-- Store/Shop Icon -->
           <svg width="37" height="38" viewBox="0 0 37 38" fill="none" xmlns="http://www.w3.org/2000/svg" class="header__cart-svg">
