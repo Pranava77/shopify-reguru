@@ -222,7 +222,7 @@
           "type": "category_tab",
           "settings": {
             "label": "Headphone",
-            "collection": ""
+            "collection": "headphone"
           }
         },
         "category_tab_34p9UV": {
