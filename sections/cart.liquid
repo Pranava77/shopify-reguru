@@ -66,6 +66,7 @@
                       class="cart-item__quantity-btn" 
                       data-decrease-quantity
                       data-key="{{ item.key }}"
+                      data-variant-id="{{ item.variant_id }}"
                       aria-label="Decrease quantity"
                     >
                       <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -80,12 +81,14 @@
                       min="0" 
                       class="cart-item__quantity-input"
                       data-key="{{ item.key }}"
+                      data-variant-id="{{ item.variant_id }}"
                     >
                     <button 
                       type="button" 
                       class="cart-item__quantity-btn" 
                       data-increase-quantity
                       data-key="{{ item.key }}"
+                      data-variant-id="{{ item.variant_id }}"
                       aria-label="Increase quantity"
                     >
                       <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -104,6 +107,7 @@
                     class="cart-item__remove" 
                     data-remove-item
                     data-key="{{ item.key }}"
+                    data-variant-id="{{ item.variant_id }}"
                     aria-label="Remove {{ item.product.title }}"
                   >
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -416,8 +420,9 @@
       button.addEventListener('click', async (e) => {
         e.preventDefault();
         const key = button.getAttribute('data-key');
+        const variantId = button.getAttribute('data-variant-id');
         const input = cartForm.querySelector(`input[data-key="${key}"]`);
-        if (!input) return;
+        if (!input || !variantId) return;
 
         const currentValue = parseInt(input.value, 10) || 0;
         const isIncrease = button.hasAttribute('data-increase-quantity');
@@ -443,7 +448,7 @@
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              id: key,
+              id: parseInt(variantId, 10),
               quantity: newValue
             })
           });
@@ -452,8 +457,8 @@
             // Update cart without reload
             await refreshCart();
           } else {
-            const error = await response.json();
-            throw new Error(error.description || 'Failed to update cart');
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.description || 'Failed to update cart');
           }
         } catch (error) {
           console.error('Error updating cart:', error);
@@ -476,7 +481,8 @@
       // Handle input change (when user types and leaves field)
       input.addEventListener('change', async () => {
         const key = input.getAttribute('data-key');
-        if (!key) return;
+        const variantId = input.getAttribute('data-variant-id');
+        if (!key || !variantId) return;
 
         let newValue = parseInt(input.value, 10);
         
@@ -503,7 +509,7 @@
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              id: key,
+              id: parseInt(variantId, 10),
               quantity: newValue
             })
           });
@@ -512,8 +518,8 @@
             // Update cart without reload
             await refreshCart();
           } else {
-            const error = await response.json();
-            throw new Error(error.description || 'Failed to update cart');
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.description || 'Failed to update cart');
           }
         } catch (error) {
           console.error('Error updating cart:', error);
@@ -542,7 +548,13 @@
       button.addEventListener('click', async (e) => {
         e.preventDefault();
         const key = button.getAttribute('data-key');
+        const variantId = button.getAttribute('data-variant-id');
         const itemRow = cartForm.querySelector(`[data-line-item="${key}"]`);
+
+        if (!variantId) {
+          console.error('Variant ID missing for remove button');
+          return;
+        }
 
         // Disable button during update
         button.disabled = true;
@@ -554,7 +566,7 @@
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              id: key,
+              id: parseInt(variantId, 10),
               quantity: 0
             })
           });
@@ -574,8 +586,8 @@
               location.reload();
             }
           } else {
-            const error = await response.json();
-            throw new Error(error.description || 'Failed to remove item');
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.description || 'Failed to remove item');
           }
         } catch (error) {
           console.error('Error removing item:', error);
