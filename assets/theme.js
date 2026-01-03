@@ -249,7 +249,7 @@ class ThemeUtils {
   }
 
   #initCart() {
-    // Handle add to cart buttons
+    // Handle add to cart buttons - add to cart and redirect
     const addToCartButtons = document.querySelectorAll('[data-add-to-cart]');
     
     for (const button of addToCartButtons) {
@@ -288,12 +288,8 @@ class ThemeUtils {
           // Optimistic UI update - update cart count
           this.#updateCartCount();
           
-          // Reset button state
-          button.disabled = false;
-          button.textContent = originalText;
-          
-          // Optional: Show success message or open cart drawer
-          this.#showCartNotification('Item added to cart');
+          // Redirect to cart page
+          window.location.href = '/cart';
           
         } catch (error) {
           console.error('Error adding to cart:', error);
@@ -304,30 +300,53 @@ class ThemeUtils {
       });
     }
     
-    // Handle buy now buttons - redirect to product page
-    const buyNowButtons = document.querySelectorAll('[data-product-id]');
+    // Handle buy now buttons - add to cart and redirect
+    const buyNowButtons = document.querySelectorAll('[data-buy-now]');
     
     for (const button of buyNowButtons) {
-      // Skip if it's an add to cart button
-      if (button.hasAttribute('data-add-to-cart')) continue;
-      
-      button.addEventListener('click', (e) => {
+      button.addEventListener('click', async (e) => {
         e.preventDefault();
         e.stopPropagation();
         
-        const productId = button.getAttribute('data-product-id');
-        if (!productId) {
-          console.warn('Buy now button missing product ID');
+        const variantId = button.getAttribute('data-variant-id');
+        if (!variantId) {
+          console.warn('Buy now button missing variant ID');
           return;
         }
         
-        // Find the product card link to get the product URL
-        const productCard = button.closest('.product-card');
-        if (productCard) {
-          const productLink = productCard.querySelector('.product-card__link');
-          if (productLink && productLink.href) {
-            window.location.href = productLink.href;
+        // Disable button during request
+        const originalText = button.textContent;
+        button.disabled = true;
+        button.textContent = 'Adding...';
+        
+        try {
+          const response = await fetch('/cart/add.js', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id: variantId,
+              quantity: 1
+            })
+          });
+          
+          if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.description || 'Failed to add item to cart');
           }
+          
+          // Optimistic UI update - update cart count
+          this.#updateCartCount();
+          
+          // Redirect to cart page
+          window.location.href = '/cart';
+          
+        } catch (error) {
+          console.error('Error adding to cart:', error);
+          button.disabled = false;
+          button.textContent = originalText;
+          alert('Failed to add item to cart. Please try again.');
         }
       });
     }
