@@ -62,7 +62,7 @@
           "settings": {
             "title": "New Arrivals",
             "link": "",
-            "enable_mega_dropdown": false,
+            "enable_mega_dropdown": true,
             "dropdown_columns": "3",
             "column_1_title": "",
             "menu_1": "",
@@ -88,7 +88,7 @@
             "title": "Sale",
             "link": "",
             "badge": "Hot",
-            "badge_style": "sale"
+            "badge_style": "new"
           }
         },
         "separator_4BCrbd": {
