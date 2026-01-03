@@ -191,8 +191,13 @@ class ThemeUtils {
     const productGrids = document.querySelectorAll('.product-grid');
     
     for (const grid of productGrids) {
-      const tabs = grid.querySelectorAll('.product-grid__tab');
-      const productContainers = grid.querySelectorAll('[data-tab-content]');
+      const tabsContainer = grid.querySelector('[data-product-grid-tabs]');
+      const contentContainer = grid.querySelector('[data-product-grid-content]');
+      
+      if (!tabsContainer || !contentContainer) continue;
+      
+      const tabs = tabsContainer.querySelectorAll('.product-grid__tab');
+      const productContainers = contentContainer.querySelectorAll('[data-tab-content]');
       
       // Only initialize if we have both tabs and containers
       if (tabs.length === 0 || productContainers.length === 0) continue;
@@ -217,6 +222,7 @@ class ThemeUtils {
           e.stopPropagation();
           
           const targetHandle = tab.getAttribute('data-tab-target');
+          const tabIndex = tab.getAttribute('data-tab-index');
           
           if (!targetHandle) {
             console.warn('Tab missing data-tab-target attribute');
@@ -236,10 +242,25 @@ class ThemeUtils {
             container.classList.add('hidden');
           }
           
-          // Show the target product container
-          const targetContainer = grid.querySelector(`[data-tab-content="${targetHandle}"]`);
+          // Show the target product container - try by handle first, then by index
+          let targetContainer = contentContainer.querySelector(`[data-tab-content="${targetHandle}"]`);
+          
+          // Fallback: if not found by handle, try by index
+          if (!targetContainer && tabIndex !== null) {
+            targetContainer = contentContainer.querySelector(`[data-tab-index="${tabIndex}"]`);
+          }
+          
           if (targetContainer) {
             targetContainer.classList.remove('hidden');
+            
+            // Smooth scroll to top of product grid if needed
+            const gridTop = grid.getBoundingClientRect().top + window.pageYOffset;
+            if (window.pageYOffset > gridTop) {
+              window.scrollTo({
+                top: gridTop - 100,
+                behavior: 'smooth'
+              });
+            }
           } else {
             console.warn(`No container found for tab target: ${targetHandle}`);
           }

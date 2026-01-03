@@ -10,14 +10,14 @@
       <h2 class="product-grid__title section__title">{{ section_title }}</h2>
       
       {%- if section.blocks.size > 0 -%}
-        <div class="product-grid__tabs tabs">
+        <div class="product-grid__tabs tabs" data-product-grid-tabs>
           {%- for block in section.blocks -%}
             {%- liquid
               assign tab_collection_handle = block.settings.collection
               assign tab_collection = blank
               assign tab_handle = ''
               
-              if tab_collection_handle != blank
+              if tab_collection_handle != blank and tab_collection_handle != ''
                 assign tab_collection = collections[tab_collection_handle]
                 if tab_collection != blank
                   assign tab_handle = tab_collection.handle
@@ -40,6 +40,7 @@
               type="button" 
               class="product-grid__tab tab{% if forloop.first %} active{% endif %}"
               data-tab-target="{{ tab_handle }}"
+              data-tab-index="{{ forloop.index0 }}"
               {{ block.shopify_attributes }}
             >
               {{ tab_label }}
@@ -49,7 +50,7 @@
       {%- endif -%}
     </div>
 
-    <div class="product-grid__content">
+    <div class="product-grid__content" data-product-grid-content>
       {%- if section.blocks.size > 0 -%}
         {%- for block in section.blocks -%}
           {%- liquid
@@ -57,7 +58,7 @@
             assign tab_collection = blank
             assign tab_handle = ''
             
-            if tab_collection_handle != blank
+            if tab_collection_handle != blank and tab_collection_handle != ''
               assign tab_collection = collections[tab_collection_handle]
               if tab_collection != blank
                 assign tab_handle = tab_collection.handle
@@ -71,6 +72,7 @@
           <div 
             class="product-grid__items{% unless forloop.first %} hidden{% endunless %}" 
             data-tab-content="{{ tab_handle }}"
+            data-tab-index="{{ forloop.index0 }}"
             {{ block.shopify_attributes }}
           >
             {%- if tab_collection != blank and tab_collection.products.size > 0 -%}
