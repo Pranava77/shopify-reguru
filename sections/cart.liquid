@@ -182,8 +182,13 @@
 
 <script>
   (function() {
-    const cartForm = document.getElementById('cart-form');
-    if (!cartForm) return;
+    // Wait for DOM to be ready
+    const initCart = () => {
+      const cartForm = document.getElementById('cart-form');
+      if (!cartForm) {
+        console.warn('Cart form not found');
+        return;
+      }
 
     // Format money value - matches Shopify's money format
     const formatMoney = (cents) => {
@@ -410,6 +415,7 @@
 
     // Handle quantity changes
     const quantityButtons = cartForm.querySelectorAll('[data-increase-quantity], [data-decrease-quantity]');
+    console.log('Found quantity buttons:', quantityButtons.length);
     
     for (const button of quantityButtons) {
       button.addEventListener('click', async (e) => {
@@ -465,6 +471,7 @@
 
     // Handle remove item
     const removeButtons = cartForm.querySelectorAll('[data-remove-item]');
+    console.log('Found remove buttons:', removeButtons.length);
     
     for (const button of removeButtons) {
       button.addEventListener('click', async (e) => {
@@ -515,6 +522,14 @@
           button.disabled = false;
         }
       });
+    };
+    
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initCart);
+    } else {
+      // DOM already loaded
+      initCart();
     }
   })();
 </script>
