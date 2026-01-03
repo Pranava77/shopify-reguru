@@ -5,6 +5,14 @@
   assign continue_shopping_text = section.settings.continue_shopping_text | default: 'Continue Shopping'
   assign checkout_text = section.settings.checkout_text | default: 'Checkout'
   assign update_text = section.settings.update_text | default: 'Update'
+  
+  # Calculate total item-level discounts
+  assign total_item_discounts = 0
+  for item in cart.items
+    if item.discount_allocated_amount > 0
+      assign total_item_discounts = total_item_discounts | plus: item.discount_allocated_amount
+    endif
+  endfor
 -%}
 
 <section class="cart bg-grid-pattern">
@@ -114,23 +122,30 @@
               
               <div class="cart-summary__row">
                 <span class="cart-summary__label">Subtotal</span>
-                <span class="cart-summary__value">{{ cart.items_subtotal_price | money }}</span>
+                <span class="cart-summary__value" data-cart-subtotal>{{ cart.items_subtotal_price | money }}</span>
               </div>
+
+              {%- if total_item_discounts > 0 -%}
+                <div class="cart-summary__row cart-summary__row--discount">
+                  <span class="cart-summary__label">Item Discounts</span>
+                  <span class="cart-summary__value" data-cart-item-discounts>-{{ total_item_discounts | money }}</span>
+                </div>
+              {%- endif -%}
 
               {%- if cart.cart_level_discount_applications.size > 0 -%}
                 {%- for discount in cart.cart_level_discount_applications -%}
-                  <div class="cart-summary__row cart-summary__row--discount">
+                  <div class="cart-summary__row cart-summary__row--discount" data-cart-discount-row>
                     <span class="cart-summary__label">
                       Discount ({{ discount.title }})
                     </span>
-                    <span class="cart-summary__value">-{{ discount.total_allocated_amount | money }}</span>
+                    <span class="cart-summary__value" data-cart-discount-amount>-{{ discount.total_allocated_amount | money }}</span>
                   </div>
                 {%- endfor -%}
               {%- endif -%}
 
               <div class="cart-summary__row cart-summary__row--total">
                 <span class="cart-summary__label">Total</span>
-                <span class="cart-summary__value">{{ cart.total_price | money }}</span>
+                <span class="cart-summary__value" data-cart-total>{{ cart.total_price | money }}</span>
               </div>
 
               <div class="cart-summary__actions">
@@ -170,6 +185,229 @@
     const cartForm = document.getElementById('cart-form');
     if (!cartForm) return;
 
+    // Format money value - matches Shopify's money format
+    const formatMoney = (cents) => {
+      if (typeof cents !== 'number' || isNaN(cents)) {
+        return '$0.00';
+      }
+      
+      // Handle negative values
+      const isNegative = cents < 0;
+      const absCents = Math.abs(cents);
+      
+      // Convert cents to dollars
+      const dollars = absCents / 100;
+      const formatted = dollars.toFixed(2);
+      
+      // Add currency symbol and formatting
+      // This matches Shopify's default USD format, adjust if needed for other currencies
+      return isNegative ? `-$${formatted}` : `$${formatted}`;
+    };
+
+    // Update cart summary with new cart data
+    const updateCartSummary = (cart) => {
+      if (!cart) {
+        console.warn('Cart data is missing');
+        return;
+      }
+      
+      if (!cart.items || cart.items.length === 0) {
+        // Cart is empty, reload to show empty state
+        location.reload();
+        return;
+      }
+
+      // Calculate item-level discounts
+      let totalItemDiscounts = 0;
+      for (const item of cart.items) {
+        if (item.discount_allocated_amount && item.discount_allocated_amount > 0) {
+          totalItemDiscounts += item.discount_allocated_amount;
+        }
+      }
+
+      // Calculate cart-level discounts
+      let cartDiscountTotal = 0;
+      if (cart.cart_level_discount_applications) {
+        for (const discount of cart.cart_level_discount_applications) {
+          if (discount.total_allocated_amount) {
+            cartDiscountTotal += discount.total_allocated_amount;
+          }
+        }
+      }
+
+      // Update subtotal
+      const subtotalEl = cartForm.querySelector('[data-cart-subtotal]');
+      if (subtotalEl && cart.items_subtotal_price !== undefined) {
+        subtotalEl.textContent = formatMoney(cart.items_subtotal_price);
+      }
+
+      // Update item discounts
+      const itemDiscountsEl = cartForm.querySelector('[data-cart-item-discounts]');
+      const itemDiscountsRow = itemDiscountsEl?.closest('.cart-summary__row');
+      if (totalItemDiscounts > 0) {
+        if (!itemDiscountsRow) {
+          // Create item discounts row if it doesn't exist
+          const subtotalRow = cartForm.querySelector('[data-cart-subtotal]')?.closest('.cart-summary__row');
+          if (subtotalRow) {
+            const newRow = document.createElement('div');
+            newRow.className = 'cart-summary__row cart-summary__row--discount';
+            newRow.innerHTML = `
+              <span class="cart-summary__label">Item Discounts</span>
+              <span class="cart-summary__value" data-cart-item-discounts>-${formatMoney(totalItemDiscounts)}</span>
+            `;
+            subtotalRow.after(newRow);
+          }
+        } else if (itemDiscountsEl) {
+          itemDiscountsEl.textContent = `-${formatMoney(totalItemDiscounts)}`;
+        }
+      } else if (itemDiscountsRow) {
+        itemDiscountsRow.remove();
+      }
+
+      // Update cart-level discounts
+      const existingDiscountRows = cartForm.querySelectorAll('[data-cart-discount-row]');
+      existingDiscountRows.forEach(row => row.remove());
+
+      if (cart.cart_level_discount_applications && cart.cart_level_discount_applications.length > 0) {
+        const itemDiscountsRow = cartForm.querySelector('[data-cart-item-discounts]')?.closest('.cart-summary__row');
+        const insertAfter = itemDiscountsRow || cartForm.querySelector('[data-cart-subtotal]')?.closest('.cart-summary__row');
+        
+        for (const discount of cart.cart_level_discount_applications) {
+          if (discount.total_allocated_amount) {
+            const newRow = document.createElement('div');
+            newRow.className = 'cart-summary__row cart-summary__row--discount';
+            newRow.setAttribute('data-cart-discount-row', '');
+            newRow.innerHTML = `
+              <span class="cart-summary__label">Discount (${discount.title || 'Discount'})</span>
+              <span class="cart-summary__value" data-cart-discount-amount>-${formatMoney(discount.total_allocated_amount)}</span>
+            `;
+            if (insertAfter) {
+              insertAfter.after(newRow);
+            }
+          }
+        }
+      }
+
+      // Update total
+      const totalEl = cartForm.querySelector('[data-cart-total]');
+      if (totalEl && cart.total_price !== undefined) {
+        totalEl.textContent = formatMoney(cart.total_price);
+      }
+
+      // Verification: Check if calculated total matches Shopify's total
+      const subtotal = cart.items_subtotal_price || 0;
+      const expectedTotal = subtotal - totalItemDiscounts - cartDiscountTotal;
+      const actualTotal = cart.total_price || 0;
+      const difference = Math.abs(expectedTotal - actualTotal);
+      
+      // Log warning if there's a significant difference (more than 1 cent)
+      // Note: Small differences might occur due to rounding, but we log for debugging
+      if (difference > 1) {
+        console.warn('Cart total mismatch detected:', {
+          subtotal: subtotal,
+          itemDiscounts: totalItemDiscounts,
+          cartDiscounts: cartDiscountTotal,
+          expected: expectedTotal,
+          actual: actualTotal,
+          difference: difference
+        });
+      }
+      
+      // Ensure we never display negative totals (shouldn't happen, but safety check)
+      if (actualTotal < 0) {
+        console.error('Cart total is negative, this should not happen');
+      }
+    };
+
+    // Update individual cart items
+    const updateCartItems = (cart) => {
+      if (!cart || !cart.items || cart.items.length === 0) {
+        return;
+      }
+
+      for (const cartItem of cart.items) {
+        const itemRow = cartForm.querySelector(`[data-line-item="${cartItem.key}"]`);
+        if (!itemRow) continue;
+
+        // Update quantity input
+        const quantityInput = itemRow.querySelector(`input[data-key="${cartItem.key}"]`);
+        if (quantityInput) {
+          quantityInput.value = cartItem.quantity;
+        }
+
+        // Update item total
+        const itemTotalEl = itemRow.querySelector('.cart-item__total-amount');
+        if (itemTotalEl && cartItem.final_line_price !== undefined) {
+          itemTotalEl.textContent = formatMoney(cartItem.final_line_price);
+        }
+
+        // Update item price
+        const priceFinalEl = itemRow.querySelector('.cart-item__price-final');
+        if (priceFinalEl && cartItem.final_price !== undefined) {
+          priceFinalEl.textContent = formatMoney(cartItem.final_price);
+        }
+
+        // Update original price if discounted
+        if (cartItem.original_line_price !== cartItem.final_line_price) {
+          let priceOriginalEl = itemRow.querySelector('.cart-item__price-original');
+          if (!priceOriginalEl && cartItem.original_price) {
+            const priceContainer = itemRow.querySelector('.cart-item__price');
+            if (priceContainer) {
+              priceOriginalEl = document.createElement('span');
+              priceOriginalEl.className = 'cart-item__price-original';
+              const priceFinal = priceContainer.querySelector('.cart-item__price-final');
+              if (priceFinal) {
+                priceContainer.insertBefore(priceOriginalEl, priceFinal);
+              }
+            }
+          }
+          if (priceOriginalEl && cartItem.original_price) {
+            priceOriginalEl.textContent = formatMoney(cartItem.original_price);
+          }
+        } else {
+          const priceOriginalEl = itemRow.querySelector('.cart-item__price-original');
+          if (priceOriginalEl) {
+            priceOriginalEl.remove();
+          }
+        }
+      }
+
+      // Remove items that are no longer in cart
+      const allItemRows = cartForm.querySelectorAll('[data-line-item]');
+      const cartItemKeys = new Set(cart.items.map(item => item.key));
+      for (const row of allItemRows) {
+        const itemKey = row.getAttribute('data-line-item');
+        if (!cartItemKeys.has(itemKey)) {
+          row.remove();
+        }
+      }
+    };
+
+    // Fetch and update cart
+    const refreshCart = async () => {
+      try {
+        const response = await fetch('/cart.js');
+        if (!response.ok) {
+          throw new Error(`Failed to fetch cart: ${response.status} ${response.statusText}`);
+        }
+        const cart = await response.json();
+        
+        // Validate cart data structure
+        if (!cart || typeof cart !== 'object') {
+          throw new Error('Invalid cart data received');
+        }
+        
+        updateCartSummary(cart);
+        updateCartItems(cart);
+        return cart;
+      } catch (error) {
+        console.error('Error refreshing cart:', error);
+        // Fallback to page reload on error to ensure consistency
+        location.reload();
+        throw error;
+      }
+    };
+
     // Handle quantity changes
     const quantityButtons = cartForm.querySelectorAll('[data-increase-quantity], [data-decrease-quantity]');
     
@@ -180,13 +418,21 @@
         const input = cartForm.querySelector(`input[data-key="${key}"]`);
         if (!input) return;
 
-        const currentValue = parseInt(input.value, 10);
+        const currentValue = parseInt(input.value, 10) || 0;
         const isIncrease = button.hasAttribute('data-increase-quantity');
-        const newValue = isIncrease ? currentValue + 1 : Math.max(0, currentValue - 1);
+        let newValue = isIncrease ? currentValue + 1 : Math.max(0, currentValue - 1);
+        
+        // Ensure newValue is a valid number
+        if (isNaN(newValue) || newValue < 0) {
+          newValue = 0;
+        }
 
-        input.value = newValue;
+        if (newValue === currentValue) return;
 
-        // Update cart via AJAX
+        // Disable button during update
+        button.disabled = true;
+        const originalText = button.textContent;
+
         try {
           const response = await fetch('/cart/change.js', {
             method: 'POST',
@@ -200,10 +446,19 @@
           });
 
           if (response.ok) {
-            location.reload();
+            // Update cart without reload
+            await refreshCart();
+          } else {
+            const error = await response.json();
+            throw new Error(error.description || 'Failed to update cart');
           }
         } catch (error) {
           console.error('Error updating cart:', error);
+          // Revert input value on error
+          input.value = currentValue;
+          alert('Failed to update cart. Please try again.');
+        } finally {
+          button.disabled = false;
         }
       });
     }
@@ -215,6 +470,10 @@
       button.addEventListener('click', async (e) => {
         e.preventDefault();
         const key = button.getAttribute('data-key');
+        const itemRow = cartForm.querySelector(`[data-line-item="${key}"]`);
+
+        // Disable button during update
+        button.disabled = true;
 
         try {
           const response = await fetch('/cart/change.js', {
@@ -229,10 +488,31 @@
           });
 
           if (response.ok) {
-            location.reload();
+            // Remove item row immediately for better UX
+            if (itemRow) {
+              itemRow.style.opacity = '0.5';
+              itemRow.style.transition = 'opacity 0.3s';
+            }
+            
+            // Update cart
+            const cart = await refreshCart();
+            
+            // If cart is empty, reload to show empty state
+            if (!cart || !cart.items || cart.items.length === 0) {
+              location.reload();
+            }
+          } else {
+            const error = await response.json();
+            throw new Error(error.description || 'Failed to remove item');
           }
         } catch (error) {
           console.error('Error removing item:', error);
+          if (itemRow) {
+            itemRow.style.opacity = '1';
+          }
+          alert('Failed to remove item. Please try again.');
+        } finally {
+          button.disabled = false;
         }
       });
     }
