@@ -60,22 +60,22 @@
       <p class="product-card__description">
         {{ product.description | strip_html | truncate: 120 }}
       </p>
-
-      <div class="product-card__footer">
-        <div class="product-card__price btn btn--green">
-          {{ price | money }}
-        </div>
-        <div class="product-card__actions">
-          <button type="button" class="product-card__btn btn btn--secondary" data-buy-now data-variant-id="{{ product.selected_or_first_available_variant.id }}">
-            Buy Now
-          </button>
-          <button type="button" class="product-card__btn btn btn--blue" data-add-to-cart data-variant-id="{{ product.selected_or_first_available_variant.id }}">
-            Add to cart
-          </button>
-        </div>
-      </div>
     </div>
   </a>
+
+  <div class="product-card__footer">
+    <div class="product-card__price btn btn--green">
+      {{ price | money }}
+    </div>
+    <div class="product-card__actions">
+      <button type="button" class="product-card__btn btn btn--secondary" data-buy-now data-variant-id="{{ product.selected_or_first_available_variant.id }}">
+        Buy Now
+      </button>
+      <button type="button" class="product-card__btn btn btn--blue" data-add-to-cart data-variant-id="{{ product.selected_or_first_available_variant.id }}">
+        Add to cart
+      </button>
+    </div>
+  </div>
 </article>
 
 {% stylesheet %}
@@ -106,7 +106,7 @@
   font-weight: 500;
   font-size: 14px;
   color: var(--color-white);
-  background-color: #3B68AC;
+  background-color: var(--color-blue);
   border-radius: 0 2px 0 0;
   box-shadow: 1px 2px 0px 0.5px var(--color-black);
   z-index: 2;
@@ -180,13 +180,13 @@
 }
 
 .product-card__star--filled {
-  color: #FFD700;
+  color: var(--color-star);
 }
 
 .product-card__description {
   font-family: var(--font-body);
   font-weight: 500;
-  font-size: 8px;
+  font-size: 12px;
   line-height: 1.4;
   color: var(--color-black);
   margin: 0;
@@ -217,7 +217,7 @@
   padding: 5px 9px;
   font-family: var(--font-product);
   font-weight: 500;
-  font-size: 8px;
+  font-size: 11px;
   border-width: 1px;
   box-shadow: 2px 2px 0px 0px var(--color-black);
 }
