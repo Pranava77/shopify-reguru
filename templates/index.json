@@ -112,6 +112,15 @@
             "badge": "",
             "badge_style": "new"
           }
+        },
+        "simple_link_d3JacB": {
+          "type": "simple_link",
+          "settings": {
+            "title": "",
+            "link": "",
+            "badge": "CART",
+            "badge_style": "hot"
+          }
         }
       },
       "block_order": [
@@ -120,12 +129,13 @@
         "simple_link_4hxyTg",
         "separator_4BCrbd",
         "simple_link_BQBeW3",
-        "simple_link_bCQpNf"
+        "simple_link_bCQpNf",
+        "simple_link_d3JacB"
       ],
       "name": "Mega Menu",
       "settings": {
         "enable_sticky": true,
-        "menu_style": "default",
+        "menu_style": "bold",
         "promo_position": "left"
       }
     },
