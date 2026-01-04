@@ -117,7 +117,7 @@
           "type": "simple_link",
           "settings": {
             "title": "Cart",
-            "link": "",
+            "link": "shopify://pages/cart",
             "badge": "🛒",
             "badge_style": "new"
           }
