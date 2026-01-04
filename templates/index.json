@@ -15,14 +15,14 @@
       "settings": {
         "logo": "shopify://shop_images/gin.png",
         "show_search": true,
-        "show_location": true,
+        "show_location": false,
         "location_text": "Bengaluru",
         "header_icon_type": "user",
         "header_custom_icon": "shopify://shop_images/Layer_1_1.png",
         "header_icon_color_primary": "#e5e7eb",
         "header_icon_color_accent": "#b1d8ff",
         "franchise_page": "franchise",
-        "franchise_url": ""
+        "franchise_url": "shopify://pages/franchise"
       }
     },
     "1767389559f2590556": {
