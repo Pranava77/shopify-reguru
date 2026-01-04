@@ -112,15 +112,6 @@
             "badge": "",
             "badge_style": "new"
           }
-        },
-        "simple_link_d3JacB": {
-          "type": "simple_link",
-          "settings": {
-            "title": "Cart",
-            "link": "shopify://pages/cart",
-            "badge": "🛒",
-            "badge_style": "new"
-          }
         }
       },
       "block_order": [
@@ -129,8 +120,7 @@
         "simple_link_4hxyTg",
         "separator_4BCrbd",
         "simple_link_BQBeW3",
-        "simple_link_bCQpNf",
-        "simple_link_d3JacB"
+        "simple_link_bCQpNf"
       ],
       "name": "Mega Menu",
       "settings": {
