@@ -168,9 +168,9 @@
 .feature-card {
   position: relative;
   width: 100%;
-  max-width: 187px;
+  max-width: 240px;
   aspect-ratio: 0.63;
-  border-radius: 6px;
+  border-radius: 8px;
   overflow: visible;
   cursor: pointer;
   transition: transform var(--transition-base);
@@ -187,10 +187,10 @@
   left: 0;
   right: 15%;
   bottom: 10%;
-  border-radius: 6px;
+  border-radius: 8px;
   background-size: cover;
   background-position: center;
-  box-shadow: 2.86px 2.86px 0px 0px var(--color-black);
+  box-shadow: 4px 4px 0px 0px var(--color-black);
   border: 0.5px solid var(--color-black);
 }
 
@@ -218,7 +218,7 @@
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.3);
-  border-radius: 6px;
+  border-radius: 8px;
 }
 
 .feature-card__content {
@@ -232,11 +232,11 @@
 .feature-card__title {
   font-family: var(--font-accent);
   font-weight: 500;
-  font-size: 19px;
+  font-size: 24px;
   line-height: 1.2;
   color: var(--color-white);
-  text-shadow: 0.6px 0.6px 0px rgba(6, 24, 58, 0.97);
-  letter-spacing: 0.96px;
+  text-shadow: 1px 1px 0px rgba(6, 24, 58, 0.97);
+  letter-spacing: 1px;
   text-transform: capitalize;
   margin: 0;
 }
@@ -307,8 +307,8 @@
 
   .feature-card {
     scroll-snap-align: start;
-    min-width: 160px;
-    max-width: 160px;
+    min-width: 180px;
+    max-width: 180px;
   }
 
   .feature-card:hover {
@@ -316,7 +316,7 @@
   }
 
   .feature-card__title {
-    font-size: 15px;
+    font-size: 18px;
   }
 
   /* Show Navigation Dots on Mobile */
@@ -354,12 +354,12 @@
 
 @media screen and (max-width: 480px) {
   .feature-card {
-    min-width: 150px;
-    max-width: 150px;
+    min-width: 165px;
+    max-width: 165px;
   }
 
   .feature-card__title {
-    font-size: 14px;
+    font-size: 16px;
   }
 
   .feature-cards__dot {
