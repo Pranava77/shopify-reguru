@@ -39,8 +39,8 @@
             "link": "",
             "enable_mega_dropdown": true,
             "dropdown_columns": "3",
-            "column_1_title": "Categories",
-            "menu_1": "",
+            "column_1_title": "Ipgone 17 Pro Maxx",
+            "menu_1": "main-menu",
             "column_2_title": "Collections",
             "menu_2": "",
             "column_3_title": "Trending",
@@ -64,7 +64,7 @@
             "link": "",
             "enable_mega_dropdown": true,
             "dropdown_columns": "3",
-            "column_1_title": "",
+            "column_1_title": "Mac M5",
             "menu_1": "",
             "column_2_title": "",
             "menu_2": "",
@@ -88,7 +88,7 @@
             "title": "Sale",
             "link": "",
             "badge": "Hot",
-            "badge_style": "new"
+            "badge_style": "sale"
           }
         },
         "separator_4BCrbd": {
