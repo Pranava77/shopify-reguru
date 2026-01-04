@@ -116,10 +116,10 @@
         "simple_link_d3JacB": {
           "type": "simple_link",
           "settings": {
-            "title": "",
+            "title": "Cart",
             "link": "",
-            "badge": "CART",
-            "badge_style": "hot"
+            "badge": "🛒",
+            "badge_style": "new"
           }
         }
       },
