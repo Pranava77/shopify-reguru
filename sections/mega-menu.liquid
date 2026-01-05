@@ -2,10 +2,24 @@
   assign enable_sticky = section.settings.enable_sticky
   assign menu_style = section.settings.menu_style
   assign promo_position = section.settings.promo_position
+  assign bg_image = section.settings.background_image
+  assign bg_overlay_color = section.settings.background_overlay_color | default: '#000000'
+  assign bg_overlay_opacity = section.settings.background_overlay_opacity | default: 0 | divided_by: 100.0
+  assign bg_position = section.settings.background_image_position | default: 'center'
+  assign bg_size = section.settings.background_image_size | default: 'cover'
 -%}
 
 <nav 
-  class="mega-menu{% if enable_sticky %} mega-menu--sticky{% endif %} mega-menu--{{ menu_style }}"
+  class="mega-menu{% if enable_sticky %} mega-menu--sticky{% endif %} mega-menu--{{ menu_style }}{% if bg_image != blank %} mega-menu--has-bg-image{% endif %}"
+  style="
+    {%- if bg_image != blank -%}
+      --bg-image: url('{{ bg_image | image_url: width: 1920 }}');
+      --bg-position: {{ bg_position }};
+      --bg-size: {{ bg_size }};
+    {%- endif -%}
+    --bg-overlay-color: {{ bg_overlay_color }};
+    --bg-overlay-opacity: {{ bg_overlay_opacity }};
+  "
   role="navigation"
   aria-label="{{ 'general.accessibility.main_navigation' | t }}"
   data-mega-menu
@@ -352,6 +366,10 @@
   
   {%- comment -%} Mobile Overlay {%- endcomment -%}
   <div class="mega-menu__overlay" data-mobile-overlay></div>
+  
+  {%- if bg_image != blank and bg_overlay_opacity > 0 -%}
+    <div class="mega-menu__bg-overlay"></div>
+  {%- endif -%}
 </nav>
 
 {% stylesheet %}
@@ -367,12 +385,30 @@
   z-index: 99;
 }
 
+.mega-menu--has-bg-image {
+  background-image: var(--bg-image);
+  background-position: var(--bg-position);
+  background-size: var(--bg-size);
+  background-repeat: no-repeat;
+}
+
+.mega-menu__bg-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: var(--bg-overlay-color);
+  opacity: var(--bg-overlay-opacity);
+  z-index: 1;
+  pointer-events: none;
+}
+
 .mega-menu--sticky {
   position: sticky;
   top: 76px;
 }
 
 .mega-menu__inner {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1003,6 +1039,79 @@
       ],
       "default": "right",
       "info": "Position of the featured image in mega dropdowns"
+    },
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
+    },
+    {
+      "type": "color",
+      "id": "background_overlay_color",
+      "label": "Overlay Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "background_overlay_opacity",
+      "label": "Overlay Opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 0
+    },
+    {
+      "type": "select",
+      "id": "background_image_position",
+      "label": "Image Position",
+      "options": [
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "background_image_size",
+      "label": "Image Size",
+      "options": [
+        {
+          "value": "cover",
+          "label": "Cover"
+        },
+        {
+          "value": "contain",
+          "label": "Contain"
+        },
+        {
+          "value": "auto",
+          "label": "Auto"
+        }
+      ],
+      "default": "cover"
     }
   ],
   "blocks": [

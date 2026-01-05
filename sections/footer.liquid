@@ -3,9 +3,28 @@
   assign address = section.settings.address
   assign bg_color = section.settings.background_color | default: '#041C66'
   assign laptop_image = section.settings.laptop_image
+  assign bg_image = section.settings.background_image
+  assign bg_overlay_color = section.settings.background_overlay_color | default: '#000000'
+  assign bg_overlay_opacity = section.settings.background_overlay_opacity | default: 0 | divided_by: 100.0
+  assign bg_position = section.settings.background_image_position | default: 'center'
+  assign bg_size = section.settings.background_image_size | default: 'cover'
 -%}
 
-<footer class="footer-wrapper">
+<footer 
+  class="footer-wrapper{% if bg_image != blank %} footer-wrapper--has-bg-image{% endif %}" 
+  style="
+    {%- if bg_image != blank -%}
+      --bg-image: url('{{ bg_image | image_url: width: 1920 }}');
+      --bg-position: {{ bg_position }};
+      --bg-size: {{ bg_size }};
+    {%- endif -%}
+    --bg-overlay-color: {{ bg_overlay_color }};
+    --bg-overlay-opacity: {{ bg_overlay_opacity }};
+  "
+>
+  {%- if bg_image != blank and bg_overlay_opacity > 0 -%}
+    <div class="footer-wrapper__overlay"></div>
+  {%- endif -%}
   <!-- Laptop Illustration -->
   <div class="footer__laptop-illustration">
     {%- if laptop_image != blank -%}
@@ -179,11 +198,27 @@
   padding-top: 120px;
 }
 
+.footer-wrapper--has-bg-image {
+  background-image: var(--bg-image);
+  background-position: var(--bg-position);
+  background-size: var(--bg-size);
+  background-repeat: no-repeat;
+}
+
+.footer-wrapper__overlay {
+  position: absolute;
+  inset: 0;
+  background-color: var(--bg-overlay-color);
+  opacity: var(--bg-overlay-opacity);
+  z-index: 0;
+  pointer-events: none;
+}
+
 .footer__laptop-illustration {
   position: absolute;
   top: -15%;
   right: 8%;
-  z-index: 10;
+  z-index: 11;
   transform: rotate(-4.5deg);
   animation: laptopFloat 3s ease-in-out infinite;
 }
@@ -205,6 +240,8 @@
 }
 
 .footer {
+  position: relative;
+  z-index: 1;
   padding: 60px 0;
   background-color: var(--footer-bg);
   border-radius: 6px 6px 0 0;
@@ -410,6 +447,79 @@
       "id": "background_color",
       "label": "Background color",
       "default": "#041C66"
+    },
+    {
+      "type": "header",
+      "content": "Background Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
+    },
+    {
+      "type": "color",
+      "id": "background_overlay_color",
+      "label": "Overlay Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "background_overlay_opacity",
+      "label": "Overlay Opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 0
+    },
+    {
+      "type": "select",
+      "id": "background_image_position",
+      "label": "Image Position",
+      "options": [
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "background_image_size",
+      "label": "Image Size",
+      "options": [
+        {
+          "value": "cover",
+          "label": "Cover"
+        },
+        {
+          "value": "contain",
+          "label": "Contain"
+        },
+        {
+          "value": "auto",
+          "label": "Auto"
+        }
+      ],
+      "default": "cover"
     },
     {
       "type": "header",
