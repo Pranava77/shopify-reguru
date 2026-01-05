@@ -250,10 +250,10 @@
     "about-us": {
       "type": "about-us",
       "settings": {
-        "heading": "ABOUT US",
-        "description": "",
-        "image": "shopify://shop_images/pngimg.com_-_headphones_PNG7645.png",
-        "stat_number": "10+"
+        "home_page_heading": "ABOUT US",
+        "home_page_image": "shopify://shop_images/pngimg.com_-_headphones_PNG7645.png",
+        "home_page_link_text": "know more",
+        "home_page_link_url": "/pages/about"
       }
     },
     "testimonials": {
