@@ -3,13 +3,7 @@
   Contains the main footer
 {%- endcomment -%}
 
-{%- liquid
-  assign bg_image = section.settings.background_image
-  assign bg_overlay_color = section.settings.background_overlay_color | default: '#000000'
-  assign bg_overlay_opacity = section.settings.background_overlay_opacity | default: 0 | divided_by: 100.0
-  assign bg_position = section.settings.background_image_position | default: 'center'
-  assign bg_size = section.settings.background_image_size | default: 'cover'
--%}
+
 
 <div 
   class="footer-group{% if bg_image != blank %} footer-group--has-bg-image{% endif %}" 
