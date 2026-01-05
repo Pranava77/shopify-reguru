@@ -7,7 +7,7 @@
 -%}
 
 <section 
-  class="feature-cards bg-grid-pattern{% if bg_image != blank %} feature-cards--has-bg-image{% endif %}" 
+  class="feature-cards{% if bg_image != blank %} feature-cards--has-bg-image{% endif %}" 
   style="
     {%- if bg_image != blank -%}
       --bg-image: url('{{ bg_image | image_url: width: 1920 }}');

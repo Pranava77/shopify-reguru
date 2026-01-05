@@ -11,7 +11,7 @@
 -%}
 
 <section 
-  class="about-us bg-grid-pattern{% if bg_image != blank %} about-us--has-bg-image{% endif %}" 
+  class="about-us{% if bg_image != blank %} about-us--has-bg-image{% endif %}" 
   style="
     {%- if bg_image != blank -%}
       --bg-image: url('{{ bg_image | image_url: width: 1920 }}');
