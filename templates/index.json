@@ -125,7 +125,7 @@
       "name": "Mega Menu",
       "settings": {
         "enable_sticky": true,
-        "menu_style": "bold",
+        "menu_style": "default",
         "promo_position": "left"
       }
     },
