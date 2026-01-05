@@ -8,6 +8,14 @@
     "color_text_secondary": "#636270",
     "color_background": "#FFFFFF",
     "color_background_dark": "#212844",
+    "background_image": "",
+    "background_size": "cover",
+    "background_position": "center center",
+    "background_attachment": "fixed",
+    "background_repeat": "no-repeat",
+    "background_overlay_enable": false,
+    "background_overlay_color": "#000000",
+    "background_overlay_opacity": 50,
     "sections": {
       "header-group": {
         "type": "header-group",
