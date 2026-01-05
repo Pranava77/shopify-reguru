@@ -91,15 +91,6 @@
           "type": "separator",
           "settings": {}
         },
-        "simple_link_4Jcq7V": {
-          "type": "simple_link",
-          "settings": {
-            "title": "About",
-            "link": "/pages/about",
-            "badge": "",
-            "badge_style": "new"
-          }
-        },
         "simple_link_xJh9xm": {
           "type": "simple_link",
           "settings": {
@@ -115,7 +106,6 @@
         "menu_item_XiRTHk",
         "simple_link_VGXdQz",
         "separator_QQjJjT",
-        "simple_link_4Jcq7V",
         "simple_link_xJh9xm"
       ],
       "name": "Mega Menu",

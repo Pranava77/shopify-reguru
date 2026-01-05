@@ -53,15 +53,6 @@
             "promo_link_text": "Learn More"
           }
         },
-        "simple_link_about": {
-          "type": "simple_link",
-          "settings": {
-            "title": "About",
-            "link": "/pages/about",
-            "badge": "",
-            "badge_style": "new"
-          }
-        },
         "simple_link_contact": {
           "type": "simple_link",
           "settings": {
@@ -74,7 +65,6 @@
       },
       "block_order": [
         "menu_item_shop",
-        "simple_link_about",
         "simple_link_contact"
       ],
       "name": "Mega Menu",
