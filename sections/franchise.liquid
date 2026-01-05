@@ -10,6 +10,18 @@
   assign instagram_url = section.settings.instagram_url
 -%}
 
+{%- if section.settings.background_image != blank -%}
+  {% style %}
+    #shopify-section-{{ section.id }} {
+      background-image: url('{{ section.settings.background_image | image_url: width: 2000 }}');
+      background-size: {{ section.settings.background_size | default: 'cover' }};
+      background-position: {{ section.settings.background_position | default: 'center' }};
+      background-repeat: {{ section.settings.background_repeat | default: 'no-repeat' }};
+      background-attachment: {{ section.settings.background_attachment | default: 'scroll' }};
+    }
+  {% endstyle %}
+{%- endif -%}
+
 <section class="franchise-section">
   <div class="franchise-section__background">
     <div class="franchise-section__pattern franchise-section__pattern--top"></div>
@@ -545,6 +557,103 @@
       "type": "url",
       "id": "instagram_url",
       "label": "Instagram URL"
+    },
+    {
+      "type": "header",
+      "content": "Background Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
+    },
+    {
+      "type": "select",
+      "id": "background_size",
+      "label": "Background Size",
+      "options": [
+        {
+          "value": "cover",
+          "label": "Cover"
+        },
+        {
+          "value": "contain",
+          "label": "Contain"
+        },
+        {
+          "value": "auto",
+          "label": "Auto"
+        }
+      ],
+      "default": "cover"
+    },
+    {
+      "type": "select",
+      "id": "background_position",
+      "label": "Background Position",
+      "options": [
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "background_repeat",
+      "label": "Background Repeat",
+      "options": [
+        {
+          "value": "no-repeat",
+          "label": "No Repeat"
+        },
+        {
+          "value": "repeat",
+          "label": "Repeat"
+        },
+        {
+          "value": "repeat-x",
+          "label": "Repeat X"
+        },
+        {
+          "value": "repeat-y",
+          "label": "Repeat Y"
+        }
+      ],
+      "default": "no-repeat"
+    },
+    {
+      "type": "select",
+      "id": "background_attachment",
+      "label": "Background Attachment",
+      "options": [
+        {
+          "value": "scroll",
+          "label": "Scroll"
+        },
+        {
+          "value": "fixed",
+          "label": "Fixed"
+        }
+      ],
+      "default": "scroll"
     }
   ],
   "presets": [
