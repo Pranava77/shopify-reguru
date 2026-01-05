@@ -27,6 +27,16 @@
       "next": "Next"
     }
   },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty_title": "Your cart is empty",
+    "empty_text": "Add some items to get started!",
+    "continue_shopping": "Continue Shopping",
+    "subtotal": "Subtotal",
+    "shipping_note": "Shipping & taxes calculated at checkout",
+    "view_cart": "View Cart",
+    "checkout": "Checkout"
+  },
   "accessibility": {
     "skip_to_content": "Skip to content",
     "close": "Close",
