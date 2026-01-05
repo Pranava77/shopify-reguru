@@ -1,53 +1,24 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "current": {
     "color_primary": "#1E1A5C",
-    "color_secondary": "#041C66",
     "color_accent": "#28D98E",
-    "color_accent_blue": "#5294FF",
-    "color_text": "#151875",
-    "color_text_secondary": "#636270",
     "color_background": "#FFFFFF",
+    "color_text": "#151875",
+    "cart_type": "drawer",
+    "cart_show_vendor": true,
+    "color_secondary": "#041C66",
+    "color_accent_blue": "#5294FF",
+    "color_text_secondary": "#636270",
     "color_background_dark": "#212844",
-    "sections": {
-      "header-group": {
-        "type": "header-group",
-        "sections": {
-          "announcement-bar": {
-            "type": "announcement-bar",
-            "settings": {
-              "text": "Welcome To ReGuru",
-              "background_color": "#1E1A5C",
-              "text_color": "#28D98E"
-            }
-          },
-          "header": {
-            "type": "header",
-            "settings": {
-              "show_search": true,
-              "show_location": true,
-              "location_text": "Bengaluru"
-            }
-          },
-          "category-nav": {
-            "type": "category-nav",
-            "settings": {}
-          }
-        },
-        "order": ["announcement-bar", "header", "category-nav"]
-      },
-      "footer-group": {
-        "type": "footer-group",
-        "sections": {
-          "footer": {
-            "type": "footer",
-            "settings": {
-              "address": "Address: 2nd floor central complex sv road near mantri mall seshadripuram bengaluru 560020",
-              "background_color": "#041C66"
-            }
-          }
-        },
-        "order": ["footer"]
-      }
-    }
+    "content_for_index": []
   }
 }
