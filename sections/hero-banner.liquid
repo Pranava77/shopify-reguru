@@ -379,8 +379,8 @@
 }
 {% endstylesheet %}
 
-{% javascript %}
-(function() {
+<script>
+document.addEventListener('DOMContentLoaded', function() {
   const heroSlider = document.querySelector('[data-hero-slider]');
   if (!heroSlider) return;
 
@@ -429,10 +429,10 @@
   }
 
   // Click handlers for indicators
-  indicators.forEach((indicator, index) => {
-    indicator.addEventListener('click', () => {
+  indicators.forEach(function(indicator, index) {
+    indicator.addEventListener('click', function() {
       goToSlide(index);
-      startAutoPlay(); // Reset timer after manual navigation
+      startAutoPlay();
     });
   });
 
@@ -444,15 +444,14 @@
   startAutoPlay();
 
   // Pause when tab is not visible
-  document.addEventListener('visibilitychange', () => {
+  document.addEventListener('visibilitychange', function() {
     if (document.hidden) {
       stopAutoPlay();
     } else {
       startAutoPlay();
     }
   });
-})();
-{% endjavascript %}
+});</script>
 
 {% schema %}
 {
