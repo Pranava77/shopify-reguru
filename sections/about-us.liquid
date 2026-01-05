@@ -1,70 +1,114 @@
 {%- liquid
-  assign heading = section.settings.heading | default: 'ABOUT US'
-  assign description = section.settings.description
-  assign image = section.settings.image
-  assign stat_number = section.settings.stat_number | default: '10+'
-  assign bg_image = section.settings.background_image
-  assign bg_overlay_color = section.settings.background_overlay_color | default: '#000000'
-  assign bg_overlay_opacity = section.settings.background_overlay_opacity | default: 0 | divided_by: 100.0
-  assign bg_position = section.settings.background_image_position | default: 'center'
-  assign bg_size = section.settings.background_image_size | default: 'cover'
+  assign hero_heading_part1 = section.settings.hero_heading_part1 | default: 'Beyond Refurbishment'
+  assign hero_heading_part2 = section.settings.hero_heading_part2 | default: 'Redefining Smart'
+  assign hero_heading_part3 = section.settings.hero_heading_part3 | default: 'Tech Ownership'
+  assign hero_description = section.settings.hero_description | default: 'ReGuru is building a sustainable, circular tech ecosystem — making technology accessible while reducing e-waste.'
+  assign join_franchise_button_text = section.settings.join_franchise_button_text | default: 'Join Franchise'
+  assign join_franchise_button_url = section.settings.join_franchise_button_url | default: '/pages/franchise'
+  
+  assign franchise_title = section.settings.franchise_title | default: 'ReGuru Franchise'
+  assign franchise_description = section.settings.franchise_description | default: 'Build a high-growth tech retail business with India's most trusted refurbished electronics brand.'
+  assign franchise_feature_1 = section.settings.franchise_feature_1 | default: 'Proven business model'
+  assign franchise_feature_2 = section.settings.franchise_feature_2 | default: 'High-margin product portfolio'
+  assign franchise_card_button_text = section.settings.franchise_card_button_text | default: 'join franchise'
+  
+  assign brands_heading = section.settings.brands_heading | default: 'Top Brands  we sell:'
+  assign expertise_heading = section.settings.expertise_heading | default: 'Our expertise'
+  assign expertise_description = section.settings.expertise_description | default: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.'
 -%}
 
-<section 
-  class="about-us{% if bg_image != blank %} about-us--has-bg-image{% endif %}" 
-  style="
-    {%- if bg_image != blank -%}
-      --bg-image: url('{{ bg_image | image_url: width: 1920 }}');
-      --bg-position: {{ bg_position }};
-      --bg-size: {{ bg_size }};
-    {%- endif -%}
-    --bg-overlay-color: {{ bg_overlay_color }};
-    --bg-overlay-opacity: {{ bg_overlay_opacity }};
-  "
->
-  {%- if bg_image != blank and bg_overlay_opacity > 0 -%}
-    <div class="about-us__overlay"></div>
-  {%- endif -%}
+<section class="about-us" id="about-us-{{ section.id }}">
   <div class="about-us__container">
-    <div class="about-us__content">
-      <h2 class="about-us__heading">{{ heading }}</h2>
-      <div class="about-us__description">
-        {%- if description != blank -%}
-          {{ description }}
-        {%- else -%}
-          <p>Reguru leads India's refurbished electronics revolution with certified quality, steep discounts, and total assurance.</p>
-          <p>As the nation's sole offline chain, we equip individuals, businesses, schools, and corporates affordably while slashing e-waste</p>
-        {%- endif -%}
+    <!-- Hero Section -->
+    <div class="about-us__hero">
+      <div class="about-us__hero-content">
+        <h1 class="about-us__hero-heading">
+          <span class="about-us__hero-heading--blue">{{ hero_heading_part1 }}</span>
+          <span class="about-us__hero-heading--black">{{ hero_heading_part2 }}</span>
+          <span class="about-us__hero-heading--black">{{ hero_heading_part3 }}</span>
+        </h1>
+        <p class="about-us__hero-description">{{ hero_description }}</p>
+        <a href="{{ join_franchise_button_url }}" class="about-us__hero-button">
+          {{ join_franchise_button_text }}
+        </a>
+        <div class="about-us__brands">
+          <p class="about-us__brands-heading">{{ brands_heading }}</p>
+          <div class="about-us__brands-list">
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'brand' -%}
+                <div class="about-us__brand-item">
+                  {%- if block.settings.brand_image != blank -%}
+                    <img 
+                      src="{{ block.settings.brand_image | image_url: width: 120 }}"
+                      alt="{{ block.settings.brand_name | default: 'Brand logo' }}"
+                      width="120"
+                      height="60"
+                      loading="lazy"
+                      class="about-us__brand-image"
+                    >
+                  {%- else -%}
+                    <span class="about-us__brand-placeholder">{{ block.settings.brand_name | default: 'Logo' }}</span>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Franchise Card -->
+      <div class="about-us__franchise-card">
+        <h2 class="about-us__franchise-title">{{ franchise_title }}</h2>
+        <p class="about-us__franchise-description">{{ franchise_description }}</p>
+        <ul class="about-us__franchise-features">
+          <li class="about-us__franchise-feature">
+            {% render 'icon-checkmark', size: 10 %}
+            <span>{{ franchise_feature_1 }}</span>
+          </li>
+          <li class="about-us__franchise-feature">
+            {% render 'icon-checkmark', size: 10 %}
+            <span>{{ franchise_feature_2 }}</span>
+          </li>
+        </ul>
+        <a href="{{ join_franchise_button_url }}" class="about-us__franchise-button">
+          {{ franchise_card_button_text }}
+        </a>
       </div>
     </div>
-
-    <div class="about-us__visual">
-      <div class="about-us__image-wrapper">
-        {%- if image != blank -%}
-          <img 
-            src="{{ image | image_url: width: 600 }}"
-            alt="{{ image.alt | default: heading }}"
-            width="600"
-            height="400"
-            loading="lazy"
-            class="about-us__image"
-          >
-        {%- else -%}
-          <div class="about-us__placeholder">
-            <svg viewBox="0 0 400 280" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="400" height="280" rx="22" fill="#D9D9D9"/>
-              <rect x="50" y="40" width="300" height="180" rx="10" fill="#A0A0A0"/>
-              <rect x="70" y="60" width="260" height="140" rx="5" fill="#808080"/>
-              <circle cx="200" cy="130" r="40" fill="#606060"/>
-              <rect x="160" y="230" width="80" height="20" rx="5" fill="#909090"/>
-            </svg>
+    
+    <!-- Expertise Section -->
+    <div class="about-us__expertise">
+      <h2 class="about-us__expertise-heading">{{ expertise_heading }}</h2>
+      <p class="about-us__expertise-description">{{ expertise_description }}</p>
+    </div>
+    
+    <!-- Content Blocks -->
+    <div class="about-us__content-blocks">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'content_block' -%}
+          <div class="about-us__content-block{% if block.settings.image_position == 'right' %} about-us__content-block--reverse{% endif %}">
+            <div class="about-us__content-block-image">
+              {%- if block.settings.image != blank -%}
+                <img 
+                  src="{{ block.settings.image | image_url: width: 600 }}"
+                  alt="{{ block.settings.image.alt | default: block.settings.heading }}"
+                  width="600"
+                  height="400"
+                  loading="lazy"
+                >
+              {%- else -%}
+                <div class="about-us__content-block-placeholder"></div>
+              {%- endif -%}
+            </div>
+            <div class="about-us__content-block-text">
+              <p class="about-us__content-block-description">{{ block.settings.description }}</p>
+              {%- if block.settings.link_text != blank and block.settings.link_url != blank -%}
+                <a href="{{ block.settings.link_url }}" class="about-us__content-block-link">{{ block.settings.link_text }}</a>
+              {%- endif -%}
+            </div>
           </div>
         {%- endif -%}
-      </div>
-
-      <div class="about-us__stat">
-        <span class="about-us__stat-number">{{ stat_number }}</span>
-      </div>
+      {%- endfor -%}
     </div>
   </div>
 </section>
@@ -72,162 +116,445 @@
 {% stylesheet %}
 .about-us {
   position: relative;
-  padding: 80px 0;
-}
-
-.about-us--has-bg-image {
-  background-image: var(--bg-image);
-  background-position: var(--bg-position);
-  background-size: var(--bg-size);
-  background-repeat: no-repeat;
-}
-
-.about-us__overlay {
-  position: absolute;
-  inset: 0;
-  background-color: var(--bg-overlay-color);
-  opacity: var(--bg-overlay-opacity);
-  z-index: 1;
-  pointer-events: none;
+  padding: 84px 0;
+  background-color: var(--color-white);
 }
 
 .about-us__container {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 60px;
-  align-items: center;
   max-width: var(--container-max);
   margin: 0 auto;
   padding: 0 var(--container-padding);
 }
 
-.about-us__content {
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
+.about-us__hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 48px;
+  margin-bottom: 98px;
 }
 
-.about-us__heading {
-  font-family: var(--font-body);
-  font-weight: 400;
-  font-size: 52px;
-  line-height: 1.25;
-  letter-spacing: 5px;
-  color: #10111A;
+.about-us__hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 755px;
+}
+
+.about-us__hero-heading {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 59.468px;
+  line-height: 1.31;
+  color: var(--color-black);
   margin: 0;
 }
 
-.about-us__description {
-  font-family: var(--font-heading);
-  font-weight: 400;
-  font-size: 30px;
-  line-height: 1.4;
-  color: var(--color-text);
-}
-
-.about-us__description p {
-  margin: 0 0 20px;
-}
-
-.about-us__description p:last-child {
-  margin-bottom: 0;
-}
-
-.about-us__visual {
-  position: relative;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.about-us__image-wrapper {
-  position: relative;
-  width: 100%;
-  max-width: 450px;
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-navy);
-  overflow: hidden;
-}
-
-.about-us__image {
-  width: 100%;
-  height: auto;
+.about-us__hero-heading--blue {
+  color: #006ed8;
   display: block;
 }
 
-.about-us__placeholder {
-  width: 100%;
-  background-color: var(--color-gray);
-  border-radius: var(--radius-xl);
+.about-us__hero-heading--black {
+  font-weight: 600;
+  display: block;
 }
 
-.about-us__placeholder svg {
-  width: 100%;
-  height: auto;
+.about-us__hero-description {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 20.298px;
+  line-height: 28.998px;
+  color: #666;
+  margin: 0;
+  max-width: 593px;
 }
 
-.about-us__stat {
-  position: absolute;
-  bottom: -20px;
-  left: -40px;
+.about-us__hero-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 11.778px 30.917px;
+  font-family: var(--font-product);
+  font-weight: 500;
+  font-size: 20.61px;
+  line-height: 29.444px;
+  color: var(--color-black);
+  background-color: var(--color-white);
+  border: 0.736px solid var(--color-black);
+  border-radius: 3px;
+  box-shadow: 4.417px 4.417px 0px 0px var(--color-black);
+  text-decoration: none;
+  width: fit-content;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.about-us__hero-button:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px var(--color-black);
+}
+
+.about-us__hero-button:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0px 0px var(--color-black);
+}
+
+.about-us__brands {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  margin-top: 48px;
+  max-width: 606px;
+}
+
+.about-us__brands-heading {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 20.298px;
+  line-height: 28.998px;
+  color: #585858;
+  margin: 0;
+}
+
+.about-us__brands-list {
+  display: flex;
+  gap: 33px;
+  flex-wrap: wrap;
+}
+
+.about-us__brand-item {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 180px;
-  height: 80px;
-  background: linear-gradient(90deg, var(--color-dark-blue) 0%, var(--color-dark-blue) 100%);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-navy);
+  padding: 4px 18px;
+  background-color: transparent;
+  border: 1px solid #c8c8c8;
+  border-radius: 5px;
+  min-height: 40px;
 }
 
-.about-us__stat-number {
-  font-family: 'Cera Pro', var(--font-heading), sans-serif;
+.about-us__brand-image {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.about-us__brand-placeholder {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 20.298px;
+  line-height: 28.998px;
+  color: #7c7c7c;
+  text-transform: capitalize;
+}
+
+.about-us__franchise-card {
+  width: 234px;
+  padding: 27px 19px;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-black);
+  box-shadow: 4px 4px 0px 0px var(--color-black);
+}
+
+.about-us__franchise-title {
+  font-family: var(--font-heading);
   font-weight: 500;
-  font-size: 64px;
-  letter-spacing: -0.64px;
-  color: var(--color-white);
+  font-size: 18.402px;
+  line-height: 1.31;
+  color: var(--color-black);
+  margin: 0 0 10px;
 }
 
-@media screen and (max-width: 992px) {
-  .about-us__container {
-    grid-template-columns: 1fr;
-    gap: 40px;
-  }
+.about-us__franchise-description {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 12.574px;
+  line-height: 1.31;
+  color: var(--color-black);
+  margin: 0 0 23px;
+}
 
-  .about-us__heading {
-    font-size: 40px;
-    letter-spacing: 3px;
-  }
+.about-us__franchise-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 23px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 
-  .about-us__description {
-    font-size: 22px;
-  }
+.about-us__franchise-feature {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 13.424px;
+  line-height: 1.31;
+  color: var(--color-black);
+}
 
-  .about-us__visual {
-    justify-content: center;
-  }
+.about-us__franchise-feature svg {
+  flex-shrink: 0;
+  stroke: #28D98E;
+}
 
-  .about-us__stat {
-    left: auto;
-    right: 20px;
-    bottom: -10px;
-    width: 120px;
-    height: 60px;
-  }
+.about-us__franchise-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 10px 54px;
+  font-family: var(--font-accent);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.31;
+  text-transform: capitalize;
+  color: var(--color-white);
+  background-color: #494949;
+  border-radius: 3px;
+  box-shadow: 4px 4px 0px 0px var(--color-black);
+  text-decoration: none;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
 
-  .about-us__stat-number {
+.about-us__franchise-button:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px var(--color-black);
+}
+
+.about-us__franchise-button:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0px 0px var(--color-black);
+}
+
+.about-us__expertise {
+  text-align: center;
+  margin-bottom: 98px;
+}
+
+.about-us__expertise-heading {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 29.734px;
+  line-height: 1.31;
+  color: var(--color-black);
+  margin: 0 0 10px;
+}
+
+.about-us__expertise-description {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 29.734px;
+  line-height: 1.31;
+  color: #7c7c7c;
+  margin: 0;
+  max-width: 942px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.about-us__content-blocks {
+  display: flex;
+  flex-direction: column;
+  gap: 52px;
+}
+
+.about-us__content-block {
+  display: flex;
+  gap: 72px;
+  align-items: center;
+}
+
+.about-us__content-block--reverse {
+  flex-direction: row-reverse;
+}
+
+.about-us__content-block-image {
+  flex: 0 0 440px;
+  width: 440px;
+  height: 279px;
+  overflow: hidden;
+}
+
+.about-us__content-block-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.about-us__content-block-placeholder {
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-gray);
+}
+
+.about-us__content-block-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 23px;
+}
+
+.about-us__content-block-description {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 1.31;
+  color: #7c7c7c;
+  margin: 0;
+}
+
+.about-us__content-block-link {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 1.31;
+  color: #57a0ff;
+  text-decoration: none;
+}
+
+.about-us__content-block-link:hover {
+  text-decoration: underline;
+}
+
+@media screen and (min-width: 992px) {
+  .about-us__hero {
+    grid-template-columns: 1fr auto;
+    align-items: start;
+  }
+  
+  .about-us__franchise-card {
+    position: sticky;
+    top: 100px;
+  }
+}
+
+@media screen and (max-width: 991px) {
+  .about-us {
+    padding: 60px 0;
+  }
+  
+  .about-us__hero {
+    margin-bottom: 60px;
+  }
+  
+  .about-us__hero-heading {
     font-size: 42px;
+  }
+  
+  .about-us__hero-description {
+    font-size: 18px;
+    line-height: 1.5;
+  }
+  
+  .about-us__hero-button {
+    font-size: 18px;
+    padding: 10px 24px;
+  }
+  
+  .about-us__franchise-card {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  .about-us__brands {
+    margin-top: 32px;
+  }
+  
+  .about-us__brands-heading {
+    font-size: 18px;
+  }
+  
+  .about-us__brands-list {
+    gap: 16px;
+  }
+  
+  .about-us__expertise {
+    margin-bottom: 60px;
+  }
+  
+  .about-us__expertise-heading {
+    font-size: 24px;
+  }
+  
+  .about-us__expertise-description {
+    font-size: 18px;
+  }
+  
+  .about-us__content-block {
+    flex-direction: column;
+    gap: 32px;
+  }
+  
+  .about-us__content-block--reverse {
+    flex-direction: column;
+  }
+  
+  .about-us__content-block-image {
+    flex: 1 1 auto;
+    width: 100%;
+    max-width: 440px;
+  }
+  
+  .about-us__content-block-text {
+    width: 100%;
+  }
+  
+  .about-us__content-block-description,
+  .about-us__content-block-link {
+    font-size: 20px;
   }
 }
 
 @media screen and (max-width: 576px) {
-  .about-us__heading {
-    font-size: 32px;
-    letter-spacing: 2px;
+  .about-us {
+    padding: 40px 0;
   }
-
-  .about-us__description {
+  
+  .about-us__hero-heading {
+    font-size: 32px;
+  }
+  
+  .about-us__hero-description {
+    font-size: 16px;
+  }
+  
+  .about-us__hero-button {
+    font-size: 16px;
+    padding: 8px 20px;
+  }
+  
+  .about-us__brands-list {
+    gap: 12px;
+  }
+  
+  .about-us__brand-item {
+    padding: 4px 12px;
+  }
+  
+  .about-us__brand-placeholder {
+    font-size: 14px;
+  }
+  
+  .about-us__expertise-heading {
+    font-size: 20px;
+  }
+  
+  .about-us__expertise-description {
+    font-size: 16px;
+  }
+  
+  .about-us__content-blocks {
+    gap: 40px;
+  }
+  
+  .about-us__content-block-description,
+  .about-us__content-block-link {
     font-size: 18px;
   }
 }
@@ -240,106 +567,215 @@
   "class": "about-us-section",
   "settings": [
     {
-      "type": "text",
-      "id": "heading",
-      "label": "Heading",
-      "default": "ABOUT US"
-    },
-    {
-      "type": "richtext",
-      "id": "description",
-      "label": "Description"
-    },
-    {
-      "type": "image_picker",
-      "id": "image",
-      "label": "Image"
+      "type": "header",
+      "content": "Hero Section"
     },
     {
       "type": "text",
-      "id": "stat_number",
-      "label": "Stat Number",
-      "default": "10+"
+      "id": "hero_heading_part1",
+      "label": "Heading Part 1",
+      "default": "Beyond Refurbishment"
+    },
+    {
+      "type": "text",
+      "id": "hero_heading_part2",
+      "label": "Heading Part 2",
+      "default": "Redefining Smart"
+    },
+    {
+      "type": "text",
+      "id": "hero_heading_part3",
+      "label": "Heading Part 3",
+      "default": "Tech Ownership"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_description",
+      "label": "Description",
+      "default": "ReGuru is building a sustainable, circular tech ecosystem — making technology accessible while reducing e-waste."
+    },
+    {
+      "type": "text",
+      "id": "join_franchise_button_text",
+      "label": "Join Franchise Button Text",
+      "default": "Join Franchise"
+    },
+    {
+      "type": "url",
+      "id": "join_franchise_button_url",
+      "label": "Join Franchise Button URL",
+      "default": "/pages/franchise"
     },
     {
       "type": "header",
-      "content": "Background"
+      "content": "Franchise Card"
     },
     {
-      "type": "image_picker",
-      "id": "background_image",
-      "label": "Background Image"
+      "type": "text",
+      "id": "franchise_title",
+      "label": "Title",
+      "default": "ReGuru Franchise"
     },
     {
-      "type": "color",
-      "id": "background_overlay_color",
-      "label": "Overlay Color",
-      "default": "#000000"
+      "type": "textarea",
+      "id": "franchise_description",
+      "label": "Description",
+      "default": "Build a high-growth tech retail business with India's most trusted refurbished electronics brand."
     },
     {
-      "type": "range",
-      "id": "background_overlay_opacity",
-      "label": "Overlay Opacity",
-      "min": 0,
-      "max": 100,
-      "step": 5,
-      "unit": "%",
-      "default": 0
+      "type": "text",
+      "id": "franchise_feature_1",
+      "label": "Feature 1",
+      "default": "Proven business model"
     },
     {
-      "type": "select",
-      "id": "background_image_position",
-      "label": "Image Position",
-      "options": [
+      "type": "text",
+      "id": "franchise_feature_2",
+      "label": "Feature 2",
+      "default": "High-margin product portfolio"
+    },
+    {
+      "type": "text",
+      "id": "franchise_card_button_text",
+      "label": "Button Text",
+      "default": "join franchise"
+    },
+    {
+      "type": "header",
+      "content": "Brands Section"
+    },
+    {
+      "type": "text",
+      "id": "brands_heading",
+      "label": "Heading",
+      "default": "Top Brands  we sell:"
+    },
+    {
+      "type": "header",
+      "content": "Expertise Section"
+    },
+    {
+      "type": "text",
+      "id": "expertise_heading",
+      "label": "Heading",
+      "default": "Our expertise"
+    },
+    {
+      "type": "textarea",
+      "id": "expertise_description",
+      "label": "Description",
+      "default": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "brand",
+      "name": "Brand",
+      "settings": [
         {
-          "value": "center",
-          "label": "Center"
+          "type": "text",
+          "id": "brand_name",
+          "label": "Brand Name",
+          "default": "Logo"
         },
         {
-          "value": "top",
-          "label": "Top"
-        },
-        {
-          "value": "bottom",
-          "label": "Bottom"
-        },
-        {
-          "value": "left",
-          "label": "Left"
-        },
-        {
-          "value": "right",
-          "label": "Right"
+          "type": "image_picker",
+          "id": "brand_image",
+          "label": "Brand Image"
         }
-      ],
-      "default": "center"
+      ]
     },
     {
-      "type": "select",
-      "id": "background_image_size",
-      "label": "Image Size",
-      "options": [
+      "type": "content_block",
+      "name": "Content Block",
+      "settings": [
         {
-          "value": "cover",
-          "label": "Cover"
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
         },
         {
-          "value": "contain",
-          "label": "Contain"
+          "type": "select",
+          "id": "image_position",
+          "label": "Image Position",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "left"
         },
         {
-          "value": "auto",
-          "label": "Auto"
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+        },
+        {
+          "type": "text",
+          "id": "link_text",
+          "label": "Link Text",
+          "default": "Lorem ipsum"
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "Link URL"
         }
-      ],
-      "default": "cover"
+      ]
     }
   ],
   "presets": [
     {
-      "name": "About Us"
+      "name": "About Us",
+      "blocks": [
+        {
+          "type": "brand",
+          "settings": {
+            "brand_name": "Logo One"
+          }
+        },
+        {
+          "type": "brand",
+          "settings": {
+            "brand_name": "Logo Two"
+          }
+        },
+        {
+          "type": "brand",
+          "settings": {
+            "brand_name": "Logo Three"
+          }
+        },
+        {
+          "type": "brand",
+          "settings": {
+            "brand_name": "Logo Four"
+          }
+        },
+        {
+          "type": "content_block",
+          "settings": {
+            "image_position": "left",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+            "link_text": "Lorem ipsum"
+          }
+        },
+        {
+          "type": "content_block",
+          "settings": {
+            "image_position": "right",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+            "link_text": "Lorem ipsum"
+          }
+        }
+      ]
     }
   ]
 }
 {% endschema %}
-

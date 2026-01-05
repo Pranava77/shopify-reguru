@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "header_about": {
@@ -19,7 +28,7 @@
     "mega_menu_about": {
       "type": "mega-menu",
       "blocks": {
-        "menu_item_about_1": {
+        "menu_item_shop": {
           "type": "menu_item",
           "settings": {
             "title": "Shop",
@@ -44,54 +53,16 @@
             "promo_link_text": "Learn More"
           }
         },
-        "menu_item_about_2": {
-          "type": "menu_item",
-          "settings": {
-            "title": "New Arrivals",
-            "link": "",
-            "enable_mega_dropdown": false,
-            "dropdown_columns": "3",
-            "column_1_title": "",
-            "menu_1": "",
-            "column_2_title": "",
-            "menu_2": "",
-            "column_3_title": "",
-            "menu_3": "",
-            "column_4_title": "",
-            "menu_4": "",
-            "featured_title": "New Arrivals",
-            "featured_link": "",
-            "featured_link_text": "Shop Now",
-            "show_promo_banner": false,
-            "promo_badge": "Limited",
-            "promo_text": "Free shipping on orders over $50",
-            "promo_link": "",
-            "promo_link_text": "Learn More"
-          }
-        },
-        "simple_link_about_sale": {
-          "type": "simple_link",
-          "settings": {
-            "title": "Sale",
-            "link": "",
-            "badge": "Hot",
-            "badge_style": "sale"
-          }
-        },
-        "separator_about": {
-          "type": "separator",
-          "settings": {}
-        },
         "simple_link_about": {
           "type": "simple_link",
           "settings": {
             "title": "About",
-            "link": "/pages/about",
+            "link": "",
             "badge": "",
             "badge_style": "new"
           }
         },
-        "simple_link_about_contact": {
+        "simple_link_contact": {
           "type": "simple_link",
           "settings": {
             "title": "Contact",
@@ -102,12 +73,9 @@
         }
       },
       "block_order": [
-        "menu_item_about_1",
-        "menu_item_about_2",
-        "simple_link_about_sale",
-        "separator_about",
+        "menu_item_shop",
         "simple_link_about",
-        "simple_link_about_contact"
+        "simple_link_contact"
       ],
       "name": "Mega Menu",
       "settings": {
@@ -116,111 +84,115 @@
         "promo_position": "right"
       }
     },
-    "about_page_content": {
-      "type": "about-page",
+    "about_us_section": {
+      "type": "about-us",
+      "blocks": {
+        "brand_1": {
+          "type": "brand",
+          "settings": {
+            "brand_name": "Logo One"
+          }
+        },
+        "brand_2": {
+          "type": "brand",
+          "settings": {
+            "brand_name": "Logo Two"
+          }
+        },
+        "brand_3": {
+          "type": "brand",
+          "settings": {
+            "brand_name": "Logo Three"
+          }
+        },
+        "brand_4": {
+          "type": "brand",
+          "settings": {
+            "brand_name": "Logo Four"
+          }
+        },
+        "content_block_1": {
+          "type": "content_block",
+          "settings": {
+            "image_position": "left",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+            "link_text": "Lorem ipsum",
+            "link_url": ""
+          }
+        },
+        "content_block_2": {
+          "type": "content_block",
+          "settings": {
+            "image_position": "right",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+            "link_text": "Lorem ipsum",
+            "link_url": ""
+          }
+        }
+      },
+      "block_order": [
+        "brand_1",
+        "brand_2",
+        "brand_3",
+        "brand_4",
+        "content_block_1",
+        "content_block_2"
+      ],
+      "name": "About Us",
       "settings": {
         "hero_heading_part1": "Beyond Refurbishment",
         "hero_heading_part2": "Redefining Smart",
         "hero_heading_part3": "Tech Ownership",
         "hero_description": "ReGuru is building a sustainable, circular tech ecosystem — making technology accessible while reducing e-waste.",
-        "hero_cta_text": "Join Franchise",
-        "hero_cta_link": "/pages/franchise",
+        "join_franchise_button_text": "Join Franchise",
+        "join_franchise_button_url": "/pages/franchise",
         "franchise_title": "ReGuru Franchise",
         "franchise_description": "Build a high-growth tech retail business with India's most trusted refurbished electronics brand.",
-        "franchise_feature1": "Proven business model",
-        "franchise_feature2": "High-margin product portfolio",
-        "franchise_cta_text": "join franchise",
-        "franchise_cta_link": "/pages/franchise",
+        "franchise_feature_1": "Proven business model",
+        "franchise_feature_2": "High-margin product portfolio",
+        "franchise_card_button_text": "join franchise",
         "brands_heading": "Top Brands  we sell:",
-        "brand1_text": "logo one",
-        "brand2_text": "logo two",
-        "brand3_text": "logo three",
-        "brand4_text": "logo four",
         "expertise_heading": "Our expertise",
-        "expertise_description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
-        "content1_text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        "content1_link_text": "Lorem ipsum",
-        "content2_text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        "content2_link_text": "Lorem ipsum"
+        "expertise_description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos."
       }
     },
     "footer_about": {
       "type": "footer",
       "blocks": {
-        "category_link_about_1": {
+        "category_link_1": {
           "type": "category_link",
           "settings": {
             "label": "Sofa",
             "link": ""
           }
         },
-        "category_link_about_2": {
-          "type": "category_link",
-          "settings": {
-            "label": "Armchair",
-            "link": ""
-          }
-        },
-        "category_link_about_3": {
-          "type": "category_link",
-          "settings": {
-            "label": "Desk Chair",
-            "link": ""
-          }
-        },
-        "category_link_about_4": {
-          "type": "category_link",
-          "settings": {
-            "label": "wooden Chair",
-            "link": ""
-          }
-        },
-        "category_link_about_5": {
-          "type": "category_link",
-          "settings": {
-            "label": "Park Bench",
-            "link": ""
-          }
-        },
-        "support_link_about_1": {
+        "support_link_1": {
           "type": "support_link",
           "settings": {
             "label": "Help & Support",
             "link": ""
           }
         },
-        "support_link_about_2": {
+        "support_link_2": {
           "type": "support_link",
           "settings": {
             "label": "Terms & Conditions",
             "link": ""
           }
         },
-        "support_link_about_3": {
+        "support_link_3": {
           "type": "support_link",
           "settings": {
             "label": "Privacy Policy",
             "link": ""
           }
-        },
-        "support_link_about_4": {
-          "type": "support_link",
-          "settings": {
-            "label": "Help",
-            "link": ""
-          }
         }
       },
       "block_order": [
-        "category_link_about_1",
-        "category_link_about_2",
-        "category_link_about_3",
-        "category_link_about_4",
-        "category_link_about_5",
-        "support_link_about_1",
-        "support_link_about_2",
-        "support_link_about_3",
-        "support_link_about_4"
+        "category_link_1",
+        "support_link_1",
+        "support_link_2",
+        "support_link_3"
       ],
       "name": "Footer",
       "settings": {
@@ -233,7 +205,7 @@
   "order": [
     "header_about",
     "mega_menu_about",
-    "about_page_content",
+    "about_us_section",
     "footer_about"
   ]
 }

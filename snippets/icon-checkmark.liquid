@@ -1,0 +1,29 @@
+{%- comment -%}
+  Icon Checkmark Snippet
+  
+  Accepts:
+  - size: {Number} Size in pixels (default: 10)
+  - color: {String} Color (default: currentColor)
+{%- endcomment -%}
+
+{%- liquid
+  assign size = size | default: 10
+  assign color = color | default: 'currentColor'
+-%}
+
+<svg 
+  width="{{ size }}" 
+  height="{{ size }}" 
+  viewBox="0 0 10 10" 
+  fill="none" 
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path 
+    d="M1 5L3.5 7.5L9 2" 
+    stroke="{{ color }}" 
+    stroke-width="1.5" 
+    stroke-linecap="round" 
+    stroke-linejoin="round"
+  />
+</svg>
+
