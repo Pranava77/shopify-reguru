@@ -43,9 +43,6 @@ class ThemeUtils {
     // Initialize cart functionality
     this.#initCart();
     
-    // Initialize cart drawer
-    this.#initCartDrawer();
-    
     // Initialize FAQ tabs
     this.#initFaqTabs();
     
@@ -273,6 +270,9 @@ class ThemeUtils {
   }
 
   #initCart() {
+    // Initialize cart drawer
+    this.#initCartDrawer();
+    
     // Handle add to cart buttons - add to cart and open drawer
     const addToCartButtons = document.querySelectorAll('[data-add-to-cart]');
     
@@ -309,16 +309,12 @@ class ThemeUtils {
             throw new Error(error.description || 'Failed to add item to cart');
           }
           
-          // Update cart count
+          // Optimistic UI update - update cart count
           this.#updateCartCount();
           
-          // Open cart drawer and refresh its contents
+          // Open cart drawer and refresh cart items
           this.#openCartDrawer();
           await this.#refreshCartDrawer();
-          
-          // Re-enable button
-          button.disabled = false;
-          button.textContent = originalText;
           
         } catch (error) {
           console.error('Error adding to cart:', error);
@@ -365,10 +361,10 @@ class ThemeUtils {
             throw new Error(error.description || 'Failed to add item to cart');
           }
           
-          // Update cart count
+          // Optimistic UI update - update cart count
           this.#updateCartCount();
           
-          // Redirect to checkout for Buy Now
+          // Redirect to checkout
           window.location.href = '/checkout';
           
         } catch (error) {
@@ -379,6 +375,305 @@ class ThemeUtils {
         }
       });
     }
+  }
+
+  #initCartDrawer() {
+    const drawer = document.getElementById('cart-drawer');
+    if (!drawer) return;
+
+    const overlay = drawer.querySelector('[data-cart-drawer-overlay]');
+    const closeBtn = drawer.querySelector('[data-cart-drawer-close]');
+    const closeButtons = drawer.querySelectorAll('[data-cart-drawer-close]');
+
+    // Close drawer handlers
+    const closeDrawer = () => {
+      drawer.classList.remove('is-open');
+      document.body.style.overflow = '';
+    };
+
+    if (overlay) {
+      overlay.addEventListener('click', closeDrawer);
+    }
+
+    for (const btn of closeButtons) {
+      btn.addEventListener('click', closeDrawer);
+    }
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && drawer.classList.contains('is-open')) {
+        closeDrawer();
+      }
+    });
+
+    // Handle cart icon click in header (only if it links to cart)
+    const cartIcon = document.querySelector('.header__cart');
+    if (cartIcon) {
+      const href = cartIcon.getAttribute('href');
+      // Only intercept if it's a cart link
+      if (href && href.includes('/cart')) {
+        cartIcon.addEventListener('click', (e) => {
+          e.preventDefault();
+          this.#openCartDrawer();
+          this.#refreshCartDrawer();
+        });
+      }
+    }
+  }
+
+  #openCartDrawer() {
+    const drawer = document.getElementById('cart-drawer');
+    if (drawer) {
+      drawer.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  #closeCartDrawer() {
+    const drawer = document.getElementById('cart-drawer');
+    if (drawer) {
+      drawer.classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+  }
+
+  #formatMoney(cents) {
+    if (typeof cents !== 'number' || isNaN(cents)) {
+      return '$0.00';
+    }
+    const isNegative = cents < 0;
+    const absCents = Math.abs(cents);
+    const dollars = absCents / 100;
+    const formatted = dollars.toFixed(2);
+    return isNegative ? `-$${formatted}` : `$${formatted}`;
+  }
+
+  async #refreshCartDrawer() {
+    const drawer = document.getElementById('cart-drawer');
+    if (!drawer) return;
+
+    const loadingEl = drawer.querySelector('[data-cart-drawer-loading]');
+    const emptyEl = drawer.querySelector('[data-cart-drawer-empty]');
+    const itemsEl = drawer.querySelector('[data-cart-drawer-items]');
+    const itemsListEl = drawer.querySelector('[data-cart-drawer-items-list]');
+    const subtotalEl = drawer.querySelector('[data-cart-drawer-subtotal]');
+    const totalEl = drawer.querySelector('[data-cart-drawer-total]');
+
+    // Show loading
+    if (loadingEl) loadingEl.style.display = 'flex';
+    if (emptyEl) emptyEl.style.display = 'none';
+    if (itemsEl) itemsEl.style.display = 'none';
+
+    try {
+      const response = await fetch('/cart.js');
+      if (!response.ok) {
+        throw new Error('Failed to fetch cart');
+      }
+      const cart = await response.json();
+
+      // Hide loading
+      if (loadingEl) loadingEl.style.display = 'none';
+
+      if (!cart.items || cart.items.length === 0) {
+        // Show empty state
+        if (emptyEl) emptyEl.style.display = 'flex';
+        if (itemsEl) itemsEl.style.display = 'none';
+        return;
+      }
+
+      // Show items
+      if (emptyEl) emptyEl.style.display = 'none';
+      if (itemsEl) itemsEl.style.display = 'flex';
+
+      // Update summary
+      if (subtotalEl) {
+        subtotalEl.textContent = this.#formatMoney(cart.items_subtotal_price);
+      }
+      if (totalEl) {
+        totalEl.textContent = this.#formatMoney(cart.total_price);
+      }
+
+      // Render cart items
+      if (itemsListEl) {
+        itemsListEl.innerHTML = '';
+        for (const item of cart.items) {
+          const itemEl = this.#createCartDrawerItem(item);
+          itemsListEl.appendChild(itemEl);
+        }
+      }
+
+      // Attach event listeners to quantity controls
+      this.#attachCartDrawerItemListeners();
+
+    } catch (error) {
+      console.error('Error refreshing cart drawer:', error);
+      if (loadingEl) loadingEl.style.display = 'none';
+      if (emptyEl) emptyEl.style.display = 'flex';
+      if (itemsEl) itemsEl.style.display = 'none';
+    }
+  }
+
+  #createCartDrawerItem(item) {
+    const itemEl = document.createElement('div');
+    itemEl.className = 'cart-drawer-item';
+    itemEl.setAttribute('data-line-item', item.key);
+
+    // Get image URL - Shopify cart API returns full URL, transform to smaller size
+    let imageUrl = '';
+    if (item.image) {
+      // Try to transform Shopify image URL to 150x150
+      imageUrl = item.image.replace(/(\.(jpg|jpeg|png|gif|webp))(\?.*)?$/i, '_150x150$1');
+    }
+    const variantTitle = item.variant_title && item.variant_title !== 'Default Title' ? item.variant_title : '';
+
+    itemEl.innerHTML = `
+      <div class="cart-drawer-item__image">
+        ${imageUrl ? `<img src="${imageUrl}" alt="${item.title}" loading="lazy">` : '<div class="cart-drawer-item__placeholder"></div>'}
+      </div>
+      <div class="cart-drawer-item__details">
+        <h3 class="cart-drawer-item__title">
+          <a href="${item.url}">${item.product_title}</a>
+        </h3>
+        ${variantTitle ? `<p class="cart-drawer-item__variant">${variantTitle}</p>` : ''}
+        <div class="cart-drawer-item__price">${this.#formatMoney(item.final_price)}</div>
+        <div class="cart-drawer-item__quantity">
+          <button type="button" class="cart-drawer-item__quantity-btn" data-decrease-quantity data-key="${item.key}" aria-label="Decrease quantity">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 6H10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <input type="number" class="cart-drawer-item__quantity-input" value="${item.quantity}" min="0" data-key="${item.key}" data-line-item-key="${item.key}">
+          <button type="button" class="cart-drawer-item__quantity-btn" data-increase-quantity data-key="${item.key}" aria-label="Increase quantity">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 2V10M2 6H10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <button type="button" class="cart-drawer-item__remove" data-remove-item data-key="${item.key}" aria-label="Remove ${item.product_title}">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    `;
+
+    return itemEl;
+  }
+
+  #attachCartDrawerItemListeners() {
+    const drawer = document.getElementById('cart-drawer');
+    if (!drawer) return;
+
+    // Quantity increase/decrease buttons
+    const quantityButtons = drawer.querySelectorAll('[data-increase-quantity], [data-decrease-quantity]');
+    for (const button of quantityButtons) {
+      button.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const key = button.getAttribute('data-key');
+        const input = drawer.querySelector(`input[data-key="${key}"]`);
+        if (!input) return;
+
+        const currentValue = parseInt(input.value, 10) || 0;
+        const isIncrease = button.hasAttribute('data-increase-quantity');
+        const newValue = isIncrease ? currentValue + 1 : Math.max(0, currentValue - 1);
+
+        if (newValue === currentValue) return;
+
+        input.value = newValue;
+        button.disabled = true;
+
+        try {
+          await this.#updateCartItem(key, newValue);
+          await this.#refreshCartDrawer();
+          this.#updateCartCount();
+        } catch (error) {
+          input.value = currentValue;
+          alert('Failed to update cart. Please try again.');
+        } finally {
+          button.disabled = false;
+        }
+      });
+    }
+
+    // Quantity input changes
+    const quantityInputs = drawer.querySelectorAll('.cart-drawer-item__quantity-input');
+    for (const input of quantityInputs) {
+      let originalValue = parseInt(input.value, 10) || 0;
+
+      input.addEventListener('change', async () => {
+        let newValue = parseInt(input.value, 10);
+        if (isNaN(newValue) || newValue < 0) {
+          newValue = 0;
+          input.value = 0;
+        }
+
+        if (newValue === originalValue) return;
+
+        const previousValue = originalValue;
+        originalValue = newValue;
+        input.disabled = true;
+
+        try {
+          await this.#updateCartItem(input.getAttribute('data-key'), newValue);
+          await this.#refreshCartDrawer();
+          this.#updateCartCount();
+        } catch (error) {
+          input.value = previousValue;
+          originalValue = previousValue;
+          alert('Failed to update cart. Please try again.');
+        } finally {
+          input.disabled = false;
+        }
+      });
+    }
+
+    // Remove item buttons
+    const removeButtons = drawer.querySelectorAll('[data-remove-item]');
+    for (const button of removeButtons) {
+      button.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const key = button.getAttribute('data-key');
+        const itemRow = drawer.querySelector(`[data-line-item="${key}"]`);
+
+        if (itemRow) {
+          itemRow.style.opacity = '0.5';
+        }
+        button.disabled = true;
+
+        try {
+          await this.#updateCartItem(key, 0);
+          await this.#refreshCartDrawer();
+          this.#updateCartCount();
+        } catch (error) {
+          if (itemRow) {
+            itemRow.style.opacity = '1';
+          }
+          alert('Failed to remove item. Please try again.');
+        } finally {
+          button.disabled = false;
+        }
+      });
+    }
+  }
+
+  async #updateCartItem(key, quantity) {
+    const updates = {};
+    updates[key] = quantity;
+
+    const response = await fetch('/cart/update.js', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ updates })
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.description || 'Failed to update cart');
+    }
+
+    return response.json();
   }
 
   #updateCartCount() {
@@ -397,6 +692,13 @@ class ThemeUtils {
         document.dispatchEvent(new CustomEvent('cart:updated', {
           detail: { cart }
         }));
+
+        // Refresh cart drawer if it's open
+        const drawer = document.getElementById('cart-drawer');
+        if (drawer && drawer.classList.contains('is-open')) {
+          // Call refresh without awaiting to avoid blocking
+          this.#refreshCartDrawer().catch(err => console.error('Error refreshing cart drawer:', err));
+        }
       })
       .catch(error => {
         console.error('Error fetching cart:', error);
@@ -430,310 +732,6 @@ class ThemeUtils {
         document.body.removeChild(notification);
       }, 300);
     }, 2000);
-  }
-
-  #initCartDrawer() {
-    const drawer = document.querySelector('[data-cart-drawer]');
-    if (!drawer) return;
-
-    const overlay = drawer.querySelector('[data-cart-drawer-overlay]');
-    const closeBtn = drawer.querySelector('[data-cart-drawer-close]');
-    
-    // Close drawer on overlay click
-    if (overlay) {
-      overlay.addEventListener('click', () => this.#closeCartDrawer());
-    }
-    
-    // Close drawer on close button click
-    if (closeBtn) {
-      closeBtn.addEventListener('click', () => this.#closeCartDrawer());
-    }
-    
-    // Close drawer on Escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && drawer.classList.contains('is-open')) {
-        this.#closeCartDrawer();
-      }
-    });
-    
-    // Initialize drawer item interactions
-    this.#initCartDrawerItems();
-  }
-
-  #initCartDrawerItems() {
-    const drawer = document.querySelector('[data-cart-drawer]');
-    if (!drawer) return;
-
-    // Use event delegation for drawer item interactions
-    drawer.addEventListener('click', async (e) => {
-      const target = e.target;
-      
-      // Handle quantity decrease
-      const decreaseBtn = target.closest('[data-cart-drawer-decrease]');
-      if (decreaseBtn) {
-        e.preventDefault();
-        const itemKey = decreaseBtn.getAttribute('data-item-key');
-        await this.#updateCartDrawerItem(itemKey, -1);
-        return;
-      }
-      
-      // Handle quantity increase
-      const increaseBtn = target.closest('[data-cart-drawer-increase]');
-      if (increaseBtn) {
-        e.preventDefault();
-        const itemKey = increaseBtn.getAttribute('data-item-key');
-        await this.#updateCartDrawerItem(itemKey, 1);
-        return;
-      }
-      
-      // Handle item removal
-      const removeBtn = target.closest('[data-cart-drawer-remove]');
-      if (removeBtn) {
-        e.preventDefault();
-        const itemKey = removeBtn.getAttribute('data-item-key');
-        await this.#removeCartDrawerItem(itemKey);
-        return;
-      }
-    });
-  }
-
-  async #updateCartDrawerItem(itemKey, quantityChange) {
-    const drawer = document.querySelector('[data-cart-drawer]');
-    const itemEl = drawer?.querySelector(`[data-item-key="${itemKey}"]`);
-    const quantityEl = itemEl?.querySelector('[data-quantity-value]');
-    
-    if (!quantityEl) return;
-    
-    const currentQuantity = parseInt(quantityEl.textContent, 10) || 0;
-    const newQuantity = Math.max(0, currentQuantity + quantityChange);
-    
-    // If quantity becomes 0, remove the item
-    if (newQuantity === 0) {
-      await this.#removeCartDrawerItem(itemKey);
-      return;
-    }
-    
-    // Optimistic UI update
-    quantityEl.textContent = newQuantity;
-    
-    try {
-      const response = await fetch('/cart/change.js', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: itemKey,
-          quantity: newQuantity
-        })
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to update cart');
-      }
-      
-      const cart = await response.json();
-      this.#updateCartDrawerFromData(cart);
-      this.#updateCartCount();
-      
-    } catch (error) {
-      console.error('Error updating cart item:', error);
-      // Revert optimistic update
-      quantityEl.textContent = currentQuantity;
-    }
-  }
-
-  async #removeCartDrawerItem(itemKey) {
-    const drawer = document.querySelector('[data-cart-drawer]');
-    const itemEl = drawer?.querySelector(`[data-item-key="${itemKey}"]`);
-    
-    if (itemEl) {
-      // Fade out animation
-      itemEl.style.opacity = '0.5';
-      itemEl.style.transition = 'opacity 0.2s';
-    }
-    
-    try {
-      const response = await fetch('/cart/change.js', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: itemKey,
-          quantity: 0
-        })
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to remove item');
-      }
-      
-      const cart = await response.json();
-      
-      // Remove item element with animation
-      if (itemEl) {
-        itemEl.style.height = itemEl.offsetHeight + 'px';
-        itemEl.style.overflow = 'hidden';
-        requestAnimationFrame(() => {
-          itemEl.style.height = '0';
-          itemEl.style.padding = '0';
-          itemEl.style.margin = '0';
-          itemEl.style.transition = 'all 0.3s ease';
-          setTimeout(() => itemEl.remove(), 300);
-        });
-      }
-      
-      this.#updateCartDrawerFromData(cart);
-      this.#updateCartCount();
-      
-    } catch (error) {
-      console.error('Error removing cart item:', error);
-      if (itemEl) {
-        itemEl.style.opacity = '1';
-      }
-    }
-  }
-
-  #updateCartDrawerFromData(cart) {
-    const drawer = document.querySelector('[data-cart-drawer]');
-    if (!drawer) return;
-    
-    const subtotalEl = drawer.querySelector('[data-cart-drawer-subtotal]');
-    const footerEl = drawer.querySelector('[data-cart-drawer-footer]');
-    const emptyEl = drawer.querySelector('[data-cart-drawer-empty]');
-    const itemsContainer = drawer.querySelector('[data-cart-drawer-items]');
-    
-    // Update subtotal
-    if (subtotalEl) {
-      subtotalEl.textContent = this.#formatMoney(cart.total_price);
-    }
-    
-    // Show/hide footer and empty state
-    if (cart.item_count === 0) {
-      if (footerEl) footerEl.style.display = 'none';
-      if (itemsContainer) itemsContainer.style.display = 'none';
-      if (emptyEl) emptyEl.style.display = 'flex';
-    } else {
-      if (footerEl) footerEl.style.display = '';
-      if (itemsContainer) itemsContainer.style.display = '';
-      if (emptyEl) emptyEl.style.display = 'none';
-    }
-    
-    // Update individual item totals
-    for (const item of cart.items) {
-      const itemEl = drawer.querySelector(`[data-item-key="${item.key}"]`);
-      if (itemEl) {
-        const lineTotalEl = itemEl.querySelector('[data-line-total]');
-        const quantityEl = itemEl.querySelector('[data-quantity-value]');
-        
-        if (lineTotalEl) {
-          lineTotalEl.textContent = this.#formatMoney(item.final_line_price);
-        }
-        if (quantityEl) {
-          quantityEl.textContent = item.quantity;
-        }
-      }
-    }
-  }
-
-  async #refreshCartDrawer() {
-    try {
-      // Fetch the cart drawer section HTML from the server
-      const response = await fetch('/?section_id=cart-drawer-content');
-      
-      if (response.ok) {
-        const html = await response.text();
-        const drawer = document.querySelector('[data-cart-drawer]');
-        const content = drawer?.querySelector('[data-cart-drawer-content]');
-        const footer = drawer?.querySelector('[data-cart-drawer-footer]');
-        
-        if (content) {
-          // Create a temporary container to parse the HTML
-          const temp = document.createElement('div');
-          temp.innerHTML = html;
-          
-          // Extract the items and update
-          const newItems = temp.querySelector('[data-cart-drawer-items]');
-          const newEmpty = temp.querySelector('[data-cart-drawer-empty]');
-          const newSubtotal = temp.querySelector('[data-cart-drawer-subtotal]');
-          
-          const existingItems = content.querySelector('[data-cart-drawer-items]');
-          const existingEmpty = content.querySelector('[data-cart-drawer-empty]');
-          
-          if (newItems && existingItems) {
-            existingItems.innerHTML = newItems.innerHTML;
-            existingItems.style.display = '';
-            if (existingEmpty) existingEmpty.style.display = 'none';
-            if (footer) footer.style.display = '';
-          } else if (newEmpty) {
-            if (existingItems) existingItems.style.display = 'none';
-            if (existingEmpty) {
-              existingEmpty.style.display = 'flex';
-            }
-            if (footer) footer.style.display = 'none';
-          }
-          
-          if (newSubtotal) {
-            const subtotalEl = drawer?.querySelector('[data-cart-drawer-subtotal]');
-            if (subtotalEl) {
-              subtotalEl.textContent = newSubtotal.textContent;
-            }
-          }
-        }
-      } else {
-        // Fallback: fetch cart JSON and update values
-        const cartResponse = await fetch('/cart.js');
-        if (cartResponse.ok) {
-          const cart = await cartResponse.json();
-          this.#updateCartDrawerFromData(cart);
-        }
-      }
-    } catch (error) {
-      console.error('Error refreshing cart drawer:', error);
-      // Fallback: update from cart JSON
-      try {
-        const cartResponse = await fetch('/cart.js');
-        if (cartResponse.ok) {
-          const cart = await cartResponse.json();
-          this.#updateCartDrawerFromData(cart);
-        }
-      } catch (e) {
-        console.error('Fallback cart refresh failed:', e);
-      }
-    }
-  }
-
-  #openCartDrawer() {
-    const drawer = document.querySelector('[data-cart-drawer]');
-    if (!drawer) return;
-    
-    drawer.classList.add('is-open');
-    drawer.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-    
-    // Focus the close button for accessibility
-    const closeBtn = drawer.querySelector('[data-cart-drawer-close]');
-    if (closeBtn) {
-      setTimeout(() => closeBtn.focus(), 100);
-    }
-  }
-
-  #closeCartDrawer() {
-    const drawer = document.querySelector('[data-cart-drawer]');
-    if (!drawer) return;
-    
-    drawer.classList.remove('is-open');
-    drawer.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-  }
-
-  #formatMoney(cents) {
-    if (typeof cents !== 'number' || isNaN(cents)) {
-      return '$0.00';
-    }
-    const dollars = cents / 100;
-    return '$' + dollars.toFixed(2);
   }
 
   #initFaqTabs() {

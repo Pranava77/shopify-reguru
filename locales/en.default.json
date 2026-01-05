@@ -14,17 +14,10 @@
       "submit": "Search"
     },
     "cart": {
-      "title": "Shopping Cart",
+      "title": "Cart",
       "empty": "Your cart is empty",
       "view": "View cart",
-      "checkout": "Checkout",
-      "subtotal": "Subtotal",
-      "continue_shopping": "Continue Shopping",
-      "view_cart": "View Cart",
-      "shipping_note": "Shipping & taxes calculated at checkout",
-      "remove": "Remove",
-      "decrease_quantity": "Decrease quantity",
-      "increase_quantity": "Increase quantity"
+      "checkout": "Checkout"
     },
     "currency": {
       "dropdown_label": "Currency"
