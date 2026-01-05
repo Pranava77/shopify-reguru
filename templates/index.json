@@ -148,7 +148,7 @@
           "type": "card",
           "settings": {
             "title": "sustainability",
-            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "background_image": "",
             "icon_image": "shopify://shop_images/Group_176.png"
           }
         },
@@ -156,7 +156,7 @@
           "type": "card",
           "settings": {
             "title": "RRR Policy",
-            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "background_image": "",
             "icon_image": "shopify://shop_images/Layer_3.png"
           }
         },
@@ -164,7 +164,7 @@
           "type": "card",
           "settings": {
             "title": "Affordable",
-            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "background_image": "",
             "icon_image": "shopify://shop_images/Group_159.png"
           }
         },
@@ -172,7 +172,7 @@
           "type": "card",
           "settings": {
             "title": "Online & Offline Model",
-            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "background_image": "",
             "icon_image": "shopify://shop_images/Group_173.png"
           }
         },
@@ -180,7 +180,7 @@
           "type": "card",
           "settings": {
             "title": "Tailored Solutions",
-            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "background_image": "",
             "icon_image": "shopify://shop_images/Group_161_a7347467-55ed-4553-95c7-978f9bf1b501.png"
           }
         }
