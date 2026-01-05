@@ -427,26 +427,7 @@ h1, h2, h3, h4, h5, h6 {
 /* --------------------------------------------------------------------------
    Grid System
    -------------------------------------------------------------------------- */
-.grid {
-  display: grid;
-  gap: var(--spacing-lg);
-}
 
-.grid--2 {
-  grid-template-columns: repeat(2, 1fr);
-}
-
-.grid--3 {
-  grid-template-columns: repeat(3, 1fr);
-}
-
-.grid--4 {
-  grid-template-columns: repeat(4, 1fr);
-}
-
-.grid--5 {
-  grid-template-columns: repeat(5, 1fr);
-}
 
 /* --------------------------------------------------------------------------
    Main Content
