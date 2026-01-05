@@ -311,6 +311,21 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
+  animation: iconPulse 2s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.header__cart:hover .header__cart-custom-icon {
+  animation-play-state: paused;
+}
+
+@keyframes iconPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
 }
 
 .header__cart-count {
