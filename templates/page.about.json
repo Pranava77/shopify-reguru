@@ -57,7 +57,7 @@
           "type": "simple_link",
           "settings": {
             "title": "About",
-            "link": "/pages/about",
+            "link": "",
             "badge": "",
             "badge_style": "new"
           }
