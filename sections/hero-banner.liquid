@@ -6,21 +6,29 @@
   assign cta_link = section.settings.cta_link | default: routes.collections_url
   assign image = section.settings.image
   assign bg_color = section.settings.background_color | default: '#212844'
+  assign bg_image = section.settings.background_image
+  assign bg_overlay_color = section.settings.background_overlay_color | default: '#000000'
+  assign bg_overlay_opacity = section.settings.background_overlay_opacity | default: 0 | divided_by: 100.0
+  assign bg_position = section.settings.background_image_position | default: 'center'
+  assign bg_size = section.settings.background_image_size | default: 'cover'
 -%}
 
-{%- if section.settings.background_image != blank -%}
-  {% style %}
-    #shopify-section-{{ section.id }} {
-      background-image: url('{{ section.settings.background_image | image_url: width: 2000 }}');
-      background-size: {{ section.settings.background_size | default: 'cover' }};
-      background-position: {{ section.settings.background_position | default: 'center' }};
-      background-repeat: {{ section.settings.background_repeat | default: 'no-repeat' }};
-      background-attachment: {{ section.settings.background_attachment | default: 'scroll' }};
-    }
-  {% endstyle %}
-{%- endif -%}
-
-<section class="hero-banner" style="--hero-bg: {{ bg_color }};">
+<section 
+  class="hero-banner{% if bg_image != blank %} hero-banner--has-bg-image{% endif %}" 
+  style="
+    --hero-bg: {{ bg_color }};
+    {%- if bg_image != blank -%}
+      --bg-image: url('{{ bg_image | image_url: width: 1920 }}');
+      --bg-position: {{ bg_position }};
+      --bg-size: {{ bg_size }};
+    {%- endif -%}
+    --bg-overlay-color: {{ bg_overlay_color }};
+    --bg-overlay-opacity: {{ bg_overlay_opacity }};
+  "
+>
+  {%- if bg_image != blank and bg_overlay_opacity > 0 -%}
+    <div class="hero-banner__overlay"></div>
+  {%- endif -%}
   <div class="hero-banner__container">
     <div class="hero-banner__content">
       <p class="hero-banner__subheading">{{ subheading }}</p>
@@ -57,14 +65,33 @@
 
 {% stylesheet %}
 .hero-banner {
+  position: relative;
   width: 100%;
   max-width: var(--container-max);
   margin: 24px auto;
   padding: 0 var(--container-padding);
 }
 
+.hero-banner--has-bg-image {
+  background-image: var(--bg-image);
+  background-position: var(--bg-position);
+  background-size: var(--bg-size);
+  background-repeat: no-repeat;
+}
+
+.hero-banner__overlay {
+  position: absolute;
+  inset: 0;
+  background-color: var(--bg-overlay-color);
+  opacity: var(--bg-overlay-opacity);
+  z-index: 1;
+  pointer-events: none;
+  border-radius: var(--radius-lg);
+}
+
 .hero-banner__container {
   position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -248,29 +275,25 @@
       "label": "Background Image"
     },
     {
-      "type": "select",
-      "id": "background_size",
-      "label": "Background Size",
-      "options": [
-        {
-          "value": "cover",
-          "label": "Cover"
-        },
-        {
-          "value": "contain",
-          "label": "Contain"
-        },
-        {
-          "value": "auto",
-          "label": "Auto"
-        }
-      ],
-      "default": "cover"
+      "type": "color",
+      "id": "background_overlay_color",
+      "label": "Overlay Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "background_overlay_opacity",
+      "label": "Overlay Opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 0
     },
     {
       "type": "select",
-      "id": "background_position",
-      "label": "Background Position",
+      "id": "background_image_position",
+      "label": "Image Position",
       "options": [
         {
           "value": "center",
@@ -297,43 +320,23 @@
     },
     {
       "type": "select",
-      "id": "background_repeat",
-      "label": "Background Repeat",
+      "id": "background_image_size",
+      "label": "Image Size",
       "options": [
         {
-          "value": "no-repeat",
-          "label": "No Repeat"
+          "value": "cover",
+          "label": "Cover"
         },
         {
-          "value": "repeat",
-          "label": "Repeat"
+          "value": "contain",
+          "label": "Contain"
         },
         {
-          "value": "repeat-x",
-          "label": "Repeat X"
-        },
-        {
-          "value": "repeat-y",
-          "label": "Repeat Y"
+          "value": "auto",
+          "label": "Auto"
         }
       ],
-      "default": "no-repeat"
-    },
-    {
-      "type": "select",
-      "id": "background_attachment",
-      "label": "Background Attachment",
-      "options": [
-        {
-          "value": "scroll",
-          "label": "Scroll"
-        },
-        {
-          "value": "fixed",
-          "label": "Fixed"
-        }
-      ],
-      "default": "scroll"
+      "default": "cover"
     }
   ],
   "presets": [
