@@ -201,21 +201,21 @@
           "type": "category_tab",
           "settings": {
             "label": "Phone",
-            "collection": ""
+            "collection": "phone"
           }
         },
         "category_tab_jRNpB9": {
           "type": "category_tab",
           "settings": {
             "label": "Laptop",
-            "collection": "tele"
+            "collection": "apple"
           }
         },
         "category_tab_WhYUT6": {
           "type": "category_tab",
           "settings": {
             "label": "Monitors",
-            "collection": "headphone"
+            "collection": "monitors"
           }
         },
         "category_tab_GJPt8G": {
@@ -229,7 +229,7 @@
           "type": "category_tab",
           "settings": {
             "label": "Television",
-            "collection": "tele"
+            "collection": "television"
           }
         }
       },
