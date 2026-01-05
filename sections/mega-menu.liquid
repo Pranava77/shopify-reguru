@@ -7,17 +7,6 @@
   assign bg_overlay_opacity = section.settings.background_overlay_opacity | default: 0 | divided_by: 100.0
   assign bg_position = section.settings.background_image_position | default: 'center'
   assign bg_size = section.settings.background_image_size | default: 'cover'
-  
-  assign about_page_url = '/pages/about'
-  if section.settings.about_page != blank
-    assign about_page_url = section.settings.about_page.url
-  elsif section.settings.about_url != blank
-    assign about_page_url = section.settings.about_url
-  elsif pages['about'] != blank
-    assign about_page_url = pages['about'].url
-  elsif pages['About'] != blank
-    assign about_page_url = pages['About'].url
-  endif
 -%}
 
 <nav 
@@ -238,14 +227,8 @@
             </li>
             
           {%- when 'simple_link' -%}
-            {%- liquid
-              assign link_url = block.settings.link
-              if block.settings.title == 'About' or block.settings.title == 'about'
-                assign link_url = about_page_url
-              endif
-            -%}
             <li class="mega-menu__item" {{ block.shopify_attributes }}>
-              <a href="{{ link_url }}" class="mega-menu__link">
+              <a href="{{ block.settings.link }}" class="mega-menu__link">
                 <span class="mega-menu__link-text">{{ block.settings.title }}</span>
                 {%- if block.settings.badge != blank -%}
                   <span class="mega-menu__badge mega-menu__badge--{{ block.settings.badge_style }}">
@@ -364,14 +347,8 @@
               </li>
               
             {%- when 'simple_link' -%}
-              {%- liquid
-                assign link_url = block.settings.link
-                if block.settings.title == 'About' or block.settings.title == 'about'
-                  assign link_url = about_page_url
-                endif
-              -%}
               <li class="mega-menu__mobile-item">
-                <a href="{{ link_url }}" class="mega-menu__mobile-link">
+                <a href="{{ block.settings.link }}" class="mega-menu__mobile-link">
                   {{ block.settings.title }}
                   {%- if block.settings.badge != blank -%}
                     <span class="mega-menu__badge mega-menu__badge--{{ block.settings.badge_style }}">
@@ -1062,22 +1039,6 @@
       ],
       "default": "right",
       "info": "Position of the featured image in mega dropdowns"
-    },
-    {
-      "type": "header",
-      "content": "About Page Link"
-    },
-    {
-      "type": "page",
-      "id": "about_page",
-      "label": "About Page",
-      "info": "Select the about page. If not set, will use the URL below or try to find a page with handle 'about'."
-    },
-    {
-      "type": "url",
-      "id": "about_url",
-      "label": "About Page URL",
-      "info": "Custom URL for about page (only used if page is not selected above). Default: /pages/about"
     },
     {
       "type": "header",

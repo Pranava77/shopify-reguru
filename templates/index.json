@@ -99,7 +99,7 @@
           "type": "simple_link",
           "settings": {
             "title": "About",
-            "link": "",
+            "link": "/pages/about",
             "badge": "",
             "badge_style": "new"
           }
@@ -250,10 +250,10 @@
     "about-us": {
       "type": "about-us",
       "settings": {
-        "home_page_heading": "ABOUT US",
-        "home_page_image": "shopify://shop_images/pngimg.com_-_headphones_PNG7645.png",
-        "home_page_link_text": "know more",
-        "home_page_link_url": "/pages/about"
+        "heading": "ABOUT US",
+        "description": "",
+        "image": "shopify://shop_images/pngimg.com_-_headphones_PNG7645.png",
+        "stat_number": "10+"
       }
     },
     "testimonials": {

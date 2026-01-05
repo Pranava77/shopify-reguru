@@ -95,7 +95,7 @@
           "type": "simple_link",
           "settings": {
             "title": "About",
-            "link": "",
+            "link": "/pages/about",
             "badge": "",
             "badge_style": "new"
           }
