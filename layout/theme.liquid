@@ -88,9 +88,6 @@
     {{ 'accessibility.skip_to_content' | t }}
   </a>
 
-  {%- comment -%} Cart Drawer - Available on all pages {%- endcomment -%}
-  {% render 'cart-drawer' %}
-
   {% sections 'header-group' %}
 
   <main id="MainContent" class="main-content" role="main" tabindex="-1">
@@ -98,6 +95,9 @@
   </main>
 
   {% sections 'footer-group' %}
+
+  {% comment %} Cart Drawer {% endcomment %}
+  {% render 'cart-drawer' %}
 
   <script src="{{ 'theme.js' | asset_url }}" defer></script>
 </body>

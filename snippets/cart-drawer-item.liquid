@@ -1,0 +1,278 @@
+{%- comment -%}
+  Cart Drawer Item Snippet
+  
+  Accepts:
+  - item: {Object} Cart line item Liquid object
+{%- endcomment -%}
+
+<div class="cart-drawer-item" data-cart-drawer-item data-item-key="{{ item.key }}">
+  <div class="cart-drawer-item__image">
+    {%- if item.image != blank -%}
+      <img 
+        src="{{ item.image | image_url: width: 120 }}" 
+        alt="{{ item.image.alt | default: item.title }}"
+        width="120"
+        height="120"
+        loading="lazy"
+      >
+    {%- else -%}
+      <div class="cart-drawer-item__placeholder">
+        {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+      </div>
+    {%- endif -%}
+  </div>
+
+  <div class="cart-drawer-item__details">
+    <div class="cart-drawer-item__header">
+      <h3 class="cart-drawer-item__title">
+        <a href="{{ item.url }}">{{ item.product.title }}</a>
+      </h3>
+      <button 
+        type="button" 
+        class="cart-drawer-item__remove" 
+        data-cart-drawer-remove
+        data-item-key="{{ item.key }}"
+        aria-label="{{ 'general.cart.remove' | t | default: 'Remove' }} {{ item.product.title }}"
+      >
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 3L11 11M11 3L3 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    {%- unless item.product.has_only_default_variant -%}
+      <p class="cart-drawer-item__variant">{{ item.variant.title }}</p>
+    {%- endunless -%}
+
+    <div class="cart-drawer-item__price-row">
+      {%- if item.original_price != item.final_price -%}
+        <span class="cart-drawer-item__price-original">{{ item.original_price | money }}</span>
+      {%- endif -%}
+      <span class="cart-drawer-item__price">{{ item.final_price | money }}</span>
+    </div>
+
+    <div class="cart-drawer-item__quantity-row">
+      <div class="cart-drawer-item__quantity">
+        <button 
+          type="button" 
+          class="cart-drawer-item__quantity-btn" 
+          data-cart-drawer-decrease
+          data-item-key="{{ item.key }}"
+          aria-label="{{ 'general.cart.decrease_quantity' | t | default: 'Decrease quantity' }}"
+        >
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2 5H8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <span class="cart-drawer-item__quantity-value" data-quantity-value>{{ item.quantity }}</span>
+        <button 
+          type="button" 
+          class="cart-drawer-item__quantity-btn" 
+          data-cart-drawer-increase
+          data-item-key="{{ item.key }}"
+          aria-label="{{ 'general.cart.increase_quantity' | t | default: 'Increase quantity' }}"
+        >
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 2V8M2 5H8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <span class="cart-drawer-item__line-total" data-line-total>{{ item.final_line_price | money }}</span>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+.cart-drawer-item {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 16px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--color-gray);
+}
+
+.cart-drawer-item__image {
+  width: 80px;
+  height: 80px;
+  overflow: hidden;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--color-black);
+  background-color: var(--color-cream);
+}
+
+.cart-drawer-item__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cart-drawer-item__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-gray);
+}
+
+.cart-drawer-item__placeholder svg {
+  width: 50%;
+  height: 50%;
+  opacity: 0.4;
+}
+
+.cart-drawer-item__details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cart-drawer-item__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cart-drawer-item__title {
+  font-family: var(--font-product);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.3;
+  color: var(--color-black);
+  margin: 0;
+}
+
+.cart-drawer-item__title a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.cart-drawer-item__title a:hover {
+  color: var(--color-navy);
+}
+
+.cart-drawer-item__remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  flex-shrink: 0;
+  background-color: transparent;
+  border: 1px solid var(--color-gray);
+  border-radius: var(--radius-xs);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.cart-drawer-item__remove:hover {
+  background-color: var(--color-cream);
+  border-color: var(--color-black);
+  color: var(--color-black);
+}
+
+.cart-drawer-item__variant {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.cart-drawer-item__price-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cart-drawer-item__price-original {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  text-decoration: line-through;
+}
+
+.cart-drawer-item__price {
+  font-family: var(--font-product);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--color-black);
+}
+
+.cart-drawer-item__quantity-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.cart-drawer-item__quantity {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border: 1px solid var(--color-black);
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+}
+
+.cart-drawer-item__quantity-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background-color: var(--color-white);
+  border: none;
+  color: var(--color-black);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.cart-drawer-item__quantity-btn:hover {
+  background-color: var(--color-cream);
+}
+
+.cart-drawer-item__quantity-btn:active {
+  background-color: var(--color-gray);
+}
+
+.cart-drawer-item__quantity-value {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 28px;
+  padding: 0 4px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--color-black);
+  background-color: var(--color-cream);
+  border-left: 1px solid var(--color-black);
+  border-right: 1px solid var(--color-black);
+}
+
+.cart-drawer-item__line-total {
+  font-family: var(--font-product);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--color-black);
+}
+
+@media screen and (max-width: 480px) {
+  .cart-drawer-item {
+    padding: 12px 20px;
+    gap: 12px;
+  }
+  
+  .cart-drawer-item__image {
+    width: 70px;
+    height: 70px;
+  }
+}
+{% endstylesheet %}
+

@@ -14,10 +14,17 @@
       "submit": "Search"
     },
     "cart": {
-      "title": "Cart",
+      "title": "Shopping Cart",
       "empty": "Your cart is empty",
       "view": "View cart",
-      "checkout": "Checkout"
+      "checkout": "Checkout",
+      "subtotal": "Subtotal",
+      "continue_shopping": "Continue Shopping",
+      "view_cart": "View Cart",
+      "shipping_note": "Shipping & taxes calculated at checkout",
+      "remove": "Remove",
+      "decrease_quantity": "Decrease quantity",
+      "increase_quantity": "Increase quantity"
     },
     "currency": {
       "dropdown_label": "Currency"
@@ -26,16 +33,6 @@
       "previous": "Previous",
       "next": "Next"
     }
-  },
-  "cart": {
-    "title": "Shopping Cart",
-    "empty_title": "Your cart is empty",
-    "empty_text": "Add some items to get started!",
-    "continue_shopping": "Continue Shopping",
-    "subtotal": "Subtotal",
-    "shipping_note": "Shipping & taxes calculated at checkout",
-    "view_cart": "View Cart",
-    "checkout": "Checkout"
   },
   "accessibility": {
     "skip_to_content": "Skip to content",
