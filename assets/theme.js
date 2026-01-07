@@ -25,82 +25,53 @@ class ThemeUtils {
   }
 
   #initializeComponents() {
-    // Critical: Initialize cart functionality first (needed for add to cart)
-    this.#initCart();
+    // Initialize FAQ accordions
+    this.#initAccordions();
     
-    // Critical: Initialize cart count on page load
-    this.#updateCartCount();
+    // Initialize testimonial slider
+    this.#initTestimonialSlider();
     
-    // Critical: Initialize mega menu (header navigation)
+    // Initialize category navigation
+    this.#initCategoryNav();
+    
+    // Initialize mega menu
     this.#initMegaMenu();
     
-    // Critical: Initialize product grid tabs (above the fold content)
+    // Initialize product grid tabs
     this.#initProductGridTabs();
     
-    // Defer non-critical components using requestIdleCallback or setTimeout
-    const initNonCritical = () => {
-      // Initialize FAQ accordions
-      this.#initAccordions();
-      
-      // Initialize testimonial slider
-      this.#initTestimonialSlider();
-      
-      // Initialize category navigation
-      this.#initCategoryNav();
-      
-      // Initialize FAQ tabs
-      this.#initFaqTabs();
-    };
+    // Initialize cart functionality
+    this.#initCart();
     
-    // Use requestIdleCallback if available, otherwise use setTimeout
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(initNonCritical, { timeout: 2000 });
-    } else {
-      setTimeout(initNonCritical, 100);
-    }
+    // Initialize FAQ tabs
+    this.#initFaqTabs();
+    
+    // Initialize cart count on page load
+    this.#updateCartCount();
   }
 
   #initAccordions() {
     const accordions = document.querySelectorAll('.faq__item');
-    if (accordions.length === 0) return;
     
-    // Use event delegation for better performance
-    const faqContainer = accordions[0].closest('.faq');
-    if (!faqContainer) {
-      // Fallback to individual listeners if no container
-      for (const accordion of accordions) {
-        const trigger = accordion.querySelector('.faq__question');
-        if (trigger) {
-          trigger.addEventListener('click', () => {
-            const isOpen = accordion.classList.contains('is-open');
-            for (const item of accordions) {
-              item.classList.remove('is-open');
-            }
-            if (!isOpen) {
-              accordion.classList.add('is-open');
-            }
-          });
-        }
+    for (const accordion of accordions) {
+      const trigger = accordion.querySelector('.faq__question');
+      
+      if (trigger) {
+        trigger.addEventListener('click', () => {
+          const isOpen = accordion.classList.contains('is-open');
+          
+          // Close all other accordions
+          for (const item of accordions) {
+            item.classList.remove('is-open');
+          }
+          
+          // Toggle current
+          if (!isOpen) {
+            accordion.classList.add('is-open');
+          }
+        });
       }
-      return;
     }
-    
-    // Event delegation approach
-    faqContainer.addEventListener('click', (e) => {
-      const trigger = e.target.closest('.faq__question');
-      if (!trigger) return;
-      
-      const accordion = trigger.closest('.faq__item');
-      if (!accordion) return;
-      
-      const isOpen = accordion.classList.contains('is-open');
-      for (const item of accordions) {
-        item.classList.remove('is-open');
-      }
-      if (!isOpen) {
-        accordion.classList.add('is-open');
-      }
-    });
   }
 
   #initTestimonialSlider() {
@@ -335,21 +306,8 @@ class ThemeUtils {
             throw new Error(error.description || 'Failed to add item to cart');
           }
           
-          // Optimistic UI update - update cart count immediately
-          const cartCountElements = document.querySelectorAll('[data-cart-count]');
-          const currentCount = parseInt(sessionStorage.getItem('cart_count_cache') || '0', 10);
-          const newCount = currentCount + 1;
-          
-          for (const element of cartCountElements) {
-            element.textContent = newCount;
-          }
-          
-          // Update cache optimistically
-          sessionStorage.setItem('cart_count_cache', newCount.toString());
-          sessionStorage.setItem('cart_count_timestamp', Date.now().toString());
-          
-          // Fetch actual cart to verify
-          this.#fetchCartCount();
+          // Optimistic UI update - update cart count
+          this.#updateCartCount();
           
           // Redirect to cart page
           window.location.href = '/cart';
@@ -399,21 +357,8 @@ class ThemeUtils {
             throw new Error(error.description || 'Failed to add item to cart');
           }
           
-          // Optimistic UI update - update cart count immediately
-          const cartCountElements = document.querySelectorAll('[data-cart-count]');
-          const currentCount = parseInt(sessionStorage.getItem('cart_count_cache') || '0', 10);
-          const newCount = currentCount + 1;
-          
-          for (const element of cartCountElements) {
-            element.textContent = newCount;
-          }
-          
-          // Update cache optimistically
-          sessionStorage.setItem('cart_count_cache', newCount.toString());
-          sessionStorage.setItem('cart_count_timestamp', Date.now().toString());
-          
-          // Fetch actual cart to verify
-          this.#fetchCartCount();
+          // Optimistic UI update - update cart count
+          this.#updateCartCount();
           
           // Redirect to cart page
           window.location.href = '/cart';

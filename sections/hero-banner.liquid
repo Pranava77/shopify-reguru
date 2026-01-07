@@ -10,8 +10,8 @@
   assign container_bg_image = section.settings.container_background_image
 -%}
 
-<section class="hero-banner" style="--hero-bg: {{ bg_color }};{% if bg_image != blank %} background-image: url('{{ bg_image | image_url: width: 800 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;{% endif %}">
-  <div class="hero-banner__container"{% if container_bg_image != blank %} style="background-image: url('{{ container_bg_image | image_url: width: 800 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
+<section class="hero-banner" style="--hero-bg: {{ bg_color }};{% if bg_image != blank %} background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;{% endif %}">
+  <div class="hero-banner__container"{% if container_bg_image != blank %} style="background-image: url('{{ container_bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
     <div class="hero-banner__content">
       <p class="hero-banner__subheading">{{ subheading }}</p>
       <h1 class="hero-banner__heading">{{ heading }}</h1>
@@ -24,10 +24,6 @@
       {%- if image != blank -%}
         <img 
           src="{{ image | image_url: width: 600 }}"
-          srcset="{{ image | image_url: width: 400 }} 400w,
-                  {{ image | image_url: width: 600 }} 600w,
-                  {{ image | image_url: width: 800 }} 800w"
-          sizes="(max-width: 992px) 60vw, 45vw"
           alt="{{ image.alt | default: heading }}"
           width="600"
           height="400"
@@ -201,24 +197,6 @@
   }
 }
 {% endstylesheet %}
-
-{%- if bg_image != blank or container_bg_image != blank -%}
-{% style %}
-@media screen and (min-width: 768px) {
-  {%- if bg_image != blank -%}
-  .hero-banner[style*="background-image"] {
-    background-image: url('{{ bg_image | image_url: width: 1920 }}') !important;
-  }
-  {%- endif -%}
-  
-  {%- if container_bg_image != blank -%}
-  .hero-banner__container[style*="background-image"] {
-    background-image: url('{{ container_bg_image | image_url: width: 1920 }}') !important;
-  }
-  {%- endif -%}
-}
-{% endstyle %}
-{%- endif -%}
 
 {% schema %}
 {

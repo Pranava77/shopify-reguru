@@ -31,10 +31,6 @@
       {%- if product.featured_image != blank -%}
         <img 
           src="{{ product.featured_image | image_url: width: 400 }}"
-          srcset="{{ product.featured_image | image_url: width: 200 }} 200w,
-                  {{ product.featured_image | image_url: width: 400 }} 400w,
-                  {{ product.featured_image | image_url: width: 600 }} 600w"
-          sizes="(max-width: 576px) 100vw, (max-width: 992px) 50vw, 33vw"
           alt="{{ product.featured_image.alt | default: product.title }}"
           width="400"
           height="300"
