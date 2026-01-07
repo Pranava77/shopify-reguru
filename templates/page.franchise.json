@@ -15,12 +15,12 @@
       "settings": {
         "logo": "shopify://shop_images/gin.png",
         "show_search": true,
-        "show_location": true,
+        "show_location": false,
         "location_text": "Bengaluru",
         "header_icon_type": "bag",
         "header_custom_icon": "shopify://shop_images/Layer_1_1.png",
-        "header_icon_color_primary": "#1E1A5C",
-        "header_icon_color_accent": "#28D98E",
+        "header_icon_color_primary": "#1e1a5c",
+        "header_icon_color_accent": "#28d98e",
         "franchise_page": "franchise",
         "franchise_url": ""
       }
@@ -95,7 +95,7 @@
           "type": "simple_link",
           "settings": {
             "title": "About",
-            "link": "",
+            "link": "shopify://pages/about",
             "badge": "",
             "badge_style": "new"
           }
@@ -104,7 +104,7 @@
           "type": "simple_link",
           "settings": {
             "title": "Contact",
-            "link": "",
+            "link": "shopify://pages/contact",
             "badge": "",
             "badge_style": "new"
           }
@@ -219,7 +219,7 @@
       "name": "Footer",
       "settings": {
         "address": "Address: 2nd floor central complex sv road near mantri mall seshadripuram bengaluru 560020",
-        "background_color": "#041C66",
+        "background_color": "#041c66",
         "laptop_image": "shopify://shop_images/generated-image__20_-removebg-preview.png"
       }
     }
