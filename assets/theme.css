@@ -26,6 +26,24 @@
   --color-black: #000000;
   --color-gray: #D9D9D9;
   --color-star: #FFD700;
+  
+  /* Additional Colors */
+  --color-border-light: #E4E7E9;
+  --color-primary-blue: #0136EB;
+  --color-text-dark: #191C1F;
+  --color-text-muted: #5F6C72;
+  --color-text-label: #475156;
+  --color-text-subtle: #77878F;
+  --color-text-description: #A9ACC6;
+  --color-arrow: #ADB7BC;
+  --color-price-blue: #2DA5F3;
+  --color-star-filled: #FA8232;
+  --color-star-gold: #FFC416;
+  --color-star-empty: #B2B2B2;
+  --color-discount: #EFD33D;
+  --color-pink: #FB2E86;
+  --color-bg-light: #FAFAFA;
+  --color-bg-muted: rgba(196, 196, 196, 0.2);
 
   /* Typography */
   --font-heading: 'Syne', sans-serif;

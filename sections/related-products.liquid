@@ -4,14 +4,14 @@
 {%- endcomment -%}
 
 {%- liquid
-  assign heading = section.settings.heading | default: 'Related Products'
+  assign heading = section.settings.heading | default: 'products.product.related' | t
   assign products_to_show = section.settings.products_to_show | default: 4
-  assign collection = section.settings.collection
+  assign collection_handle = section.settings.collection
   
   if product != blank
-    assign related_products = product.collections.first.products | where: 'available' | limit: products_to_show
-  elsif collection != blank
-    assign related_products = collections[collection].products | limit: products_to_show
+    assign related_products = product.collections.first.products | where: 'available', true
+  elsif collection_handle != blank
+    assign related_products = collections[collection_handle].products
   endif
 -%}
 
@@ -21,7 +21,7 @@
     
     <div class="related-products__grid">
       {%- if related_products.size > 0 -%}
-        {%- for related_product in related_products -%}
+        {%- for related_product in related_products limit: products_to_show -%}
           {%- unless related_product.id == product.id -%}
             {%- liquid
               assign compare_price = related_product.compare_at_price
@@ -154,7 +154,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(196, 196, 196, 0.2);
+  background-color: var(--color-bg-muted);
 }
 
 .related-product-card__image img {
@@ -174,7 +174,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(196, 196, 196, 0.2);
+  background-color: var(--color-bg-muted);
 }
 
 .related-product-card__placeholder svg {
@@ -214,11 +214,11 @@
 .related-product-card__star {
   width: 12px;
   height: 12px;
-  color: #B2B2B2;
+  color: var(--color-star-empty);
 }
 
 .related-product-card__star--filled {
-  color: #FFC416;
+  color: var(--color-star-gold);
 }
 
 .related-product-card__price {

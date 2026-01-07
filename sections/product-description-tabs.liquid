@@ -5,60 +5,81 @@
 
 <section class="product-tabs">
   <div class="product-tabs__container">
+{%- liquid
+      assign first_tab = true
+    -%}
     <!-- Tab Navigation -->
     <nav class="product-tabs__nav" role="tablist">
+      {%- if section.settings.show_description -%}
       <button 
         type="button" 
-        class="product-tabs__tab product-tabs__tab--active" 
+        class="product-tabs__tab{% if first_tab %} product-tabs__tab--active{% endif %}" 
         role="tab"
-        aria-selected="true"
+        aria-selected="{% if first_tab %}true{% else %}false{% endif %}"
         aria-controls="tab-description"
         data-tab="description"
       >
-        Description
+        {{ 'products.product.tabs.description' | t }}
       </button>
+      {%- assign first_tab = false -%}
+      {%- endif -%}
+      {%- if section.settings.show_additional_info -%}
       <button 
         type="button" 
-        class="product-tabs__tab" 
+        class="product-tabs__tab{% if first_tab %} product-tabs__tab--active{% endif %}" 
         role="tab"
-        aria-selected="false"
+        aria-selected="{% if first_tab %}true{% else %}false{% endif %}"
         aria-controls="tab-additional"
         data-tab="additional"
       >
-        Additional Info
+        {{ 'products.product.tabs.additional' | t }}
       </button>
+      {%- assign first_tab = false -%}
+      {%- endif -%}
+      {%- if section.settings.show_reviews -%}
       <button 
         type="button" 
-        class="product-tabs__tab" 
+        class="product-tabs__tab{% if first_tab %} product-tabs__tab--active{% endif %}" 
         role="tab"
-        aria-selected="false"
+        aria-selected="{% if first_tab %}true{% else %}false{% endif %}"
         aria-controls="tab-reviews"
         data-tab="reviews"
       >
-        Reviews
+        {{ 'products.product.tabs.reviews' | t }}
       </button>
+      {%- assign first_tab = false -%}
+      {%- endif -%}
+      {%- if section.settings.show_video -%}
       <button 
         type="button" 
-        class="product-tabs__tab" 
+        class="product-tabs__tab{% if first_tab %} product-tabs__tab--active{% endif %}" 
         role="tab"
-        aria-selected="false"
+        aria-selected="{% if first_tab %}true{% else %}false{% endif %}"
         aria-controls="tab-video"
         data-tab="video"
       >
-        Video
+        {{ 'products.product.tabs.video' | t }}
       </button>
+      {%- assign first_tab = false -%}
+      {%- endif -%}
     </nav>
 
+    {%- liquid
+      assign first_panel = true
+    -%}
     <!-- Tab Content -->
     <div class="product-tabs__content">
+      {%- if section.settings.show_description -%}
       <!-- Description Tab -->
       <div 
         id="tab-description" 
-        class="product-tabs__panel product-tabs__panel--active" 
+        class="product-tabs__panel{% if first_panel %} product-tabs__panel--active{% endif %}" 
         role="tabpanel"
         data-panel="description"
+        {% unless first_panel %}hidden{% endunless %}
       >
-        <h3 class="product-tabs__panel-title">Varius tempor.</h3>
+      {%- assign first_panel = false -%}
+        <h3 class="product-tabs__panel-title">{{ 'products.product.tabs.description_title' | t }}</h3>
         <div class="product-tabs__panel-content">
           {%- if product.description != blank -%}
             {{ product.description }}
@@ -67,16 +88,19 @@
           {%- endif -%}
         </div>
       </div>
+      {%- endif -%}
 
+      {%- if section.settings.show_additional_info -%}
       <!-- Additional Info Tab -->
       <div 
         id="tab-additional" 
-        class="product-tabs__panel" 
+        class="product-tabs__panel{% if first_panel %} product-tabs__panel--active{% endif %}" 
         role="tabpanel"
         data-panel="additional"
-        hidden
+        {% unless first_panel %}hidden{% endunless %}
       >
-        <h3 class="product-tabs__panel-title">Additional Information</h3>
+      {%- assign first_panel = false -%}
+        <h3 class="product-tabs__panel-title">{{ 'products.product.tabs.additional_title' | t }}</h3>
         <div class="product-tabs__panel-content">
           {%- if product.metafields.custom.additional_info != blank -%}
             {{ product.metafields.custom.additional_info | metafield_tag }}
@@ -110,39 +134,45 @@
           {%- endif -%}
         </div>
       </div>
+      {%- endif -%}
 
+      {%- if section.settings.show_reviews -%}
       <!-- Reviews Tab -->
       <div 
         id="tab-reviews" 
-        class="product-tabs__panel" 
+        class="product-tabs__panel{% if first_panel %} product-tabs__panel--active{% endif %}" 
         role="tabpanel"
         data-panel="reviews"
-        hidden
+        {% unless first_panel %}hidden{% endunless %}
       >
-        <h3 class="product-tabs__panel-title">Customer Reviews</h3>
+      {%- assign first_panel = false -%}
+        <h3 class="product-tabs__panel-title">{{ 'products.product.tabs.reviews_title' | t }}</h3>
         <div class="product-tabs__panel-content">
           {%- if product.metafields.reviews.reviews != blank -%}
             {{ product.metafields.reviews.reviews | metafield_tag }}
           {%- else -%}
             <div class="product-tabs__reviews-placeholder">
-              <p>No reviews yet. Be the first to review this product!</p>
+              <p>{{ 'products.product.tabs.no_reviews' | t }}</p>
               <button type="button" class="product-tabs__write-review btn btn--primary">
-                Write a Review
+                {{ 'products.product.tabs.write_review' | t }}
               </button>
             </div>
           {%- endif -%}
         </div>
       </div>
+      {%- endif -%}
 
+      {%- if section.settings.show_video -%}
       <!-- Video Tab -->
       <div 
         id="tab-video" 
-        class="product-tabs__panel" 
+        class="product-tabs__panel{% if first_panel %} product-tabs__panel--active{% endif %}" 
         role="tabpanel"
         data-panel="video"
-        hidden
+        {% unless first_panel %}hidden{% endunless %}
       >
-        <h3 class="product-tabs__panel-title">Product Video</h3>
+      {%- assign first_panel = false -%}
+        <h3 class="product-tabs__panel-title">{{ 'products.product.tabs.video_title' | t }}</h3>
         <div class="product-tabs__panel-content">
           {%- if product.metafields.custom.video_url != blank -%}
             <div class="product-tabs__video-wrapper">
@@ -154,11 +184,12 @@
                 <circle cx="32" cy="32" r="30" stroke="#E4E7E9" stroke-width="2"/>
                 <path d="M26 22L44 32L26 42V22Z" fill="#E4E7E9"/>
               </svg>
-              <p>No video available for this product.</p>
+              <p>{{ 'products.product.tabs.no_video' | t }}</p>
             </div>
           {%- endif -%}
         </div>
       </div>
+      {%- endif -%}
     </div>
   </div>
 </section>
@@ -180,7 +211,7 @@
   display: flex;
   gap: 40px;
   margin-bottom: 30px;
-  border-bottom: 1px solid #E4E7E9;
+  border-bottom: 1px solid var(--color-border-light);
 }
 
 .product-tabs__tab {
@@ -262,7 +293,7 @@
   font-weight: 500;
   font-size: 12px;
   line-height: 22px;
-  color: #A9ACC6;
+  color: var(--color-text-description);
 }
 
 .product-tabs__panel-content p {
@@ -284,7 +315,7 @@
 .product-tabs__specs td {
   padding: 12px 16px;
   text-align: left;
-  border-bottom: 1px solid #E4E7E9;
+  border-bottom: 1px solid var(--color-border-light);
 }
 
 .product-tabs__specs th {
@@ -294,7 +325,7 @@
 }
 
 .product-tabs__specs td {
-  color: #5F6C72;
+  color: var(--color-text-muted);
 }
 
 /* Reviews Placeholder */
@@ -305,7 +336,7 @@
 
 .product-tabs__reviews-placeholder p {
   margin-bottom: 20px;
-  color: #5F6C72;
+  color: var(--color-text-muted);
 }
 
 .product-tabs__write-review {
@@ -320,7 +351,7 @@
   justify-content: center;
   padding: 60px 20px;
   text-align: center;
-  background-color: #FAFAFA;
+  background-color: var(--color-bg-light);
   border-radius: var(--radius-md);
 }
 
@@ -329,7 +360,7 @@
 }
 
 .product-tabs__video-placeholder p {
-  color: #5F6C72;
+  color: var(--color-text-muted);
   margin: 0;
 }
 
@@ -398,24 +429,24 @@
 {% endstylesheet %}
 
 {% javascript %}
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
   const tabs = document.querySelectorAll('.product-tabs__tab');
   const panels = document.querySelectorAll('.product-tabs__panel');
 
-  tabs.forEach(function(tab) {
+  for (const tab of tabs) {
     tab.addEventListener('click', function() {
       const targetPanel = this.dataset.tab;
 
       // Update tab states
-      tabs.forEach(function(t) {
+      for (const t of tabs) {
         t.classList.remove('product-tabs__tab--active');
         t.setAttribute('aria-selected', 'false');
-      });
+      }
       this.classList.add('product-tabs__tab--active');
       this.setAttribute('aria-selected', 'true');
 
       // Update panel visibility
-      panels.forEach(function(panel) {
+      for (const panel of panels) {
         if (panel.dataset.panel === targetPanel) {
           panel.classList.add('product-tabs__panel--active');
           panel.removeAttribute('hidden');
@@ -423,9 +454,9 @@ document.addEventListener('DOMContentLoaded', function() {
           panel.classList.remove('product-tabs__panel--active');
           panel.setAttribute('hidden', '');
         }
-      });
+      }
     });
-  });
+  }
 
   // Keyboard navigation
   const tabList = document.querySelector('.product-tabs__nav');

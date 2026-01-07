@@ -53,10 +53,30 @@
       "buy_now": "Buy Now",
       "sold_out": "Sold out",
       "unavailable": "Unavailable",
+      "page_title": "Product Details",
+      "star_rating": "Star Rating",
+      "user_feedback": "User feedback",
+      "share": "Share product:",
+      "safe_checkout": "100% Guarantee Safe Checkout",
+      "related": "Related Products",
+      "link_copied": "Link copied to clipboard!",
       "price": {
         "regular_price": "Regular price",
         "sale_price": "Sale price",
         "from_price_html": "From {{ price }}"
+      },
+      "tabs": {
+        "description": "Description",
+        "additional": "Additional Info",
+        "reviews": "Reviews",
+        "video": "Video",
+        "description_title": "Varius tempor.",
+        "additional_title": "Additional Information",
+        "reviews_title": "Customer Reviews",
+        "video_title": "Product Video",
+        "no_reviews": "No reviews yet. Be the first to review this product!",
+        "write_review": "Write a Review",
+        "no_video": "No video available for this product."
       }
     }
   },
