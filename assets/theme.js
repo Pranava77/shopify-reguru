@@ -457,8 +457,21 @@ class ThemeUtils {
       
       if (tabs.length === 0) continue;
       
+      const faqContent = section.querySelector('.faq__content');
+      
       const filterFaqItems = (tabId) => {
         let hasVisibleItems = false;
+        
+        // Reset animation state
+        if (faqContent) {
+          faqContent.removeAttribute('data-animating');
+          // Reset any inline styles from previous animations
+          for (const container of faqItemContainers) {
+            container.style.animation = '';
+            container.style.opacity = '';
+            container.style.transform = '';
+          }
+        }
         
         for (const container of faqItemContainers) {
           const containerTabId = container.getAttribute('data-tab-id');
@@ -479,6 +492,26 @@ class ThemeUtils {
               container.style.display = '';
             }
           }
+        }
+        
+        // Trigger animation for visible items
+        if (faqContent) {
+          // Force reflow
+          void faqContent.offsetHeight;
+          faqContent.setAttribute('data-animating', 'true');
+          
+          // Remove animation attribute after animation completes
+          setTimeout(() => {
+            faqContent.removeAttribute('data-animating');
+            // Reset inline styles
+            for (const container of faqItemContainers) {
+              if (container.style.display !== 'none') {
+                container.style.animation = '';
+                container.style.opacity = '';
+                container.style.transform = '';
+              }
+            }
+          }, 500);
         }
       };
       
