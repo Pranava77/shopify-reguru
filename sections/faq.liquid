@@ -97,9 +97,9 @@
   border: 2px solid var(--color-black);
   border-radius: 12px;
   box-shadow: 5px 4px 0px 0px var(--color-black);
-  animation: faqCardSlideIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: faqCardSlideIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   opacity: 0;
-  transform: translateY(30px) scale(0.96);
+  transform: translateY(20px);
 }
 
 .faq__header {
@@ -141,17 +141,16 @@
   border-radius: var(--radius-pill);
   box-shadow: 3px 3px 0px 0px var(--color-black);
   cursor: pointer;
-  transition: background-color var(--transition-base), transform var(--transition-base), box-shadow var(--transition-base);
-  position: relative;
+  transition: background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.faq__tab:hover:not(.active) {
+.faq__tab:hover {
   background-color: var(--color-light-blue);
-  transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0px 0px var(--color-black);
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px 0px var(--color-black);
 }
 
-.faq__tab:active:not(.active) {
+.faq__tab:active {
   transform: translate(1px, 1px);
   box-shadow: 2px 2px 0px 0px var(--color-black);
 }
@@ -159,22 +158,18 @@
 .faq__tab.active {
   background-color: var(--color-blue);
   color: var(--color-white);
-  animation: tabActivate 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  box-shadow: 4px 4px 0px 0px var(--color-black);
+  animation: tabActivate 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
 @keyframes tabActivate {
   0% {
-    transform: scale(0.92) translateY(2px);
-    box-shadow: 2px 2px 0px 0px var(--color-black);
+    transform: scale(0.95);
   }
   50% {
-    transform: scale(1.08) translateY(-2px);
-    box-shadow: 5px 5px 0px 0px var(--color-black);
+    transform: scale(1.05);
   }
   100% {
-    transform: scale(1) translateY(0);
-    box-shadow: 4px 4px 0px 0px var(--color-black);
+    transform: scale(1);
   }
 }
 
@@ -185,9 +180,9 @@
 
 /* Animation for FAQ items when tab changes */
 .faq__content[data-animating] [data-tab-id] {
-  animation: faqItemSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: faqItemSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   opacity: 0;
-  transform: translateX(-15px) scale(0.98);
+  transform: translateX(-10px);
 }
 
 .faq__content[data-animating] [data-tab-id]:nth-child(1) {
@@ -226,13 +221,8 @@
 @keyframes faqCardSlideIn {
   0% {
     opacity: 0;
-    transform: translateY(30px) scale(0.96);
+    transform: translateY(20px) scale(0.98);
     box-shadow: 2px 2px 0px 0px var(--color-black);
-  }
-  60% {
-    opacity: 0.9;
-    transform: translateY(-2px) scale(1.01);
-    box-shadow: 6px 5px 0px 0px var(--color-black);
   }
   100% {
     opacity: 1;
@@ -244,15 +234,11 @@
 @keyframes faqItemSlideIn {
   0% {
     opacity: 0;
-    transform: translateX(-15px) scale(0.98);
-  }
-  70% {
-    opacity: 0.8;
-    transform: translateX(2px) scale(1.01);
+    transform: translateX(-10px);
   }
   100% {
     opacity: 1;
-    transform: translateX(0) scale(1);
+    transform: translateX(0);
   }
 }
 
@@ -260,17 +246,12 @@
 .faq__item {
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   padding: 14px 0;
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
-  position: relative;
+  transition: transform var(--transition-fast);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .faq__item:hover {
-    transform: translateX(4px);
-  }
-  
-  .faq__item:hover .faq__number {
-    transform: scale(1.1);
+    transform: translateX(3px);
   }
 }
 
@@ -296,8 +277,6 @@
   font-size: 30px;
   line-height: 1.31;
   color: var(--color-black);
-  transition: transform var(--transition-base);
-  display: inline-block;
 }
 
 .faq__question-text {
@@ -307,7 +286,6 @@
   font-size: 24px;
   line-height: 1.31;
   color: var(--color-black);
-  transition: color var(--transition-base), font-weight var(--transition-base);
 }
 
 .faq__icon {
@@ -316,25 +294,19 @@
   justify-content: center;
   width: 41px;
   height: 43px;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  transform-origin: center;
-}
-
-.faq__item[open] .faq__icon {
-  transform: rotate(180deg) scale(1.1);
-}
-
-.faq__question {
   transition: transform var(--transition-base);
 }
 
-.faq__item[open] .faq__question {
-  transform: translateX(3px);
+.faq__item[open] .faq__icon {
+  transform: rotate(180deg);
 }
 
-.faq__item[open] .faq__question-text {
-  color: var(--color-text);
-  font-weight: 700;
+.faq__question {
+  transition: transform var(--transition-fast);
+}
+
+.faq__item[open] .faq__question {
+  transform: translateX(2px);
 }
 
 .faq__icon svg {
@@ -351,21 +323,17 @@
 }
 
 .faq__item[open] .faq__answer {
-  animation: faqAnswerSlideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: faqAnswerSlideDown 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
 @keyframes faqAnswerSlideDown {
   0% {
     opacity: 0;
-    transform: translateY(-15px) scale(0.98);
-  }
-  50% {
-    opacity: 0.7;
-    transform: translateY(-3px) scale(0.99);
+    transform: translateY(-10px);
   }
   100% {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
   }
 }
 
@@ -449,36 +417,27 @@
 
   /* Reduce animation intensity on mobile */
   .faq__content[data-animating] [data-tab-id] {
-    animation: faqItemSlideInMobile 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    transform: translateX(-8px) scale(0.99);
+    animation: faqItemSlideInMobile 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    transform: translateX(-5px);
   }
 }
 
 @keyframes faqItemSlideInMobile {
   0% {
     opacity: 0;
-    transform: translateX(-8px) scale(0.99);
-  }
-  70% {
-    opacity: 0.8;
-    transform: translateX(1px) scale(1.005);
+    transform: translateX(-5px);
   }
   100% {
     opacity: 1;
-    transform: translateX(0) scale(1);
+    transform: translateX(0);
   }
 }
 
 @keyframes faqCardSlideInMobile {
   0% {
     opacity: 0;
-    transform: translateY(15px) scale(0.97);
+    transform: translateY(10px) scale(0.99);
     box-shadow: 2px 2px 0px 0px var(--color-black);
-  }
-  60% {
-    opacity: 0.9;
-    transform: translateY(-1px) scale(1.005);
-    box-shadow: 4px 4px 0px 0px var(--color-black);
   }
   100% {
     opacity: 1;
