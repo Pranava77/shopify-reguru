@@ -1,0 +1,271 @@
+{%- comment -%}
+  Product Description Tabs Snippet
+  
+  Accepts:
+  - product: {Object} Product Liquid object
+  - show_additional_info: {Boolean} Show additional info tab (default: true)
+  - show_reviews: {Boolean} Show reviews tab (default: true)
+  - show_video: {Boolean} Show video tab (default: true)
+{%- endcomment -%}
+
+{%- liquid
+  assign show_additional_info = show_additional_info | default: true
+  assign show_reviews = show_reviews | default: true
+  assign show_video = show_video | default: true
+-%}
+
+<div class="product-tabs" data-product-tabs>
+  <div class="product-tabs__header">
+    <button
+      type="button"
+      class="product-tabs__tab product-tabs__tab--active"
+      data-tab="description"
+      aria-selected="true"
+      aria-controls="tab-content-description"
+    >
+      {{ 'products.product.tabs.description' | t | default: 'Description' }}
+    </button>
+    
+    {%- if show_additional_info -%}
+      <button
+        type="button"
+        class="product-tabs__tab"
+        data-tab="additional-info"
+        aria-selected="false"
+        aria-controls="tab-content-additional-info"
+      >
+        {{ 'products.product.tabs.additional_info' | t | default: 'Additional Info' }}
+      </button>
+    {%- endif -%}
+    
+    {%- if show_reviews -%}
+      <button
+        type="button"
+        class="product-tabs__tab"
+        data-tab="reviews"
+        aria-selected="false"
+        aria-controls="tab-content-reviews"
+      >
+        {{ 'products.product.tabs.reviews' | t | default: 'Reviews' }}
+      </button>
+    {%- endif -%}
+    
+    {%- if show_video -%}
+      <button
+        type="button"
+        class="product-tabs__tab"
+        data-tab="video"
+        aria-selected="false"
+        aria-controls="tab-content-video"
+      >
+        {{ 'products.product.tabs.video' | t | default: 'Video' }}
+      </button>
+    {%- endif -%}
+  </div>
+  
+  <div class="product-tabs__content">
+    <div
+      id="tab-content-description"
+      class="product-tabs__panel product-tabs__panel--active"
+      data-tab-panel="description"
+      role="tabpanel"
+    >
+      <div class="product-tabs__description">
+        {%- if product.description != blank -%}
+          {{ product.description }}
+        {%- else -%}
+          <p>{{ 'products.product.no_description' | t | default: 'No description available.' }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+    
+    {%- if show_additional_info -%}
+      <div
+        id="tab-content-additional-info"
+        class="product-tabs__panel"
+        data-tab-panel="additional-info"
+        role="tabpanel"
+        hidden
+      >
+        <div class="product-tabs__additional-info">
+          {%- if product.metafields.custom.additional_info != blank -%}
+            {{ product.metafields.custom.additional_info }}
+          {%- else -%}
+            <p>{{ 'products.product.no_additional_info' | t | default: 'No additional information available.' }}</p>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+    
+    {%- if show_reviews -%}
+      <div
+        id="tab-content-reviews"
+        class="product-tabs__panel"
+        data-tab-panel="reviews"
+        role="tabpanel"
+        hidden
+      >
+        <div class="product-tabs__reviews">
+          {%- if product.metafields.reviews.rating.value -%}
+            <div class="product-tabs__rating-summary">
+              <p>{{ 'products.product.reviews.rating' | t | default: 'Rating:' }} {{ product.metafields.reviews.rating.value }}/5</p>
+            </div>
+          {%- endif -%}
+          <p>{{ 'products.product.reviews.coming_soon' | t | default: 'Reviews coming soon.' }}</p>
+        </div>
+      </div>
+    {%- endif -%}
+    
+    {%- if show_video -%}
+      <div
+        id="tab-content-video"
+        class="product-tabs__panel"
+        data-tab-panel="video"
+        role="tabpanel"
+        hidden
+      >
+        <div class="product-tabs__video">
+          {%- if product.metafields.custom.product_video != blank -%}
+            <div class="product-tabs__video-wrapper">
+              {{ product.metafields.custom.product_video }}
+            </div>
+          {%- elsif product.media.size > 0 -%}
+            {%- for media in product.media -%}
+              {%- if media.media_type == 'video' -%}
+                <div class="product-tabs__video-wrapper">
+                  {{ media | video_tag: controls: true, autoplay: false }}
+                </div>
+                {%- break -%}
+              {%- endif -%}
+            {%- endfor -%}
+          {%- else -%}
+            <p>{{ 'products.product.no_video' | t | default: 'No video available.' }}</p>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+.product-tabs {
+  background-color: var(--color-white);
+  padding: 60px 0;
+}
+
+.product-tabs__header {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid #e4e7e9;
+  margin-bottom: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.product-tabs__tab {
+  font-family: var(--font-heading);
+  font-size: 18.046px;
+  font-weight: 500;
+  line-height: normal;
+  color: var(--color-text);
+  background: none;
+  border: none;
+  padding: 12px 24px;
+  cursor: pointer;
+  position: relative;
+  transition: color var(--transition-fast);
+  text-align: left;
+}
+
+.product-tabs__tab:hover {
+  color: var(--color-text);
+}
+
+.product-tabs__tab--active {
+  color: var(--color-text);
+}
+
+.product-tabs__tab--active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--color-text);
+}
+
+.product-tabs__content {
+  min-height: 200px;
+}
+
+.product-tabs__panel {
+  display: none;
+}
+
+.product-tabs__panel--active {
+  display: block;
+}
+
+.product-tabs__description,
+.product-tabs__additional-info,
+.product-tabs__reviews,
+.product-tabs__video {
+  font-family: var(--font-body);
+  font-size: 12.031px;
+  font-weight: 400;
+  line-height: 21.806px;
+  color: #a9acc6;
+}
+
+.product-tabs__description p,
+.product-tabs__additional-info p,
+.product-tabs__reviews p,
+.product-tabs__video p {
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+.product-tabs__rating-summary {
+  margin-bottom: var(--spacing-md);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.product-tabs__video-wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+}
+
+.product-tabs__video-wrapper video,
+.product-tabs__video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+@media screen and (max-width: 768px) {
+  .product-tabs {
+    padding: var(--spacing-xl) 0;
+  }
+  
+  .product-tabs__tab {
+    font-size: 16px;
+    padding: 10px 16px;
+  }
+  
+  .product-tabs__description,
+  .product-tabs__additional-info,
+  .product-tabs__reviews,
+  .product-tabs__video {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+}
+{% endstylesheet %}
+

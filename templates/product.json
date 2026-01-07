@@ -1,0 +1,30 @@
+{
+  "sections": {
+    "breadcrumbs": {
+      "type": "breadcrumbs",
+      "settings": {}
+    },
+    "main_product": {
+      "type": "main-product",
+      "settings": {
+        "enable_rating": true,
+        "enable_social_sharing": true,
+        "enable_trust_badge": true,
+        "enable_description_tabs": true
+      }
+    },
+    "related_products": {
+      "type": "related-products",
+      "settings": {
+        "title": "Related Products",
+        "products_to_show": 4
+      }
+    }
+  },
+  "order": [
+    "breadcrumbs",
+    "main_product",
+    "related_products"
+  ]
+}
+

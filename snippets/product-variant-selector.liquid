@@ -1,0 +1,274 @@
+{%- comment -%}
+  Product Variant Selector Snippet
+  
+  Accepts:
+  - product: {Object} Product Liquid object
+  - selected_variant: {Object} Currently selected variant (optional)
+  - form_id: {String} Form ID for variant selection
+{%- endcomment -%}
+
+{%- liquid
+  assign selected_variant = selected_variant | default: product.selected_or_first_available_variant
+  assign form_id = form_id | default: 'product-form'
+  
+  assign color_option = blank
+  assign size_option = blank
+  assign memory_option = blank
+  assign storage_option = blank
+  
+  for option in product.options_with_values
+    assign option_name_lower = option.name | downcase
+    if option_name_lower == 'color' or option_name_lower == 'colour'
+      assign color_option = option
+    elsif option_name_lower == 'size'
+      assign size_option = option
+    elsif option_name_lower == 'memory'
+      assign memory_option = option
+    elsif option_name_lower == 'storage'
+      assign storage_option = option
+    endif
+  endfor
+-%}
+
+<div class="product-variants" data-product-variants>
+  {%- if color_option != blank -%}
+    <div class="product-variants__group">
+      <label class="product-variants__label" for="variant-color-{{ section.id }}">
+        {{ color_option.name }}
+      </label>
+      <div class="product-variants__color-swatches">
+        {%- for value in color_option.values -%}
+          {%- liquid
+            assign color_value = value | downcase
+            assign color_hex = blank
+            
+            case color_value
+              when 'black'
+                assign color_hex = '#000000'
+              when 'white'
+                assign color_hex = '#FFFFFF'
+              when 'gray', 'grey'
+                assign color_hex = '#808080'
+              when 'silver'
+                assign color_hex = '#C0C0C0'
+              when 'space gray', 'space grey'
+                assign color_hex = '#4E4E4E'
+            endcase
+          -%}
+          <button
+            type="button"
+            class="product-variants__color-swatch{% if selected_variant.options[color_option.position] == value %} product-variants__color-swatch--active{% endif %}"
+            data-color-value="{{ value | escape }}"
+            data-option-position="{{ color_option.position }}"
+            aria-label="{{ value | escape }}"
+            {% if color_hex != blank %}
+              style="background-color: {{ color_hex }};"
+            {% endif %}
+          >
+            {%- if color_hex == blank -%}
+              <span class="product-variants__color-name">{{ value }}</span>
+            {%- endif -%}
+          </button>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+  
+  {%- if size_option != blank -%}
+    <div class="product-variants__group">
+      <label class="product-variants__label" for="variant-size-{{ section.id }}">
+        {{ size_option.name }}
+      </label>
+      <div class="product-variants__dropdown-wrapper">
+        <select
+          id="variant-size-{{ section.id }}"
+          class="product-variants__select"
+          name="options[{{ size_option.name | escape }}]"
+          data-option-position="{{ size_option.position }}"
+        >
+          {%- for value in size_option.values -%}
+            <option
+              value="{{ value | escape }}"
+              {% if selected_variant.options[size_option.position] == value %}selected{% endif %}
+            >
+              {{ value }}
+            </option>
+          {%- endfor -%}
+        </select>
+        <svg class="product-variants__dropdown-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 6L8 10L12 6" stroke="#ADB7BC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+  {%- endif -%}
+  
+  {%- if memory_option != blank -%}
+    <div class="product-variants__group">
+      <label class="product-variants__label" for="variant-memory-{{ section.id }}">
+        {{ memory_option.name }}
+      </label>
+      <div class="product-variants__dropdown-wrapper">
+        <select
+          id="variant-memory-{{ section.id }}"
+          class="product-variants__select"
+          name="options[{{ memory_option.name | escape }}]"
+          data-option-position="{{ memory_option.position }}"
+        >
+          {%- for value in memory_option.values -%}
+            <option
+              value="{{ value | escape }}"
+              {% if selected_variant.options[memory_option.position] == value %}selected{% endif %}
+            >
+              {{ value }}
+            </option>
+          {%- endfor -%}
+        </select>
+        <svg class="product-variants__dropdown-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 6L8 10L12 6" stroke="#ADB7BC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+  {%- endif -%}
+  
+  {%- if storage_option != blank -%}
+    <div class="product-variants__group">
+      <label class="product-variants__label" for="variant-storage-{{ section.id }}">
+        {{ storage_option.name }}
+      </label>
+      <div class="product-variants__dropdown-wrapper">
+        <select
+          id="variant-storage-{{ section.id }}"
+          class="product-variants__select"
+          name="options[{{ storage_option.name | escape }}]"
+          data-option-position="{{ storage_option.position }}"
+        >
+          {%- for value in storage_option.values -%}
+            <option
+              value="{{ value | escape }}"
+              {% if selected_variant.options[storage_option.position] == value %}selected{% endif %}
+            >
+              {{ value }}
+            </option>
+          {%- endfor -%}
+        </select>
+        <svg class="product-variants__dropdown-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 6L8 10L12 6" stroke="#ADB7BC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+.product-variants {
+  display: flex;
+  flex-direction: column;
+  gap: 13.156px;
+}
+
+.product-variants__group {
+  display: flex;
+  flex-direction: column;
+  gap: 6.578px;
+}
+
+.product-variants__label {
+  font-family: var(--font-body);
+  font-size: 11.512px;
+  font-weight: 400;
+  line-height: 16.446px;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.product-variants__color-swatches {
+  display: flex;
+  gap: 9.867px;
+  flex-wrap: wrap;
+}
+
+.product-variants__color-swatch {
+  width: 36.18px;
+  height: 36.18px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background-color: var(--color-gray);
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-variants__color-swatch:hover {
+  transform: scale(1.1);
+}
+
+.product-variants__color-swatch--active {
+  border-color: var(--color-text);
+  outline: 2px solid var(--color-white);
+  outline-offset: -4px;
+}
+
+.product-variants__color-name {
+  font-size: 8px;
+  color: var(--color-black);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.product-variants__dropdown-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.product-variants__select {
+  width: 100%;
+  height: 36.18px;
+  padding: 0 12.16px;
+  padding-right: 40px;
+  font-family: var(--font-body);
+  font-size: 11.51px;
+  font-weight: 400;
+  line-height: 16.446px;
+  color: #475156;
+  background-color: var(--color-white);
+  border: 1px solid #0136eb;
+  border-radius: 1.5px;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.product-variants__select:hover {
+  border-color: var(--color-text);
+}
+
+.product-variants__select:focus {
+  outline: 2px solid var(--color-text);
+  outline-offset: 2px;
+}
+
+.product-variants__dropdown-icon {
+  position: absolute;
+  right: 12.16px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+@media screen and (min-width: 768px) {
+  .product-variants {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 19.735px 19.735px;
+  }
+  
+  .product-variants__group {
+    gap: 6.578px;
+  }
+}
+{% endstylesheet %}
+

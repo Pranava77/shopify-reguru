@@ -1,0 +1,116 @@
+{%- comment -%}
+  Breadcrumbs Snippet
+  
+  Displays navigation breadcrumbs: Home > Pages > Product Details
+{%- endcomment -%}
+
+{%- liquid
+  assign breadcrumb_separator = ' . '
+  assign current_page_title = page_title | default: product.title | default: collection.title | default: blog.title | default: article.title
+-%}
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <ol class="breadcrumbs__list">
+    <li class="breadcrumbs__item">
+      <a href="{{ routes.root_url }}" class="breadcrumbs__link">{{ 'general.breadcrumbs.home' | t | default: 'Home' }}</a>
+    </li>
+    <li class="breadcrumbs__item" aria-hidden="true">
+      <span class="breadcrumbs__separator">{{ breadcrumb_separator }}</span>
+    </li>
+    {%- if template.name == 'product' -%}
+      <li class="breadcrumbs__item">
+        <a href="{{ routes.all_products_collection_url }}" class="breadcrumbs__link">{{ 'general.breadcrumbs.pages' | t | default: 'Pages' }}</a>
+      </li>
+      <li class="breadcrumbs__item" aria-hidden="true">
+        <span class="breadcrumbs__separator">{{ breadcrumb_separator }}</span>
+      </li>
+      <li class="breadcrumbs__item breadcrumbs__item--current" aria-current="page">
+        <span class="breadcrumbs__text breadcrumbs__text--current">{{ 'general.breadcrumbs.product_details' | t | default: 'Product Details' }}</span>
+      </li>
+    {%- elsif template.name == 'collection' -%}
+      <li class="breadcrumbs__item breadcrumbs__item--current" aria-current="page">
+        <span class="breadcrumbs__text breadcrumbs__text--current">{{ collection.title }}</span>
+      </li>
+    {%- elsif template.name == 'article' -%}
+      <li class="breadcrumbs__item">
+        <a href="{{ blog.url }}" class="breadcrumbs__link">{{ blog.title }}</a>
+      </li>
+      <li class="breadcrumbs__item" aria-hidden="true">
+        <span class="breadcrumbs__separator">{{ breadcrumb_separator }}</span>
+      </li>
+      <li class="breadcrumbs__item breadcrumbs__item--current" aria-current="page">
+        <span class="breadcrumbs__text breadcrumbs__text--current">{{ article.title }}</span>
+      </li>
+    {%- else -%}
+      <li class="breadcrumbs__item breadcrumbs__item--current" aria-current="page">
+        <span class="breadcrumbs__text breadcrumbs__text--current">{{ current_page_title }}</span>
+      </li>
+    {%- endif -%}
+  </ol>
+</nav>
+
+{% stylesheet %}
+.breadcrumbs {
+  padding: var(--spacing-md) 0;
+}
+
+.breadcrumbs__list {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+}
+
+.breadcrumbs__item {
+  display: flex;
+  align-items: center;
+}
+
+.breadcrumbs__link {
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-black);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.breadcrumbs__link:hover {
+  color: var(--color-text);
+}
+
+.breadcrumbs__separator {
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-black);
+  margin: 0 var(--spacing-xs);
+}
+
+.breadcrumbs__text {
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-black);
+}
+
+.breadcrumbs__text--current {
+  color: #fb2e86;
+}
+
+@media screen and (max-width: 768px) {
+  .breadcrumbs {
+    padding: var(--spacing-sm) 0;
+  }
+  
+  .breadcrumbs__link,
+  .breadcrumbs__separator,
+  .breadcrumbs__text {
+    font-size: 14px;
+  }
+}
+{% endstylesheet %}
+
