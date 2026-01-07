@@ -1,4 +1,8 @@
-<section class="feature-cards bg-grid-pattern">
+{%- liquid
+  assign bg_image = section.settings.background_image
+-%}
+
+<section class="feature-cards bg-grid-pattern"{% if bg_image != blank %} style="background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
   <div class="feature-cards__container">
     <div class="feature-cards__carousel" id="feature-carousel-{{ section.id }}">
       <div class="feature-cards__track">
@@ -374,7 +378,13 @@
   "name": "Feature Cards",
   "tag": "section",
   "class": "feature-cards-section",
-  "settings": [],
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
+    }
+  ],
   "blocks": [
     {
       "type": "card",

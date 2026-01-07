@@ -3,9 +3,10 @@
   assign collection_handle = section.settings.collection
   assign collection = collections[collection_handle]
   assign products_to_show = section.settings.products_to_show | default: 6
+  assign bg_image = section.settings.background_image
 -%}
 
-<section class="product-grid bg-grid-pattern">
+<section class="product-grid bg-grid-pattern"{% if bg_image != blank %} style="background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
   <div class="product-grid__container">
     <div class="product-grid__header">
       <h2 class="product-grid__title section__title">{{ section_title }}</h2>
@@ -244,6 +245,11 @@
       "step": 1,
       "default": 6,
       "info": "Number of products to display per tab"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
     }
   ],
   "blocks": [

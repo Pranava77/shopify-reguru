@@ -7,9 +7,10 @@
   assign custom_icon = section.settings.header_custom_icon
   assign icon_color_primary = section.settings.header_icon_color_primary
   assign icon_color_accent = section.settings.header_icon_color_accent
+  assign bg_image = section.settings.background_image
 -%}
 
-<header class="header">
+<header class="header"{% if bg_image != blank %} style="background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
   <div class="header__inner">
     <div class="header__content">
       <!-- Logo -->
@@ -496,6 +497,11 @@
       "id": "franchise_url",
       "label": "Franchise Page URL",
       "info": "Custom URL for franchise page (only used if page is not selected above). Default: /pages/franchise"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
     }
   ],
   "presets": [

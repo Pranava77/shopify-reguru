@@ -8,9 +8,10 @@
   assign facebook_url = section.settings.facebook_url
   assign twitter_url = section.settings.twitter_url
   assign instagram_url = section.settings.instagram_url
+  assign bg_image = section.settings.background_image
 -%}
 
-<section class="franchise-section">
+<section class="franchise-section"{% if bg_image != blank %} style="background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
   <div class="franchise-section__background">
     <div class="franchise-section__pattern franchise-section__pattern--top"></div>
     <div class="franchise-section__pattern franchise-section__pattern--bottom"></div>
@@ -545,6 +546,15 @@
       "type": "url",
       "id": "instagram_url",
       "label": "Instagram URL"
+    },
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
     }
   ],
   "presets": [

@@ -6,9 +6,10 @@
   assign cta_link = section.settings.cta_link | default: routes.collections_url
   assign image = section.settings.image
   assign bg_color = section.settings.background_color | default: '#212844'
+  assign bg_image = section.settings.background_image
 -%}
 
-<section class="hero-banner" style="--hero-bg: {{ bg_color }};">
+<section class="hero-banner" style="--hero-bg: {{ bg_color }};{% if bg_image != blank %} background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;{% endif %}">
   <div class="hero-banner__container">
     <div class="hero-banner__content">
       <p class="hero-banner__subheading">{{ subheading }}</p>
@@ -225,6 +226,11 @@
       "id": "background_color",
       "label": "Background Color",
       "default": "#212844"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
     }
   ],
   "presets": [

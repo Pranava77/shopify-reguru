@@ -1,3 +1,7 @@
+{%- liquid
+  assign bg_image = section.settings.background_image
+-%}
+
 {%- comment -%}
   Header Group Section
   Contains the announcement bar, main header navigation, and category navigation
@@ -12,6 +16,13 @@
 
 {% schema %}
 {
-  "name": "Header Group"
+  "name": "Header Group",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
+    }
+  ]
 }
 {% endschema %}

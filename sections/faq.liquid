@@ -1,8 +1,9 @@
 {%- liquid
   assign heading = section.settings.heading | default: 'FAQs'
+  assign bg_image = section.settings.background_image
 -%}
 
-<section class="faq">
+<section class="faq"{% if bg_image != blank %} style="background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
   <div class="faq__container">
     <div class="faq__card card--lg">
       <div class="faq__header">
@@ -272,6 +273,11 @@
       "id": "heading",
       "label": "Heading",
       "default": "FAQs"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
     }
   ],
   "blocks": [

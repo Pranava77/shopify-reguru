@@ -7,9 +7,10 @@
   assign address_line_3 = section.settings.address_line_3
   assign address_line_4 = section.settings.address_line_4
   assign address = section.settings.address | default: '2nd floor central complex sv road near mantri mall seshadripuram bengaluru 560020'
+  assign bg_image = section.settings.background_image
 -%}
 
-<section class="contact-section">
+<section class="contact-section"{% if bg_image != blank %} style="background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
   <div class="contact-section__container">
     <div class="contact-section__header">
       <h1 class="contact-section__title">{{ heading }}</h1>
@@ -255,6 +256,11 @@
       "label": "Full Address (Fallback)",
       "default": "2nd floor central complex sv road near mantri mall seshadripuram bengaluru 560020",
       "info": "Used if individual address lines are not provided"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
     }
   ],
   "presets": [

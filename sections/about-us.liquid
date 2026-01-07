@@ -22,9 +22,11 @@
   assign expertise_image_2 = section.settings.expertise_image_2
   assign expertise_text_2 = section.settings.expertise_text_2
   assign expertise_link_2 = section.settings.expertise_link_2
+  
+  assign bg_image = section.settings.background_image
 -%}
 
-<section class="about-us" data-section-id="{{ section.id }}">
+<section class="about-us" data-section-id="{{ section.id }}"{% if bg_image != blank %} style="background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
   <!-- Background Grid Patterns -->
   <div class="about-us__grid-pattern about-us__grid-pattern--top"></div>
   <div class="about-us__grid-pattern about-us__grid-pattern--bottom"></div>
@@ -940,6 +942,15 @@
       "type": "image_picker",
       "id": "laptop_image",
       "label": "Laptop Illustration Image"
+    },
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
     }
   ],
   "blocks": [
