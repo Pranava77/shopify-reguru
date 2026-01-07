@@ -129,7 +129,7 @@
         "cta_text": "Checkout product",
         "cta_link": "",
         "image": "shopify://shop_images/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTEyL3Jhd3BpeGVsX29mZmljZV8zNV9waG90b2dyYXBoX29mX2xhcHRvcF9tb2NrdXBfd2l0aF93aGl0ZV9zY3JlZV9kNTFiNjVlZS02Y2RkLTQ0N2UtYmRmZS01MzdiZWZlNmY5NTIucG5.png",
-        "background_color": "#16194b",
+        "background_color": "rgba(0,0,0,0)",
         "container_background_image": "shopify://shop_images/webfixus1.jpg"
       }
     },
