@@ -1,25 +1,5 @@
 {
   "sections": {
-    "announcement_bar": {
-      "type": "announcement-bar",
-      "settings": {
-        "text": "Welcome To ReGuru",
-        "text_color": "#28D98E",
-        "background_color": "#1E1A5C"
-      }
-    },
-    "header": {
-      "type": "header",
-      "settings": {
-        "show_search": true,
-        "show_location": true,
-        "location_text": "Bengaluru"
-      }
-    },
-    "category_nav": {
-      "type": "category-nav",
-      "settings": {}
-    },
     "product_detail": {
       "type": "product-detail",
       "settings": {
@@ -43,106 +23,11 @@
         "heading": "Related Products",
         "products_to_show": 4
       }
-    },
-    "footer": {
-      "type": "footer",
-      "blocks": {
-        "category_link_1": {
-          "type": "category_link",
-          "settings": {
-            "label": "Sofa",
-            "link": ""
-          }
-        },
-        "category_link_2": {
-          "type": "category_link",
-          "settings": {
-            "label": "Armchair",
-            "link": ""
-          }
-        },
-        "category_link_3": {
-          "type": "category_link",
-          "settings": {
-            "label": "Wing Chair",
-            "link": ""
-          }
-        },
-        "category_link_4": {
-          "type": "category_link",
-          "settings": {
-            "label": "Desk Chair",
-            "link": ""
-          }
-        },
-        "category_link_5": {
-          "type": "category_link",
-          "settings": {
-            "label": "wooden Chair",
-            "link": ""
-          }
-        },
-        "category_link_6": {
-          "type": "category_link",
-          "settings": {
-            "label": "Park Bench",
-            "link": ""
-          }
-        },
-        "support_link_1": {
-          "type": "support_link",
-          "settings": {
-            "label": "Help & Support",
-            "link": ""
-          }
-        },
-        "support_link_2": {
-          "type": "support_link",
-          "settings": {
-            "label": "Terms & Conditions",
-            "link": ""
-          }
-        },
-        "support_link_3": {
-          "type": "support_link",
-          "settings": {
-            "label": "Privacy Policy",
-            "link": ""
-          }
-        },
-        "support_link_4": {
-          "type": "support_link",
-          "settings": {
-            "label": "Help",
-            "link": ""
-          }
-        }
-      },
-      "block_order": [
-        "category_link_1",
-        "category_link_2",
-        "category_link_3",
-        "category_link_4",
-        "category_link_5",
-        "category_link_6",
-        "support_link_1",
-        "support_link_2",
-        "support_link_3",
-        "support_link_4"
-      ],
-      "settings": {
-        "background_color": "#041C66"
-      }
     }
   },
   "order": [
-    "announcement_bar",
-    "header",
-    "category_nav",
     "product_detail",
     "product_tabs",
-    "related_products",
-    "footer"
+    "related_products"
   ]
 }
-
