@@ -1,0 +1,21 @@
+{
+  "sections": {
+    "contact_section": {
+      "type": "contact",
+      "settings": {
+        "heading": "Ready to Assist You",
+        "description": "Contact us for any queries or bookings, and experience our prompt, friendly service. Your satisfaction is our priority.",
+        "email": "reguru@gmail.com",
+        "address_line_1": "2nd floor central complex",
+        "address_line_2": "sv road near mantri",
+        "address_line_3": "mall seshadripuram",
+        "address_line_4": "bengaluru 560020",
+        "address": "2nd floor central complex sv road near mantri mall seshadripuram bengaluru 560020"
+      }
+    }
+  },
+  "order": [
+    "contact_section"
+  ]
+}
+
