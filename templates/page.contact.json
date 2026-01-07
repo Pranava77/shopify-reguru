@@ -1,0 +1,15 @@
+{
+  "sections": {
+    "page_content": {
+      "type": "main-page",
+      "settings": {
+        "show_breadcrumb": true,
+        "content_width": "medium"
+      }
+    }
+  },
+  "order": [
+    "page_content"
+  ]
+}
+
