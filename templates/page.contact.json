@@ -18,8 +18,8 @@
         "location_text": "Bengaluru",
         "header_icon_type": "bag",
         "header_custom_icon": "shopify://shop_images/Layer_1_1.png",
-        "header_icon_color_primary": "#1E1A5C",
-        "header_icon_color_accent": "#28D98E",
+        "header_icon_color_primary": "#1e1a5c",
+        "header_icon_color_accent": "#28d98e",
         "franchise_page": "",
         "franchise_url": ""
       }
@@ -137,6 +137,62 @@
         "address": "2nd floor central complex sv road near mantri mall seshadripuram bengaluru 560020"
       }
     },
+    "faq_rNrUJW": {
+      "type": "faq",
+      "blocks": {
+        "tab_bAwphz": {
+          "type": "tab",
+          "settings": {
+            "label": "General"
+          }
+        },
+        "tab_mymzBB": {
+          "type": "tab",
+          "settings": {
+            "label": "Services"
+          }
+        },
+        "tab_QmytqY": {
+          "type": "tab",
+          "settings": {
+            "label": "Business"
+          }
+        },
+        "faq_item_d4tL7U": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do ReGuru products come with warranty?",
+            "answer": "Yes, all ReGuru products come with a comprehensive warranty. Our refurbished electronics are thoroughly tested and certified, ensuring quality and reliability."
+          }
+        },
+        "faq_item_x9HBfm": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do ReGuru products come with warranty?",
+            "answer": "Yes, all ReGuru products come with a comprehensive warranty. Our refurbished electronics are thoroughly tested and certified, ensuring quality and reliability."
+          }
+        },
+        "faq_item_pQCKiH": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do ReGuru products come with warranty?",
+            "answer": "Yes, all ReGuru products come with a comprehensive warranty. Our refurbished electronics are thoroughly tested and certified, ensuring quality and reliability."
+          }
+        }
+      },
+      "block_order": [
+        "tab_bAwphz",
+        "tab_mymzBB",
+        "tab_QmytqY",
+        "faq_item_d4tL7U",
+        "faq_item_x9HBfm",
+        "faq_item_pQCKiH"
+      ],
+      "name": "FAQ",
+      "settings": {
+        "heading": "FAQs"
+      }
+    },
     "footer_ehQwLh": {
       "type": "footer",
       "blocks": {
@@ -219,7 +275,7 @@
       "settings": {
         "logo": "shopify://shop_images/Group_173.png",
         "address": "Address: 2nd floor central complex sv road near mantri mall seshadripuram bengaluru 560020",
-        "background_color": "#041C66",
+        "background_color": "#041c66",
         "laptop_image": "shopify://shop_images/generated-image__20_-removebg-preview.png"
       }
     }
@@ -228,6 +284,7 @@
     "header_bX9UWd",
     "mega_menu_pLYehj",
     "contact_section",
+    "faq_rNrUJW",
     "footer_ehQwLh"
   ]
 }
