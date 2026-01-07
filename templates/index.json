@@ -123,14 +123,14 @@
     "hero-banner": {
       "type": "hero-banner",
       "settings": {
-        "subheading": "Best Deal Online on smart watches",
-        "heading": "SMART WEARABLE.",
-        "discount_text": "UP to 80% OFF",
-        "cta_text": "Checkout product",
+        "subheading": "",
+        "heading": "",
+        "discount_text": "",
+        "cta_text": "",
         "cta_link": "",
-        "image": "shopify://shop_images/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTEyL3Jhd3BpeGVsX29mZmljZV8zNV9waG90b2dyYXBoX29mX2xhcHRvcF9tb2NrdXBfd2l0aF93aGl0ZV9zY3JlZV9kNTFiNjVlZS02Y2RkLTQ0N2UtYmRmZS01MzdiZWZlNmY5NTIucG5.png",
+        "image": "shopify://shop_images/monitors-ultrawide-removebg-preview.png",
         "background_color": "#1d1a1a",
-        "container_background_image": "shopify://shop_images/webfixus1.jpg"
+        "container_background_image": "shopify://shop_images/11acefdf-62f0-4e8b-9cb3-e88beee26b9d_1764838678638.webp"
       }
     },
     "feature-cards": {
