@@ -19,8 +19,8 @@
         "location_text": "Bengaluru",
         "header_icon_type": "user",
         "header_custom_icon": "shopify://shop_images/Layer_1_1.png",
-        "header_icon_color_primary": "#E5E7EB",
-        "header_icon_color_accent": "#B1D8FF",
+        "header_icon_color_primary": "#e5e7eb",
+        "header_icon_color_accent": "#b1d8ff",
         "franchise_page": "franchise",
         "franchise_url": "shopify://pages/franchise"
       }
@@ -87,6 +87,15 @@
             "badge_style": "sale"
           }
         },
+        "simple_link_wGLker": {
+          "type": "simple_link",
+          "settings": {
+            "title": "About",
+            "link": "shopify://pages/about",
+            "badge": "",
+            "badge_style": "new"
+          }
+        },
         "simple_link_bCQpNf": {
           "type": "simple_link",
           "settings": {
@@ -101,6 +110,7 @@
         "menu_item_4GV46h",
         "menu_item_UDp4dH",
         "simple_link_4hxyTg",
+        "simple_link_wGLker",
         "simple_link_bCQpNf"
       ],
       "name": "Mega Menu",
@@ -119,7 +129,7 @@
         "cta_text": "Checkout product",
         "cta_link": "",
         "image": "shopify://shop_images/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTEyL3Jhd3BpeGVsX29mZmljZV8zNV9waG90b2dyYXBoX29mX2xhcHRvcF9tb2NrdXBfd2l0aF93aGl0ZV9zY3JlZV9kNTFiNjVlZS02Y2RkLTQ0N2UtYmRmZS01MzdiZWZlNmY5NTIucG5.png",
-        "background_color": "#0B1850"
+        "background_color": "#0b1850"
       }
     },
     "feature-cards": {
@@ -277,7 +287,7 @@
       ],
       "settings": {
         "heading": "Testimonials",
-        "background_color": "#B1D8FF"
+        "background_color": "#b1d8ff"
       }
     },
     "faq": {
@@ -403,10 +413,10 @@
       "settings": {
         "logo": "shopify://shop_images/gin.png",
         "address": "Address: 2nd floor central complex sv road near mantri mall seshadripuram bengaluru 560020",
-        "background_color": "#1E1A5C",
+        "background_color": "#1e1a5c",
         "laptop_image": "shopify://shop_images/generated-image__20_-removebg-preview.png"
       }
-    },
+    }
   },
   "order": [
     "header_8wjj8i",

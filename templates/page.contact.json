@@ -13,6 +13,7 @@
       "type": "header",
       "name": "Header",
       "settings": {
+        "logo": "shopify://shop_images/gin.png",
         "show_search": true,
         "show_location": false,
         "location_text": "Bengaluru",
@@ -86,10 +87,6 @@
             "badge_style": "sale"
           }
         },
-        "separator_t7xJYD": {
-          "type": "separator",
-          "settings": {}
-        },
         "simple_link_Xtp9xL": {
           "type": "simple_link",
           "settings": {
@@ -113,7 +110,6 @@
         "menu_item_hUjc6x",
         "menu_item_WtnVfK",
         "simple_link_bHTDHJ",
-        "separator_t7xJYD",
         "simple_link_Xtp9xL",
         "simple_link_e6FjA9"
       ],
