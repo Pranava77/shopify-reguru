@@ -94,7 +94,7 @@
           "type": "simple_link",
           "settings": {
             "title": "About",
-            "link": "",
+            "link": "shopify://pages/about",
             "badge": "",
             "badge_style": "new"
           }
@@ -103,7 +103,7 @@
           "type": "simple_link",
           "settings": {
             "title": "Contact",
-            "link": "",
+            "link": "shopify://pages/contact",
             "badge": "",
             "badge_style": "new"
           }
