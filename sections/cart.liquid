@@ -15,7 +15,7 @@
   endfor
 -%}
 
-<section class="cart bg-grid-pattern"{% if bg_image != blank %} style="background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
+<section class="cart bg-grid-pattern"{% if bg_image != blank %} style="background-image: url('{{ bg_image | image_url: width: 800 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
   <div class="cart__container">
     <h1 class="cart__title section__title">{{ cart_title }}</h1>
 
@@ -29,6 +29,10 @@
                   {%- if item.image != blank -%}
                     <img 
                       src="{{ item.image | image_url: width: 150 }}" 
+                      srcset="{{ item.image | image_url: width: 100 }} 100w,
+                              {{ item.image | image_url: width: 150 }} 150w,
+                              {{ item.image | image_url: width: 200 }} 200w"
+                      sizes="150px"
                       alt="{{ item.image.alt | default: item.title }}"
                       width="150"
                       height="150"
@@ -978,6 +982,16 @@
   }
 }
 {% endstylesheet %}
+
+{%- if bg_image != blank -%}
+{% style %}
+@media screen and (min-width: 768px) {
+  .cart[style*="background-image"] {
+    background-image: url('{{ bg_image | image_url: width: 1920 }}') !important;
+  }
+}
+{% endstyle %}
+{%- endif -%}
 
 {% schema %}
 {

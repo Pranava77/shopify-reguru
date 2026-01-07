@@ -6,7 +6,7 @@
   assign bg_image = section.settings.background_image
 -%}
 
-<section class="product-grid bg-grid-pattern"{% if bg_image != blank %} style="background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
+<section class="product-grid bg-grid-pattern"{% if bg_image != blank %} style="background-image: url('{{ bg_image | image_url: width: 800 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
   <div class="product-grid__container">
     <div class="product-grid__header">
       <h2 class="product-grid__title section__title">{{ section_title }}</h2>
@@ -211,6 +211,16 @@
   }
 }
 {% endstylesheet %}
+
+{%- if bg_image != blank -%}
+{% style %}
+@media screen and (min-width: 768px) {
+  .product-grid[style*="background-image"] {
+    background-image: url('{{ bg_image | image_url: width: 1920 }}') !important;
+  }
+}
+{% endstyle %}
+{%- endif -%}
 
 
 {% schema %}

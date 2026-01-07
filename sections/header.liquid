@@ -10,7 +10,7 @@
   assign bg_image = section.settings.background_image
 -%}
 
-<header class="header"{% if bg_image != blank %} style="background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
+<header class="header"{% if bg_image != blank %} style="background-image: url('{{ bg_image | image_url: width: 800 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
   <div class="header__inner">
     <div class="header__content">
       <!-- Logo -->
@@ -18,6 +18,10 @@
         {%- if logo != blank -%}
           <img 
             src="{{ logo | image_url: width: 140 }}" 
+            srcset="{{ logo | image_url: width: 100 }} 100w,
+                    {{ logo | image_url: width: 140 }} 140w,
+                    {{ logo | image_url: width: 180 }} 180w"
+            sizes="(max-width: 576px) 100px, 140px"
             alt="{{ shop.name }}"
             width="140"
             height="41"
@@ -77,6 +81,9 @@
         {%- if custom_icon != blank -%}
           <img 
             src="{{ custom_icon | image_url: width: 74 }}" 
+            srcset="{{ custom_icon | image_url: width: 37 }} 37w,
+                    {{ custom_icon | image_url: width: 74 }} 74w"
+            sizes="37px"
             alt="Franchise"
             width="37"
             height="38"
@@ -399,6 +406,16 @@
   }
 }
 {% endstylesheet %}
+
+{%- if bg_image != blank -%}
+{% style %}
+@media screen and (min-width: 768px) {
+  .header[style*="background-image"] {
+    background-image: url('{{ bg_image | image_url: width: 1920 }}') !important;
+  }
+}
+{% endstyle %}
+{%- endif -%}
 
 {% schema %}
 {
