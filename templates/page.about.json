@@ -19,8 +19,8 @@
         "location_text": "Bengaluru",
         "header_icon_type": "bag",
         "header_custom_icon": "shopify://shop_images/Layer_1_1.png",
-        "header_icon_color_primary": "#1E1A5C",
-        "header_icon_color_accent": "#28D98E",
+        "header_icon_color_primary": "#1e1a5c",
+        "header_icon_color_accent": "#28d98e",
         "franchise_page": "franchise",
         "franchise_url": ""
       }
@@ -159,7 +159,27 @@
         "brand_logo_3",
         "brand_logo_4"
       ],
-      "settings": {}
+      "settings": {
+        "hero_title_line_1": "Beyond Refurbishment",
+        "hero_title_line_2": "Redefining Smart",
+        "hero_title_line_3": "Tech Ownership",
+        "hero_description": "ReGuru is building a sustainable, circular tech ecosystem — making technology accessible while reducing e-waste.",
+        "hero_button_text": "Join Franchise",
+        "hero_button_link": "",
+        "franchise_card_title": "ReGuru Franchise",
+        "franchise_card_description": "Build a high-growth tech retail business with India's most trusted refurbished electronics brand.",
+        "franchise_feature_1": "Proven business model",
+        "franchise_feature_2": "High-margin product portfolio",
+        "franchise_card_button_text": "join franchise",
+        "franchise_card_button_link": "",
+        "brands_title": "Top Brands  we sell:",
+        "expertise_title": "Our expertise",
+        "expertise_description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
+        "expertise_text_1": "",
+        "expertise_link_1": "",
+        "expertise_text_2": "",
+        "expertise_link_2": ""
+      }
     },
     "footer_MeKgAQ": {
       "type": "footer",
@@ -242,7 +262,7 @@
       "name": "Footer",
       "settings": {
         "address": "Address: 2nd floor central complex sv road near mantri mall seshadripuram bengaluru 560020",
-        "background_color": "#041C66",
+        "background_color": "#041c66",
         "laptop_image": "shopify://shop_images/generated-image__20_-removebg-preview.png"
       }
     }

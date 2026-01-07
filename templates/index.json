@@ -238,15 +238,6 @@
         "products_to_show": 3
       }
     },
-    "about-us": {
-      "type": "about-us",
-      "settings": {
-        "heading": "ABOUT US",
-        "description": "",
-        "image": "shopify://shop_images/pngimg.com_-_headphones_PNG7645.png",
-        "stat_number": "99+"
-      }
-    },
     "testimonials": {
       "type": "testimonials",
       "blocks": {
@@ -424,7 +415,6 @@
     "hero-banner",
     "feature-cards",
     "product_grid_gLdc4C",
-    "about-us",
     "testimonials",
     "faq",
     "footer_jLdtia"
