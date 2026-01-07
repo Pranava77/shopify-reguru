@@ -1,0 +1,494 @@
+{%- comment -%}
+  Product Description Tabs Section
+  Displays product description with tabbed navigation
+{%- endcomment -%}
+
+<section class="product-tabs">
+  <div class="product-tabs__container">
+    <!-- Tab Navigation -->
+    <nav class="product-tabs__nav" role="tablist">
+      <button 
+        type="button" 
+        class="product-tabs__tab product-tabs__tab--active" 
+        role="tab"
+        aria-selected="true"
+        aria-controls="tab-description"
+        data-tab="description"
+      >
+        Description
+      </button>
+      <button 
+        type="button" 
+        class="product-tabs__tab" 
+        role="tab"
+        aria-selected="false"
+        aria-controls="tab-additional"
+        data-tab="additional"
+      >
+        Additional Info
+      </button>
+      <button 
+        type="button" 
+        class="product-tabs__tab" 
+        role="tab"
+        aria-selected="false"
+        aria-controls="tab-reviews"
+        data-tab="reviews"
+      >
+        Reviews
+      </button>
+      <button 
+        type="button" 
+        class="product-tabs__tab" 
+        role="tab"
+        aria-selected="false"
+        aria-controls="tab-video"
+        data-tab="video"
+      >
+        Video
+      </button>
+    </nav>
+
+    <!-- Tab Content -->
+    <div class="product-tabs__content">
+      <!-- Description Tab -->
+      <div 
+        id="tab-description" 
+        class="product-tabs__panel product-tabs__panel--active" 
+        role="tabpanel"
+        data-panel="description"
+      >
+        <h3 class="product-tabs__panel-title">Varius tempor.</h3>
+        <div class="product-tabs__panel-content">
+          {%- if product.description != blank -%}
+            {{ product.description }}
+          {%- else -%}
+            <p>Aliquam dis vulputate vulputate integer sagittis. Faucibus dolor ornare faucibus vel sed et eleifend habitasse amet. Montes, mauris varius ac est bibendum. Scelerisque a, risus ac ante. Velit consectetur neque, elit, aliquet. Non varius proin sed urna, egestas consequat laoreet diam tincidunt. Magna eget faucibus cras justo, tortor sed donec tempus. Imperdiet consequat, quis diam arcu, nulla lobortis justo netus dis. Eu in fringilla vulputate nunc nec. Dui, massa viverr.</p>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <!-- Additional Info Tab -->
+      <div 
+        id="tab-additional" 
+        class="product-tabs__panel" 
+        role="tabpanel"
+        data-panel="additional"
+        hidden
+      >
+        <h3 class="product-tabs__panel-title">Additional Information</h3>
+        <div class="product-tabs__panel-content">
+          {%- if product.metafields.custom.additional_info != blank -%}
+            {{ product.metafields.custom.additional_info | metafield_tag }}
+          {%- else -%}
+            <table class="product-tabs__specs">
+              <tbody>
+                <tr>
+                  <th>Weight</th>
+                  <td>{{ product.variants.first.weight | weight_with_unit }}</td>
+                </tr>
+                {%- for option in product.options_with_values -%}
+                  <tr>
+                    <th>{{ option.name }}</th>
+                    <td>{{ option.values | join: ', ' }}</td>
+                  </tr>
+                {%- endfor -%}
+                <tr>
+                  <th>SKU</th>
+                  <td>{{ product.variants.first.sku | default: 'N/A' }}</td>
+                </tr>
+                <tr>
+                  <th>Vendor</th>
+                  <td>{{ product.vendor | default: 'ReGuru' }}</td>
+                </tr>
+                <tr>
+                  <th>Type</th>
+                  <td>{{ product.type | default: 'Electronics' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <!-- Reviews Tab -->
+      <div 
+        id="tab-reviews" 
+        class="product-tabs__panel" 
+        role="tabpanel"
+        data-panel="reviews"
+        hidden
+      >
+        <h3 class="product-tabs__panel-title">Customer Reviews</h3>
+        <div class="product-tabs__panel-content">
+          {%- if product.metafields.reviews.reviews != blank -%}
+            {{ product.metafields.reviews.reviews | metafield_tag }}
+          {%- else -%}
+            <div class="product-tabs__reviews-placeholder">
+              <p>No reviews yet. Be the first to review this product!</p>
+              <button type="button" class="product-tabs__write-review btn btn--primary">
+                Write a Review
+              </button>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <!-- Video Tab -->
+      <div 
+        id="tab-video" 
+        class="product-tabs__panel" 
+        role="tabpanel"
+        data-panel="video"
+        hidden
+      >
+        <h3 class="product-tabs__panel-title">Product Video</h3>
+        <div class="product-tabs__panel-content">
+          {%- if product.metafields.custom.video_url != blank -%}
+            <div class="product-tabs__video-wrapper">
+              {{ product.metafields.custom.video_url | metafield_tag }}
+            </div>
+          {%- else -%}
+            <div class="product-tabs__video-placeholder">
+              <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="32" cy="32" r="30" stroke="#E4E7E9" stroke-width="2"/>
+                <path d="M26 22L44 32L26 42V22Z" fill="#E4E7E9"/>
+              </svg>
+              <p>No video available for this product.</p>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.product-tabs {
+  padding: 60px 0;
+  background-color: var(--color-white);
+}
+
+.product-tabs__container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+/* Tab Navigation */
+.product-tabs__nav {
+  display: flex;
+  gap: 40px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid #E4E7E9;
+}
+
+.product-tabs__tab {
+  position: relative;
+  padding: 12px 0;
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--color-text);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.product-tabs__tab::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: transparent;
+  transition: background-color var(--transition-fast);
+}
+
+.product-tabs__tab:hover {
+  color: var(--color-navy);
+}
+
+.product-tabs__tab--active {
+  color: var(--color-text);
+  text-decoration: underline;
+  text-underline-offset: 8px;
+  text-decoration-thickness: 2px;
+}
+
+.product-tabs__tab--active::after {
+  background-color: var(--color-text);
+}
+
+/* Tab Content */
+.product-tabs__content {
+  min-height: 200px;
+}
+
+.product-tabs__panel {
+  display: none;
+}
+
+.product-tabs__panel--active {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.product-tabs__panel-title {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 16.5px;
+  line-height: 1.2;
+  color: var(--color-text);
+  margin: 0 0 20px 0;
+}
+
+.product-tabs__panel-content {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 22px;
+  color: #A9ACC6;
+}
+
+.product-tabs__panel-content p {
+  margin: 0 0 16px 0;
+}
+
+.product-tabs__panel-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* Specs Table */
+.product-tabs__specs {
+  width: 100%;
+  max-width: 600px;
+  border-collapse: collapse;
+}
+
+.product-tabs__specs th,
+.product-tabs__specs td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #E4E7E9;
+}
+
+.product-tabs__specs th {
+  font-weight: 600;
+  color: var(--color-text);
+  width: 40%;
+}
+
+.product-tabs__specs td {
+  color: #5F6C72;
+}
+
+/* Reviews Placeholder */
+.product-tabs__reviews-placeholder {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.product-tabs__reviews-placeholder p {
+  margin-bottom: 20px;
+  color: #5F6C72;
+}
+
+.product-tabs__write-review {
+  display: inline-flex;
+}
+
+/* Video Placeholder */
+.product-tabs__video-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  background-color: #FAFAFA;
+  border-radius: var(--radius-md);
+}
+
+.product-tabs__video-placeholder svg {
+  margin-bottom: 16px;
+}
+
+.product-tabs__video-placeholder p {
+  color: #5F6C72;
+  margin: 0;
+}
+
+.product-tabs__video-wrapper {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  max-width: 100%;
+  border-radius: var(--radius-md);
+}
+
+.product-tabs__video-wrapper iframe,
+.product-tabs__video-wrapper video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .product-tabs {
+    padding: 40px 0;
+  }
+
+  .product-tabs__nav {
+    gap: 20px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .product-tabs__nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .product-tabs__tab {
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  .product-tabs__panel-title {
+    font-size: 14px;
+  }
+
+  .product-tabs__panel-content {
+    font-size: 11px;
+    line-height: 18px;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .product-tabs__nav {
+    gap: 16px;
+  }
+
+  .product-tabs__specs th,
+  .product-tabs__specs td {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+}
+{% endstylesheet %}
+
+{% javascript %}
+document.addEventListener('DOMContentLoaded', function() {
+  const tabs = document.querySelectorAll('.product-tabs__tab');
+  const panels = document.querySelectorAll('.product-tabs__panel');
+
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      const targetPanel = this.dataset.tab;
+
+      // Update tab states
+      tabs.forEach(function(t) {
+        t.classList.remove('product-tabs__tab--active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      this.classList.add('product-tabs__tab--active');
+      this.setAttribute('aria-selected', 'true');
+
+      // Update panel visibility
+      panels.forEach(function(panel) {
+        if (panel.dataset.panel === targetPanel) {
+          panel.classList.add('product-tabs__panel--active');
+          panel.removeAttribute('hidden');
+        } else {
+          panel.classList.remove('product-tabs__panel--active');
+          panel.setAttribute('hidden', '');
+        }
+      });
+    });
+  });
+
+  // Keyboard navigation
+  const tabList = document.querySelector('.product-tabs__nav');
+  if (tabList) {
+    tabList.addEventListener('keydown', function(e) {
+      const currentTab = document.activeElement;
+      const tabsArray = Array.from(tabs);
+      const currentIndex = tabsArray.indexOf(currentTab);
+
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        let newIndex;
+
+        if (e.key === 'ArrowLeft') {
+          newIndex = currentIndex === 0 ? tabsArray.length - 1 : currentIndex - 1;
+        } else {
+          newIndex = currentIndex === tabsArray.length - 1 ? 0 : currentIndex + 1;
+        }
+
+        tabsArray[newIndex].focus();
+        tabsArray[newIndex].click();
+      }
+    });
+  }
+});
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Product Description Tabs",
+  "tag": "section",
+  "class": "product-tabs-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show Description tab",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_additional_info",
+      "label": "Show Additional Info tab",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_reviews",
+      "label": "Show Reviews tab",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_video",
+      "label": "Show Video tab",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Description Tabs"
+    }
+  ]
+}
+{% endschema %}
+

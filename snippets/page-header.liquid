@@ -1,0 +1,127 @@
+{%- comment -%}
+  Page Header Snippet
+  Displays page title with breadcrumb navigation
+  
+  Accepts:
+  - title: {String} Page title (required)
+  - breadcrumb_items: {Array} Array of breadcrumb items with 'label' and 'url' keys (optional)
+  - current_page: {String} Current page label for breadcrumb (optional, defaults to title)
+{%- endcomment -%}
+
+{%- liquid
+  assign page_title = title | default: 'Page Title'
+  assign current_label = current_page | default: page_title
+-%}
+
+<div class="page-header">
+  <div class="page-header__container">
+    <h1 class="page-header__title">{{ page_title }}</h1>
+    <nav class="page-header__breadcrumb" aria-label="Breadcrumb">
+      <ol class="page-header__breadcrumb-list">
+        <li class="page-header__breadcrumb-item">
+          <a href="{{ routes.root_url }}">Home</a>
+        </li>
+        <li class="page-header__breadcrumb-separator">.</li>
+        {%- if breadcrumb_items -%}
+          {%- for item in breadcrumb_items -%}
+            <li class="page-header__breadcrumb-item">
+              <a href="{{ item.url }}">{{ item.label }}</a>
+            </li>
+            <li class="page-header__breadcrumb-separator">.</li>
+          {%- endfor -%}
+        {%- else -%}
+          <li class="page-header__breadcrumb-item">
+            <a href="#">Pages</a>
+          </li>
+          <li class="page-header__breadcrumb-separator page-header__breadcrumb-separator--pink">.</li>
+        {%- endif -%}
+        <li class="page-header__breadcrumb-item page-header__breadcrumb-item--current">
+          <span>{{ current_label }}</span>
+        </li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+{% stylesheet %}
+.page-header {
+  padding: 40px 0 30px;
+  background-color: var(--color-white);
+}
+
+.page-header__container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+.page-header__title {
+  font-family: 'Josefin Sans', var(--font-heading), sans-serif;
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 1.2;
+  color: var(--color-text);
+  margin: 0 0 8px 0;
+}
+
+.page-header__breadcrumb {
+  margin: 0;
+}
+
+.page-header__breadcrumb-list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.page-header__breadcrumb-item {
+  font-family: 'Lato', var(--font-body), sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.page-header__breadcrumb-item a {
+  color: var(--color-black);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.page-header__breadcrumb-item a:hover {
+  color: var(--color-navy);
+}
+
+.page-header__breadcrumb-item--current span {
+  color: #FB2E86;
+}
+
+.page-header__breadcrumb-separator {
+  font-family: 'Lato', var(--font-body), sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  color: var(--color-black);
+}
+
+.page-header__breadcrumb-separator--pink {
+  color: #FB2E86;
+}
+
+@media screen and (max-width: 768px) {
+  .page-header {
+    padding: 30px 0 20px;
+  }
+
+  .page-header__title {
+    font-size: 28px;
+  }
+
+  .page-header__breadcrumb-item {
+    font-size: 14px;
+  }
+}
+{% endstylesheet %}
+
