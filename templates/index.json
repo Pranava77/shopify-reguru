@@ -58,7 +58,7 @@
           "settings": {
             "title": "New Arrivals",
             "link": "",
-            "enable_mega_dropdown": true,
+            "enable_mega_dropdown": false,
             "dropdown_columns": "3",
             "column_1_title": "Mac M5",
             "menu_1": "",

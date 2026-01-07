@@ -15,7 +15,7 @@
       "settings": {
         "logo": "shopify://shop_images/gin.png",
         "show_search": true,
-        "show_location": true,
+        "show_location": false,
         "location_text": "Bengaluru",
         "header_icon_type": "bag",
         "header_custom_icon": "shopify://shop_images/Layer_1_1.png",
@@ -87,10 +87,6 @@
             "badge_style": "sale"
           }
         },
-        "separator_QQjJjT": {
-          "type": "separator",
-          "settings": {}
-        },
         "simple_link_4Jcq7V": {
           "type": "simple_link",
           "settings": {
@@ -104,7 +100,7 @@
           "type": "simple_link",
           "settings": {
             "title": "Contact",
-            "link": "",
+            "link": "shopify://pages/contact",
             "badge": "",
             "badge_style": "new"
           }
@@ -114,7 +110,6 @@
         "menu_item_NrEfzi",
         "menu_item_XiRTHk",
         "simple_link_VGXdQz",
-        "separator_QQjJjT",
         "simple_link_4Jcq7V",
         "simple_link_xJh9xm"
       ],
