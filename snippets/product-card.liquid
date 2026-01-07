@@ -69,10 +69,10 @@
     </div>
     <div class="product-card__actions">
       <button type="button" class="product-card__btn btn btn--secondary" data-buy-now data-variant-id="{{ product.selected_or_first_available_variant.id }}">
-        Buy Now
+        {{ 'products.product.buy_now' | t }}
       </button>
       <button type="button" class="product-card__btn btn btn--blue" data-add-to-cart data-variant-id="{{ product.selected_or_first_available_variant.id }}">
-        Add to cart
+        {{ 'products.product.add_to_cart' | t }}
       </button>
     </div>
   </div>

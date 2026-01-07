@@ -156,11 +156,11 @@
           {%- endfor -%}
 
           {%- if section.blocks.size == 0 -%}
-            <li><a href="#">Sofa</a></li>
-            <li><a href="#">Armchair</a></li>
-            <li><a href="#">Desk Chair</a></li>
-            <li><a href="#">wooden Chair</a></li>
-            <li><a href="#">Park Bench</a></li>
+            <li><a href="#">{{ 'categories.phone' | t }}</a></li>
+            <li><a href="#">{{ 'categories.laptop' | t }}</a></li>
+            <li><a href="#">{{ 'categories.tablet' | t }}</a></li>
+            <li><a href="#">{{ 'categories.earbuds' | t }}</a></li>
+            <li><a href="#">{{ 'categories.smart_speaker' | t }}</a></li>
           {%- endif -%}
         </ul>
       </div>
@@ -180,10 +180,10 @@
           {%- endfor -%}
 
           {%- if section.blocks.size == 0 -%}
-            <li><a href="#">Help & Support</a></li>
-            <li><a href="#">Tearms & Conditions</a></li>
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Help</a></li>
+            <li><a href="#">{{ 'footer.help_support' | t }}</a></li>
+            <li><a href="#">{{ 'footer.terms_conditions' | t }}</a></li>
+            <li><a href="#">{{ 'footer.privacy_policy' | t }}</a></li>
+            <li><a href="#">{{ 'footer.help' | t }}</a></li>
           {%- endif -%}
         </ul>
       </div>
@@ -195,7 +195,7 @@
 {% stylesheet %}
 .footer-wrapper {
   position: relative;
-  padding-top: 120px;
+  padding-top: 45px;
 }
 
 .footer-wrapper--has-bg-image {
@@ -216,16 +216,16 @@
 
 .footer__laptop-illustration {
   position: absolute;
-  top: -15%;
-  right: 8%;
+  top: -10%;
+  right: 3%;
   z-index: 11;
   transform: rotate(-4.5deg);
   animation: laptopFloat 3s ease-in-out infinite;
 }
 
 .footer__laptop-img {
-  width: 240px;
-  height: 240px;
+  width: 160px;
+  height: 160px;
   display: block;
   filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
 }
@@ -256,8 +256,8 @@
 
 .footer__grid {
   display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr;
-  gap: 338px;
+  grid-template-columns: 1fr;
+  gap: 40px;
 }
 
 .footer__brand {
@@ -267,8 +267,8 @@
 }
 
 .footer__logo {
-  width: 292px;
-  height: 82px;
+  width: 200px;
+  height: auto;
 }
 
 .footer__logo img {
@@ -303,7 +303,7 @@
 
 .footer__social {
   display: flex;
-  gap: 46px;
+  gap: 20px;
 }
 
 .footer__social-link {
@@ -359,30 +359,35 @@
   text-decoration: underline;
 }
 
-@media screen and (max-width: 1200px) {
-  .footer__grid {
-    gap: 60px;
-  }
-}
+/* Responsive Styles (Mobile-First) */
 
-@media screen and (max-width: 992px) {
+/* Small tablet and up */
+@media screen and (min-width: 577px) {
   .footer__grid {
     grid-template-columns: 1fr 1fr;
-    gap: 40px;
   }
 
   .footer__brand {
     grid-column: span 2;
   }
+
+  .footer__logo {
+    width: 292px;
+    height: 82px;
+  }
+
+  .footer__social {
+    gap: 46px;
+  }
 }
 
-@media screen and (max-width: 768px) {
+/* Tablet and up */
+@media screen and (min-width: 769px) {
   .footer-wrapper {
     padding-top: 100px;
   }
 
   .footer__laptop-illustration {
-    top: -10%;
     right: 5%;
   }
 
@@ -392,35 +397,36 @@
   }
 }
 
-@media screen and (max-width: 576px) {
-  .footer-wrapper {
-    padding-top: 45px;
-  }
-
+/* Desktop and up */
+@media screen and (min-width: 993px) {
   .footer__grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 60px;
   }
 
   .footer__brand {
     grid-column: span 1;
   }
+}
 
-  .footer__logo {
-    width: 200px;
-    height: auto;
+/* Large desktop */
+@media screen and (min-width: 1201px) {
+  .footer-wrapper {
+    padding-top: 120px;
   }
 
-  .footer__social {
-    gap: 20px;
+  .footer__grid {
+    gap: 338px;
   }
 
   .footer__laptop-illustration {
-    right: 3%;
+    top: -15%;
+    right: 8%;
   }
 
   .footer__laptop-img {
-    width: 160px;
-    height: 160px;
+    width: 240px;
+    height: 240px;
   }
 }
 {% endstylesheet %}

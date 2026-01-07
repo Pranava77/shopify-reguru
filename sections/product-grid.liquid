@@ -167,27 +167,23 @@
 .product-grid__tabs {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
 }
 
 .product-grid__tab {
-  padding: 10px 25px;
+  padding: 6px 12px;
   font-family: var(--font-heading);
   font-weight: 400;
-  font-size: 22px;
+  font-size: 14px;
   color: var(--color-black);
   background-color: var(--color-white);
   border: 0.6px solid var(--color-black);
+  border-radius: 5px;
   box-shadow: 4px 4px 0px 0px var(--color-black);
   cursor: pointer;
   transition: color var(--transition-fast), background-color var(--transition-fast);
-}
-
-.product-grid__tab:first-child {
-  border-radius: 7px 0 0 7px;
-}
-
-.product-grid__tab:last-child {
-  border-radius: 0 7px 7px 0;
 }
 
 .product-grid__tab:hover,
@@ -198,8 +194,8 @@
 
 .product-grid__items {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 37px 31px;
+  grid-template-columns: 1fr;
+  gap: 24px;
 }
 
 .product-grid__items.hidden {
@@ -216,35 +212,44 @@
 }
 
 
-@media screen and (max-width: 992px) {
-  .product-grid__tabs {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-  }
+/* Responsive Styles (Mobile-First) */
 
-  .product-grid__tab,
-  .product-grid__tab:first-child,
-  .product-grid__tab:last-child {
-    font-size: 16px;
-    padding: 8px 16px;
-    border-radius: 5px;
-  }
-
+/* Small tablet and up */
+@media screen and (min-width: 577px) {
   .product-grid__items {
     grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
-  }
-}
-
-@media screen and (max-width: 576px) {
-  .product-grid__items {
-    grid-template-columns: 1fr;
   }
 
   .product-grid__tab {
-    font-size: 14px;
-    padding: 6px 12px;
+    font-size: 16px;
+    padding: 8px 16px;
+  }
+}
+
+/* Desktop and up */
+@media screen and (min-width: 993px) {
+  .product-grid__tabs {
+    flex-wrap: nowrap;
+    gap: 0;
+  }
+
+  .product-grid__tab {
+    font-size: 22px;
+    padding: 10px 25px;
+    border-radius: 0;
+  }
+
+  .product-grid__tab:first-child {
+    border-radius: 7px 0 0 7px;
+  }
+
+  .product-grid__tab:last-child {
+    border-radius: 0 7px 7px 0;
+  }
+
+  .product-grid__items {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 37px 31px;
   }
 }
 {% endstylesheet %}

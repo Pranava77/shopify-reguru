@@ -1,17 +1,9 @@
-{%- liquid
-  assign drawer_title = 'Cart' | t | default: 'Shopping Cart'
-  assign continue_shopping_text = 'Continue Shopping' | t | default: 'Continue Shopping'
-  assign checkout_text = 'Checkout' | t | default: 'Checkout'
-  assign empty_cart_title = 'Your cart is empty' | t | default: 'Your cart is empty'
-  assign empty_cart_text = 'Continue shopping to add items to your cart.' | t | default: 'Continue shopping to add items to your cart.'
--%}
-
 <div class="cart-drawer" id="cart-drawer" aria-hidden="true">
   <div class="cart-drawer__overlay" data-cart-drawer-overlay></div>
   <div class="cart-drawer__panel">
     <div class="cart-drawer__header">
-      <h2 class="cart-drawer__title">{{ drawer_title }}</h2>
-      <button type="button" class="cart-drawer__close" data-cart-drawer-close aria-label="Close cart">
+      <h2 class="cart-drawer__title">{{ 'general.cart.title' | t }}</h2>
+      <button type="button" class="cart-drawer__close" data-cart-drawer-close aria-label="{{ 'accessibility.close' | t }}">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -20,14 +12,14 @@
 
     <div class="cart-drawer__content" data-cart-drawer-content>
       <div class="cart-drawer__loading" data-cart-drawer-loading>
-        <p>Loading cart...</p>
+        <p>{{ 'general.cart.loading' | t }}</p>
       </div>
 
       <div class="cart-drawer__empty" data-cart-drawer-empty style="display: none;">
-        <h3 class="cart-drawer__empty-title">{{ empty_cart_title }}</h3>
-        <p class="cart-drawer__empty-text">{{ empty_cart_text }}</p>
+        <h3 class="cart-drawer__empty-title">{{ 'general.cart.empty' | t }}</h3>
+        <p class="cart-drawer__empty-text">{{ 'general.cart.empty_description' | t }}</p>
         <button type="button" class="btn btn--blue cart-drawer__continue-btn" data-cart-drawer-close>
-          {{ continue_shopping_text }}
+          {{ 'general.cart.continue_shopping' | t }}
         </button>
       </div>
 
@@ -36,22 +28,22 @@
         
         <div class="cart-drawer__summary" data-cart-drawer-summary>
           <div class="cart-drawer__summary-row">
-            <span class="cart-drawer__summary-label">Subtotal</span>
+            <span class="cart-drawer__summary-label">{{ 'general.cart.subtotal' | t }}</span>
             <span class="cart-drawer__summary-value" data-cart-drawer-subtotal>$0.00</span>
           </div>
           <div class="cart-drawer__summary-row cart-drawer__summary-row--total">
-            <span class="cart-drawer__summary-label">Total</span>
+            <span class="cart-drawer__summary-label">{{ 'general.cart.total' | t }}</span>
             <span class="cart-drawer__summary-value" data-cart-drawer-total>$0.00</span>
           </div>
         </div>
 
         <div class="cart-drawer__actions">
           <a href="{{ routes.cart_url }}" class="btn btn--secondary cart-drawer__view-cart">
-            View Cart
+            {{ 'general.cart.view' | t }}
           </a>
           <form action="{{ routes.cart_url }}" method="post">
             <button type="submit" name="checkout" class="btn btn--blue cart-drawer__checkout">
-              {{ checkout_text }}
+              {{ 'general.cart.checkout' | t }}
             </button>
           </form>
         </div>
@@ -91,7 +83,7 @@
   top: 0;
   right: 0;
   width: 100%;
-  max-width: 480px;
+  max-width: 100%;
   height: 100%;
   background-color: var(--color-white);
   box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
@@ -110,7 +102,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px;
+  padding: 20px;
   border-bottom: 1px solid var(--color-gray);
 }
 
@@ -150,7 +142,7 @@
 .cart-drawer__content {
   flex: 1;
   overflow-y: auto;
-  padding: 24px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
 }
@@ -204,9 +196,9 @@
 
 .cart-drawer-item {
   display: grid;
-  grid-template-columns: 80px 1fr;
-  gap: 16px;
-  padding: 16px;
+  grid-template-columns: 70px 1fr;
+  gap: 12px;
+  padding: 12px;
   background-color: var(--color-white);
   border: 0.5px solid var(--color-black);
   border-radius: var(--radius-xs);
@@ -214,8 +206,8 @@
 }
 
 .cart-drawer-item__image {
-  width: 80px;
-  height: 80px;
+  width: 70px;
+  height: 70px;
   overflow: hidden;
   border-radius: var(--radius-xs);
   border: 0.5px solid var(--color-black);
@@ -380,28 +372,31 @@
   font-size: 14px;
 }
 
-@media screen and (max-width: 576px) {
+/* Responsive Styles (Mobile-First) */
+
+/* Small tablet and up */
+@media screen and (min-width: 577px) {
   .cart-drawer__panel {
-    max-width: 100%;
+    max-width: 480px;
   }
 
   .cart-drawer__header {
-    padding: 20px;
+    padding: 24px;
   }
 
   .cart-drawer__content {
-    padding: 20px;
+    padding: 24px;
   }
 
   .cart-drawer-item {
-    grid-template-columns: 70px 1fr;
-    gap: 12px;
-    padding: 12px;
+    grid-template-columns: 80px 1fr;
+    gap: 16px;
+    padding: 16px;
   }
 
   .cart-drawer-item__image {
-    width: 70px;
-    height: 70px;
+    width: 80px;
+    height: 80px;
   }
 }
 {% endstylesheet %}

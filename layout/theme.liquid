@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="no-js" lang="{{ request.locale.iso_code }}">
+<html class="no-js page-root" lang="{{ request.locale.iso_code }}">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -38,50 +38,36 @@
     assign body_font_bold_italic = body_font_bold | font_modify: 'style', 'italic'
   %}
 
+  {%- comment -%} Font face declarations - requires {% style %} for @font-face output {%- endcomment -%}
   {% style %}
     {{ settings.type_body_font | font_face: font_display: 'swap' }}
     {{ body_font_bold | font_face: font_display: 'swap' }}
     {{ body_font_italic | font_face: font_display: 'swap' }}
     {{ body_font_bold_italic | font_face: font_display: 'swap' }}
     {{ settings.type_header_font | font_face: font_display: 'swap' }}
-
-    {%- if settings.background_image != blank -%}
-      body {
-        background-image: url('{{ settings.background_image | image_url: width: 2000 }}');
-        background-size: {{ settings.background_size }};
-        background-position: {{ settings.background_position }};
-        background-attachment: {{ settings.background_attachment }};
-        background-repeat: {{ settings.background_repeat }};
-        min-height: 100vh;
-      }
-
-      {%- if settings.background_overlay_enable -%}
-        .site-background-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background-color: {{ settings.background_overlay_color }};
-          opacity: {{ settings.background_overlay_opacity | divided_by: 100.0 }};
-          pointer-events: none;
-          z-index: 0;
-        }
-
-        body.has-background-image > *:not(.site-background-overlay) {
-          position: relative;
-          z-index: 1;
-        }
-      {%- endif -%}
-    {%- endif -%}
   {% endstyle %}
 
   <script>document.documentElement.className = document.documentElement.className.replace('no-js', 'js');</script>
 </head>
 
-<body class="template-{{ template.name }}{% if settings.background_image != blank %} has-background-image{% endif %}">
+<body 
+  class="page-body template-{{ template.name }}{% if settings.background_image != blank %} has-background-image{% endif %}"
+  {%- if settings.background_image != blank %}
+  style="
+    background-image: url('{{ settings.background_image | image_url: width: 2000 }}');
+    background-size: {{ settings.background_size }};
+    background-position: {{ settings.background_position }};
+    background-attachment: {{ settings.background_attachment }};
+    background-repeat: {{ settings.background_repeat }};
+    min-height: 100vh;
+  "
+  {%- endif -%}>
   {%- if settings.background_image != blank and settings.background_overlay_enable -%}
-    <div class="site-background-overlay" aria-hidden="true"></div>
+    <div 
+      class="site-background-overlay" 
+      aria-hidden="true"
+      style="background-color: {{ settings.background_overlay_color }}; opacity: {{ settings.background_overlay_opacity | divided_by: 100.0 }};"
+    ></div>
   {%- endif -%}
 
   <a class="skip-to-content-link visually-hidden" href="#MainContent">

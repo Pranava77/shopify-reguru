@@ -411,7 +411,7 @@
   z-index: 2;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   max-width: var(--container-max);
   margin: 0 auto;
   padding: 0 var(--container-padding);
@@ -420,7 +420,7 @@
 
 /* Menu List */
 .mega-menu__list {
-  display: flex;
+  display: none;
   align-items: center;
   gap: 8px;
   height: 100%;
@@ -736,7 +736,7 @@
    Mobile Menu Toggle
    ========================================================================== */
 .mega-menu__mobile-toggle {
-  display: none;
+  display: flex;
   width: 40px;
   height: 40px;
   align-items: center;
@@ -984,19 +984,21 @@
 }
 
 /* ==========================================================================
-   Responsive
+   Responsive (Mobile-First)
    ========================================================================== */
-@media screen and (max-width: 992px) {
+
+/* Desktop and up */
+@media screen and (min-width: 993px) {
   .mega-menu__list {
-    display: none;
-  }
-  
-  .mega-menu__mobile-toggle {
     display: flex;
   }
   
+  .mega-menu__mobile-toggle {
+    display: none;
+  }
+  
   .mega-menu__inner {
-    justify-content: flex-start;
+    justify-content: center;
   }
 }
 {% endstylesheet %}
@@ -1014,7 +1016,7 @@
     {
       "type": "checkbox",
       "id": "enable_sticky",
-      "label": "Enable sticky navigation",
+      "label": "Sticky navigation",
       "default": true,
       "info": "Navigation bar will stick below the header when scrolling"
     },
