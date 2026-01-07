@@ -410,6 +410,11 @@
         "background_color": "#1e1a5c",
         "laptop_image": "shopify://shop_images/generated-image__20_-removebg-preview.png"
       }
+    },
+    "blocks_b8nrNk": {
+      "type": "_blocks",
+      "name": "Mega menu",
+      "settings": {}
     }
   },
   "order": [
@@ -422,6 +427,7 @@
     "about-us",
     "testimonials",
     "faq",
-    "footer_jLdtia"
+    "footer_jLdtia",
+    "blocks_b8nrNk"
   ]
 }
