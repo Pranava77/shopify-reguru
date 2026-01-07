@@ -35,6 +35,26 @@
   line-height: 14px;
   margin: 0;
 }
+
+@media screen and (max-width: 768px) {
+  .announcement-bar {
+    height: auto;
+    min-height: 43px;
+    padding: 8px 0;
+  }
+
+  .announcement-bar__text {
+    font-size: 14px;
+    line-height: 1.2;
+    padding: 0 8px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .announcement-bar__text {
+    font-size: 12px;
+  }
+}
 {% endstylesheet %}
 
 {% schema %}
