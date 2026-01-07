@@ -1,0 +1,267 @@
+{%- liquid
+  assign heading = section.settings.heading | default: 'Ready to Assist You'
+  assign description = section.settings.description | default: 'Contact us for any queries or bookings, and experience our prompt, friendly service. Your satisfaction is our priority.'
+  assign email = section.settings.email | default: 'reguru@gmail.com'
+  assign address_line_1 = section.settings.address_line_1
+  assign address_line_2 = section.settings.address_line_2
+  assign address_line_3 = section.settings.address_line_3
+  assign address_line_4 = section.settings.address_line_4
+  assign address = section.settings.address | default: '2nd floor central complex sv road near mantri mall seshadripuram bengaluru 560020'
+-%}
+
+<section class="contact-section">
+  <div class="contact-section__container">
+    <div class="contact-section__header">
+      <h1 class="contact-section__title">{{ heading }}</h1>
+      {%- if description != blank -%}
+        <p class="contact-section__description">{{ description }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="contact-section__content">
+      <div class="contact-section__info">
+        <div class="contact-section__info-item">
+          <svg class="contact-section__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="L22 6L12 13L2 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="contact-section__info-content">
+            <h3 class="contact-section__info-label">Email</h3>
+            <a href="mailto:{{ email }}" class="contact-section__info-value">{{ email }}</a>
+          </div>
+        </div>
+
+        <div class="contact-section__info-item">
+          <svg class="contact-section__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 10C21 17 12 23 12 23C12 23 3 17 3 10C3 7.61305 3.94821 5.32387 5.63604 3.63604C7.32387 1.94821 9.61305 1 12 1C14.3869 1 16.6761 1.94821 18.364 3.63604C20.0518 5.32387 21 7.61305 21 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 13C13.6569 13 15 11.6569 15 10C15 8.34315 13.6569 7 12 7C10.3431 7 9 8.34315 9 10C9 11.6569 10.3431 13 12 13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="contact-section__info-content">
+            <h3 class="contact-section__info-label">Address</h3>
+            <div class="contact-section__info-value">
+              {%- if address_line_1 != blank -%}
+                <p>{{ address_line_1 }}</p>
+              {%- endif -%}
+              {%- if address_line_2 != blank -%}
+                <p>{{ address_line_2 }}</p>
+              {%- endif -%}
+              {%- if address_line_3 != blank -%}
+                <p>{{ address_line_3 }}</p>
+              {%- endif -%}
+              {%- if address_line_4 != blank -%}
+                <p>{{ address_line_4 }}</p>
+              {%- endif -%}
+              {%- if address_line_1 == blank and address_line_2 == blank and address_line_3 == blank and address_line_4 == blank -%}
+                <p>{{ address }}</p>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.contact-section {
+  padding: 80px 0;
+  min-height: 60vh;
+}
+
+.contact-section__container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+.contact-section__header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.contact-section__title {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 48px;
+  line-height: 1.2;
+  color: var(--color-black);
+  margin: 0 0 24px;
+}
+
+.contact-section__description {
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.contact-section__content {
+  display: flex;
+  justify-content: center;
+}
+
+.contact-section__info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 40px;
+  max-width: 800px;
+  width: 100%;
+}
+
+.contact-section__info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 32px;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-black);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.contact-section__info-item:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.contact-section__icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  color: var(--color-navy);
+  margin-top: 4px;
+}
+
+.contact-section__info-content {
+  flex: 1;
+}
+
+.contact-section__info-label {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--color-black);
+  margin: 0 0 12px;
+}
+
+.contact-section__info-value {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+.contact-section__info-value a {
+  color: var(--color-navy);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.contact-section__info-value a:hover {
+  color: var(--color-green);
+  text-decoration: underline;
+}
+
+.contact-section__info-value p {
+  margin: 0 0 8px;
+}
+
+.contact-section__info-value p:last-child {
+  margin-bottom: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .contact-section {
+    padding: 60px 0;
+  }
+
+  .contact-section__title {
+    font-size: 36px;
+  }
+
+  .contact-section__description {
+    font-size: 16px;
+  }
+
+  .contact-section__info {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .contact-section__info-item {
+    padding: 24px;
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Contact",
+  "tag": "section",
+  "class": "contact-section-wrapper",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Ready to Assist You"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Contact us for any queries or bookings, and experience our prompt, friendly service. Your satisfaction is our priority."
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email",
+      "default": "reguru@gmail.com"
+    },
+    {
+      "type": "header",
+      "content": "Address"
+    },
+    {
+      "type": "text",
+      "id": "address_line_1",
+      "label": "Address Line 1",
+      "default": "2nd floor central complex"
+    },
+    {
+      "type": "text",
+      "id": "address_line_2",
+      "label": "Address Line 2",
+      "default": "sv road near mantri"
+    },
+    {
+      "type": "text",
+      "id": "address_line_3",
+      "label": "Address Line 3",
+      "default": "mall seshadripuram"
+    },
+    {
+      "type": "text",
+      "id": "address_line_4",
+      "label": "Address Line 4",
+      "default": "bengaluru 560020"
+    },
+    {
+      "type": "textarea",
+      "id": "address",
+      "label": "Full Address (Fallback)",
+      "default": "2nd floor central complex sv road near mantri mall seshadripuram bengaluru 560020",
+      "info": "Used if individual address lines are not provided"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact"
+    }
+  ]
+}
+{% endschema %}
+

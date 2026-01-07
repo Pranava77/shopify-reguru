@@ -19,15 +19,11 @@
         "location_text": "Bengaluru",
         "header_icon_type": "user",
         "header_custom_icon": "shopify://shop_images/Layer_1_1.png",
-        "header_icon_color_primary": "#e5e7eb",
-        "header_icon_color_accent": "#b1d8ff",
+        "header_icon_color_primary": "#E5E7EB",
+        "header_icon_color_accent": "#B1D8FF",
         "franchise_page": "franchise",
         "franchise_url": "shopify://pages/franchise"
       }
-    },
-    "1767389559f2590556": {
-      "type": "_blocks",
-      "settings": {}
     },
     "mega_menu_czkr3g": {
       "type": "mega-menu",
@@ -123,7 +119,7 @@
         "cta_text": "Checkout product",
         "cta_link": "",
         "image": "shopify://shop_images/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTEyL3Jhd3BpeGVsX29mZmljZV8zNV9waG90b2dyYXBoX29mX2xhcHRvcF9tb2NrdXBfd2l0aF93aGl0ZV9zY3JlZV9kNTFiNjVlZS02Y2RkLTQ0N2UtYmRmZS01MzdiZWZlNmY5NTIucG5.png",
-        "background_color": "#0b1850"
+        "background_color": "#0B1850"
       }
     },
     "feature-cards": {
@@ -281,7 +277,7 @@
       ],
       "settings": {
         "heading": "Testimonials",
-        "background_color": "#b1d8ff"
+        "background_color": "#B1D8FF"
       }
     },
     "faq": {
@@ -303,15 +299,15 @@
         "faq-2": {
           "type": "faq_item",
           "settings": {
-            "question": "Do ReGuru products come with warranty?",
-            "answer": "Yes, all ReGuru products come with a comprehensive warranty. Our refurbished electronics are thoroughly tested and certified, ensuring quality and reliability. Specific warranty terms vary by product category."
+            "question": "What is the return policy for ReGuru products?",
+            "answer": "We offer a hassle-free return policy for all ReGuru products. If you're not satisfied with your purchase, you can return it within the specified return period. Products must be in their original condition with all accessories and packaging. Please contact our customer support team to initiate a return."
           }
         },
         "faq-3": {
           "type": "faq_item",
           "settings": {
-            "question": "Do ReGuru products come with warranty?",
-            "answer": "Yes, all ReGuru products come with a comprehensive warranty. Our refurbished electronics are thoroughly tested and certified, ensuring quality and reliability. Specific warranty terms vary by product category."
+            "question": "How do I track my order?",
+            "answer": "Once your order is shipped, you will receive a tracking number via email. You can use this tracking number on our website or the courier's website to track your order status in real-time. If you have any questions about your order, our support team is always ready to help."
           }
         }
       },
@@ -407,19 +403,13 @@
       "settings": {
         "logo": "shopify://shop_images/gin.png",
         "address": "Address: 2nd floor central complex sv road near mantri mall seshadripuram bengaluru 560020",
-        "background_color": "#1e1a5c",
+        "background_color": "#1E1A5C",
         "laptop_image": "shopify://shop_images/generated-image__20_-removebg-preview.png"
       }
     },
-    "blocks_b8nrNk": {
-      "type": "_blocks",
-      "name": "Mega menu",
-      "settings": {}
-    }
   },
   "order": [
     "header_8wjj8i",
-    "1767389559f2590556",
     "mega_menu_czkr3g",
     "hero-banner",
     "feature-cards",
@@ -427,7 +417,6 @@
     "about-us",
     "testimonials",
     "faq",
-    "footer_jLdtia",
-    "blocks_b8nrNk"
+    "footer_jLdtia"
   ]
 }

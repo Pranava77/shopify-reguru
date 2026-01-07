@@ -100,6 +100,12 @@
       "business": "Business",
       "question_1": "Do ReGuru products come with warranty?",
       "answer_1": "Yes, all ReGuru products come with a comprehensive warranty. Our refurbished electronics are thoroughly tested and certified, ensuring quality and reliability."
+    },
+    "contact": {
+      "heading": "Ready to Assist You",
+      "description": "Contact us for any queries or bookings, and experience our prompt, friendly service. Your satisfaction is our priority.",
+      "email_label": "Email",
+      "address_label": "Address"
     }
   },
   "footer": {
