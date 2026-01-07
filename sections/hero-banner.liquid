@@ -7,10 +7,11 @@
   assign image = section.settings.image
   assign bg_color = section.settings.background_color | default: '#212844'
   assign bg_image = section.settings.background_image
+  assign container_bg_image = section.settings.container_background_image
 -%}
 
 <section class="hero-banner" style="--hero-bg: {{ bg_color }};{% if bg_image != blank %} background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;{% endif %}">
-  <div class="hero-banner__container">
+  <div class="hero-banner__container"{% if container_bg_image != blank %} style="background-image: url('{{ container_bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
     <div class="hero-banner__content">
       <p class="hero-banner__subheading">{{ subheading }}</p>
       <h1 class="hero-banner__heading">{{ heading }}</h1>
@@ -63,6 +64,21 @@
   border-radius: 6px;
   box-shadow: 4px 4px 0px 0px rgba(18, 17, 17, 1);
   overflow: hidden;
+}
+
+.hero-banner__container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: var(--hero-bg);
+  opacity: 0.85;
+  z-index: 0;
+  pointer-events: none;
+  display: none;
+}
+
+.hero-banner__container[style*="background-image"]::before {
+  display: block;
 }
 
 .hero-banner__content {
@@ -232,6 +248,16 @@
       "type": "image_picker",
       "id": "background_image",
       "label": "Background Image"
+    },
+    {
+      "type": "header",
+      "content": "Container Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "container_background_image",
+      "label": "Container Background Image",
+      "info": "Background image for the hero banner container. The background color will show as an overlay for better text readability."
     }
   ],
   "presets": [
