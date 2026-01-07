@@ -46,13 +46,47 @@
               assign column_4_title = block.settings.column_4_title
             -%}
             
+            {%- liquid
+              assign menu_link = block.settings.link
+              assign title_lower = block.settings.title | downcase
+              
+              if menu_link == blank
+                if title_lower contains 'shop'
+                  assign menu_link = routes.collections_url
+                elsif title_lower contains 'new' or title_lower contains 'arrival'
+                  assign menu_link = routes.collections_url
+                elsif title_lower contains 'sale'
+                  assign menu_link = routes.collections_url
+                elsif title_lower contains 'about'
+                  if pages['about'] != blank
+                    assign menu_link = pages['about'].url
+                  else
+                    assign menu_link = '/pages/about'
+                  endif
+                elsif title_lower contains 'contact'
+                  if pages['contact'] != blank
+                    assign menu_link = pages['contact'].url
+                  else
+                    assign menu_link = '/pages/contact'
+                  endif
+                elsif title_lower contains 'franchise'
+                  if pages['franchise'] != blank
+                    assign menu_link = pages['franchise'].url
+                  else
+                    assign menu_link = '/pages/franchise'
+                  endif
+                else
+                  assign menu_link = routes.root_url
+                endif
+              endif
+            -%}
             <li 
               class="mega-menu__item{% if has_dropdown %} has-dropdown{% endif %}"
               {{ block.shopify_attributes }}
               {% if has_dropdown %}data-mega-dropdown{% endif %}
             >
               <a 
-                href="{{ block.settings.link }}" 
+                href="{{ menu_link }}" 
                 class="mega-menu__link"
                 {% if has_dropdown %}
                   aria-haspopup="true"
@@ -71,8 +105,14 @@
                 <div class="mega-menu__dropdown mega-menu__dropdown--{{ dropdown_columns }}-col" data-dropdown-panel>
                   <div class="mega-menu__dropdown-inner">
                     {%- if promo_position == 'left' and featured_image != blank -%}
+                      {%- liquid
+                        assign promo_link_left = featured_link
+                        if promo_link_left == blank
+                          assign promo_link_left = routes.collections_url
+                        endif
+                      -%}
                       <div class="mega-menu__promo mega-menu__promo--left">
-                        <a href="{{ featured_link }}" class="mega-menu__promo-link">
+                        <a href="{{ promo_link_left }}" class="mega-menu__promo-link">
                           <div class="mega-menu__promo-image-wrapper">
                             <img 
                               src="{{ featured_image | image_url: width: 400 }}"
@@ -172,8 +212,14 @@
                     </div>
                     
                     {%- if promo_position == 'right' and featured_image != blank -%}
+                      {%- liquid
+                        assign promo_link_right = featured_link
+                        if promo_link_right == blank
+                          assign promo_link_right = routes.collections_url
+                        endif
+                      -%}
                       <div class="mega-menu__promo mega-menu__promo--right">
-                        <a href="{{ featured_link }}" class="mega-menu__promo-link">
+                        <a href="{{ promo_link_right }}" class="mega-menu__promo-link">
                           <div class="mega-menu__promo-image-wrapper">
                             <img 
                               src="{{ featured_image | image_url: width: 400 }}"
@@ -211,8 +257,14 @@
                           <span class="mega-menu__promo-badge">{{ block.settings.promo_badge }}</span>
                         {%- endif -%}
                         <span class="mega-menu__promo-text">{{ block.settings.promo_text }}</span>
-                        {%- if block.settings.promo_link != blank -%}
-                          <a href="{{ block.settings.promo_link }}" class="mega-menu__promo-link-text">
+                        {%- liquid
+                          assign promo_banner_link = block.settings.promo_link
+                          if promo_banner_link == blank
+                            assign promo_banner_link = routes.collections_url
+                          endif
+                        -%}
+                        {%- if block.settings.promo_link != blank or block.settings.promo_link_text != blank -%}
+                          <a href="{{ promo_banner_link }}" class="mega-menu__promo-link-text">
                             {{ block.settings.promo_link_text | default: 'Shop Now' }}
                             <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
                               <path d="M1 5H9M9 5L5 1M9 5L5 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -227,8 +279,38 @@
             </li>
             
           {%- when 'simple_link' -%}
+            {%- liquid
+              assign simple_link = block.settings.link
+              assign simple_title_lower = block.settings.title | downcase
+              
+              if simple_link == blank
+                if simple_title_lower contains 'about'
+                  if pages['about'] != blank
+                    assign simple_link = pages['about'].url
+                  else
+                    assign simple_link = '/pages/about'
+                  endif
+                elsif simple_title_lower contains 'contact'
+                  if pages['contact'] != blank
+                    assign simple_link = pages['contact'].url
+                  else
+                    assign simple_link = '/pages/contact'
+                  endif
+                elsif simple_title_lower contains 'franchise'
+                  if pages['franchise'] != blank
+                    assign simple_link = pages['franchise'].url
+                  else
+                    assign simple_link = '/pages/franchise'
+                  endif
+                elsif simple_title_lower contains 'shop' or simple_title_lower contains 'sale'
+                  assign simple_link = routes.collections_url
+                else
+                  assign simple_link = routes.root_url
+                endif
+              endif
+            -%}
             <li class="mega-menu__item" {{ block.shopify_attributes }}>
-              <a href="{{ block.settings.link }}" class="mega-menu__link">
+              <a href="{{ simple_link }}" class="mega-menu__link">
                 <span class="mega-menu__link-text">{{ block.settings.title }}</span>
                 {%- if block.settings.badge != blank -%}
                   <span class="mega-menu__badge mega-menu__badge--{{ block.settings.badge_style }}">
@@ -283,9 +365,43 @@
                 assign links_4 = block.settings.menu_4
               -%}
               
+              {%- liquid
+                assign mobile_menu_link = block.settings.link
+                assign mobile_title_lower = block.settings.title | downcase
+                
+                if mobile_menu_link == blank
+                  if mobile_title_lower contains 'shop'
+                    assign mobile_menu_link = routes.collections_url
+                  elsif mobile_title_lower contains 'new' or mobile_title_lower contains 'arrival'
+                    assign mobile_menu_link = routes.collections_url
+                  elsif mobile_title_lower contains 'sale'
+                    assign mobile_menu_link = routes.collections_url
+                  elsif mobile_title_lower contains 'about'
+                    if pages['about'] != blank
+                      assign mobile_menu_link = pages['about'].url
+                    else
+                      assign mobile_menu_link = '/pages/about'
+                    endif
+                  elsif mobile_title_lower contains 'contact'
+                    if pages['contact'] != blank
+                      assign mobile_menu_link = pages['contact'].url
+                    else
+                      assign mobile_menu_link = '/pages/contact'
+                    endif
+                  elsif mobile_title_lower contains 'franchise'
+                    if pages['franchise'] != blank
+                      assign mobile_menu_link = pages['franchise'].url
+                    else
+                      assign mobile_menu_link = '/pages/franchise'
+                    endif
+                  else
+                    assign mobile_menu_link = routes.root_url
+                  endif
+                endif
+              -%}
               <li class="mega-menu__mobile-item{% if has_dropdown %} has-children{% endif %}">
                 <div class="mega-menu__mobile-item-header">
-                  <a href="{{ block.settings.link }}" class="mega-menu__mobile-link">
+                  <a href="{{ mobile_menu_link }}" class="mega-menu__mobile-link">
                     {{ block.settings.title }}
                   </a>
                   {%- if has_dropdown -%}
@@ -347,8 +463,38 @@
               </li>
               
             {%- when 'simple_link' -%}
+              {%- liquid
+                assign mobile_simple_link = block.settings.link
+                assign mobile_simple_title_lower = block.settings.title | downcase
+                
+                if mobile_simple_link == blank
+                  if mobile_simple_title_lower contains 'about'
+                    if pages['about'] != blank
+                      assign mobile_simple_link = pages['about'].url
+                    else
+                      assign mobile_simple_link = '/pages/about'
+                    endif
+                  elsif mobile_simple_title_lower contains 'contact'
+                    if pages['contact'] != blank
+                      assign mobile_simple_link = pages['contact'].url
+                    else
+                      assign mobile_simple_link = '/pages/contact'
+                    endif
+                  elsif mobile_simple_title_lower contains 'franchise'
+                    if pages['franchise'] != blank
+                      assign mobile_simple_link = pages['franchise'].url
+                    else
+                      assign mobile_simple_link = '/pages/franchise'
+                    endif
+                  elsif mobile_simple_title_lower contains 'shop' or mobile_simple_title_lower contains 'sale'
+                    assign mobile_simple_link = routes.collections_url
+                  else
+                    assign mobile_simple_link = routes.root_url
+                  endif
+                endif
+              -%}
               <li class="mega-menu__mobile-item">
-                <a href="{{ block.settings.link }}" class="mega-menu__mobile-link">
+                <a href="{{ mobile_simple_link }}" class="mega-menu__mobile-link">
                   {{ block.settings.title }}
                   {%- if block.settings.badge != blank -%}
                     <span class="mega-menu__badge mega-menu__badge--{{ block.settings.badge_style }}">

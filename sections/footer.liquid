@@ -147,8 +147,14 @@
         <ul class="footer__links">
           {%- for block in section.blocks -%}
             {%- if block.type == 'category_link' -%}
+              {%- liquid
+                assign link_url = block.settings.link
+                if link_url == blank
+                  assign link_url = routes.collections_url
+                endif
+              -%}
               <li>
-                <a href="{{ block.settings.link }}" {{ block.shopify_attributes }}>
+                <a href="{{ link_url }}" {{ block.shopify_attributes }}>
                   {{ block.settings.label }}
                 </a>
               </li>
@@ -156,11 +162,11 @@
           {%- endfor -%}
 
           {%- if section.blocks.size == 0 -%}
-            <li><a href="#">{{ 'categories.phone' | t }}</a></li>
-            <li><a href="#">{{ 'categories.laptop' | t }}</a></li>
-            <li><a href="#">{{ 'categories.tablet' | t }}</a></li>
-            <li><a href="#">{{ 'categories.earbuds' | t }}</a></li>
-            <li><a href="#">{{ 'categories.smart_speaker' | t }}</a></li>
+            <li><a href="{{ routes.collections_url }}">{{ 'categories.phone' | t | default: 'Phone' }}</a></li>
+            <li><a href="{{ routes.collections_url }}">{{ 'categories.laptop' | t | default: 'Laptop' }}</a></li>
+            <li><a href="{{ routes.collections_url }}">{{ 'categories.tablet' | t | default: 'Tablet' }}</a></li>
+            <li><a href="{{ routes.collections_url }}">{{ 'categories.earbuds' | t | default: 'Earbuds' }}</a></li>
+            <li><a href="{{ routes.collections_url }}">{{ 'categories.smart_speaker' | t | default: 'Smart Speaker' }}</a></li>
           {%- endif -%}
         </ul>
       </div>
@@ -171,8 +177,60 @@
         <ul class="footer__links">
           {%- for block in section.blocks -%}
             {%- if block.type == 'support_link' -%}
+              {%- liquid
+                assign link_url = block.settings.link
+                assign label_lower = block.settings.label | downcase
+                
+                if link_url == blank
+                  if label_lower contains 'about'
+                    if pages['about'] != blank
+                      assign link_url = pages['about'].url
+                    else
+                      assign link_url = '/pages/about'
+                    endif
+                  elsif label_lower contains 'franchise'
+                    if pages['franchise'] != blank
+                      assign link_url = pages['franchise'].url
+                    else
+                      assign link_url = '/pages/franchise'
+                    endif
+                  elsif label_lower contains 'contact'
+                    if pages['contact'] != blank
+                      assign link_url = pages['contact'].url
+                    else
+                      assign link_url = '/pages/contact'
+                    endif
+                  elsif label_lower contains 'terms' or label_lower contains 'condition'
+                    if pages['terms'] != blank
+                      assign link_url = pages['terms'].url
+                    elsif pages['terms-conditions'] != blank
+                      assign link_url = pages['terms-conditions'].url
+                    else
+                      assign link_url = '/pages/terms'
+                    endif
+                  elsif label_lower contains 'privacy'
+                    if pages['privacy'] != blank
+                      assign link_url = pages['privacy'].url
+                    elsif pages['privacy-policy'] != blank
+                      assign link_url = pages['privacy-policy'].url
+                    else
+                      assign link_url = '/pages/privacy'
+                    endif
+                  elsif label_lower contains 'help' or label_lower contains 'support'
+                    if pages['help'] != blank
+                      assign link_url = pages['help'].url
+                    elsif pages['support'] != blank
+                      assign link_url = pages['support'].url
+                    else
+                      assign link_url = '/pages/help'
+                    endif
+                  else
+                    assign link_url = routes.root_url
+                  endif
+                endif
+              -%}
               <li>
-                <a href="{{ block.settings.link }}" {{ block.shopify_attributes }}>
+                <a href="{{ link_url }}" {{ block.shopify_attributes }}>
                   {{ block.settings.label }}
                 </a>
               </li>
@@ -180,10 +238,33 @@
           {%- endfor -%}
 
           {%- if section.blocks.size == 0 -%}
-            <li><a href="#">{{ 'footer.help_support' | t }}</a></li>
-            <li><a href="#">{{ 'footer.terms_conditions' | t }}</a></li>
-            <li><a href="#">{{ 'footer.privacy_policy' | t }}</a></li>
-            <li><a href="#">{{ 'footer.help' | t }}</a></li>
+            {%- liquid
+              assign help_url = routes.root_url
+              assign terms_url = routes.root_url
+              assign privacy_url = routes.root_url
+              
+              if pages['help'] != blank
+                assign help_url = pages['help'].url
+              elsif pages['support'] != blank
+                assign help_url = pages['support'].url
+              endif
+              
+              if pages['terms'] != blank
+                assign terms_url = pages['terms'].url
+              elsif pages['terms-conditions'] != blank
+                assign terms_url = pages['terms-conditions'].url
+              endif
+              
+              if pages['privacy'] != blank
+                assign privacy_url = pages['privacy'].url
+              elsif pages['privacy-policy'] != blank
+                assign privacy_url = pages['privacy-policy'].url
+              endif
+            -%}
+            <li><a href="{{ help_url }}">{{ 'footer.help_support' | t | default: 'Help & Support' }}</a></li>
+            <li><a href="{{ terms_url }}">{{ 'footer.terms_conditions' | t | default: 'Terms & Conditions' }}</a></li>
+            <li><a href="{{ privacy_url }}">{{ 'footer.privacy_policy' | t | default: 'Privacy Policy' }}</a></li>
+            <li><a href="{{ help_url }}">{{ 'footer.help' | t | default: 'Help' }}</a></li>
           {%- endif -%}
         </ul>
       </div>
