@@ -212,6 +212,12 @@ class ThemeUtils {
         }
         if (firstContainer && firstContainer.classList.contains('hidden')) {
           firstContainer.classList.remove('hidden');
+          firstContainer.classList.add('fade-in');
+          // Set animation delays for product cards
+          const productCards = firstContainer.querySelectorAll('.product-card');
+          productCards.forEach((card, index) => {
+            card.style.setProperty('--index', index);
+          });
         }
       }
       
@@ -221,6 +227,9 @@ class ThemeUtils {
           e.preventDefault();
           e.stopPropagation();
           
+          // Prevent rapid clicking
+          if (tab.classList.contains('switching')) return;
+          
           const targetHandle = tab.getAttribute('data-tab-target');
           const tabIndex = tab.getAttribute('data-tab-index');
           
@@ -229,41 +238,116 @@ class ThemeUtils {
             return;
           }
           
+          // Find current active container
+          const currentContainer = contentContainer.querySelector('.product-grid__items:not(.hidden)');
+          
           // Remove active class from all tabs
           for (const t of tabs) {
             t.classList.remove('active');
+            t.classList.add('switching');
           }
           
           // Add active class to clicked tab
           tab.classList.add('active');
           
-          // Hide all product containers
-          for (const container of productContainers) {
-            container.classList.add('hidden');
-          }
-          
-          // Show the target product container - try by handle first, then by index
-          let targetContainer = contentContainer.querySelector(`[data-tab-content="${targetHandle}"]`);
-          
-          // Fallback: if not found by handle, try by index
-          if (!targetContainer && tabIndex !== null) {
-            targetContainer = contentContainer.querySelector(`[data-tab-index="${tabIndex}"]`);
-          }
-          
-          if (targetContainer) {
-            targetContainer.classList.remove('hidden');
+          // Animation function
+          const switchToTarget = () => {
+            // Find target container
+            let targetContainer = contentContainer.querySelector(`[data-tab-content="${targetHandle}"]`);
             
-            // Smooth scroll to top of product grid if needed
-            const gridTop = grid.getBoundingClientRect().top + window.pageYOffset;
-            if (window.pageYOffset > gridTop) {
-              window.scrollTo({
-                top: gridTop - 100,
-                behavior: 'smooth'
-              });
+            // Fallback: if not found by handle, try by index
+            if (!targetContainer && tabIndex !== null) {
+              targetContainer = contentContainer.querySelector(`[data-tab-index="${tabIndex}"]`);
             }
-          } else {
-            console.warn(`No container found for tab target: ${targetHandle}`);
-          }
+            
+            if (!targetContainer) {
+              console.warn(`No container found for tab target: ${targetHandle}`);
+              // Remove switching class
+              for (const t of tabs) {
+                t.classList.remove('switching');
+              }
+              return;
+            }
+            
+            // If clicking the same tab, do nothing
+            if (currentContainer === targetContainer) {
+              for (const t of tabs) {
+                t.classList.remove('switching');
+              }
+              // Re-add active to clicked tab
+              for (const t of tabs) {
+                t.classList.remove('active');
+              }
+              tab.classList.add('active');
+              return;
+            }
+            
+            // Fade out current container
+            if (currentContainer) {
+              currentContainer.classList.add('fade-out');
+              currentContainer.classList.remove('fade-in');
+              
+              // After fade out completes, hide it and show new one
+              setTimeout(() => {
+                // Hide all containers
+                for (const container of productContainers) {
+                  container.classList.add('hidden');
+                  container.classList.remove('fade-out', 'fade-in');
+                }
+                
+                // Show and animate in target container
+                targetContainer.classList.remove('hidden');
+                targetContainer.classList.add('fade-in');
+                
+                // Set animation delays for product cards
+                const productCards = targetContainer.querySelectorAll('.product-card');
+                productCards.forEach((card, index) => {
+                  card.style.setProperty('--index', index);
+                });
+                
+                // Remove switching class after animation
+                setTimeout(() => {
+                  for (const t of tabs) {
+                    t.classList.remove('switching');
+                  }
+                }, 100);
+                
+                // Smooth scroll to top of product grid if needed
+                const gridTop = grid.getBoundingClientRect().top + window.pageYOffset;
+                if (window.pageYOffset > gridTop) {
+                  window.scrollTo({
+                    top: gridTop - 100,
+                    behavior: 'smooth'
+                  });
+                }
+              }, 200); // Half of fade-out duration
+            } else {
+              // No current container, just show target
+              for (const container of productContainers) {
+                container.classList.add('hidden');
+                container.classList.remove('fade-out', 'fade-in');
+              }
+              
+              targetContainer.classList.remove('hidden');
+              targetContainer.classList.add('fade-in');
+              
+              // Set animation delays for product cards
+              const productCards = targetContainer.querySelectorAll('.product-card');
+              productCards.forEach((card, index) => {
+                card.style.setProperty('--index', index);
+              });
+              
+              // Remove switching class
+              setTimeout(() => {
+                for (const t of tabs) {
+                  t.classList.remove('switching');
+                }
+              }, 100);
+            }
+          };
+          
+          // Start the animation
+          switchToTarget();
         });
       }
     }
