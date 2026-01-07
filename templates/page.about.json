@@ -125,18 +125,41 @@
         "promo_position": "right"
       }
     },
-    "franchise": {
-      "type": "franchise",
-      "settings": {
-        "title": "Franchise",
-        "subtitle": "Get in touch to start your franchise with ReGuru",
-        "phone": "+91 8123456789",
-        "email": "demo@gmail.com",
-        "address": "2nd floor central complex sv road near mantri mall seshadripuram bengaluru 560020",
-        "facebook_url": "",
-        "twitter_url": "",
-        "instagram_url": ""
-      }
+    "about_us_section": {
+      "type": "about-us",
+      "blocks": {
+        "brand_logo_1": {
+          "type": "brand_logo",
+          "settings": {
+            "brand_name": "logo one"
+          }
+        },
+        "brand_logo_2": {
+          "type": "brand_logo",
+          "settings": {
+            "brand_name": "logo two"
+          }
+        },
+        "brand_logo_3": {
+          "type": "brand_logo",
+          "settings": {
+            "brand_name": "logo three"
+          }
+        },
+        "brand_logo_4": {
+          "type": "brand_logo",
+          "settings": {
+            "brand_name": "logo four"
+          }
+        }
+      },
+      "block_order": [
+        "brand_logo_1",
+        "brand_logo_2",
+        "brand_logo_3",
+        "brand_logo_4"
+      ],
+      "settings": {}
     },
     "footer_MeKgAQ": {
       "type": "footer",
@@ -227,7 +250,7 @@
   "order": [
     "header_U9K4Tf",
     "mega_menu_DKxVCr",
-    "franchise",
+    "about_us_section",
     "footer_MeKgAQ"
   ]
 }
