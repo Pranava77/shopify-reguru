@@ -1,0 +1,182 @@
+{%- liquid
+  assign show_breadcrumb = section.settings.show_breadcrumb
+  assign content_width = section.settings.content_width | default: 'medium'
+-%}
+
+<section class="main-page">
+  <div class="main-page__container main-page__container--{{ content_width }}">
+    {%- if show_breadcrumb -%}
+      {%- render 'page-header', title: page.title -%}
+    {%- else -%}
+      <h1 class="main-page__title">{{ page.title }}</h1>
+    {%- endif -%}
+    
+    <div class="main-page__content">
+      {{ page.content }}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.main-page {
+  padding: 60px 0;
+  background-color: var(--color-white);
+}
+
+.main-page__container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+.main-page__container--narrow {
+  max-width: 800px;
+}
+
+.main-page__container--medium {
+  max-width: 1000px;
+}
+
+.main-page__container--wide {
+  max-width: 1200px;
+}
+
+.main-page__title {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 40px;
+  line-height: 1.31;
+  color: var(--color-black);
+  margin: 0 0 32px;
+}
+
+.main-page__content {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+.main-page__content h1,
+.main-page__content h2,
+.main-page__content h3,
+.main-page__content h4,
+.main-page__content h5,
+.main-page__content h6 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  color: var(--color-black);
+  margin-top: 32px;
+  margin-bottom: 16px;
+}
+
+.main-page__content h1 {
+  font-size: 32px;
+}
+
+.main-page__content h2 {
+  font-size: 28px;
+}
+
+.main-page__content h3 {
+  font-size: 24px;
+}
+
+.main-page__content p {
+  margin: 0 0 16px;
+}
+
+.main-page__content ul,
+.main-page__content ol {
+  margin: 0 0 16px;
+  padding-left: 24px;
+}
+
+.main-page__content li {
+  margin-bottom: 8px;
+}
+
+.main-page__content a {
+  color: var(--color-navy);
+  text-decoration: underline;
+}
+
+.main-page__content a:hover {
+  color: var(--color-accent);
+}
+
+.main-page__content img {
+  max-width: 100%;
+  height: auto;
+  margin: 24px 0;
+}
+
+@media screen and (max-width: 768px) {
+  .main-page {
+    padding: 40px 0;
+  }
+
+  .main-page__title {
+    font-size: 32px;
+    margin-bottom: 24px;
+  }
+
+  .main-page__content {
+    font-size: 14px;
+  }
+
+  .main-page__content h1 {
+    font-size: 28px;
+  }
+
+  .main-page__content h2 {
+    font-size: 24px;
+  }
+
+  .main-page__content h3 {
+    font-size: 20px;
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Page Content",
+  "tag": "section",
+  "class": "main-page-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumb",
+      "label": "Show Breadcrumb",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "content_width",
+      "label": "Content Width",
+      "options": [
+        {
+          "value": "narrow",
+          "label": "Narrow"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "wide",
+          "label": "Wide"
+        }
+      ],
+      "default": "medium"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Page Content"
+    }
+  ]
+}
+{% endschema %}
+
