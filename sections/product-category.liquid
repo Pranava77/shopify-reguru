@@ -201,13 +201,20 @@
 .product-category__category-card {
   flex: 1 0 0;
   min-width: 0;
-  background-color: #fdfdfd;
-  border-radius: 8px;
-  box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.03);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-black);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.product-category__category-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px var(--color-black);
 }
 
 .product-category__category-link {
@@ -215,6 +222,11 @@
   flex-direction: column;
   gap: 8px;
   text-decoration: none;
+  color: inherit;
+  transition: transform var(--transition-fast);
+}
+
+.product-category__category-link:hover {
   color: inherit;
 }
 
@@ -253,16 +265,19 @@
   gap: 8px;
   align-items: center;
   padding: 8px 8px 16px;
+  background-color: var(--color-white);
 }
 
 .product-category__category-title {
   font-family: var(--font-heading);
-  font-weight: 500;
+  font-weight: 600;
   font-size: 14px;
   line-height: normal;
-  color: #4b4b4b;
+  color: var(--color-navy);
   text-align: center;
   margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .product-category__brands {
