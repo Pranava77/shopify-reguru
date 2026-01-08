@@ -57,7 +57,7 @@
           "type": "menu_item",
           "settings": {
             "title": "products",
-            "link": "",
+            "link": "shopify://pages/product-category",
             "enable_mega_dropdown": false,
             "dropdown_columns": "3",
             "column_1_title": "Mac M5",
@@ -127,10 +127,9 @@
         "heading": "",
         "discount_text": "",
         "cta_text": "",
-        "cta_link": "",
+        "cta_link": "shopify://pages/product-category",
         "image": "shopify://shop_images/monitors-ultrawide-removebg-preview.png",
-        "background_color": "#1d1a1a",
-        "container_background_image": "shopify://shop_images/11acefdf-62f0-4e8b-9cb3-e88beee26b9d_1764838678638.webp"
+        "background_color": "#171544"
       }
     },
     "feature-cards": {
@@ -184,9 +183,7 @@
         "card-3",
         "card-4"
       ],
-      "settings": {
-        "background_image": "shopify://shop_images/Group_1000001777.png"
-      }
+      "settings": {}
     },
     "product_grid_gLdc4C": {
       "type": "product-grid",
@@ -238,8 +235,7 @@
       "settings": {
         "title": "Reguru Products",
         "collection": "apple",
-        "products_to_show": 3,
-        "background_image": "shopify://shop_images/Group_1000001777.png"
+        "products_to_show": 3
       }
     },
     "testimonials": {

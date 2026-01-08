@@ -9,7 +9,7 @@
  */
 {
   "sections": {
-    "header_bX9UWd": {
+    "header_U9K4Tf": {
       "type": "header",
       "name": "Header",
       "settings": {
@@ -21,14 +21,14 @@
         "header_custom_icon": "shopify://shop_images/Layer_1_1.png",
         "header_icon_color_primary": "#1e1a5c",
         "header_icon_color_accent": "#28d98e",
-        "franchise_page": "",
+        "franchise_page": "franchise",
         "franchise_url": ""
       }
     },
-    "mega_menu_pLYehj": {
+    "mega_menu_DKxVCr": {
       "type": "mega-menu",
       "blocks": {
-        "menu_item_hUjc6x": {
+        "menu_item_NrEfzi": {
           "type": "menu_item",
           "settings": {
             "title": "Shop",
@@ -53,7 +53,7 @@
             "promo_link_text": "Learn More"
           }
         },
-        "menu_item_WtnVfK": {
+        "menu_item_XiRTHk": {
           "type": "menu_item",
           "settings": {
             "title": "New Arrivals",
@@ -78,7 +78,7 @@
             "promo_link_text": "Learn More"
           }
         },
-        "simple_link_bHTDHJ": {
+        "simple_link_VGXdQz": {
           "type": "simple_link",
           "settings": {
             "title": "Sale",
@@ -87,16 +87,16 @@
             "badge_style": "sale"
           }
         },
-        "simple_link_Xtp9xL": {
+        "simple_link_4Jcq7V": {
           "type": "simple_link",
           "settings": {
             "title": "About",
-            "link": "shopify://pages/about",
+            "link": "",
             "badge": "",
             "badge_style": "new"
           }
         },
-        "simple_link_e6FjA9": {
+        "simple_link_xJh9xm": {
           "type": "simple_link",
           "settings": {
             "title": "Contact",
@@ -107,11 +107,11 @@
         }
       },
       "block_order": [
-        "menu_item_hUjc6x",
-        "menu_item_WtnVfK",
-        "simple_link_bHTDHJ",
-        "simple_link_Xtp9xL",
-        "simple_link_e6FjA9"
+        "menu_item_NrEfzi",
+        "menu_item_XiRTHk",
+        "simple_link_VGXdQz",
+        "simple_link_4Jcq7V",
+        "simple_link_xJh9xm"
       ],
       "name": "Mega Menu",
       "settings": {
@@ -120,127 +120,176 @@
         "promo_position": "right"
       }
     },
-    "contact_section": {
-      "type": "contact",
-      "settings": {
-        "heading": "Ready to Assist You",
-        "description": "Contact us for any queries or bookings, and experience our prompt, friendly service. Your satisfaction is our priority.",
-        "email": "reguru@gmail.com",
-        "address_line_1": "2nd floor central complex",
-        "address_line_2": "sv road near mantri",
-        "address_line_3": "mall seshadripuram",
-        "address_line_4": "bengaluru 560020",
-        "map_image": "shopify://shop_images/Map_Image.png",
-        "telephone_image": "shopify://shop_images/Telephone.png",
-        "mail_icon_image": "shopify://shop_images/MailIco.png",
-        "map_icon_image": "shopify://shop_images/MapIco.png",
-        "background_color": "#041c66",
-        "map_background_color": "#c1cff4"
-      }
-    },
-    "faq_rNrUJW": {
-      "type": "faq",
+    "product_category_JheeHV": {
+      "type": "product-category",
       "blocks": {
-        "faq_item_ixFbFD": {
-          "type": "faq_item",
+        "category_card_CNAnYf": {
+          "type": "category_card",
           "settings": {
-            "question": "Do ReGuru products come with warranty?",
-            "answer": "Yes, all ReGuru products come with a comprehensive warranty. Our refurbished electronics are thoroughly tested and certified, ensuring quality and reliability."
+            "title": "Laptop",
+            "image": "shopify://shop_images/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTA5L3Jhd3BpeGVsX29mZmljZV8zMV9waG90b19vZl9hX2xhcHRvcF9tb2NrdXBfY2xvc2UtdXBfbWluaW1hbF9pc182M2Q2NzViOS00YjlhLTQ3OWEtOGMyMS1hYWQwMjViNWYzZDIucG5.png",
+            "collection": "apple"
           }
         },
-        "faq_item_d4tL7U": {
-          "type": "faq_item",
+        "category_card_FjH7WE": {
+          "type": "category_card",
           "settings": {
-            "question": "Do ReGuru products come with warranty?",
-            "answer": "Yes, all ReGuru products come with a comprehensive warranty. Our refurbished electronics are thoroughly tested and certified, ensuring quality and reliability."
+            "title": "Monitor",
+            "image": "shopify://shop_images/65f626539bca1123ba3b8ba7-sceptre-24-curved-1920x1080-hdmi-vga-removebg-preview.png",
+            "collection": ""
           }
         },
-        "faq_item_x9HBfm": {
-          "type": "faq_item",
+        "category_card_bxGV9K": {
+          "type": "category_card",
           "settings": {
-            "question": "Do ReGuru products come with warranty?",
-            "answer": "Yes, all ReGuru products come with a comprehensive warranty. Our refurbished electronics are thoroughly tested and certified, ensuring quality and reliability."
+            "title": "Phone",
+            "image": "shopify://shop_images/41SMY8MQw4L._SY300_SX300_QL70_FMwebp_-removebg-preview.png",
+            "collection": "phone"
           }
         },
-        "faq_item_pQCKiH": {
-          "type": "faq_item",
+        "category_card_zMgEfU": {
+          "type": "category_card",
           "settings": {
-            "question": "Do ReGuru products come with warranty?",
-            "answer": "Yes, all ReGuru products come with a comprehensive warranty. Our refurbished electronics are thoroughly tested and certified, ensuring quality and reliability."
+            "title": "Television",
+            "image": "shopify://shop_images/images-removebg-preview.png",
+            "collection": "monitors"
+          }
+        },
+        "category_card_WX7gMr": {
+          "type": "category_card",
+          "settings": {
+            "title": "Headphone",
+            "image": "shopify://shop_images/71Q-uiqUGSL._AC_CR0_0_0_0_SX480_SY360_-removebg-preview.png",
+            "collection": "headphone"
+          }
+        },
+        "product_category_Uf3mKH": {
+          "type": "product_category",
+          "settings": {
+            "title": "Laptop",
+            "collection": "apple",
+            "products_to_show": 4,
+            "view_all_text": "View all"
+          }
+        },
+        "product_category_WXyhcn": {
+          "type": "product_category",
+          "settings": {
+            "title": "Phone",
+            "collection": "phone",
+            "products_to_show": 4,
+            "view_all_text": "View all"
+          }
+        },
+        "product_category_iHRpcm": {
+          "type": "product_category",
+          "settings": {
+            "title": "Television",
+            "collection": "television",
+            "products_to_show": 4,
+            "view_all_text": "View all"
+          }
+        },
+        "product_category_jjxHXE": {
+          "type": "product_category",
+          "settings": {
+            "title": "Monitor",
+            "collection": "monitors",
+            "products_to_show": 4,
+            "view_all_text": "View all"
+          }
+        },
+        "product_category_NMAXQ4": {
+          "type": "product_category",
+          "settings": {
+            "title": "Headphone",
+            "collection": "headphone",
+            "products_to_show": 4,
+            "view_all_text": "View all"
           }
         }
       },
       "block_order": [
-        "faq_item_ixFbFD",
-        "faq_item_d4tL7U",
-        "faq_item_x9HBfm",
-        "faq_item_pQCKiH"
+        "category_card_CNAnYf",
+        "category_card_FjH7WE",
+        "category_card_bxGV9K",
+        "category_card_zMgEfU",
+        "category_card_WX7gMr",
+        "product_category_Uf3mKH",
+        "product_category_WXyhcn",
+        "product_category_iHRpcm",
+        "product_category_jjxHXE",
+        "product_category_NMAXQ4"
       ],
-      "name": "FAQ",
+      "name": "Product Category",
       "settings": {
-        "heading": "FAQs"
+        "heading": "Checkout our products",
+        "description": "Find the perfect laptop for work, play and everything in between.",
+        "background_color": "#b1d8ff",
+        "show_brands": true,
+        "brands_title": "Top Brands"
       }
     },
-    "footer_ehQwLh": {
+    "footer_MeKgAQ": {
       "type": "footer",
       "blocks": {
-        "category_link_hQDJgG": {
+        "category_link_KL4yMk": {
           "type": "category_link",
           "settings": {
             "label": "Sofa",
             "link": ""
           }
         },
-        "category_link_NpwMxq": {
+        "category_link_wPKxVn": {
           "type": "category_link",
           "settings": {
             "label": "Armchair",
             "link": ""
           }
         },
-        "category_link_9FWLbn": {
+        "category_link_AQgL8R": {
           "type": "category_link",
           "settings": {
             "label": "Desk Chair",
             "link": ""
           }
         },
-        "category_link_iz4TYX": {
+        "category_link_7jGmhY": {
           "type": "category_link",
           "settings": {
             "label": "wooden Chair",
             "link": ""
           }
         },
-        "category_link_Cwathe": {
+        "category_link_gBpxUy": {
           "type": "category_link",
           "settings": {
             "label": "Park Bench",
             "link": ""
           }
         },
-        "support_link_4X8ADB": {
+        "support_link_z9Gq7y": {
           "type": "support_link",
           "settings": {
             "label": "Help & Support",
             "link": ""
           }
         },
-        "support_link_RmCnHX": {
+        "support_link_YDCHHd": {
           "type": "support_link",
           "settings": {
             "label": "Terms & Conditions",
             "link": ""
           }
         },
-        "support_link_Pgga86": {
+        "support_link_xUCh8z": {
           "type": "support_link",
           "settings": {
             "label": "Privacy Policy",
             "link": ""
           }
         },
-        "support_link_xtKATh": {
+        "support_link_QJ9gjE": {
           "type": "support_link",
           "settings": {
             "label": "Help",
@@ -249,19 +298,18 @@
         }
       },
       "block_order": [
-        "category_link_hQDJgG",
-        "category_link_NpwMxq",
-        "category_link_9FWLbn",
-        "category_link_iz4TYX",
-        "category_link_Cwathe",
-        "support_link_4X8ADB",
-        "support_link_RmCnHX",
-        "support_link_Pgga86",
-        "support_link_xtKATh"
+        "category_link_KL4yMk",
+        "category_link_wPKxVn",
+        "category_link_AQgL8R",
+        "category_link_7jGmhY",
+        "category_link_gBpxUy",
+        "support_link_z9Gq7y",
+        "support_link_YDCHHd",
+        "support_link_xUCh8z",
+        "support_link_QJ9gjE"
       ],
       "name": "Footer",
       "settings": {
-        "logo": "shopify://shop_images/Group_173.png",
         "address": "Address: 2nd floor central complex sv road near mantri mall seshadripuram bengaluru 560020",
         "background_color": "#041c66",
         "laptop_image": "shopify://shop_images/generated-image__20_-removebg-preview.png"
@@ -269,10 +317,9 @@
     }
   },
   "order": [
-    "header_bX9UWd",
-    "mega_menu_pLYehj",
-    "contact_section",
-    "faq_rNrUJW",
-    "footer_ehQwLh"
+    "header_U9K4Tf",
+    "mega_menu_DKxVCr",
+    "product_category_JheeHV",
+    "footer_MeKgAQ"
   ]
 }
