@@ -120,60 +120,109 @@
         "promo_position": "right"
       }
     },
-    "about_us_section": {
-      "type": "about-us",
+    "product_category_JheeHV": {
+      "type": "product-category",
       "blocks": {
-        "brand_logo_1": {
-          "type": "brand_logo",
+        "category_card_CNAnYf": {
+          "type": "category_card",
           "settings": {
-            "brand_name": "logo one"
+            "title": "Laptop",
+            "collection": ""
           }
         },
-        "brand_logo_2": {
-          "type": "brand_logo",
+        "category_card_FjH7WE": {
+          "type": "category_card",
           "settings": {
-            "brand_name": "logo two"
+            "title": "Monitor",
+            "collection": ""
           }
         },
-        "brand_logo_3": {
-          "type": "brand_logo",
+        "category_card_bxGV9K": {
+          "type": "category_card",
           "settings": {
-            "brand_name": "logo three"
+            "title": "Phone",
+            "collection": ""
           }
         },
-        "brand_logo_4": {
-          "type": "brand_logo",
+        "category_card_zMgEfU": {
+          "type": "category_card",
           "settings": {
-            "brand_name": "logo four"
+            "title": "Television",
+            "collection": ""
+          }
+        },
+        "category_card_WX7gMr": {
+          "type": "category_card",
+          "settings": {
+            "title": "Headphone",
+            "collection": ""
+          }
+        },
+        "product_category_Uf3mKH": {
+          "type": "product_category",
+          "settings": {
+            "title": "Laptop",
+            "collection": "",
+            "products_to_show": 4,
+            "view_all_text": "View all"
+          }
+        },
+        "product_category_WXyhcn": {
+          "type": "product_category",
+          "settings": {
+            "title": "Phone",
+            "collection": "",
+            "products_to_show": 4,
+            "view_all_text": "View all"
+          }
+        },
+        "product_category_iHRpcm": {
+          "type": "product_category",
+          "settings": {
+            "title": "Television",
+            "collection": "",
+            "products_to_show": 4,
+            "view_all_text": "View all"
+          }
+        },
+        "product_category_jjxHXE": {
+          "type": "product_category",
+          "settings": {
+            "title": "Monitor",
+            "collection": "",
+            "products_to_show": 4,
+            "view_all_text": "View all"
+          }
+        },
+        "product_category_NMAXQ4": {
+          "type": "product_category",
+          "settings": {
+            "title": "Headphone",
+            "collection": "",
+            "products_to_show": 4,
+            "view_all_text": "View all"
           }
         }
       },
       "block_order": [
-        "brand_logo_1",
-        "brand_logo_2",
-        "brand_logo_3",
-        "brand_logo_4"
+        "category_card_CNAnYf",
+        "category_card_FjH7WE",
+        "category_card_bxGV9K",
+        "category_card_zMgEfU",
+        "category_card_WX7gMr",
+        "product_category_Uf3mKH",
+        "product_category_WXyhcn",
+        "product_category_iHRpcm",
+        "product_category_jjxHXE",
+        "product_category_NMAXQ4"
       ],
+      "name": "Product Category",
       "settings": {
-        "hero_title_line_1": "Beyond Refurbishment",
-        "hero_title_line_2": "Redefining Smart",
-        "hero_title_line_3": "Tech Ownership",
-        "hero_description": "ReGuru is building a sustainable, circular tech ecosystem — making technology accessible while reducing e-waste.",
-        "hero_button_text": "Join Franchise",
-        "hero_button_link": "",
-        "franchise_card_title": "ReGuru Franchise",
-        "franchise_card_description": "Build a high-growth tech retail business with India's most trusted refurbished electronics brand.",
-        "franchise_feature_1": "Proven business model",
-        "franchise_feature_2": "High-margin product portfolio",
-        "franchise_card_button_text": "join franchise",
-        "franchise_card_button_link": "",
-        "brands_title": "Top Brands  we sell:",
-        "expertise_title": "Our expertise",
-        "expertise_description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
-        "expertise_text_1": "",
-        "expertise_link_1": "",
-        "expertise_text_2": "",
-        "expertise_link_2": ""
+        "heading": "Checkout our products",
+        "description": "Find the perfect laptop for work, play and everything in between.",
+        "background_color": "#b1d8ff",
+        "show_brands": true,
+        "brands_title": "Top Brands"
       }
     },
     "footer_MeKgAQ": {
@@ -265,7 +314,7 @@
   "order": [
     "header_U9K4Tf",
     "mega_menu_DKxVCr",
-    "about_us_section",
+    "product_category_JheeHV",
     "footer_MeKgAQ"
   ]
 }
