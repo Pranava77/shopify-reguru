@@ -56,7 +56,7 @@
         "menu_item_UDp4dH": {
           "type": "menu_item",
           "settings": {
-            "title": "New Arrivals",
+            "title": "products",
             "link": "",
             "enable_mega_dropdown": false,
             "dropdown_columns": "3",
@@ -184,7 +184,9 @@
         "card-3",
         "card-4"
       ],
-      "settings": {}
+      "settings": {
+        "background_image": "shopify://shop_images/Group_1000001777.png"
+      }
     },
     "product_grid_gLdc4C": {
       "type": "product-grid",
@@ -236,7 +238,8 @@
       "settings": {
         "title": "Reguru Products",
         "collection": "apple",
-        "products_to_show": 3
+        "products_to_show": 3,
+        "background_image": "shopify://shop_images/Group_1000001777.png"
       }
     },
     "testimonials": {
