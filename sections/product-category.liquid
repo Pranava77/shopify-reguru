@@ -191,11 +191,12 @@
   display: flex;
   gap: 24px;
   align-items: center;
-  padding: 27px 0;
-  background-color: var(--category-bg, #b1d8ff);
+  padding: 27px var(--container-padding);
+  background-color: var(--category-bg, var(--color-light-blue));
+  border: 2px solid var(--color-black);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
   margin: 0 calc(-1 * var(--container-padding));
-  padding-left: var(--container-padding);
-  padding-right: var(--container-padding);
 }
 
 .product-category__category-card {
