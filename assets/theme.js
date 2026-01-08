@@ -606,12 +606,14 @@ class ThemeUtils {
 
     // Mobile: Menu drawer functionality
     const mobileToggle = megaMenu.querySelector('[data-mobile-menu-toggle]');
+    const headerMobileToggle = document.querySelector('[data-header-mobile-menu-toggle]');
     const mobileDrawer = megaMenu.querySelector('[data-mobile-drawer]');
     const mobileClose = megaMenu.querySelector('[data-mobile-menu-close]');
     const overlay = megaMenu.querySelector('[data-mobile-overlay]');
 
     const openMobileMenu = () => {
       if (mobileToggle) mobileToggle.classList.add('is-active');
+      if (headerMobileToggle) headerMobileToggle.classList.add('is-active');
       if (mobileDrawer) mobileDrawer.classList.add('is-open');
       if (overlay) overlay.classList.add('is-active');
       document.body.style.overflow = 'hidden';
@@ -619,20 +621,28 @@ class ThemeUtils {
 
     const closeMobileMenu = () => {
       if (mobileToggle) mobileToggle.classList.remove('is-active');
+      if (headerMobileToggle) headerMobileToggle.classList.remove('is-active');
       if (mobileDrawer) mobileDrawer.classList.remove('is-open');
       if (overlay) overlay.classList.remove('is-active');
       document.body.style.overflow = '';
     };
 
+    const toggleMobileMenu = (e) => {
+      e.preventDefault();
+      const isActive = mobileDrawer?.classList.contains('is-open');
+      if (isActive) {
+        closeMobileMenu();
+      } else {
+        openMobileMenu();
+      }
+    };
+
     if (mobileToggle) {
-      mobileToggle.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (mobileToggle.classList.contains('is-active')) {
-          closeMobileMenu();
-        } else {
-          openMobileMenu();
-        }
-      });
+      mobileToggle.addEventListener('click', toggleMobileMenu);
+    }
+
+    if (headerMobileToggle) {
+      headerMobileToggle.addEventListener('click', toggleMobileMenu);
     }
 
     if (mobileClose) {
