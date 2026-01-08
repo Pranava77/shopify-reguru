@@ -127,13 +127,15 @@
           "type": "category_card",
           "settings": {
             "title": "Laptop",
-            "collection": ""
+            "image": "shopify://shop_images/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTA5L3Jhd3BpeGVsX29mZmljZV8zMV9waG90b19vZl9hX2xhcHRvcF9tb2NrdXBfY2xvc2UtdXBfbWluaW1hbF9pc182M2Q2NzViOS00YjlhLTQ3OWEtOGMyMS1hYWQwMjViNWYzZDIucG5.png",
+            "collection": "apple"
           }
         },
         "category_card_FjH7WE": {
           "type": "category_card",
           "settings": {
             "title": "Monitor",
+            "image": "shopify://shop_images/65f626539bca1123ba3b8ba7-sceptre-24-curved-1920x1080-hdmi-vga-removebg-preview.png",
             "collection": ""
           }
         },
@@ -141,28 +143,31 @@
           "type": "category_card",
           "settings": {
             "title": "Phone",
-            "collection": ""
+            "image": "shopify://shop_images/41SMY8MQw4L._SY300_SX300_QL70_FMwebp_-removebg-preview.png",
+            "collection": "phone"
           }
         },
         "category_card_zMgEfU": {
           "type": "category_card",
           "settings": {
             "title": "Television",
-            "collection": ""
+            "image": "shopify://shop_images/images-removebg-preview.png",
+            "collection": "monitors"
           }
         },
         "category_card_WX7gMr": {
           "type": "category_card",
           "settings": {
             "title": "Headphone",
-            "collection": ""
+            "image": "shopify://shop_images/71Q-uiqUGSL._AC_CR0_0_0_0_SX480_SY360_-removebg-preview.png",
+            "collection": "headphone"
           }
         },
         "product_category_Uf3mKH": {
           "type": "product_category",
           "settings": {
             "title": "Laptop",
-            "collection": "",
+            "collection": "apple",
             "products_to_show": 4,
             "view_all_text": "View all"
           }
@@ -171,7 +176,7 @@
           "type": "product_category",
           "settings": {
             "title": "Phone",
-            "collection": "",
+            "collection": "phone",
             "products_to_show": 4,
             "view_all_text": "View all"
           }
@@ -180,7 +185,7 @@
           "type": "product_category",
           "settings": {
             "title": "Television",
-            "collection": "",
+            "collection": "television",
             "products_to_show": 4,
             "view_all_text": "View all"
           }
@@ -189,7 +194,7 @@
           "type": "product_category",
           "settings": {
             "title": "Monitor",
-            "collection": "",
+            "collection": "monitors",
             "products_to_show": 4,
             "view_all_text": "View all"
           }
@@ -198,7 +203,7 @@
           "type": "product_category",
           "settings": {
             "title": "Headphone",
-            "collection": "",
+            "collection": "headphone",
             "products_to_show": 4,
             "view_all_text": "View all"
           }
