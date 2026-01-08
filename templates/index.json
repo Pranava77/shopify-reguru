@@ -127,7 +127,7 @@
         "heading": "",
         "discount_text": "",
         "cta_text": "",
-        "cta_link": "",
+        "cta_link": "shopify://pages/product-category",
         "image": "shopify://shop_images/monitors-ultrawide-removebg-preview.png",
         "background_color": "#1d1a1a",
         "container_background_image": "shopify://shop_images/11acefdf-62f0-4e8b-9cb3-e88beee26b9d_1764838678638.webp"
