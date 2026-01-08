@@ -7,10 +7,14 @@
   assign custom_icon = section.settings.header_custom_icon
   assign icon_color_primary = section.settings.header_icon_color_primary
   assign icon_color_accent = section.settings.header_icon_color_accent
-  assign bg_image = section.settings.background_image
+  assign header_bg_image = section.settings.background_image
+  assign enable_sticky = section.settings.enable_sticky
+  assign menu_style = section.settings.menu_style
+  assign promo_position = section.settings.promo_position
+  assign menu_bg_image = section.settings.menu_background_image
 -%}
 
-<header class="header"{% if bg_image != blank %} style="background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
+<header class="header"{% if header_bg_image != blank %} style="background-image: url('{{ header_bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
   <div class="header__inner">
     <div class="header__content">
       <!-- Logo -->
@@ -151,7 +155,362 @@
   </div>
 </header>
 
+<!-- Mega Menu Navigation -->
+<nav 
+  class="mega-menu{% if enable_sticky %} mega-menu--sticky{% endif %} mega-menu--{{ menu_style }}"
+  role="navigation"
+  aria-label="{{ 'general.accessibility.main_navigation' | t }}"
+  data-mega-menu
+  {% if menu_bg_image != blank %} style="background-image: url('{{ menu_bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}
+>
+  <div class="mega-menu__inner">
+    <ul class="mega-menu__list">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'menu_item' -%}
+            {%- liquid
+              assign has_dropdown = block.settings.enable_mega_dropdown
+              assign dropdown_columns = block.settings.dropdown_columns
+              assign featured_image = block.settings.featured_image
+              assign featured_title = block.settings.featured_title
+              assign featured_link = block.settings.featured_link
+              assign featured_link_text = block.settings.featured_link_text
+              assign links_1 = block.settings.menu_1
+              assign links_2 = block.settings.menu_2
+              assign links_3 = block.settings.menu_3
+              assign links_4 = block.settings.menu_4
+              assign column_1_title = block.settings.column_1_title
+              assign column_2_title = block.settings.column_2_title
+              assign column_3_title = block.settings.column_3_title
+              assign column_4_title = block.settings.column_4_title
+            -%}
+            
+            <li 
+              class="mega-menu__item{% if has_dropdown %} has-dropdown{% endif %}"
+              {{ block.shopify_attributes }}
+              {% if has_dropdown %}data-mega-dropdown{% endif %}
+            >
+              <a 
+                href="{{ block.settings.link }}" 
+                class="mega-menu__link"
+                {% if has_dropdown %}
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                {% endif %}
+              >
+                <span class="mega-menu__link-text">{{ block.settings.title }}</span>
+                {%- if has_dropdown -%}
+                  <svg class="mega-menu__arrow" width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                {%- endif -%}
+              </a>
+              
+              {%- if has_dropdown -%}
+                <div class="mega-menu__dropdown mega-menu__dropdown--{{ dropdown_columns }}-col" data-dropdown-panel>
+                  <div class="mega-menu__dropdown-inner">
+                    {%- if promo_position == 'left' and featured_image != blank -%}
+                      <div class="mega-menu__promo mega-menu__promo--left">
+                        <a href="{{ featured_link }}" class="mega-menu__promo-link">
+                          <div class="mega-menu__promo-image-wrapper">
+                            <img 
+                              src="{{ featured_image | image_url: width: 400 }}"
+                              alt="{{ featured_title | escape }}"
+                              width="400"
+                              height="300"
+                              loading="lazy"
+                              class="mega-menu__promo-image"
+                            >
+                            <div class="mega-menu__promo-overlay"></div>
+                          </div>
+                          <div class="mega-menu__promo-content">
+                            {%- if featured_title != blank -%}
+                              <h4 class="mega-menu__promo-title">{{ featured_title }}</h4>
+                            {%- endif -%}
+                            {%- if featured_link_text != blank -%}
+                              <span class="mega-menu__promo-cta">
+                                {{ featured_link_text }}
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                  <path d="M1 6H11M11 6L6 1M11 6L6 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                              </span>
+                            {%- endif -%}
+                          </div>
+                        </a>
+                      </div>
+                    {%- endif -%}
+                    
+                    <div class="mega-menu__columns">
+                      {%- if links_1 != blank -%}
+                        <div class="mega-menu__column">
+                          {%- if column_1_title != blank -%}
+                            <h5 class="mega-menu__column-title">{{ column_1_title }}</h5>
+                          {%- endif -%}
+                          <ul class="mega-menu__sublist">
+                            {%- for link in links_1.links -%}
+                              <li class="mega-menu__subitem">
+                                <a href="{{ link.url }}" class="mega-menu__sublink">
+                                  {{ link.title }}
+                                </a>
+                              </li>
+                            {%- endfor -%}
+                          </ul>
+                        </div>
+                      {%- endif -%}
+                      
+                      {%- if links_2 != blank -%}
+                        <div class="mega-menu__column">
+                          {%- if column_2_title != blank -%}
+                            <h5 class="mega-menu__column-title">{{ column_2_title }}</h5>
+                          {%- endif -%}
+                          <ul class="mega-menu__sublist">
+                            {%- for link in links_2.links -%}
+                              <li class="mega-menu__subitem">
+                                <a href="{{ link.url }}" class="mega-menu__sublink">
+                                  {{ link.title }}
+                                </a>
+                              </li>
+                            {%- endfor -%}
+                          </ul>
+                        </div>
+                      {%- endif -%}
+                      
+                      {%- if links_3 != blank -%}
+                        <div class="mega-menu__column">
+                          {%- if column_3_title != blank -%}
+                            <h5 class="mega-menu__column-title">{{ column_3_title }}</h5>
+                          {%- endif -%}
+                          <ul class="mega-menu__sublist">
+                            {%- for link in links_3.links -%}
+                              <li class="mega-menu__subitem">
+                                <a href="{{ link.url }}" class="mega-menu__sublink">
+                                  {{ link.title }}
+                                </a>
+                              </li>
+                            {%- endfor -%}
+                          </ul>
+                        </div>
+                      {%- endif -%}
+                      
+                      {%- if links_4 != blank -%}
+                        <div class="mega-menu__column">
+                          {%- if column_4_title != blank -%}
+                            <h5 class="mega-menu__column-title">{{ column_4_title }}</h5>
+                          {%- endif -%}
+                          <ul class="mega-menu__sublist">
+                            {%- for link in links_4.links -%}
+                              <li class="mega-menu__subitem">
+                                <a href="{{ link.url }}" class="mega-menu__sublink">
+                                  {{ link.title }}
+                                </a>
+                              </li>
+                            {%- endfor -%}
+                          </ul>
+                        </div>
+                      {%- endif -%}
+                    </div>
+                    
+                    {%- if promo_position == 'right' and featured_image != blank -%}
+                      <div class="mega-menu__promo mega-menu__promo--right">
+                        <a href="{{ featured_link }}" class="mega-menu__promo-link">
+                          <div class="mega-menu__promo-image-wrapper">
+                            <img 
+                              src="{{ featured_image | image_url: width: 400 }}"
+                              alt="{{ featured_title | escape }}"
+                              width="400"
+                              height="300"
+                              loading="lazy"
+                              class="mega-menu__promo-image"
+                            >
+                            <div class="mega-menu__promo-overlay"></div>
+                          </div>
+                          <div class="mega-menu__promo-content">
+                            {%- if featured_title != blank -%}
+                              <h4 class="mega-menu__promo-title">{{ featured_title }}</h4>
+                            {%- endif -%}
+                            {%- if featured_link_text != blank -%}
+                              <span class="mega-menu__promo-cta">
+                                {{ featured_link_text }}
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                  <path d="M1 6H11M11 6L6 1M11 6L6 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                              </span>
+                            {%- endif -%}
+                          </div>
+                        </a>
+                      </div>
+                    {%- endif -%}
+                  </div>
+                  
+                  {%- comment -%} Bottom promo banner {%- endcomment -%}
+                  {%- if block.settings.show_promo_banner -%}
+                    <div class="mega-menu__promo-banner">
+                      <div class="mega-menu__promo-banner-inner">
+                        {%- if block.settings.promo_badge != blank -%}
+                          <span class="mega-menu__promo-badge">{{ block.settings.promo_badge }}</span>
+                        {%- endif -%}
+                        <span class="mega-menu__promo-text">{{ block.settings.promo_text }}</span>
+                        {%- if block.settings.promo_link != blank -%}
+                          <a href="{{ block.settings.promo_link }}" class="mega-menu__promo-link-text">
+                            {{ block.settings.promo_link_text | default: 'Shop Now' }}
+                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                              <path d="M1 5H9M9 5L5 1M9 5L5 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                          </a>
+                        {%- endif -%}
+                      </div>
+                    </div>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            </li>
+            
+          {%- when 'simple_link' -%}
+            <li class="mega-menu__item" {{ block.shopify_attributes }}>
+              <a href="{{ block.settings.link }}" class="mega-menu__link">
+                <span class="mega-menu__link-text">{{ block.settings.title }}</span>
+                {%- if block.settings.badge != blank -%}
+                  <span class="mega-menu__badge mega-menu__badge--{{ block.settings.badge_style }}">
+                    {{ block.settings.badge }}
+                  </span>
+                {%- endif -%}
+              </a>
+            </li>
+            
+          {%- when 'separator' -%}
+            <li class="mega-menu__separator" aria-hidden="true" {{ block.shopify_attributes }}></li>
+            
+        {%- endcase -%}
+      {%- endfor -%}
+    </ul>
+    
+    {%- comment -%} Mobile Menu Toggle {%- endcomment -%}
+    <button 
+      type="button" 
+      class="mega-menu__mobile-toggle" 
+      aria-label="{{ 'general.accessibility.toggle_menu' | t }}"
+      data-mobile-menu-toggle
+    >
+      <span class="mega-menu__hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </button>
+  </div>
+  
+  {%- comment -%} Mobile Menu Drawer {%- endcomment -%}
+  <div class="mega-menu__mobile-drawer" data-mobile-drawer>
+    <div class="mega-menu__mobile-header">
+      <span class="mega-menu__mobile-title">{{ 'general.navigation.menu' | t | default: 'Menu' }}</span>
+      <button type="button" class="mega-menu__mobile-close" data-mobile-menu-close aria-label="{{ 'general.accessibility.close_menu' | t }}">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="mega-menu__mobile-content">
+      <ul class="mega-menu__mobile-list">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'menu_item' -%}
+              {%- liquid
+                assign has_dropdown = block.settings.enable_mega_dropdown
+                assign links_1 = block.settings.menu_1
+                assign links_2 = block.settings.menu_2
+                assign links_3 = block.settings.menu_3
+                assign links_4 = block.settings.menu_4
+              -%}
+              
+              <li class="mega-menu__mobile-item{% if has_dropdown %} has-children{% endif %}">
+                <div class="mega-menu__mobile-item-header">
+                  <a href="{{ block.settings.link }}" class="mega-menu__mobile-link">
+                    {{ block.settings.title }}
+                  </a>
+                  {%- if has_dropdown -%}
+                    <button type="button" class="mega-menu__mobile-expand" data-mobile-expand aria-label="{{ 'general.accessibility.expand_submenu' | t }}">
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path d="M6 2V10M2 6H10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                      </svg>
+                    </button>
+                  {%- endif -%}
+                </div>
+                
+                {%- if has_dropdown -%}
+                  <div class="mega-menu__mobile-submenu" data-mobile-submenu>
+                    {%- if links_1 != blank -%}
+                      {%- if block.settings.column_1_title != blank -%}
+                        <span class="mega-menu__mobile-category">{{ block.settings.column_1_title }}</span>
+                      {%- endif -%}
+                      <ul class="mega-menu__mobile-sublist">
+                        {%- for link in links_1.links -%}
+                          <li><a href="{{ link.url }}" class="mega-menu__mobile-sublink">{{ link.title }}</a></li>
+                        {%- endfor -%}
+                      </ul>
+                    {%- endif -%}
+                    
+                    {%- if links_2 != blank -%}
+                      {%- if block.settings.column_2_title != blank -%}
+                        <span class="mega-menu__mobile-category">{{ block.settings.column_2_title }}</span>
+                      {%- endif -%}
+                      <ul class="mega-menu__mobile-sublist">
+                        {%- for link in links_2.links -%}
+                          <li><a href="{{ link.url }}" class="mega-menu__mobile-sublink">{{ link.title }}</a></li>
+                        {%- endfor -%}
+                      </ul>
+                    {%- endif -%}
+                    
+                    {%- if links_3 != blank -%}
+                      {%- if block.settings.column_3_title != blank -%}
+                        <span class="mega-menu__mobile-category">{{ block.settings.column_3_title }}</span>
+                      {%- endif -%}
+                      <ul class="mega-menu__mobile-sublist">
+                        {%- for link in links_3.links -%}
+                          <li><a href="{{ link.url }}" class="mega-menu__mobile-sublink">{{ link.title }}</a></li>
+                        {%- endfor -%}
+                      </ul>
+                    {%- endif -%}
+                    
+                    {%- if links_4 != blank -%}
+                      {%- if block.settings.column_4_title != blank -%}
+                        <span class="mega-menu__mobile-category">{{ block.settings.column_4_title }}</span>
+                      {%- endif -%}
+                      <ul class="mega-menu__mobile-sublist">
+                        {%- for link in links_4.links -%}
+                          <li><a href="{{ link.url }}" class="mega-menu__mobile-sublink">{{ link.title }}</a></li>
+                        {%- endfor -%}
+                      </ul>
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+              </li>
+              
+            {%- when 'simple_link' -%}
+              <li class="mega-menu__mobile-item">
+                <a href="{{ block.settings.link }}" class="mega-menu__mobile-link">
+                  {{ block.settings.title }}
+                  {%- if block.settings.badge != blank -%}
+                    <span class="mega-menu__badge mega-menu__badge--{{ block.settings.badge_style }}">
+                      {{ block.settings.badge }}
+                    </span>
+                  {%- endif -%}
+                </a>
+              </li>
+              
+          {%- endcase -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+  </div>
+  
+  {%- comment -%} Mobile Overlay {%- endcomment -%}
+  <div class="mega-menu__overlay" data-mobile-overlay></div>
+</nav>
+
 {% stylesheet %}
+/* ==========================================================================
+   Header Styles
+   ========================================================================== */
 .header {
   position: sticky;
   top: 0;
@@ -214,7 +573,7 @@
   font-size: 14px;
   background-color: var(--color-white);
   border: 1px solid var(--color-black);
-  border-radius: 30px;
+  border-radius: 6px;
   box-shadow: 2px 2px 0px 0px var(--color-black);
   transition: box-shadow var(--transition-fast);
 }
@@ -355,7 +714,600 @@
   box-shadow: 1px 1px 0px 0px var(--color-black);
 }
 
-/* Responsive Styles */
+/* ==========================================================================
+   Mega Menu Styles
+   ========================================================================== */
+.mega-menu {
+  position: relative;
+  width: 100%;
+  background-color: var(--color-white);
+  border-bottom: 1px solid var(--color-black);
+  z-index: 99;
+}
+
+.mega-menu--sticky {
+  position: sticky;
+  top: 76px;
+}
+
+.mega-menu__inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+  height: 52px;
+}
+
+/* Menu List */
+.mega-menu__list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+}
+
+.mega-menu__item {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.mega-menu__link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-navy);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: color var(--transition-fast), background-color var(--transition-fast);
+  height: 100%;
+}
+
+.mega-menu__link:hover,
+.mega-menu__item.is-active .mega-menu__link {
+  color: var(--color-green);
+}
+
+.mega-menu__link-text {
+  position: relative;
+}
+
+.mega-menu__link-text::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--color-green);
+  transition: width var(--transition-base);
+}
+
+.mega-menu__link:hover .mega-menu__link-text::after,
+.mega-menu__item.is-active .mega-menu__link-text::after {
+  width: 100%;
+}
+
+.mega-menu__arrow {
+  transition: transform var(--transition-fast);
+}
+
+.mega-menu__item.is-active .mega-menu__arrow,
+.mega-menu__item:hover .mega-menu__arrow {
+  transform: rotate(180deg);
+}
+
+/* Badge */
+.mega-menu__badge {
+  padding: 2px 8px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: 3px;
+}
+
+.mega-menu__badge--new {
+  background-color: var(--color-green);
+  color: var(--color-black);
+}
+
+.mega-menu__badge--sale {
+  background-color: #FF4747;
+  color: var(--color-white);
+}
+
+.mega-menu__badge--hot {
+  background-color: #FF8C00;
+  color: var(--color-white);
+}
+
+/* Separator */
+.mega-menu__separator {
+  width: 1px;
+  height: 24px;
+  background-color: var(--color-gray);
+  margin: 0 8px;
+}
+
+/* ==========================================================================
+   Dropdown Panel
+   ========================================================================== */
+.mega-menu__dropdown {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  min-width: 700px;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-black);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity var(--transition-base), transform var(--transition-base), visibility var(--transition-base);
+  z-index: 1000;
+}
+
+.mega-menu__item.is-active .mega-menu__dropdown,
+.mega-menu__item:hover .mega-menu__dropdown {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+.mega-menu__dropdown--2-col { min-width: 500px; }
+.mega-menu__dropdown--3-col { min-width: 700px; }
+.mega-menu__dropdown--4-col { min-width: 900px; }
+
+.mega-menu__dropdown-inner {
+  display: flex;
+  padding: 24px;
+  gap: 24px;
+}
+
+/* Columns */
+.mega-menu__columns {
+  display: flex;
+  flex: 1;
+  gap: 32px;
+}
+
+.mega-menu__column {
+  flex: 1;
+  min-width: 140px;
+}
+
+.mega-menu__column-title {
+  font-family: var(--font-heading);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-navy);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--color-green);
+}
+
+.mega-menu__sublist {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mega-menu__sublink {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  padding: 4px 0;
+  transition: color var(--transition-fast), transform var(--transition-fast);
+}
+
+.mega-menu__sublink:hover {
+  color: var(--color-navy);
+  transform: translateX(4px);
+}
+
+/* ==========================================================================
+   Featured Promo Area
+   ========================================================================== */
+.mega-menu__promo {
+  flex-shrink: 0;
+  width: 240px;
+}
+
+.mega-menu__promo-link {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-black);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+.mega-menu__promo-link:hover {
+  box-shadow: var(--shadow-md);
+  transform: translate(-2px, -2px);
+}
+
+.mega-menu__promo-image-wrapper {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.mega-menu__promo-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.mega-menu__promo-link:hover .mega-menu__promo-image {
+  transform: scale(1.05);
+}
+
+.mega-menu__promo-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.mega-menu__promo-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  color: var(--color-white);
+}
+
+.mega-menu__promo-title {
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.mega-menu__promo-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 6px 12px;
+  background-color: var(--color-green);
+  color: var(--color-black);
+  border-radius: 3px;
+  transition: background-color var(--transition-fast);
+}
+
+.mega-menu__promo-link:hover .mega-menu__promo-cta {
+  background-color: var(--color-white);
+}
+
+/* ==========================================================================
+   Promo Banner (Bottom of Dropdown)
+   ========================================================================== */
+.mega-menu__promo-banner {
+  border-top: 1px dashed var(--color-gray);
+  padding: 12px 24px;
+  background: linear-gradient(90deg, rgba(40, 217, 142, 0.08) 0%, rgba(82, 148, 255, 0.08) 100%);
+}
+
+.mega-menu__promo-banner-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.mega-menu__promo-badge {
+  display: inline-flex;
+  padding: 4px 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  background-color: var(--color-navy);
+  color: var(--color-white);
+  border-radius: 3px;
+}
+
+.mega-menu__promo-text {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-text);
+}
+
+.mega-menu__promo-link-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-green);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color var(--transition-fast);
+}
+
+.mega-menu__promo-link-text:hover {
+  color: var(--color-navy);
+}
+
+/* ==========================================================================
+   Mobile Menu Toggle
+   ========================================================================== */
+.mega-menu__mobile-toggle {
+  display: none;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.mega-menu__hamburger {
+  position: relative;
+  width: 24px;
+  height: 18px;
+}
+
+.mega-menu__hamburger span {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--color-navy);
+  border-radius: 2px;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+.mega-menu__hamburger span:nth-child(1) { top: 0; }
+.mega-menu__hamburger span:nth-child(2) { top: 50%; transform: translateY(-50%); }
+.mega-menu__hamburger span:nth-child(3) { bottom: 0; }
+
+.mega-menu__mobile-toggle.is-active .mega-menu__hamburger span:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.mega-menu__mobile-toggle.is-active .mega-menu__hamburger span:nth-child(2) {
+  opacity: 0;
+}
+
+.mega-menu__mobile-toggle.is-active .mega-menu__hamburger span:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+/* ==========================================================================
+   Mobile Drawer
+   ========================================================================== */
+.mega-menu__mobile-drawer {
+  position: fixed;
+  top: 76px;
+  left: 0;
+  width: 100%;
+  max-width: 380px;
+  height: calc(100vh - 76px);
+  background-color: var(--color-white);
+  transform: translateX(-100%);
+  transition: transform var(--transition-base);
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.mega-menu__mobile-drawer.is-open {
+  transform: translateX(0);
+}
+
+.mega-menu__mobile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--color-black);
+  background-color: var(--color-navy);
+}
+
+.mega-menu__mobile-title {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-white);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.mega-menu__mobile-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-white);
+  transition: transform var(--transition-fast);
+}
+
+.mega-menu__mobile-close:hover {
+  transform: rotate(90deg);
+}
+
+.mega-menu__mobile-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 0;
+}
+
+.mega-menu__mobile-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.mega-menu__mobile-item {
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+.mega-menu__mobile-item-header {
+  display: flex;
+  align-items: center;
+}
+
+.mega-menu__mobile-link {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 20px;
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-navy);
+  transition: background-color var(--transition-fast);
+}
+
+.mega-menu__mobile-link:hover {
+  background-color: rgba(40, 217, 142, 0.1);
+}
+
+.mega-menu__mobile-expand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-navy);
+  transition: transform var(--transition-fast), background-color var(--transition-fast);
+}
+
+.mega-menu__mobile-expand:hover {
+  background-color: rgba(0,0,0,0.05);
+}
+
+.mega-menu__mobile-expand.is-expanded {
+  transform: rotate(45deg);
+}
+
+.mega-menu__mobile-submenu {
+  display: none;
+  padding: 0 20px 16px 32px;
+}
+
+.mega-menu__mobile-submenu.is-open {
+  display: block;
+}
+
+.mega-menu__mobile-category {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 12px 0 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--color-gray);
+}
+
+.mega-menu__mobile-sublist {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mega-menu__mobile-sublink {
+  display: block;
+  padding: 8px 0;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  transition: color var(--transition-fast);
+}
+
+.mega-menu__mobile-sublink:hover {
+  color: var(--color-green);
+}
+
+/* Overlay */
+.mega-menu__overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition-base), visibility var(--transition-base);
+  z-index: 1000;
+}
+
+.mega-menu__overlay.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ==========================================================================
+   Style Variants
+   ========================================================================== */
+
+/* Minimal Style */
+.mega-menu--minimal .mega-menu__link {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.mega-menu--minimal .mega-menu__dropdown {
+  border-radius: 0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Bold Style */
+.mega-menu--bold .mega-menu__inner {
+  background-color: var(--color-navy);
+}
+
+.mega-menu--bold .mega-menu__link {
+  color: var(--color-white);
+}
+
+.mega-menu--bold .mega-menu__link:hover {
+  color: var(--color-green);
+}
+
+.mega-menu--bold .mega-menu__hamburger span {
+  background-color: var(--color-white);
+}
+
+/* ==========================================================================
+   Responsive Styles
+   ========================================================================== */
 @media screen and (max-width: 1200px) {
   .header__content {
     gap: 30px;
@@ -386,6 +1338,47 @@
   .header__location {
     display: none;
   }
+
+  .mega-menu__list {
+    display: none;
+  }
+  
+  .mega-menu__mobile-toggle {
+    display: flex;
+  }
+  
+  .mega-menu__inner {
+    justify-content: flex-start;
+  }
+
+  .mega-menu__dropdown {
+    min-width: auto;
+    width: calc(100vw - 40px);
+    max-width: 500px;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+  }
+
+  .mega-menu__dropdown--2-col,
+  .mega-menu__dropdown--3-col,
+  .mega-menu__dropdown--4-col {
+    min-width: auto;
+  }
+
+  .mega-menu__dropdown-inner {
+    flex-direction: column;
+    padding: 16px;
+  }
+
+  .mega-menu__columns {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .mega-menu__promo {
+    width: 100%;
+    margin-bottom: 16px;
+  }
 }
 
 @media screen and (max-width: 576px) {
@@ -407,6 +1400,10 @@
   "tag": "section",
   "class": "header-section",
   "settings": [
+    {
+      "type": "header",
+      "content": "Header Settings"
+    },
     {
       "type": "image_picker",
       "id": "logo",
@@ -502,7 +1499,236 @@
     {
       "type": "image_picker",
       "id": "background_image",
-      "label": "Background Image"
+      "label": "Header Background Image"
+    },
+    {
+      "type": "header",
+      "content": "Navigation Menu Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sticky",
+      "label": "Enable sticky navigation",
+      "default": true,
+      "info": "Navigation bar will stick below the header when scrolling"
+    },
+    {
+      "type": "select",
+      "id": "menu_style",
+      "label": "Menu style",
+      "options": [
+        { "value": "default", "label": "Default" },
+        { "value": "minimal", "label": "Minimal" },
+        { "value": "bold", "label": "Bold (Dark)" }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "promo_position",
+      "label": "Featured image position",
+      "options": [
+        { "value": "left", "label": "Left side" },
+        { "value": "right", "label": "Right side" }
+      ],
+      "default": "right",
+      "info": "Position of the featured image in mega dropdowns"
+    },
+    {
+      "type": "image_picker",
+      "id": "menu_background_image",
+      "label": "Menu Background Image"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu_item",
+      "name": "Menu Item (Mega)",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Menu title",
+          "default": "Shop"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_mega_dropdown",
+          "label": "Enable mega dropdown",
+          "default": true
+        },
+        {
+          "type": "select",
+          "id": "dropdown_columns",
+          "label": "Number of columns",
+          "options": [
+            { "value": "2", "label": "2 Columns" },
+            { "value": "3", "label": "3 Columns" },
+            { "value": "4", "label": "4 Columns" }
+          ],
+          "default": "3"
+        },
+        {
+          "type": "header",
+          "content": "Column 1"
+        },
+        {
+          "type": "text",
+          "id": "column_1_title",
+          "label": "Column 1 title"
+        },
+        {
+          "type": "link_list",
+          "id": "menu_1",
+          "label": "Column 1 menu"
+        },
+        {
+          "type": "header",
+          "content": "Column 2"
+        },
+        {
+          "type": "text",
+          "id": "column_2_title",
+          "label": "Column 2 title"
+        },
+        {
+          "type": "link_list",
+          "id": "menu_2",
+          "label": "Column 2 menu"
+        },
+        {
+          "type": "header",
+          "content": "Column 3"
+        },
+        {
+          "type": "text",
+          "id": "column_3_title",
+          "label": "Column 3 title"
+        },
+        {
+          "type": "link_list",
+          "id": "menu_3",
+          "label": "Column 3 menu"
+        },
+        {
+          "type": "header",
+          "content": "Column 4"
+        },
+        {
+          "type": "text",
+          "id": "column_4_title",
+          "label": "Column 4 title"
+        },
+        {
+          "type": "link_list",
+          "id": "menu_4",
+          "label": "Column 4 menu"
+        },
+        {
+          "type": "header",
+          "content": "Featured Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "featured_image",
+          "label": "Featured image"
+        },
+        {
+          "type": "text",
+          "id": "featured_title",
+          "label": "Featured title",
+          "default": "New Arrivals"
+        },
+        {
+          "type": "url",
+          "id": "featured_link",
+          "label": "Featured link"
+        },
+        {
+          "type": "text",
+          "id": "featured_link_text",
+          "label": "Featured button text",
+          "default": "Shop Now"
+        },
+        {
+          "type": "header",
+          "content": "Promo Banner"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_promo_banner",
+          "label": "Show promo banner",
+          "default": false,
+          "info": "Display a promotional banner at the bottom of dropdown"
+        },
+        {
+          "type": "text",
+          "id": "promo_badge",
+          "label": "Promo badge text",
+          "default": "Limited"
+        },
+        {
+          "type": "text",
+          "id": "promo_text",
+          "label": "Promo text",
+          "default": "Free shipping on orders over $50"
+        },
+        {
+          "type": "url",
+          "id": "promo_link",
+          "label": "Promo link"
+        },
+        {
+          "type": "text",
+          "id": "promo_link_text",
+          "label": "Promo link text",
+          "default": "Learn More"
+        }
+      ]
+    },
+    {
+      "type": "simple_link",
+      "name": "Simple Link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Link title",
+          "default": "About"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "text",
+          "id": "badge",
+          "label": "Badge text",
+          "info": "Optional badge next to the link"
+        },
+        {
+          "type": "select",
+          "id": "badge_style",
+          "label": "Badge style",
+          "options": [
+            { "value": "new", "label": "New (Green)" },
+            { "value": "sale", "label": "Sale (Red)" },
+            { "value": "hot", "label": "Hot (Orange)" }
+          ],
+          "default": "new"
+        }
+      ]
+    },
+    {
+      "type": "separator",
+      "name": "Separator",
+      "settings": []
     }
   ],
   "presets": [
@@ -512,4 +1738,3 @@
   ]
 }
 {% endschema %}
-
