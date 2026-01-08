@@ -2,44 +2,100 @@
   assign heading = section.settings.heading | default: 'Ready to Assist You'
   assign description = section.settings.description | default: 'Contact us for any queries or bookings, and experience our prompt, friendly service. Your satisfaction is our priority.'
   assign email = section.settings.email | default: 'reguru@gmail.com'
-  assign address_line_1 = section.settings.address_line_1
-  assign address_line_2 = section.settings.address_line_2
-  assign address_line_3 = section.settings.address_line_3
-  assign address_line_4 = section.settings.address_line_4
-  assign address = section.settings.address | default: '2nd floor central complex sv road near mantri mall seshadripuram bengaluru 560020'
-  assign bg_image = section.settings.background_image
+  assign address_line_1 = section.settings.address_line_1 | default: '2nd floor central complex'
+  assign address_line_2 = section.settings.address_line_2 | default: 'sv road near mantri'
+  assign address_line_3 = section.settings.address_line_3 | default: 'mall seshadripuram'
+  assign address_line_4 = section.settings.address_line_4 | default: 'bengaluru 560020'
+  assign logo = section.settings.logo
+  assign map_image = section.settings.map_image
+  assign map_pin_image = section.settings.map_pin_image
+  assign telephone_image = section.settings.telephone_image
+  assign mail_icon_image = section.settings.mail_icon_image
+  assign map_icon_image = section.settings.map_icon_image
+  assign background_color = section.settings.background_color | default: '#041c66'
+  assign map_background_color = section.settings.map_background_color | default: '#c1cff4'
 -%}
 
-<section class="contact-section"{% if bg_image != blank %} style="background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
-  <div class="contact-section__container">
-    <div class="contact-section__header">
-      <h1 class="contact-section__title">{{ heading }}</h1>
-      {%- if description != blank -%}
-        <p class="contact-section__description">{{ description }}</p>
-      {%- endif -%}
-    </div>
+<section class="contact-section" id="contact-section-{{ section.id }}">
+  <div class="contact-section__wrapper">
+    <!-- Left Panel: Contact Information -->
+    <div class="contact-section__left-panel" style="--panel-bg: {{ background_color }};">
+      <div class="contact-section__footer-bg"></div>
+      
+      <div class="contact-section__data">
+        {%- if logo != blank -%}
+          <div class="contact-section__logo">
+            <img 
+              src="{{ logo | image_url: width: 232 }}"
+              alt="{{ shop.name }}"
+              width="232"
+              height="61"
+              loading="lazy"
+            >
+          </div>
+        {%- endif -%}
 
-    <div class="contact-section__content">
-      <div class="contact-section__info">
-        <div class="contact-section__info-item">
-          <svg class="contact-section__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="L22 6L12 13L2 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <div class="contact-section__info-content">
-            <h3 class="contact-section__info-label">Email</h3>
-            <a href="mailto:{{ email }}" class="contact-section__info-value">{{ email }}</a>
+        <h1 class="contact-section__heading">{{ heading }}</h1>
+
+        {%- if description != blank -%}
+          <p class="contact-section__description">{{ description }}</p>
+        {%- endif -%}
+
+        {%- if telephone_image != blank -%}
+          <div class="contact-section__telephone">
+            <div class="contact-section__telephone-wrapper">
+              <img 
+                src="{{ telephone_image | image_url: width: 266 }}"
+                alt="Telephone illustration"
+                width="266"
+                height="387"
+                loading="lazy"
+                class="contact-section__telephone-img"
+              >
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+
+      <!-- Contact Info Cards -->
+      <div class="contact-section__contact-info">
+        <!-- Email Card -->
+        <div class="contact-section__card">
+          <p class="contact-section__card-label">EMAIL</p>
+          <div class="contact-section__card-content">
+            {%- if mail_icon_image != blank -%}
+              <div class="contact-section__card-icon">
+                <img 
+                  src="{{ mail_icon_image | image_url: width: 48 }}"
+                  alt="Mail icon"
+                  width="48"
+                  height="36"
+                  loading="lazy"
+                >
+              </div>
+            {%- endif -%}
+            <p class="contact-section__card-text">
+              <a href="mailto:{{ email }}" class="contact-section__email-link">{{ email }}</a>
+            </p>
           </div>
         </div>
 
-        <div class="contact-section__info-item">
-          <svg class="contact-section__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M21 10C21 17 12 23 12 23C12 23 3 17 3 10C3 7.61305 3.94821 5.32387 5.63604 3.63604C7.32387 1.94821 9.61305 1 12 1C14.3869 1 16.6761 1.94821 18.364 3.63604C20.0518 5.32387 21 7.61305 21 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M12 13C13.6569 13 15 11.6569 15 10C15 8.34315 13.6569 7 12 7C10.3431 7 9 8.34315 9 10C9 11.6569 10.3431 13 12 13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <div class="contact-section__info-content">
-            <h3 class="contact-section__info-label">Address</h3>
-            <div class="contact-section__info-value">
+        <!-- Headquarters Card -->
+        <div class="contact-section__card">
+          <p class="contact-section__card-label">HEADQUARTERS</p>
+          <div class="contact-section__card-content">
+            {%- if map_icon_image != blank -%}
+              <div class="contact-section__card-icon">
+                <img 
+                  src="{{ map_icon_image | image_url: width: 48 }}"
+                  alt="Map icon"
+                  width="48"
+                  height="42"
+                  loading="lazy"
+                >
+              </div>
+            {%- endif -%}
+            <div class="contact-section__card-text">
               {%- if address_line_1 != blank -%}
                 <p>{{ address_line_1 }}</p>
               {%- endif -%}
@@ -52,148 +108,398 @@
               {%- if address_line_4 != blank -%}
                 <p>{{ address_line_4 }}</p>
               {%- endif -%}
-              {%- if address_line_1 == blank and address_line_2 == blank and address_line_3 == blank and address_line_4 == blank -%}
-                <p>{{ address }}</p>
-              {%- endif -%}
             </div>
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Right Panel: Map -->
+    <div class="contact-section__map-panel" style="--map-bg: {{ map_background_color }};">
+      {%- if map_image != blank -%}
+        <div class="contact-section__map-image-wrapper">
+          <img 
+            src="{{ map_image | image_url: width: 1200 }}"
+            alt="Location map"
+            width="1200"
+            height="813"
+            loading="lazy"
+            class="contact-section__map-image"
+          >
+        </div>
+      {%- endif -%}
+      
+      {%- if map_pin_image != blank -%}
+        <div class="contact-section__map-pin">
+          <img 
+            src="{{ map_pin_image | image_url: width: 91 }}"
+            alt="Location pin"
+            width="91"
+            height="76"
+            loading="lazy"
+            class="contact-section__map-pin-img"
+          >
+        </div>
+      {%- endif -%}
     </div>
   </div>
 </section>
 
 {% stylesheet %}
 .contact-section {
-  padding: 80px 0;
-  min-height: 60vh;
+  position: relative;
+  width: 100%;
+  padding: 36.128px;
 }
 
-.contact-section__container {
-  max-width: var(--container-max);
-  margin: 0 auto;
-  padding: 0 var(--container-padding);
-}
-
-.contact-section__header {
-  text-align: center;
-  margin-bottom: 60px;
-}
-
-.contact-section__title {
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 48px;
-  line-height: 1.2;
-  color: var(--color-black);
-  margin: 0 0 24px;
-}
-
-.contact-section__description {
-  font-family: var(--font-body);
-  font-size: 18px;
-  line-height: 1.6;
-  color: var(--color-text-secondary);
-  max-width: 700px;
-  margin: 0 auto;
-}
-
-.contact-section__content {
+.contact-section__wrapper {
   display: flex;
-  justify-content: center;
-}
-
-.contact-section__info {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 40px;
-  max-width: 800px;
+  gap: 102.362px;
+  align-items: flex-start;
+  position: relative;
   width: 100%;
 }
 
-.contact-section__info-item {
+.contact-section__left-panel {
+  position: relative;
+  flex: 0 0 481.702px;
+  min-height: 766.207px;
+}
+
+.contact-section__footer-bg {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 614.17px;
+  height: 228.809px;
+  background-color: var(--panel-bg);
+  border-radius: 24.085px;
+  z-index: 0;
+}
+
+.contact-section__data {
+  position: relative;
   display: flex;
+  flex-direction: column;
+  gap: 18.064px;
+  z-index: 1;
+}
+
+.contact-section__logo {
+  width: 232px;
+  height: 61px;
+  position: relative;
+}
+
+.contact-section__logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.contact-section__heading {
+  font-family: 'ABeeZee', 'Syne', sans-serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 42.149px;
+  line-height: 1.031;
+  color: #202733;
+  margin: 0;
+  letter-spacing: -2.1074px;
+  white-space: pre-wrap;
+}
+
+.contact-section__description {
+  font-family: 'Overpass', sans-serif;
+  font-weight: 400;
+  font-size: 24.085px;
+  line-height: 1.375;
+  color: #404366;
+  margin: 0;
+  letter-spacing: -0.7226px;
+  max-width: 282.023px;
+}
+
+.contact-section__telephone {
+  position: absolute;
+  left: 22px;
+  top: 250.01px;
+  width: 282.023px;
+  height: 398.483px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.contact-section__telephone-wrapper {
+  transform: rotate(2.474deg);
+  width: 265.55px;
+  height: 387.382px;
+  overflow: hidden;
+}
+
+.contact-section__telephone-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.contact-section__contact-info {
+  position: absolute;
+  left: 377.08px;
+  top: 333.43px;
+  display: flex;
+  flex-direction: column;
+  gap: 18.064px;
+  z-index: 3;
+}
+
+.contact-section__card {
+  background-color: #ffffff;
+  border: 3.011px solid #041c66;
+  border-radius: 19.569px;
+  padding: 24.085px 30.106px;
+  box-shadow: 2.258px 3.763px 0px 0px #272033;
+  width: 361.277px;
+}
+
+.contact-section__card-label {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 400;
+  font-size: 18.064px;
+  line-height: 13.548px;
+  color: #041c66;
+  margin: 0 0 18.064px;
+  text-transform: uppercase;
+}
+
+.contact-section__card-content {
+  display: flex;
+  gap: 12.043px;
   align-items: flex-start;
-  gap: 20px;
-  padding: 32px;
-  background-color: var(--color-white);
-  border: 1px solid var(--color-black);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.contact-section__info-item:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: var(--shadow-lg);
-}
-
-.contact-section__icon {
+.contact-section__card-icon {
   flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-  color: var(--color-navy);
-  margin-top: 4px;
+  width: 48.17px;
+  height: auto;
 }
 
-.contact-section__info-content {
+.contact-section__card-icon img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.contact-section__card-text {
+  font-family: 'Overpass', sans-serif;
+  font-weight: 400;
+  font-size: 13.589px;
+  line-height: 16.105px;
+  color: #041c66;
+  letter-spacing: -0.1359px;
+  text-transform: uppercase;
+  margin: 0;
   flex: 1;
 }
 
-.contact-section__info-label {
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 18px;
-  color: var(--color-black);
-  margin: 0 0 12px;
+.contact-section__card-text p {
+  margin: 0;
 }
 
-.contact-section__info-value {
-  font-family: var(--font-body);
-  font-size: 16px;
-  line-height: 1.6;
-  color: var(--color-text-secondary);
-}
-
-.contact-section__info-value a {
-  color: var(--color-navy);
-  text-decoration: none;
-  transition: color var(--transition-fast);
-}
-
-.contact-section__info-value a:hover {
-  color: var(--color-green);
+.contact-section__email-link {
+  font-family: 'Syne', sans-serif;
+  font-weight: 400;
+  font-size: 28.601px;
+  line-height: 25.59px;
+  color: #041c66;
   text-decoration: underline;
+  text-decoration-skip-ink: none;
+  text-underline-position: from-font;
+  letter-spacing: -0.858px;
 }
 
-.contact-section__info-value p {
-  margin: 0 0 8px;
+.contact-section__map-panel {
+  position: relative;
+  flex: 0 0 597.612px;
+  height: 766.207px;
+  background-color: var(--map-bg);
+  border: 3.011px solid #141019;
+  border-radius: 24.085px;
+  box-shadow: 2.258px 4.516px 0px 0px #141019;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.contact-section__info-value p:last-child {
-  margin-bottom: 0;
+.contact-section__map-image-wrapper {
+  position: absolute;
+  width: 1196.729px;
+  height: 813.625px;
+  left: -261.17px;
+  top: -54.94px;
+  z-index: 0;
+}
+
+.contact-section__map-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+  pointer-events: none;
+}
+
+.contact-section__map-pin {
+  position: absolute;
+  top: 24.16%;
+  right: 40.05%;
+  bottom: 65.72%;
+  left: 44.58%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.contact-section__map-pin-img {
+  width: 90.629px;
+  height: 76.09px;
+  transform: rotate(359.106deg);
+  display: block;
+}
+
+@media screen and (max-width: 1200px) {
+  .contact-section__wrapper {
+    gap: 60px;
+  }
+
+  .contact-section__left-panel {
+    flex: 0 0 400px;
+  }
+
+  .contact-section__map-panel {
+    flex: 0 0 500px;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .contact-section {
+    padding: 24px;
+  }
+
+  .contact-section__wrapper {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .contact-section__left-panel {
+    flex: 1 1 auto;
+    width: 100%;
+    min-height: auto;
+  }
+
+  .contact-section__footer-bg {
+    width: 100%;
+    height: 200px;
+  }
+
+  .contact-section__telephone {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 100%;
+    height: auto;
+    margin: 24px 0;
+  }
+
+  .contact-section__contact-info {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 100%;
+    margin-top: 24px;
+  }
+
+  .contact-section__card {
+    width: 100%;
+  }
+
+  .contact-section__map-panel {
+    flex: 1 1 auto;
+    width: 100%;
+    height: 500px;
+  }
+
+  .contact-section__map-image-wrapper {
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+  }
 }
 
 @media screen and (max-width: 768px) {
   .contact-section {
-    padding: 60px 0;
+    padding: 16px;
   }
 
-  .contact-section__title {
-    font-size: 36px;
+  .contact-section__heading {
+    font-size: 32px;
+    letter-spacing: -1.5px;
+  }
+
+  .contact-section__description {
+    font-size: 18px;
+    max-width: 100%;
+  }
+
+  .contact-section__telephone-wrapper {
+    width: 200px;
+    height: auto;
+  }
+
+  .contact-section__card {
+    padding: 20px;
+  }
+
+  .contact-section__card-label {
+    font-size: 16px;
+  }
+
+  .contact-section__email-link {
+    font-size: 22px;
+  }
+
+  .contact-section__card-text {
+    font-size: 12px;
+  }
+
+  .contact-section__map-panel {
+    height: 400px;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .contact-section__heading {
+    font-size: 28px;
   }
 
   .contact-section__description {
     font-size: 16px;
   }
 
-  .contact-section__info {
-    grid-template-columns: 1fr;
-    gap: 24px;
+  .contact-section__telephone-wrapper {
+    width: 150px;
   }
 
-  .contact-section__info-item {
-    padding: 24px;
+  .contact-section__card {
+    padding: 16px;
+  }
+
+  .contact-section__map-panel {
+    height: 300px;
   }
 }
 {% endstylesheet %}
@@ -204,6 +510,10 @@
   "tag": "section",
   "class": "contact-section-wrapper",
   "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
     {
       "type": "text",
       "id": "heading",
@@ -251,16 +561,54 @@
       "default": "bengaluru 560020"
     },
     {
-      "type": "textarea",
-      "id": "address",
-      "label": "Full Address (Fallback)",
-      "default": "2nd floor central complex sv road near mantri mall seshadripuram bengaluru 560020",
-      "info": "Used if individual address lines are not provided"
+      "type": "header",
+      "content": "Images"
     },
     {
       "type": "image_picker",
-      "id": "background_image",
-      "label": "Background Image"
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "map_image",
+      "label": "Map Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "map_pin_image",
+      "label": "Map Pin Icon"
+    },
+    {
+      "type": "image_picker",
+      "id": "telephone_image",
+      "label": "Telephone Illustration"
+    },
+    {
+      "type": "image_picker",
+      "id": "mail_icon_image",
+      "label": "Mail Icon"
+    },
+    {
+      "type": "image_picker",
+      "id": "map_icon_image",
+      "label": "Map Icon"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Left Panel Background",
+      "default": "#041c66"
+    },
+    {
+      "type": "color",
+      "id": "map_background_color",
+      "label": "Map Panel Background",
+      "default": "#c1cff4"
     }
   ],
   "presets": [
@@ -270,4 +618,3 @@
   ]
 }
 {% endschema %}
-
