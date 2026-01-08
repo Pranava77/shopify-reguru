@@ -141,22 +141,11 @@
     "faq_rNrUJW": {
       "type": "faq",
       "blocks": {
-        "tab_bAwphz": {
-          "type": "tab",
+        "faq_item_ixFbFD": {
+          "type": "faq_item",
           "settings": {
-            "label": "General"
-          }
-        },
-        "tab_mymzBB": {
-          "type": "tab",
-          "settings": {
-            "label": "Services"
-          }
-        },
-        "tab_QmytqY": {
-          "type": "tab",
-          "settings": {
-            "label": "Business"
+            "question": "Do ReGuru products come with warranty?",
+            "answer": "Yes, all ReGuru products come with a comprehensive warranty. Our refurbished electronics are thoroughly tested and certified, ensuring quality and reliability."
           }
         },
         "faq_item_d4tL7U": {
@@ -182,9 +171,7 @@
         }
       },
       "block_order": [
-        "tab_bAwphz",
-        "tab_mymzBB",
-        "tab_QmytqY",
+        "faq_item_ixFbFD",
         "faq_item_d4tL7U",
         "faq_item_x9HBfm",
         "faq_item_pQCKiH"

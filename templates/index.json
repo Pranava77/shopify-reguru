@@ -184,114 +184,7 @@
         "card-3",
         "card-4"
       ],
-      "settings": {
-        "background_image": "shopify://shop_images/Group_1000001777.png"
-      }
-    },
-    "product_category_dDrtzV": {
-      "type": "product-category",
-      "blocks": {
-        "category_card_Bz9AKA": {
-          "type": "category_card",
-          "settings": {
-            "title": "Laptop",
-            "collection": ""
-          }
-        },
-        "category_card_tYKxXE": {
-          "type": "category_card",
-          "settings": {
-            "title": "Monitor",
-            "collection": ""
-          }
-        },
-        "category_card_kqNqac": {
-          "type": "category_card",
-          "settings": {
-            "title": "Phone",
-            "collection": ""
-          }
-        },
-        "category_card_fEWHqf": {
-          "type": "category_card",
-          "settings": {
-            "title": "Television",
-            "collection": ""
-          }
-        },
-        "category_card_WLtHBd": {
-          "type": "category_card",
-          "settings": {
-            "title": "Headphone",
-            "collection": ""
-          }
-        },
-        "product_category_3qAgpW": {
-          "type": "product_category",
-          "settings": {
-            "title": "Laptop",
-            "collection": "",
-            "products_to_show": 4,
-            "view_all_text": "View all"
-          }
-        },
-        "product_category_KR64jk": {
-          "type": "product_category",
-          "settings": {
-            "title": "Phone",
-            "collection": "",
-            "products_to_show": 4,
-            "view_all_text": "View all"
-          }
-        },
-        "product_category_TBbTyi": {
-          "type": "product_category",
-          "settings": {
-            "title": "Television",
-            "collection": "",
-            "products_to_show": 4,
-            "view_all_text": "View all"
-          }
-        },
-        "product_category_pWppkf": {
-          "type": "product_category",
-          "settings": {
-            "title": "Monitor",
-            "collection": "",
-            "products_to_show": 4,
-            "view_all_text": "View all"
-          }
-        },
-        "product_category_NCJpDB": {
-          "type": "product_category",
-          "settings": {
-            "title": "Headphone",
-            "collection": "",
-            "products_to_show": 4,
-            "view_all_text": "View all"
-          }
-        }
-      },
-      "block_order": [
-        "category_card_Bz9AKA",
-        "category_card_tYKxXE",
-        "category_card_kqNqac",
-        "category_card_fEWHqf",
-        "category_card_WLtHBd",
-        "product_category_3qAgpW",
-        "product_category_KR64jk",
-        "product_category_TBbTyi",
-        "product_category_pWppkf",
-        "product_category_NCJpDB"
-      ],
-      "name": "Product Category",
-      "settings": {
-        "heading": "Checkout our products",
-        "description": "Find the perfect laptop for work, play and everything in between.",
-        "background_color": "#b1d8ff",
-        "show_brands": true,
-        "brands_title": "Top Brands"
-      }
+      "settings": {}
     },
     "product_grid_gLdc4C": {
       "type": "product-grid",
@@ -343,8 +236,7 @@
       "settings": {
         "title": "Reguru Products",
         "collection": "apple",
-        "products_to_show": 3,
-        "background_image": "shopify://shop_images/Group_1000001777.png"
+        "products_to_show": 3
       }
     },
     "testimonials": {
@@ -523,7 +415,6 @@
     "mega_menu_czkr3g",
     "hero-banner",
     "feature-cards",
-    "product_category_dDrtzV",
     "product_grid_gLdc4C",
     "testimonials",
     "faq",
