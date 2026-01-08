@@ -130,7 +130,11 @@
         "address_line_2": "sv road near mantri",
         "address_line_3": "mall seshadripuram",
         "address_line_4": "bengaluru 560020",
-        "address": "2nd floor central complex sv road near mantri mall seshadripuram bengaluru 560020"
+        "telephone_image": "shopify://shop_images/Telephone.png",
+        "mail_icon_image": "shopify://shop_images/MailIco.png",
+        "map_icon_image": "shopify://shop_images/MapIco.png",
+        "background_color": "#041c66",
+        "map_background_color": "#c1cff4"
       }
     },
     "faq_rNrUJW": {
