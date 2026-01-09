@@ -106,6 +106,15 @@
       "description": "Contact us for any queries or bookings, and experience our prompt, friendly service. Your satisfaction is our priority.",
       "email_label": "Email",
       "address_label": "Address"
+    },
+    "sale": {
+      "mega_deals_event": "MEGA DEALS EVENT",
+      "filters": "Filters",
+      "price": "Price",
+      "to": "To",
+      "category": "Category",
+      "brand": "Brand",
+      "no_products": "No products available."
     }
   },
   "footer": {

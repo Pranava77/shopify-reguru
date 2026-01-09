@@ -1,0 +1,1008 @@
+{%- liquid
+  assign collection_handle = section.settings.collection
+  assign collection = collections[collection_handle]
+  assign products_to_show = section.settings.products_to_show | default: 12
+  assign hero_image = section.settings.hero_image
+  assign hero_title = section.settings.hero_title | default: 'Tech Mega Sale'
+  assign hero_subtitle = section.settings.hero_subtitle | default: 'Upgrade Your Gear'
+  assign hero_description = section.settings.hero_description | default: 'Save up to 40% on premium tech gear'
+  assign hero_button_text = section.settings.hero_button_text | default: 'Browse Gadgets'
+  assign hero_button_url = section.settings.hero_button_url
+-%}
+
+<section class="sale-section" id="sale-{{ section.id }}">
+  {%- comment -%} Hero Banner {%- endcomment -%}
+  {%- if hero_image != blank or hero_title != blank -%}
+    <div class="sale-section__hero">
+      <div class="sale-section__hero-container">
+        {%- if hero_image != blank -%}
+          <div class="sale-section__hero-image">
+            <img 
+              src="{{ hero_image | image_url: width: 1440 }}"
+              alt="{{ hero_title }}"
+              width="1440"
+              height="411"
+              loading="eager"
+            >
+          </div>
+        {%- endif -%}
+        <div class="sale-section__hero-content">
+          <p class="sale-section__hero-label">{{ 'sections.sale.mega_deals_event' | t | default: 'MEGA DEALS EVENT' }}</p>
+          <h1 class="sale-section__hero-title">{{ hero_title }}</h1>
+          <h2 class="sale-section__hero-subtitle">{{ hero_subtitle }}</h2>
+          <p class="sale-section__hero-description">{{ hero_description }}</p>
+          {%- if hero_button_url != blank -%}
+            <a href="{{ hero_button_url }}" class="sale-section__hero-button">
+              {{ hero_button_text }}
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} Main Content Area {%- endcomment -%}
+  <div class="sale-section__container">
+    <div class="sale-section__layout">
+      {%- comment -%} Filter Sidebar {%- endcomment -%}
+      <aside class="sale-section__filters" data-sale-filters>
+        <div class="sale-section__filters-header">
+          <h3 class="sale-section__filters-title">{{ 'sections.sale.filters' | t | default: 'Filters' }}</h3>
+          <button type="button" class="sale-section__filters-toggle" data-filters-toggle aria-label="Toggle filters">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+
+        {%- comment -%} Price Filter {%- endcomment -%}
+        <div class="sale-section__filter-group">
+          <div class="sale-section__filter-header">
+            <h4 class="sale-section__filter-title">{{ 'sections.sale.price' | t | default: 'Price' }}</h4>
+            <button type="button" class="sale-section__filter-toggle" data-filter-toggle="price" aria-label="Toggle price filter">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+          <div class="sale-section__filter-content" data-filter-content="price">
+            <div class="sale-section__price-inputs">
+              <div class="sale-section__price-input">
+                <span class="sale-section__price-currency">{{ cart.currency.symbol | default: '₹' }}</span>
+                <input 
+                  type="number" 
+                  id="price-min-{{ section.id }}" 
+                  class="sale-section__price-field"
+                  placeholder="3,000"
+                  min="0"
+                  data-price-min
+                >
+              </div>
+              <span class="sale-section__price-separator">{{ 'sections.sale.to' | t | default: 'To' }}</span>
+              <div class="sale-section__price-input">
+                <span class="sale-section__price-currency">{{ cart.currency.symbol | default: '₹' }}</span>
+                <input 
+                  type="number" 
+                  id="price-max-{{ section.id }}" 
+                  class="sale-section__price-field"
+                  placeholder="7,000"
+                  min="0"
+                  data-price-max
+                >
+              </div>
+            </div>
+            <div class="sale-section__price-slider">
+              <input 
+                type="range" 
+                id="price-range-{{ section.id }}" 
+                class="sale-section__range-input"
+                min="0"
+                max="100000"
+                step="100"
+                data-price-range
+              >
+            </div>
+          </div>
+        </div>
+
+        {%- comment -%} Category Filter {%- endcomment -%}
+        {%- if section.blocks.size > 0 -%}
+          {%- assign category_blocks = section.blocks | where: 'type', 'category' -%}
+          {%- if category_blocks.size > 0 -%}
+            <div class="sale-section__filter-group">
+              <div class="sale-section__filter-header">
+                <h4 class="sale-section__filter-title">{{ 'sections.sale.category' | t | default: 'Category' }}</h4>
+                <button type="button" class="sale-section__filter-toggle" data-filter-toggle="category" aria-label="Toggle category filter">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="sale-section__filter-content" data-filter-content="category">
+                {%- for block in category_blocks -%}
+                  <label class="sale-section__filter-checkbox">
+                    <input 
+                      type="checkbox" 
+                      value="{{ block.settings.value | default: block.settings.label | handleize }}"
+                      data-filter-category
+                      {{ block.shopify_attributes }}
+                    >
+                    <span class="sale-section__filter-checkbox-label">{{ block.settings.label | default: 'Category' }}</span>
+                  </label>
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endif -%}
+
+        {%- comment -%} Brand Filter {%- endcomment -%}
+        {%- if section.blocks.size > 0 -%}
+          {%- assign brand_blocks = section.blocks | where: 'type', 'brand' -%}
+          {%- if brand_blocks.size > 0 -%}
+            <div class="sale-section__filter-group">
+              <div class="sale-section__filter-header">
+                <h4 class="sale-section__filter-title">{{ 'sections.sale.brand' | t | default: 'Brand' }}</h4>
+                <button type="button" class="sale-section__filter-toggle" data-filter-toggle="brand" aria-label="Toggle brand filter">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="sale-section__filter-content" data-filter-content="brand">
+                {%- for block in brand_blocks -%}
+                  <label class="sale-section__filter-checkbox">
+                    <input 
+                      type="checkbox" 
+                      value="{{ block.settings.value | default: block.settings.label | handleize }}"
+                      data-filter-brand
+                      {{ block.shopify_attributes }}
+                    >
+                    <span class="sale-section__filter-checkbox-label">
+                      {{ block.settings.label | default: 'Brand' }}
+                      {%- if block.settings.count != blank -%}
+                        <span class="sale-section__filter-count">({{ block.settings.count }})</span>
+                      {%- endif -%}
+                    </span>
+                  </label>
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endif -%}
+      </aside>
+
+      {%- comment -%} Product Grid {%- endcomment -%}
+      <div class="sale-section__products">
+        <div class="sale-section__products-grid" data-products-grid>
+          {%- if collection != blank and collection.products.size > 0 -%}
+            {%- for product in collection.products limit: products_to_show -%}
+              {%- render 'product-card', product: product, show_discount: true, show_rating: true -%}
+            {%- endfor -%}
+          {%- else -%}
+            <p class="sale-section__empty">{{ 'sections.sale.no_products' | t | default: 'No products available.' }}</p>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+
+    {%- comment -%} Join Franchise Button {%- endcomment -%}
+    {%- if section.settings.show_franchise_button -%}
+      <div class="sale-section__franchise">
+        <a href="{{ section.settings.franchise_url | default: '/pages/franchise' }}" class="sale-section__franchise-button">
+          {{ section.settings.franchise_text | default: 'Join Franchise' }}
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+.sale-section {
+  padding: 0;
+  background-color: var(--color-white);
+}
+
+.sale-section__hero {
+  position: relative;
+  margin-bottom: 40px;
+}
+
+.sale-section__hero-container {
+  position: relative;
+  width: 100%;
+  max-width: 1194px;
+  margin: 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.sale-section__hero-image {
+  width: 100%;
+  height: 411px;
+  overflow: hidden;
+}
+
+.sale-section__hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.sale-section__hero-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  text-align: center;
+  background: linear-gradient(180deg, rgba(30, 26, 92, 0.8) 0%, rgba(4, 28, 102, 0.6) 100%);
+  color: var(--color-white);
+}
+
+.sale-section__hero-label {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1;
+  letter-spacing: 0.84px;
+  text-transform: uppercase;
+  margin: 0 0 16px 0;
+  color: var(--color-white);
+}
+
+.sale-section__hero-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 48px;
+  line-height: 1.2;
+  margin: 0 0 12px 0;
+  color: var(--color-white);
+}
+
+.sale-section__hero-subtitle {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 64px;
+  line-height: 1.1;
+  margin: 0 0 16px 0;
+  color: var(--color-blue);
+}
+
+.sale-section__hero-description {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.5;
+  margin: 0 0 32px 0;
+  color: var(--color-white);
+}
+
+.sale-section__hero-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 32px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--color-black);
+  background-color: var(--color-blue);
+  border: 2px solid var(--color-black);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  text-decoration: none;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.sale-section__hero-button:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.sale-section__hero-button:active {
+  transform: translate(2px, 2px);
+  box-shadow: var(--shadow-xs);
+}
+
+.sale-section__container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+.sale-section__layout {
+  display: grid;
+  grid-template-columns: 288px 1fr;
+  gap: 32px;
+  margin-bottom: 40px;
+}
+
+.sale-section__filters {
+  background-color: #fdfdfd;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 8px;
+  height: fit-content;
+  max-height: 511px;
+  overflow-y: auto;
+}
+
+.sale-section__filters-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  background-color: #f9f9f9;
+  margin-bottom: 0;
+}
+
+.sale-section__filters-title {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 25px;
+  color: #272727;
+  margin: 0;
+}
+
+.sale-section__filters-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: #272727;
+}
+
+.sale-section__filter-group {
+  border-top: 1px solid rgba(147, 147, 147, 0.2);
+}
+
+.sale-section__filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  background-color: #fdfdfd;
+  cursor: pointer;
+}
+
+.sale-section__filter-title {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 25px;
+  color: #272727;
+  margin: 0;
+  text-align: left;
+}
+
+.sale-section__filter-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: #272727;
+  transform: rotate(180deg);
+  transition: transform var(--transition-fast);
+}
+
+.sale-section__filter-toggle[aria-expanded="false"] {
+  transform: rotate(0deg);
+}
+
+.sale-section__filter-content {
+  padding: 8px 16px 16px 8px;
+  background-color: #fdfdfd;
+  border-top: 1px solid #fdfdfd;
+}
+
+.sale-section__filter-content[hidden] {
+  display: none;
+}
+
+.sale-section__price-inputs {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 8px;
+  border-bottom: 1px solid #f3f3f3;
+}
+
+.sale-section__price-input {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border: 1px solid #757575;
+  border-radius: 8px;
+  min-height: 32px;
+}
+
+.sale-section__price-currency {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--color-black);
+  line-height: 17px;
+}
+
+.sale-section__price-field {
+  flex: 1;
+  border: none;
+  background: none;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  color: #757575;
+  outline: none;
+  min-width: 0;
+}
+
+.sale-section__price-separator {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  color: #272727;
+  line-height: 17px;
+  white-space: nowrap;
+}
+
+.sale-section__price-slider {
+  position: relative;
+  padding: 8px;
+  background-color: #f9f9f9;
+}
+
+.sale-section__range-input {
+  width: 100%;
+  height: 5px;
+  background-color: #e5e5e5;
+  border-radius: 56px;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.sale-section__range-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  background-color: #272727;
+  border: 1px solid var(--color-black);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.sale-section__range-input::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  background-color: #272727;
+  border: 1px solid var(--color-black);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.sale-section__filter-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  cursor: pointer;
+  min-height: 19px;
+}
+
+.sale-section__filter-checkbox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  border: 1px solid #272727;
+  border-radius: 4px;
+  background-color: #fdfdfd;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.sale-section__filter-checkbox input[type="checkbox"]:checked {
+  background-color: #1a4de1;
+  border-color: #1a4de1;
+}
+
+.sale-section__filter-checkbox input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  background-image: url("data:image/svg+xml,%3Csvg width='8' height='8' viewBox='0 0 8 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 4L3 6L7 2' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.sale-section__filter-checkbox-label {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #424242;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sale-section__filter-count {
+  font-size: 12px;
+  color: #aeaeae;
+}
+
+.sale-section__products {
+  flex: 1;
+}
+
+.sale-section__products-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.sale-section__empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+  font-family: var(--font-body);
+  font-size: 18px;
+  color: var(--color-text-secondary);
+}
+
+.sale-section__franchise {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+  padding-bottom: 40px;
+}
+
+.sale-section__franchise-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 31px;
+  font-family: var(--font-product);
+  font-weight: 500;
+  font-size: 21px;
+  line-height: 29px;
+  color: var(--color-black);
+  background-color: var(--color-white);
+  border: 0.736px solid var(--color-black);
+  border-radius: var(--radius-sm);
+  box-shadow: 4.417px 4.417px 0px 0px var(--color-black);
+  text-decoration: none;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.sale-section__franchise-button:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px var(--color-black);
+}
+
+.sale-section__franchise-button:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px 0px var(--color-black);
+}
+
+@media screen and (max-width: 1200px) {
+  .sale-section__products-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .sale-section__layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .sale-section__filters {
+    max-height: none;
+  }
+
+  .sale-section__filters-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #f9f9f9;
+  }
+
+  .sale-section__filters-toggle {
+    display: block;
+  }
+
+  .sale-section__filters[data-filters-collapsed="true"] .sale-section__filter-group {
+    display: none;
+  }
+
+  .sale-section__products-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .sale-section__hero-title {
+    font-size: 36px;
+  }
+
+  .sale-section__hero-subtitle {
+    font-size: 48px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .sale-section__hero-content {
+    padding: 24px;
+  }
+
+  .sale-section__hero-title {
+    font-size: 28px;
+  }
+
+  .sale-section__hero-subtitle {
+    font-size: 36px;
+  }
+
+  .sale-section__hero-description {
+    font-size: 16px;
+  }
+
+  .sale-section__hero-button {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+
+  .sale-section__products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .sale-section__franchise-button {
+    padding: 10px 24px;
+    font-size: 18px;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .sale-section__hero-image {
+    height: 300px;
+  }
+
+  .sale-section__hero-content {
+    padding: 20px;
+  }
+
+  .sale-section__hero-title {
+    font-size: 24px;
+  }
+
+  .sale-section__hero-subtitle {
+    font-size: 28px;
+  }
+
+  .sale-section__products-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .sale-section__franchise-button {
+    padding: 10px 20px;
+    font-size: 16px;
+  }
+}
+{% endstylesheet %}
+
+{% javascript %}
+(function() {
+  const saleSection = document.querySelector('[id^="sale-"]');
+  if (!saleSection) return;
+
+  // Filter toggle functionality
+  const filterToggles = saleSection.querySelectorAll('[data-filter-toggle]');
+  for (const toggle of filterToggles) {
+    toggle.addEventListener('click', function() {
+      const filterType = this.getAttribute('data-filter-toggle');
+      const content = saleSection.querySelector(`[data-filter-content="${filterType}"]`);
+      if (!content) return;
+
+      const isExpanded = this.getAttribute('aria-expanded') === 'true';
+      this.setAttribute('aria-expanded', !isExpanded);
+      content.hidden = isExpanded;
+    });
+  }
+
+  // Mobile filters toggle
+  const filtersToggle = saleSection.querySelector('[data-filters-toggle]');
+  const filters = saleSection.querySelector('[data-sale-filters]');
+  if (filtersToggle && filters) {
+    filtersToggle.addEventListener('click', function() {
+      const isCollapsed = filters.getAttribute('data-filters-collapsed') === 'true';
+      filters.setAttribute('data-filters-collapsed', !isCollapsed);
+    });
+  }
+
+  // Price range slider
+  const priceRange = saleSection.querySelector('[data-price-range]');
+  const priceMin = saleSection.querySelector('[data-price-min]');
+  const priceMax = saleSection.querySelector('[data-price-max]');
+  
+  if (priceRange && priceMin && priceMax) {
+    // Initialize values
+    const updatePriceInputs = () => {
+      const value = parseInt(priceRange.value);
+      priceMin.value = Math.floor(value * 0.3);
+      priceMax.value = Math.floor(value * 0.7);
+    };
+
+    priceRange.addEventListener('input', function() {
+      updatePriceInputs();
+    });
+
+    // Initialize on load
+    updatePriceInputs();
+  }
+
+  // Filter products (basic implementation)
+  const categoryCheckboxes = saleSection.querySelectorAll('[data-filter-category]');
+  const brandCheckboxes = saleSection.querySelectorAll('[data-filter-brand]');
+  const productsGrid = saleSection.querySelector('[data-products-grid]');
+
+  const filterProducts = () => {
+    if (!productsGrid) return;
+
+    const selectedCategories = Array.from(categoryCheckboxes)
+      .filter(cb => cb.checked)
+      .map(cb => cb.value.toLowerCase());
+
+    const selectedBrands = Array.from(brandCheckboxes)
+      .filter(cb => cb.checked)
+      .map(cb => cb.value.toLowerCase());
+
+    const productCards = productsGrid.querySelectorAll('.product-card');
+    
+    for (const card of productCards) {
+      let show = true;
+
+      // Basic filtering - can be enhanced with actual product data attributes
+      if (selectedCategories.length > 0 || selectedBrands.length > 0) {
+        // This is a placeholder - in a real implementation, you'd check product data attributes
+        // or make an AJAX request to filter products
+        show = true;
+      }
+
+      card.style.display = show ? '' : 'none';
+    }
+  };
+
+  for (const checkbox of [...categoryCheckboxes, ...brandCheckboxes]) {
+    checkbox.addEventListener('change', filterProducts);
+  }
+})();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Sale",
+  "tag": "section",
+  "class": "sale-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero Banner"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero Image"
+    },
+    {
+      "type": "text",
+      "id": "hero_title",
+      "label": "Hero Title",
+      "default": "Tech Mega Sale"
+    },
+    {
+      "type": "text",
+      "id": "hero_subtitle",
+      "label": "Hero Subtitle",
+      "default": "Upgrade Your Gear"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_description",
+      "label": "Hero Description",
+      "default": "Save up to 40% on premium tech gear"
+    },
+    {
+      "type": "text",
+      "id": "hero_button_text",
+      "label": "Button Text",
+      "default": "Browse Gadgets"
+    },
+    {
+      "type": "url",
+      "id": "hero_button_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "header",
+      "content": "Products"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection",
+      "info": "Products from this collection will be displayed"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to Show",
+      "min": 4,
+      "max": 24,
+      "step": 4,
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Franchise Button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_franchise_button",
+      "label": "Show Franchise Button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "franchise_text",
+      "label": "Button Text",
+      "default": "Join Franchise"
+    },
+    {
+      "type": "url",
+      "id": "franchise_url",
+      "label": "Button URL"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category Filter",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Category Label",
+          "default": "All devices"
+        },
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Category Value",
+          "info": "Optional: Custom value for filtering. If empty, label will be used."
+        }
+      ]
+    },
+    {
+      "type": "brand",
+      "name": "Brand Filter",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Brand Label",
+          "default": "Brand"
+        },
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Brand Value",
+          "info": "Optional: Custom value for filtering. If empty, label will be used."
+        },
+        {
+          "type": "text",
+          "id": "count",
+          "label": "Product Count",
+          "info": "Optional: Number of products for this brand (e.g., 56)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sale",
+      "settings": {
+        "hero_title": "Tech Mega Sale",
+        "hero_subtitle": "Upgrade Your Gear",
+        "hero_description": "Save up to 40% on premium tech gear",
+        "hero_button_text": "Browse Gadgets",
+        "products_to_show": 12,
+        "show_franchise_button": true,
+        "franchise_text": "Join Franchise"
+      },
+      "blocks": [
+        {
+          "type": "category",
+          "settings": {
+            "label": "All devices"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "label": "Mobile & Tablets"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "label": "Laptops"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "label": "Television"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "label": "Headphones"
+          }
+        },
+        {
+          "type": "brand",
+          "settings": {
+            "label": "Lenovo",
+            "count": "56"
+          }
+        },
+        {
+          "type": "brand",
+          "settings": {
+            "label": "Asus",
+            "count": "32"
+          }
+        },
+        {
+          "type": "brand",
+          "settings": {
+            "label": "HP",
+            "count": "185"
+          }
+        },
+        {
+          "type": "brand",
+          "settings": {
+            "label": "Macbook",
+            "count": "75"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
