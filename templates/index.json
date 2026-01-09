@@ -132,59 +132,6 @@
         "background_color": "#171544"
       }
     },
-    "feature-cards": {
-      "type": "feature-cards",
-      "blocks": {
-        "card_VfNmec": {
-          "type": "card",
-          "settings": {
-            "title": "sustainability",
-            "background_image": "shopify://shop_images/Rectangle_7.png",
-            "icon_image": "shopify://shop_images/Group_176_04654fd9-7d93-4057-89f3-839d4af8ef9b.png"
-          }
-        },
-        "card-1": {
-          "type": "card",
-          "settings": {
-            "title": "RRR Policy",
-            "background_image": "shopify://shop_images/Rectangle_7.png",
-            "icon_image": "shopify://shop_images/Layer_3.png"
-          }
-        },
-        "card-2": {
-          "type": "card",
-          "settings": {
-            "title": "Affordable",
-            "background_image": "shopify://shop_images/Rectangle_7.png",
-            "icon_image": "shopify://shop_images/Group_159.png"
-          }
-        },
-        "card-3": {
-          "type": "card",
-          "settings": {
-            "title": "Online & Offline Model",
-            "background_image": "shopify://shop_images/Rectangle_7.png",
-            "icon_image": "shopify://shop_images/Group_173.png"
-          }
-        },
-        "card-4": {
-          "type": "card",
-          "settings": {
-            "title": "Tailored Solutions",
-            "background_image": "shopify://shop_images/Rectangle_7.png",
-            "icon_image": "shopify://shop_images/Group_161_a7347467-55ed-4553-95c7-978f9bf1b501.png"
-          }
-        }
-      },
-      "block_order": [
-        "card_VfNmec",
-        "card-1",
-        "card-2",
-        "card-3",
-        "card-4"
-      ],
-      "settings": {}
-    },
     "product_grid_gLdc4C": {
       "type": "product-grid",
       "blocks": {
@@ -237,6 +184,59 @@
         "collection": "apple",
         "products_to_show": 3
       }
+    },
+    "feature-cards": {
+      "type": "feature-cards",
+      "blocks": {
+        "card_VfNmec": {
+          "type": "card",
+          "settings": {
+            "title": "sustainability",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "icon_image": "shopify://shop_images/Group_176_04654fd9-7d93-4057-89f3-839d4af8ef9b.png"
+          }
+        },
+        "card-1": {
+          "type": "card",
+          "settings": {
+            "title": "RRR Policy",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "icon_image": "shopify://shop_images/Layer_3.png"
+          }
+        },
+        "card-2": {
+          "type": "card",
+          "settings": {
+            "title": "Affordable",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "icon_image": "shopify://shop_images/Group_159.png"
+          }
+        },
+        "card-3": {
+          "type": "card",
+          "settings": {
+            "title": "Online & Offline Model",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "icon_image": "shopify://shop_images/Group_173.png"
+          }
+        },
+        "card-4": {
+          "type": "card",
+          "settings": {
+            "title": "Tailored Solutions",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "icon_image": "shopify://shop_images/Group_161_a7347467-55ed-4553-95c7-978f9bf1b501.png"
+          }
+        }
+      },
+      "block_order": [
+        "card_VfNmec",
+        "card-1",
+        "card-2",
+        "card-3",
+        "card-4"
+      ],
+      "settings": {}
     },
     "testimonials": {
       "type": "testimonials",
@@ -413,8 +413,8 @@
     "header_8wjj8i",
     "mega_menu_czkr3g",
     "hero-banner",
-    "feature-cards",
     "product_grid_gLdc4C",
+    "feature-cards",
     "testimonials",
     "faq",
     "footer_jLdtia"
