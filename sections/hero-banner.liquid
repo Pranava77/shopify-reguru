@@ -1,29 +1,56 @@
 {%- liquid
-  assign heading = section.settings.heading
-  assign subheading = section.settings.subheading
-  assign discount_text = section.settings.discount_text
-  assign cta_text = section.settings.cta_text
-  assign cta_link = section.settings.cta_link
   assign bg_color = section.settings.background_color | default: '#212844'
   assign bg_image = section.settings.background_image
   assign container_bg_image = section.settings.container_background_image
+  assign button_text = section.settings.button_text
+  assign button_link = section.settings.button_link
 -%}
 
 <section class="hero-banner" style="--hero-bg: {{ bg_color }};{% if bg_image != blank %} background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;{% endif %}">
   <div class="hero-banner__container"{% if container_bg_image != blank %} style="background-image: url('{{ container_bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
-    <div class="hero-banner__content">
-      {%- if subheading != blank -%}
-        <p class="hero-banner__subheading">{{ subheading }}</p>
-      {%- endif -%}
-      {%- if heading != blank -%}
-        <h1 class="hero-banner__heading">{{ heading }}</h1>
-      {%- endif -%}
-      {%- if discount_text != blank -%}
-        <p class="hero-banner__discount">{{ discount_text }}</p>
-      {%- endif -%}
-      {%- if cta_text != blank and cta_link != blank -%}
-        <a href="{{ cta_link }}" class="hero-banner__cta">
-          {{ cta_text }}
+    <div class="hero-banner__carousel" data-carousel>
+      <div class="hero-banner__carousel-track" data-carousel-track>
+        {%- for block in section.blocks limit: 5 -%}
+          <div class="hero-banner__slide" data-slide {{ block.shopify_attributes }}>
+            <div class="hero-banner__content">
+              {%- if block.settings.subheading != blank -%}
+                <p class="hero-banner__subheading">{{ block.settings.subheading }}</p>
+              {%- endif -%}
+              {%- if block.settings.heading != blank -%}
+                <h1 class="hero-banner__heading">{{ block.settings.heading }}</h1>
+              {%- endif -%}
+              {%- if block.settings.discount_text != blank -%}
+                <p class="hero-banner__discount">{{ block.settings.discount_text }}</p>
+              {%- endif -%}
+              {%- if block.settings.cta_text != blank and block.settings.cta_link != blank -%}
+                <a href="{{ block.settings.cta_link }}" class="hero-banner__cta">
+                  {{ block.settings.cta_text }}
+                </a>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+      
+      <!-- Navigation Buttons -->
+      <button class="hero-banner__nav hero-banner__nav--prev" data-carousel-prev aria-label="Previous slide">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button class="hero-banner__nav hero-banner__nav--next" data-carousel-next aria-label="Next slide">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      
+      <!-- Dots Indicator -->
+      <div class="hero-banner__dots" data-carousel-dots></div>
+      
+      <!-- Neo-brutalistic Button at Bottom Left -->
+      {%- if button_text != blank and button_link != blank -%}
+        <a href="{{ button_link }}" class="hero-banner__bottom-button">
+          {{ button_text }}
         </a>
       {%- endif -%}
     </div>
@@ -40,9 +67,6 @@
 
 .hero-banner__container {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   min-height: 420px;
   padding: 50px 70px;
   background-color: var(--hero-bg);
@@ -66,6 +90,39 @@
   display: block;
 }
 
+.hero-banner__carousel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 320px;
+}
+
+.hero-banner__carousel-track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.hero-banner__slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-banner__slide.active {
+  position: relative;
+  opacity: 1;
+  z-index: 1;
+}
+
 .hero-banner__content {
   position: relative;
   z-index: 2;
@@ -74,6 +131,7 @@
   gap: 24px;
   max-width: 574px;
   color: var(--color-white);
+  text-align: center;
 }
 
 .hero-banner__subheading {
@@ -115,10 +173,116 @@
   color: var(--color-green);
 }
 
+/* Navigation Buttons */
+.hero-banner__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-white);
+  border: 2px solid var(--color-black);
+  border-radius: 4px;
+  box-shadow: 4px 4px 0px 0px var(--color-black);
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  color: var(--color-black);
+}
+
+.hero-banner__nav:hover {
+  transform: translateY(-50%) translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px var(--color-black);
+}
+
+.hero-banner__nav:active {
+  transform: translateY(-50%) translate(2px, 2px);
+  box-shadow: 2px 2px 0px 0px var(--color-black);
+}
+
+.hero-banner__nav--prev {
+  left: 20px;
+}
+
+.hero-banner__nav--next {
+  right: 20px;
+}
+
+.hero-banner__nav svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Dots Indicator */
+.hero-banner__dots {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  z-index: 10;
+}
+
+.hero-banner__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--color-white);
+  border: 2px solid var(--color-black);
+  box-shadow: 2px 2px 0px 0px var(--color-black);
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.hero-banner__dot:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px 0px var(--color-black);
+}
+
+.hero-banner__dot.active {
+  background-color: var(--color-green);
+  transform: scale(1.2);
+}
+
+/* Neo-brutalistic Bottom Left Button */
+.hero-banner__bottom-button {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  z-index: 10;
+  padding: 12px 24px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--color-black);
+  background-color: var(--color-green);
+  border: 3px solid var(--color-black);
+  border-radius: 4px;
+  box-shadow: 4px 4px 0px 0px var(--color-black);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  white-space: nowrap;
+}
+
+.hero-banner__bottom-button:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px var(--color-black);
+}
+
+.hero-banner__bottom-button:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px 0px var(--color-black);
+}
+
 @media screen and (max-width: 992px) {
   .hero-banner__container {
-    flex-direction: column;
-    text-align: center;
     padding: 40px 30px;
   }
 
@@ -134,6 +298,26 @@
   .hero-banner__discount {
     font-size: 22px;
   }
+
+  .hero-banner__nav {
+    width: 40px;
+    height: 40px;
+  }
+
+  .hero-banner__nav--prev {
+    left: 10px;
+  }
+
+  .hero-banner__nav--next {
+    right: 10px;
+  }
+
+  .hero-banner__bottom-button {
+    bottom: 10px;
+    left: 10px;
+    padding: 10px 20px;
+    font-size: 14px;
+  }
 }
 
 @media screen and (max-width: 576px) {
@@ -145,45 +329,103 @@
   .hero-banner__discount {
     font-size: 18px;
   }
+
+  .hero-banner__nav {
+    width: 36px;
+    height: 36px;
+  }
+
+  .hero-banner__nav svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .hero-banner__bottom-button {
+    padding: 8px 16px;
+    font-size: 12px;
+    border-width: 2px;
+    box-shadow: 3px 3px 0px 0px var(--color-black);
+  }
 }
 {% endstylesheet %}
 
+{% javascript %}
+(function() {
+  const carousels = document.querySelectorAll('[data-carousel]');
+  
+  carousels.forEach(carousel => {
+    const track = carousel.querySelector('[data-carousel-track]');
+    const slides = carousel.querySelectorAll('[data-slide]');
+    const prevBtn = carousel.querySelector('[data-carousel-prev]');
+    const nextBtn = carousel.querySelector('[data-carousel-next]');
+    const dotsContainer = carousel.querySelector('[data-carousel-dots]');
+    
+    if (!track || slides.length === 0) return;
+    
+    let currentSlide = 0;
+    const totalSlides = slides.length;
+    
+    // Create dots
+    if (dotsContainer && totalSlides > 1) {
+      slides.forEach((_, index) => {
+        const dot = document.createElement('button');
+        dot.className = 'hero-banner__dot' + (index === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', `Go to slide ${index + 1}`);
+        dot.addEventListener('click', () => goToSlide(index));
+        dotsContainer.appendChild(dot);
+      });
+    }
+    
+    function updateCarousel() {
+      slides.forEach((slide, index) => {
+        slide.classList.toggle('active', index === currentSlide);
+      });
+      
+      const dots = dotsContainer?.querySelectorAll('.hero-banner__dot');
+      if (dots) {
+        dots.forEach((dot, index) => {
+          dot.classList.toggle('active', index === currentSlide);
+        });
+      }
+    }
+    
+    function goToSlide(index) {
+      currentSlide = index;
+      updateCarousel();
+    }
+    
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % totalSlides;
+      updateCarousel();
+    }
+    
+    function prevSlide() {
+      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+      updateCarousel();
+    }
+    
+    if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+    if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+    
+    // Auto-play (optional - uncomment if needed)
+    // let autoplayInterval = setInterval(nextSlide, 5000);
+    // carousel.addEventListener('mouseenter', () => clearInterval(autoplayInterval));
+    // carousel.addEventListener('mouseleave', () => {
+    //   autoplayInterval = setInterval(nextSlide, 5000);
+    // });
+    
+    // Initialize
+    updateCarousel();
+  });
+})();
+{% endjavascript %}
+
 {% schema %}
 {
-  "name": "Hero Banner",
+  "name": "Hero Banner Carousel",
   "tag": "section",
   "class": "hero-banner-section",
   "settings": [
-    {
-      "type": "text",
-      "id": "subheading",
-      "label": "Subheading"
-    },
-    {
-      "type": "text",
-      "id": "heading",
-      "label": "Heading"
-    },
-    {
-      "type": "text",
-      "id": "discount_text",
-      "label": "Discount Text"
-    },
-    {
-      "type": "text",
-      "id": "cta_text",
-      "label": "Button Text"
-    },
-    {
-      "type": "url",
-      "id": "cta_link",
-      "label": "Button Link"
-    },
-    {
-      "type": "image_picker",
-      "id": "image",
-      "label": "Product Image"
-    },
     {
       "type": "color",
       "id": "background_color",
@@ -204,11 +446,76 @@
       "id": "container_background_image",
       "label": "Container Background Image",
       "info": "Background image for the hero banner container. The background color will show as an overlay for better text readability."
+    },
+    {
+      "type": "header",
+      "content": "Bottom Left Button"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "limit": 5,
+      "settings": [
+        {
+          "type": "text",
+          "id": "subheading",
+          "label": "Subheading"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading"
+        },
+        {
+          "type": "text",
+          "id": "discount_text",
+          "label": "Discount Text"
+        },
+        {
+          "type": "text",
+          "id": "cta_text",
+          "label": "CTA Button Text"
+        },
+        {
+          "type": "url",
+          "id": "cta_link",
+          "label": "CTA Button Link"
+        }
+      ]
     }
   ],
   "presets": [
     {
-      "name": "Hero Banner"
+      "name": "Hero Banner Carousel",
+      "blocks": [
+        {
+          "type": "slide"
+        },
+        {
+          "type": "slide"
+        },
+        {
+          "type": "slide"
+        },
+        {
+          "type": "slide"
+        },
+        {
+          "type": "slide"
+        }
+      ]
     }
   ]
 }
