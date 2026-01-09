@@ -285,6 +285,9 @@ class ThemeUtils {
                 behavior: 'smooth'
               });
             }
+            
+            // Dispatch event for carousel re-initialization
+            document.dispatchEvent(new CustomEvent('productGridTabChanged'));
           } else {
             console.warn(`No container found for tab target: ${targetHandle}`);
           }
