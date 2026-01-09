@@ -72,14 +72,13 @@
             endif
           -%}
           <div 
-            class="product-grid__carousel{% unless forloop.first %} hidden{% endunless %}" 
+            class="product-grid__carousel-wrapper{% unless forloop.first %} hidden{% endunless %}" 
             data-tab-content="{{ tab_handle }}"
             data-tab-index="{{ forloop.index0 }}"
-            data-product-carousel
             {{ block.shopify_attributes }}
           >
-            <div class="product-grid__carousel-track" data-product-carousel-track>
-              <div class="product-grid__items">
+            <div class="product-grid__carousel" data-product-carousel>
+              <div class="product-grid__items" data-carousel-track>
                 {%- if tab_collection != blank and tab_collection.products.size > 0 -%}
                   {%- for product in tab_collection.products limit: products_to_show -%}
                     {%- render 'product-card', product: product -%}
@@ -92,40 +91,40 @@
                   <p class="product-grid__empty">No products available in this category.</p>
                 {%- endif -%}
               </div>
+              <button class="product-grid__nav product-grid__nav--prev" data-carousel-prev aria-label="Previous products">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <button class="product-grid__nav product-grid__nav--next" data-carousel-next aria-label="Next products">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
             </div>
-            <button class="product-grid__nav product-grid__nav--prev" data-product-carousel-prev aria-label="Previous products">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
-            <button class="product-grid__nav product-grid__nav--next" data-product-carousel-next aria-label="Next products">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
           </div>
         {%- endfor -%}
       {%- else -%}
         {%- comment -%} No blocks: Show default collection {%- endcomment -%}
         {%- if collection != blank and collection.products.size > 0 -%}
-          <div class="product-grid__carousel" data-product-carousel>
-            <div class="product-grid__carousel-track" data-product-carousel-track>
-              <div class="product-grid__items">
+          <div class="product-grid__carousel-wrapper">
+            <div class="product-grid__carousel" data-product-carousel>
+              <div class="product-grid__items" data-carousel-track>
                 {%- for product in collection.products limit: products_to_show -%}
                   {%- render 'product-card', product: product -%}
                 {%- endfor -%}
               </div>
+              <button class="product-grid__nav product-grid__nav--prev" data-carousel-prev aria-label="Previous products">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <button class="product-grid__nav product-grid__nav--next" data-carousel-next aria-label="Next products">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
             </div>
-            <button class="product-grid__nav product-grid__nav--prev" data-product-carousel-prev aria-label="Previous products">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
-            <button class="product-grid__nav product-grid__nav--next" data-product-carousel-next aria-label="Next products">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
           </div>
         {%- endif -%}
       {%- endif -%}
@@ -189,72 +188,30 @@
   background-color: var(--color-light-blue);
 }
 
-.product-grid__carousel {
-  position: relative;
+.product-grid__items {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 37px 31px;
 }
 
-.product-grid__carousel.hidden {
+.product-grid__carousel-wrapper.hidden {
   display: none;
 }
 
-.product-grid__carousel-track {
+.product-grid__carousel-wrapper {
   position: relative;
 }
 
-@media screen and (max-width: 992px) {
-  .product-grid__carousel-track {
-    overflow: hidden;
-  }
+.product-grid__carousel {
+  position: relative;
+  overflow: hidden;
 }
 
 .product-grid__items {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 37px 31px;
-  transition: transform 0.5s ease-in-out;
-}
-
-/* Carousel Navigation Buttons */
-.product-grid__nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  width: 48px;
-  height: 48px;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(177, 216, 255, 1);
-  border: 2px solid var(--color-black);
-  border-radius: 4px;
-  box-shadow: 4px 4px 0px 0px var(--color-black);
-  cursor: pointer;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
-  color: rgba(0, 0, 0, 1);
-}
-
-.product-grid__nav:hover {
-  transform: translateY(-50%) translate(-2px, -2px);
-  box-shadow: 6px 6px 0px 0px var(--color-black);
-}
-
-.product-grid__nav:active {
-  transform: translateY(-50%) translate(2px, 2px);
-  box-shadow: 2px 2px 0px 0px var(--color-black);
-}
-
-.product-grid__nav--prev {
-  left: 20px;
-}
-
-.product-grid__nav--next {
-  right: 20px;
-}
-
-.product-grid__nav svg {
-  width: 24px;
-  height: 24px;
+  transition: transform 0.3s ease-in-out;
 }
 
 /* Animation classes for category change */
@@ -342,14 +299,49 @@
   font-family: var(--font-body);
   font-size: 16px;
   color: var(--color-text-secondary);
-  width: 100%;
 }
 
-@media screen and (max-width: 992px) {
-  .product-grid__empty {
-    flex: 1 1 100%;
-    min-width: 100%;
-  }
+/* Carousel Navigation Buttons */
+.product-grid__nav {
+  display: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(177, 216, 255, 1);
+  border: 2px solid var(--color-black);
+  border-radius: 4px;
+  box-shadow: 4px 4px 0px 0px var(--color-black);
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  color: rgba(0, 0, 0, 1);
+}
+
+.product-grid__nav:hover {
+  transform: translateY(-50%) translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px var(--color-black);
+}
+
+.product-grid__nav:active {
+  transform: translateY(-50%) translate(2px, 2px);
+  box-shadow: 2px 2px 0px 0px var(--color-black);
+}
+
+.product-grid__nav--prev {
+  left: 10px;
+}
+
+.product-grid__nav--next {
+  right: 10px;
+}
+
+.product-grid__nav svg {
+  width: 20px;
+  height: 20px;
 }
 
 
@@ -377,42 +369,40 @@
     border-radius: 5px;
   }
 
-  .product-grid__carousel-track {
+  .product-grid__items {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .product-grid__carousel {
+    overflow: visible;
+  }
+
+  .product-grid__items {
+    display: flex;
+    gap: 16px;
     overflow-x: auto;
-    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
 
-  .product-grid__carousel-track::-webkit-scrollbar {
+  .product-grid__items::-webkit-scrollbar {
     display: none;
   }
 
-  .product-grid__items {
-    display: flex;
-    grid-template-columns: none;
-    gap: 20px;
-    width: max-content;
-  }
-
   .product-grid__items .product-card {
-    flex: 0 0 calc(50% - 10px);
-    min-width: calc(50% - 10px);
-    max-width: calc(50% - 10px);
+    flex: 0 0 calc(85% - 8px);
+    max-width: calc(85% - 8px);
+    scroll-snap-align: start;
   }
 
   .product-grid__nav {
     display: flex;
-  }
-
-  .product-grid__nav--prev {
-    left: 10px;
-  }
-
-  .product-grid__nav--next {
-    right: 10px;
   }
 }
 
@@ -432,6 +422,16 @@
 
   .product-grid__title {
     font-size: 28px;
+  }
+
+  .product-grid__nav {
+    width: 36px;
+    height: 36px;
+  }
+
+  .product-grid__nav svg {
+    width: 18px;
+    height: 18px;
   }
 }
 
@@ -454,14 +454,13 @@
   }
 
   .product-grid__items .product-card {
-    flex: 0 0 calc(85% - 8px);
-    min-width: calc(85% - 8px);
-    max-width: calc(85% - 8px);
+    flex: 0 0 calc(90% - 8px);
+    max-width: calc(90% - 8px);
   }
 
   .product-grid__nav {
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
   }
 
   .product-grid__nav--prev {
@@ -473,8 +472,8 @@
   }
 
   .product-grid__nav svg {
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
   }
 
   .product-grid__tab {
@@ -492,106 +491,108 @@
     font-size: 20px;
   }
 
-  .product-grid__items .product-card {
-    flex: 0 0 calc(90% - 6px);
-    min-width: calc(90% - 6px);
-    max-width: calc(90% - 6px);
-  }
-
-  .product-grid__nav {
-    width: 36px;
-    height: 36px;
-  }
-
-  .product-grid__nav svg {
-    width: 18px;
-    height: 18px;
+  .product-grid__items {
+    gap: 12px;
   }
 }
 {% endstylesheet %}
 
 {% javascript %}
 (function() {
-  const initProductCarousel = () => {
+  // Initialize product grid carousels on mobile
+  function initProductCarousels() {
     const carousels = document.querySelectorAll('[data-product-carousel]');
-    const isMobile = window.innerWidth <= 992;
     
-    if (!isMobile) return;
-    
-    carousels.forEach(carousel => {
-      const track = carousel.querySelector('[data-product-carousel-track]');
-      const prevBtn = carousel.querySelector('[data-product-carousel-prev]');
-      const nextBtn = carousel.querySelector('[data-product-carousel-next]');
-      const items = carousel.querySelector('.product-grid__items');
+    for (const carousel of carousels) {
+      const track = carousel.querySelector('[data-carousel-track]');
+      const prevBtn = carousel.querySelector('[data-carousel-prev]');
+      const nextBtn = carousel.querySelector('[data-carousel-next]');
       
-      if (!track || !items) return;
+      if (!track || !prevBtn || !nextBtn) continue;
       
-      const cardWidth = items.querySelector('.product-card')?.offsetWidth || 0;
-      const gap = 20;
+      const cards = track.querySelectorAll('.product-card');
+      if (cards.length === 0) continue;
+      
+      let currentIndex = 0;
+      const cardWidth = cards[0].offsetWidth;
+      const gap = 16;
       const scrollAmount = cardWidth + gap;
       
-      function scrollCarousel(direction) {
-        const currentScroll = track.scrollLeft;
-        const newScroll = direction === 'next' 
-          ? currentScroll + scrollAmount 
-          : currentScroll - scrollAmount;
-        
+      function updateButtons() {
+        prevBtn.style.display = currentIndex > 0 ? 'flex' : 'none';
+        nextBtn.style.display = currentIndex < cards.length - 1 ? 'flex' : 'none';
+      }
+      
+      function scrollToIndex(index) {
+        if (index < 0 || index >= cards.length) return;
+        currentIndex = index;
+        const scrollPosition = index * scrollAmount;
         track.scrollTo({
-          left: newScroll,
+          left: scrollPosition,
           behavior: 'smooth'
         });
+        updateButtons();
       }
       
-      if (prevBtn) {
-        prevBtn.addEventListener('click', () => scrollCarousel('prev'));
-      }
-      
-      if (nextBtn) {
-        nextBtn.addEventListener('click', () => scrollCarousel('next'));
-      }
-      
-      // Update button visibility based on scroll position
-      function updateButtons() {
-        const maxScroll = track.scrollWidth - track.clientWidth;
-        const isAtStart = track.scrollLeft <= 0;
-        const isAtEnd = track.scrollLeft >= maxScroll - 1;
-        
-        if (prevBtn) {
-          prevBtn.style.opacity = isAtStart ? '0.5' : '1';
-          prevBtn.style.pointerEvents = isAtStart ? 'none' : 'auto';
+      prevBtn.addEventListener('click', () => {
+        if (currentIndex > 0) {
+          scrollToIndex(currentIndex - 1);
         }
-        
-        if (nextBtn) {
-          nextBtn.style.opacity = isAtEnd ? '0.5' : '1';
-          nextBtn.style.pointerEvents = isAtEnd ? 'none' : 'auto';
-        }
-      }
+      });
       
-      track.addEventListener('scroll', updateButtons);
+      nextBtn.addEventListener('click', () => {
+        if (currentIndex < cards.length - 1) {
+          scrollToIndex(currentIndex + 1);
+        }
+      });
+      
+      // Update button visibility on scroll
+      track.addEventListener('scroll', () => {
+        const newIndex = Math.round(track.scrollLeft / scrollAmount);
+        if (newIndex !== currentIndex) {
+          currentIndex = newIndex;
+          updateButtons();
+        }
+      });
+      
+      // Initial button state
       updateButtons();
       
-      // Recalculate on resize
+      // Handle window resize
       let resizeTimer;
       window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
-          updateButtons();
+          const isMobile = window.innerWidth <= 768;
+          if (isMobile) {
+            updateButtons();
+          } else {
+            prevBtn.style.display = 'none';
+            nextBtn.style.display = 'none';
+          }
         }, 250);
       });
-    });
-  };
-  
-  // Initialize on load
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initProductCarousel);
-  } else {
-    initProductCarousel();
+    }
   }
   
-  // Re-initialize when tab changes (for existing tab functionality)
-  document.addEventListener('productGridTabChanged', () => {
-    setTimeout(initProductCarousel, 100);
-  });
+  // Initialize on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initProductCarousels);
+  } else {
+    initProductCarousels();
+  }
+  
+  // Re-initialize when tab content changes
+  const productGridContent = document.querySelector('[data-product-grid-content]');
+  if (productGridContent) {
+    const observer = new MutationObserver(() => {
+      initProductCarousels();
+    });
+    observer.observe(productGridContent, {
+      childList: true,
+      subtree: true
+    });
+  }
 })();
 {% endjavascript %}
 
