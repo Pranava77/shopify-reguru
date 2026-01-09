@@ -123,12 +123,11 @@
     "hero-banner": {
       "type": "hero-banner",
       "settings": {
-        "subheading": "",
+        "subheading": ".",
         "heading": "",
         "discount_text": "",
         "cta_text": "",
         "cta_link": "shopify://pages/product-category",
-        "image": "shopify://shop_images/monitors-ultrawide-removebg-preview.png",
         "background_color": "#171544"
       }
     },
