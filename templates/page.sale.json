@@ -120,60 +120,101 @@
         "promo_position": "right"
       }
     },
-    "about_us_section": {
-      "type": "about-us",
+    "sale_ibwxHC": {
+      "type": "sale",
       "blocks": {
-        "brand_logo_1": {
-          "type": "brand_logo",
+        "category_TH4irk": {
+          "type": "category",
           "settings": {
-            "brand_name": "logo one"
+            "label": "All devices",
+            "value": ""
           }
         },
-        "brand_logo_2": {
-          "type": "brand_logo",
+        "category_XPyApa": {
+          "type": "category",
           "settings": {
-            "brand_name": "logo two"
+            "label": "Mobile & Tablets",
+            "value": ""
           }
         },
-        "brand_logo_3": {
-          "type": "brand_logo",
+        "category_8a9J8H": {
+          "type": "category",
           "settings": {
-            "brand_name": "logo three"
+            "label": "Laptops",
+            "value": ""
           }
         },
-        "brand_logo_4": {
-          "type": "brand_logo",
+        "category_4WMLtL": {
+          "type": "category",
           "settings": {
-            "brand_name": "logo four"
+            "label": "Television",
+            "value": ""
+          }
+        },
+        "category_VdgkDH": {
+          "type": "category",
+          "settings": {
+            "label": "Headphones",
+            "value": ""
+          }
+        },
+        "brand_CGnWB7": {
+          "type": "brand",
+          "settings": {
+            "label": "Lenovo",
+            "value": "",
+            "count": "56"
+          }
+        },
+        "brand_tgDAk9": {
+          "type": "brand",
+          "settings": {
+            "label": "Asus",
+            "value": "",
+            "count": "32"
+          }
+        },
+        "brand_ATM4gB": {
+          "type": "brand",
+          "settings": {
+            "label": "HP",
+            "value": "",
+            "count": "185"
+          }
+        },
+        "brand_qEaegK": {
+          "type": "brand",
+          "settings": {
+            "label": "Macbook",
+            "value": "",
+            "count": "75"
           }
         }
       },
       "block_order": [
-        "brand_logo_1",
-        "brand_logo_2",
-        "brand_logo_3",
-        "brand_logo_4"
+        "category_TH4irk",
+        "category_XPyApa",
+        "category_8a9J8H",
+        "category_4WMLtL",
+        "category_VdgkDH",
+        "brand_CGnWB7",
+        "brand_tgDAk9",
+        "brand_ATM4gB",
+        "brand_qEaegK"
       ],
+      "name": "Sale",
       "settings": {
-        "hero_title_line_1": "Beyond Refurbishment",
-        "hero_title_line_2": "Redefining Smart",
-        "hero_title_line_3": "Tech Ownership",
-        "hero_description": "ReGuru is building a sustainable, circular tech ecosystem — making technology accessible while reducing e-waste.",
-        "hero_button_text": "Join Franchise",
-        "hero_button_link": "",
-        "franchise_card_title": "ReGuru Franchise",
-        "franchise_card_description": "Build a high-growth tech retail business with India's most trusted refurbished electronics brand.",
-        "franchise_feature_1": "Proven business model",
-        "franchise_feature_2": "High-margin product portfolio",
-        "franchise_card_button_text": "join franchise",
-        "franchise_card_button_link": "",
-        "brands_title": "Top Brands  we sell:",
-        "expertise_title": "Our expertise",
-        "expertise_description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
-        "expertise_text_1": "",
-        "expertise_link_1": "",
-        "expertise_text_2": "",
-        "expertise_link_2": ""
+        "hero_image": "shopify://shop_images/Screenshot_2026-01-09_163744.png",
+        "hero_title": "",
+        "hero_subtitle": "",
+        "hero_description": "",
+        "hero_button_text": "Browse Gadgets",
+        "hero_button_url": "",
+        "collection": "monitors",
+        "products_to_show": 12,
+        "show_franchise_button": false,
+        "franchise_text": "Join Franchise",
+        "franchise_url": ""
       }
     },
     "footer_MeKgAQ": {
@@ -265,7 +306,7 @@
   "order": [
     "header_U9K4Tf",
     "mega_menu_DKxVCr",
-    "about_us_section",
+    "sale_ibwxHC",
     "footer_MeKgAQ"
   ]
 }
