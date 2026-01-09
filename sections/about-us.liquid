@@ -1,36 +1,36 @@
 {%- liquid
   assign hero_title_line_1 = section.settings.hero_title_line_1 | default: 'Beyond Refurbishment'
-  assign hero_title_line_2 = section.settings.hero_title_line_2 | default: 'Redefining Smart'
-  assign hero_title_line_3 = section.settings.hero_title_line_3 | default: 'Tech Ownership'
+  assign hero_title_line_2 = section.settings.hero_title_line_2 | default: 'Redefining Smart  Tech Ownership'
   assign hero_description = section.settings.hero_description | default: 'ReGuru is building a sustainable, circular tech ecosystem — making technology accessible while reducing e-waste.'
-  assign hero_button_text = section.settings.hero_button_text | default: 'Join Franchise'
-  assign hero_button_link = section.settings.hero_button_link | default: '#'
-  assign hero_image = section.settings.hero_image
-  
-  assign franchise_card_title = section.settings.franchise_card_title | default: 'ReGuru Franchise'
-  assign franchise_card_description = section.settings.franchise_card_description | default: "Build a high-growth tech retail business with India's most trusted refurbished electronics brand."
-  assign franchise_card_button_text = section.settings.franchise_card_button_text | default: 'join franchise'
-  assign franchise_card_button_link = section.settings.franchise_card_button_link | default: '#'
-  
   assign brands_title = section.settings.brands_title | default: 'Top Brands  we sell:'
   
-  assign expertise_title = section.settings.expertise_title | default: 'Our expertise'
-  assign expertise_description = section.settings.expertise_description | default: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.'
-  assign expertise_image_1 = section.settings.expertise_image_1
-  assign expertise_text_1 = section.settings.expertise_text_1
-  assign expertise_link_1 = section.settings.expertise_link_1
-  assign expertise_image_2 = section.settings.expertise_image_2
-  assign expertise_text_2 = section.settings.expertise_text_2
-  assign expertise_link_2 = section.settings.expertise_link_2
+  assign tech_standards_title = section.settings.tech_standards_title | default: 'Tech standards'
+  assign tech_standards_description = section.settings.tech_standards_description | default: 'Our commitment to excellence ensures every device leaving out faiclity meets the highest industrial performance benchmanrks'
   
-  assign bg_image = section.settings.background_image
+  assign quality_title = section.settings.quality_title | default: 'Uncompromising Quality'
+  assign quality_description = section.settings.quality_description | default: 'Every device undergoes  45-point diagnostic check,including battery health, pixel density, and neural board stability'
+  
+  assign eco_title = section.settings.eco_title | default: 'Eco- First Lifecycle'
+  assign eco_description = section.settings.eco_description | default: 'We operate on a zero-waste policy. Parts that cannot be refurbished are ethically recycled.'
+  
+  assign affordability_title = section.settings.affordability_title | default: 'Affordability'
+  assign affordability_description = section.settings.affordability_description | default: 'Premium technology should be accessible. We offer flagship devices at upto 60% less than original retail price'
+  
+  assign grow_title = section.settings.grow_title | default: 'Grow with Us'
+  assign grow_description = section.settings.grow_description | default: 'Become a part of the circular economy revolution. Our franchise program provides you with the inventory, technical training, and diagnostic software needed to launch your own refurbishment center.'
+  assign grow_feature_1 = section.settings.grow_feature_1 | default: 'Access to global refurbished inventory pipelines'
+  assign grow_feature_2 = section.settings.grow_feature_2 | default: 'Proprietary OS diagnostic tools suite'
+  assign grow_feature_3 = section.settings.grow_feature_3 | default: 'Certified technician training & certification'
+  assign grow_button_text = section.settings.grow_button_text | default: 'Join Franchise'
+  assign grow_button_link = section.settings.grow_button_link | default: '#'
+  assign grow_image = section.settings.grow_image
+  
+  assign image_card_1 = section.settings.image_card_1
+  assign image_card_2 = section.settings.image_card_2
+  assign image_card_3 = section.settings.image_card_3
 -%}
 
-<section class="about-us" data-section-id="{{ section.id }}"{% if bg_image != blank %} style="background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
-  <!-- Background Grid Patterns -->
-  <div class="about-us__grid-pattern about-us__grid-pattern--top"></div>
-  <div class="about-us__grid-pattern about-us__grid-pattern--bottom"></div>
-  
+<section class="about-us" data-section-id="{{ section.id }}">
   <div class="about-us__container">
     <!-- Hero Section -->
     <div class="about-us__hero">
@@ -39,12 +39,8 @@
           <h1 class="about-us__hero-title">
             <span class="about-us__hero-title--blue">{{ hero_title_line_1 }}</span>
             <span class="about-us__hero-title--black">{{ hero_title_line_2 }}</span>
-            <span class="about-us__hero-title--black">{{ hero_title_line_3 }}</span>
           </h1>
           <p class="about-us__hero-description">{{ hero_description }}</p>
-          <a href="{{ hero_button_link }}" class="about-us__hero-button">
-            {{ hero_button_text }}
-          </a>
         </div>
         
         <div class="about-us__brands">
@@ -82,151 +78,143 @@
       </div>
       
       <div class="about-us__hero-visual">
-        <div class="about-us__hero-image-wrapper">
-          {%- if hero_image != blank -%}
-            <img 
-              src="{{ hero_image | image_url: width: 700 }}"
-              alt="{{ hero_image.alt | default: hero_title_line_1 }}"
-              width="700"
-              height="746"
-              loading="lazy"
-              class="about-us__hero-image"
-            >
+        <div class="about-us__image-grid">
+          {%- if image_card_1 != blank -%}
+            <div class="about-us__image-card about-us__image-card--1">
+              <img 
+                src="{{ image_card_1 | image_url: width: 381 }}"
+                alt="{{ image_card_1.alt | default: 'About us image' }}"
+                width="381"
+                height="205"
+                loading="lazy"
+                class="about-us__image-card-img"
+              >
+            </div>
           {%- else -%}
-            <div class="about-us__hero-placeholder"></div>
+            <div class="about-us__image-card about-us__image-card--1 about-us__image-card--placeholder"></div>
+          {%- endif -%}
+          
+          {%- if image_card_2 != blank -%}
+            <div class="about-us__image-card about-us__image-card--2">
+              <img 
+                src="{{ image_card_2 | image_url: width: 347 }}"
+                alt="{{ image_card_2.alt | default: 'About us image' }}"
+                width="347"
+                height="205"
+                loading="lazy"
+                class="about-us__image-card-img"
+              >
+            </div>
+          {%- else -%}
+            <div class="about-us__image-card about-us__image-card--2 about-us__image-card--placeholder"></div>
+          {%- endif -%}
+          
+          {%- if image_card_3 != blank -%}
+            <div class="about-us__image-card about-us__image-card--3">
+              <img 
+                src="{{ image_card_3 | image_url: width: 255 }}"
+                alt="{{ image_card_3.alt | default: 'About us image' }}"
+                width="255"
+                height="193"
+                loading="lazy"
+                class="about-us__image-card-img"
+              >
+            </div>
+          {%- else -%}
+            <div class="about-us__image-card about-us__image-card--3 about-us__image-card--placeholder"></div>
           {%- endif -%}
         </div>
-        
-        <!-- Franchise Card Overlay -->
-        <div class="about-us__franchise-card">
-          <div class="about-us__franchise-card-content">
-            <h3 class="about-us__franchise-card-title">{{ franchise_card_title }}</h3>
-            <p class="about-us__franchise-card-description">{{ franchise_card_description }}</p>
-            
-            <ul class="about-us__franchise-card-features">
-              {%- if section.settings.franchise_feature_1 != blank -%}
-                <li class="about-us__franchise-card-feature">
-                  <svg class="about-us__checkmark-icon" width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M8.5 2.5L4 7L1.5 4.5" stroke="#28D98E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                  <span>{{ section.settings.franchise_feature_1 }}</span>
-                </li>
-              {%- endif -%}
-              {%- if section.settings.franchise_feature_2 != blank -%}
-                <li class="about-us__franchise-card-feature">
-                  <svg class="about-us__checkmark-icon" width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M8.5 2.5L4 7L1.5 4.5" stroke="#28D98E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                  <span>{{ section.settings.franchise_feature_2 }}</span>
-                </li>
-              {%- endif -%}
-            </ul>
-            
-            <a href="{{ franchise_card_button_link }}" class="about-us__franchise-card-button">
-              {{ franchise_card_button_text }}
-            </a>
-          </div>
-        </div>
-        
-        <!-- Decorative Elements -->
-        <div class="about-us__decorative-dot about-us__decorative-dot--1"></div>
-        <div class="about-us__decorative-dot about-us__decorative-dot--2"></div>
-        <div class="about-us__decorative-dot about-us__decorative-dot--3"></div>
-        <div class="about-us__decorative-square about-us__decorative-square--1"></div>
-        <div class="about-us__decorative-square about-us__decorative-square--2"></div>
       </div>
     </div>
     
-    <!-- Expertise Section -->
-    <div class="about-us__expertise">
-      <div class="about-us__expertise-header">
-        <h2 class="about-us__expertise-title">{{ expertise_title }}</h2>
-        <p class="about-us__expertise-description">{{ expertise_description }}</p>
-      </div>
+    <!-- Tech Standards Section -->
+    <div class="about-us__tech-standards">
+      <h2 class="about-us__tech-standards-title">{{ tech_standards_title }}</h2>
+      <p class="about-us__tech-standards-description">{{ tech_standards_description }}</p>
       
-      <div class="about-us__expertise-content">
-        <!-- Row 1: Image Left, Text Right -->
-        <div class="about-us__expertise-row">
-          <div class="about-us__expertise-image-wrapper">
-            {%- if expertise_image_1 != blank -%}
-              <img 
-                src="{{ expertise_image_1 | image_url: width: 440 }}"
-                alt="{{ expertise_image_1.alt | default: expertise_title }}"
-                width="440"
-                height="279"
-                loading="lazy"
-                class="about-us__expertise-image"
-              >
-            {%- else -%}
-              <div class="about-us__expertise-placeholder"></div>
-            {%- endif -%}
+      <div class="about-us__feature-cards">
+        <div class="about-us__feature-card">
+          <div class="about-us__feature-card-icon about-us__feature-card-icon--quality">
+            <img 
+              src="{{ 'about-quality-icon.png' | asset_url }}"
+              alt="Quality icon"
+              width="154"
+              height="137"
+              loading="lazy"
+            >
           </div>
-          <div class="about-us__expertise-text">
-            {%- if expertise_text_1 != blank -%}
-              {{ expertise_text_1 }}
-            {%- else -%}
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-            {%- endif -%}
-            {%- if expertise_link_1 != blank -%}
-              <a href="{{ expertise_link_1 }}" class="about-us__expertise-link">Lorem ipsum</a>
-            {%- endif -%}
-          </div>
+          <h3 class="about-us__feature-card-title">{{ quality_title }}</h3>
+          <p class="about-us__feature-card-description">{{ quality_description }}</p>
         </div>
         
-        <!-- Row 2: Text Left, Image Right -->
-        <div class="about-us__expertise-row about-us__expertise-row--reverse">
-          <div class="about-us__expertise-text">
-            {%- if expertise_text_2 != blank -%}
-              {{ expertise_text_2 }}
-            {%- else -%}
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-            {%- endif -%}
-            {%- if expertise_link_2 != blank -%}
-              <a href="{{ expertise_link_2 }}" class="about-us__expertise-link">Lorem ipsum</a>
-            {%- endif -%}
+        <div class="about-us__feature-card">
+          <div class="about-us__feature-card-icon about-us__feature-card-icon--eco">
+            <img 
+              src="{{ 'about-eco-icon.png' | asset_url }}"
+              alt="Eco icon"
+              width="127"
+              height="137"
+              loading="lazy"
+            >
           </div>
-          <div class="about-us__expertise-image-wrapper">
-            {%- if expertise_image_2 != blank -%}
-              <img 
-                src="{{ expertise_image_2 | image_url: width: 440 }}"
-                alt="{{ expertise_image_2.alt | default: expertise_title }}"
-                width="440"
-                height="279"
-                loading="lazy"
-                class="about-us__expertise-image"
-              >
-            {%- else -%}
-              <div class="about-us__expertise-placeholder"></div>
-            {%- endif -%}
+          <h3 class="about-us__feature-card-title">{{ eco_title }}</h3>
+          <p class="about-us__feature-card-description">{{ eco_description }}</p>
+        </div>
+        
+        <div class="about-us__feature-card">
+          <div class="about-us__feature-card-icon about-us__feature-card-icon--affordability">
+            <img 
+              src="{{ 'about-affordability-icon.png' | asset_url }}"
+              alt="Affordability icon"
+              width="132"
+              height="137"
+              loading="lazy"
+            >
           </div>
+          <h3 class="about-us__feature-card-title">{{ affordability_title }}</h3>
+          <p class="about-us__feature-card-description">{{ affordability_description }}</p>
         </div>
       </div>
-      
-      <!-- Laptop Illustration -->
-      <div class="about-us__laptop-illustration">
-        {%- if section.settings.laptop_image != blank -%}
-          <img 
-            src="{{ section.settings.laptop_image | image_url: width: 240 }}"
-            alt="Laptop illustration"
-            width="183"
-            height="171"
-            loading="lazy"
-            class="about-us__laptop-img"
-          >
-        {%- else -%}
-          <svg class="about-us__laptop-img" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="15" y="75" width="90" height="6" rx="2" fill="#4A5568" stroke="#000" stroke-width="1.5"/>
-            <rect x="22" y="28" width="76" height="50" rx="3" fill="#2D3748" stroke="#000" stroke-width="1.5"/>
-            <rect x="26" y="32" width="68" height="42" rx="1" fill="#E2E8F0"/>
-            <rect x="32" y="40" width="35" height="3" rx="1" fill="#A0AEC0"/>
-            <rect x="32" y="48" width="45" height="3" rx="1" fill="#A0AEC0"/>
-            <rect x="32" y="56" width="28" height="3" rx="1" fill="#A0AEC0"/>
-            <circle cx="73" cy="54" r="14" fill="#28D98E" stroke="#000" stroke-width="1.5"/>
-            <path d="M66 54L71 59L81 49" stroke="#FFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M50 81L45 95H75L70 81" fill="#4A5568" stroke="#000" stroke-width="1.5"/>
-            <ellipse cx="60" cy="95" rx="18" ry="3" fill="#2D3748" stroke="#000" stroke-width="1"/>
-          </svg>
-        {%- endif -%}
+    </div>
+    
+    <!-- Grow with Us Section -->
+    <div class="about-us__grow">
+      <div class="about-us__grow-content">
+        <div class="about-us__grow-text">
+          <h2 class="about-us__grow-title">{{ grow_title }}</h2>
+          <p class="about-us__grow-description">{{ grow_description }}</p>
+          
+          <ul class="about-us__grow-features">
+            {%- if grow_feature_1 != blank -%}
+              <li class="about-us__grow-feature">{{ grow_feature_1 }}</li>
+            {%- endif -%}
+            {%- if grow_feature_2 != blank -%}
+              <li class="about-us__grow-feature">{{ grow_feature_2 }}</li>
+            {%- endif -%}
+            {%- if grow_feature_3 != blank -%}
+              <li class="about-us__grow-feature">{{ grow_feature_3 }}</li>
+            {%- endif -%}
+          </ul>
+          
+          <a href="{{ grow_button_link }}" class="about-us__grow-button">
+            {{ grow_button_text }}
+          </a>
+        </div>
+        
+        <div class="about-us__grow-image-wrapper">
+          {%- if grow_image != blank -%}
+            <img 
+              src="{{ grow_image | image_url: width: 394 }}"
+              alt="{{ grow_image.alt | default: 'Franchise image' }}"
+              width="394"
+              height="424"
+              loading="lazy"
+              class="about-us__grow-image"
+            >
+          {%- else -%}
+            <div class="about-us__grow-placeholder"></div>
+          {%- endif -%}
+        </div>
       </div>
     </div>
   </div>
@@ -235,37 +223,9 @@
 {% stylesheet %}
 .about-us {
   position: relative;
-  min-height: 100vh;
   background-color: var(--color-white);
-  padding: 123px 0 0;
+  padding: 25px 0 0;
   overflow: hidden;
-}
-
-.about-us__grid-pattern {
-  position: absolute;
-  width: 1443px;
-  height: 824px;
-  opacity: 0.42;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.about-us__grid-pattern--top {
-  top: 5.6%;
-  left: -0.21%;
-  background-image: 
-    repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(0, 110, 216, 0.1) 20px, rgba(0, 110, 216, 0.1) 21px),
-    repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(0, 110, 216, 0.1) 20px, rgba(0, 110, 216, 0.1) 21px);
-}
-
-.about-us__grid-pattern--bottom {
-  top: 42.58%;
-  left: -0.49%;
-  width: 1443px;
-  height: 1281px;
-  background-image: 
-    repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(0, 110, 216, 0.1) 20px, rgba(0, 110, 216, 0.1) 21px),
-    repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(0, 110, 216, 0.1) 20px, rgba(0, 110, 216, 0.1) 21px);
 }
 
 .about-us__container {
@@ -273,30 +233,29 @@
   max-width: var(--container-max);
   margin: 0 auto;
   padding: 0 var(--container-padding);
-  z-index: 1;
 }
 
 /* Hero Section */
 .about-us__hero {
   position: relative;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 72px;
-  align-items: center;
+  display: flex;
+  align-items: flex-start;
+  gap: 111px;
+  padding: 25px 64px 0;
   margin-bottom: 120px;
-  min-height: 830px;
 }
 
 .about-us__hero-content {
   display: flex;
   flex-direction: column;
-  gap: 48px;
+  gap: 30px;
+  flex: 0 0 755px;
 }
 
 .about-us__hero-text {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 30px;
 }
 
 .about-us__hero-title {
@@ -306,6 +265,7 @@
   margin: 0;
   display: flex;
   flex-direction: column;
+  gap: 0;
 }
 
 .about-us__hero-title--blue {
@@ -315,6 +275,7 @@
 
 .about-us__hero-title--black {
   color: var(--color-black);
+  font-size: 32px;
   font-weight: 600;
 }
 
@@ -322,39 +283,15 @@
   font-family: var(--font-heading);
   font-size: 20.298px;
   line-height: 28.998px;
-  color: #666;
-  max-width: 593px;
+  color: #1e1a5c;
+  max-width: 598px;
   margin: 0;
-}
-
-.about-us__hero-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 11.778px 30.917px;
-  background-color: var(--color-white);
-  border: 0.736px solid var(--color-black);
-  border-radius: 3px;
-  box-shadow: 4.417px 4.417px 0px 0px var(--color-black);
-  font-family: var(--font-product);
-  font-weight: 500;
-  font-size: 20.61px;
-  line-height: 29.444px;
-  color: var(--color-black);
-  text-decoration: none;
-  width: fit-content;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
-}
-
-.about-us__hero-button:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px 0px var(--color-black);
 }
 
 .about-us__brands {
   display: flex;
   flex-direction: column;
-  gap: 13px;
+  gap: 0;
   max-width: 606px;
 }
 
@@ -364,13 +301,14 @@
   font-size: 20.298px;
   line-height: 28.998px;
   color: #585858;
-  margin: 0;
+  margin: 0 0 0;
 }
 
 .about-us__brands-list {
   display: flex;
   gap: 33px;
   flex-wrap: wrap;
+  margin-top: 0;
 }
 
 .about-us__brand-item {
@@ -398,383 +336,442 @@
   text-transform: capitalize;
 }
 
+/* Hero Visual - Image Grid */
 .about-us__hero-visual {
   position: relative;
-  height: 830px;
+  flex: 1;
+  min-height: 441px;
 }
 
-.about-us__hero-image-wrapper {
+.about-us__image-grid {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.about-us__image-card {
   position: absolute;
-  top: 55px;
-  right: 0;
-  width: 495px;
-  height: 573px;
+  background-color: #d9d9d9;
+  border-radius: 12px;
+  box-shadow: 2.615px 2.615px 0px 0px var(--color-black);
+  overflow: hidden;
 }
 
-.about-us__hero-image {
+.about-us__image-card--1 {
+  width: 381px;
+  height: 205px;
+  left: 165px;
+  top: 0;
+  z-index: 3;
+}
+
+.about-us__image-card--2 {
+  width: 347px;
+  height: 205px;
+  left: 290px;
+  top: 236px;
+  z-index: 2;
+}
+
+.about-us__image-card--3 {
+  width: 255px;
+  height: 193px;
+  left: 0;
+  top: 225px;
+  z-index: 1;
+}
+
+.about-us__image-card-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
 
-.about-us__hero-placeholder {
-  width: 100%;
-  height: 100%;
+.about-us__image-card--placeholder {
   background-color: #d9d9d9;
-  box-shadow: 4px 4px 0px 0px var(--color-black);
 }
 
-/* Franchise Card */
-.about-us__franchise-card {
-  position: absolute;
-  top: 211px;
-  right: 0;
-  width: 234px;
-  background-color: var(--color-white);
-  padding: 27px 19px;
-  z-index: 2;
+/* Tech Standards Section */
+.about-us__tech-standards {
+  text-align: center;
+  margin-bottom: 120px;
 }
 
-.about-us__franchise-card-content {
-  display: flex;
-  flex-direction: column;
-  gap: 23px;
-}
-
-.about-us__franchise-card-title {
+.about-us__tech-standards-title {
   font-family: var(--font-heading);
   font-weight: 500;
-  font-size: 18.402px;
-  line-height: 1.31;
+  font-size: 36px;
+  line-height: 28.998px;
   color: var(--color-black);
-  margin: 0;
+  text-transform: capitalize;
+  margin: 0 0 10px;
 }
 
-.about-us__franchise-card-description {
+.about-us__tech-standards-description {
   font-family: var(--font-heading);
   font-weight: 400;
-  font-size: 12.574px;
-  line-height: 1.31;
+  font-size: 20px;
+  line-height: 28.998px;
+  color: var(--color-black);
+  margin: 0 0 40px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.about-us__feature-cards {
+  display: flex;
+  gap: 35px;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.about-us__feature-card {
+  position: relative;
+  width: 386px;
+  height: 328px;
+  background-color: var(--color-white);
+  border-radius: 6px;
+  box-shadow: 4px 4px 0px 0px var(--color-black);
+  padding: 26px 33px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.about-us__feature-card-icon {
+  height: 137px;
+  margin-bottom: 29px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.about-us__feature-card-icon--quality {
+  width: 154.125px;
+}
+
+.about-us__feature-card-icon--eco {
+  width: 127px;
+}
+
+.about-us__feature-card-icon--affordability {
+  width: 132px;
+}
+
+.about-us__feature-card-icon img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.about-us__feature-card-title {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 28.998px;
+  color: var(--color-black);
+  margin: 0 0 8px;
+  min-height: 29px;
+}
+
+.about-us__feature-card-description {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 28.998px;
+  color: var(--color-black);
+  margin: 0;
+  max-width: 320px;
+}
+
+/* Grow with Us Section */
+.about-us__grow {
+  background-color: #b1d8ff;
+  padding: 89px 0;
+  margin: 0 calc(-1 * var(--container-padding));
+}
+
+.about-us__grow-content {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+  display: flex;
+  gap: 140px;
+  align-items: center;
+}
+
+.about-us__grow-text {
+  display: flex;
+  flex-direction: column;
+  gap: 43px;
+  flex: 0 0 690px;
+}
+
+.about-us__grow-title {
+  font-family: var(--font-product);
+  font-weight: 500;
+  font-size: 61.146px;
+  line-height: 87.352px;
   color: var(--color-black);
   margin: 0;
 }
 
-.about-us__franchise-card-features {
+.about-us__grow-description {
+  font-family: var(--font-product);
+  font-weight: 500;
+  font-size: 20.611px;
+  line-height: 29.444px;
+  color: var(--color-black);
+  margin: 0;
+}
+
+.about-us__grow-features {
   list-style: none;
   padding: 0;
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 }
 
-.about-us__franchise-card-feature {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  font-family: var(--font-heading);
-  font-weight: 400;
-  font-size: 13.424px;
-  line-height: 1.31;
+.about-us__grow-feature {
+  font-family: var(--font-product);
+  font-weight: 500;
+  font-size: 20.611px;
+  line-height: 29.444px;
   color: var(--color-black);
 }
 
-.about-us__checkmark-icon {
-  flex-shrink: 0;
-  width: 10px;
-  height: 10px;
-}
-
-.about-us__franchise-card-button {
+.about-us__grow-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 54px;
-  background-color: #494949;
-  border-radius: 3px;
-  font-family: var(--font-accent);
+  padding: 11.778px 30.917px;
+  background-color: var(--color-white);
+  border: 0.736px solid var(--color-black);
+  border-radius: 0;
+  box-shadow: 4.417px 4.417px 0px 0px var(--color-black);
+  font-family: var(--font-product);
   font-weight: 500;
-  font-size: 12px;
-  line-height: 1.31;
-  color: var(--color-white);
-  text-decoration: none;
-  text-transform: capitalize;
-  width: fit-content;
-  transition: background-color var(--transition-fast);
-}
-
-.about-us__franchise-card-button:hover {
-  background-color: #3a3a3a;
-}
-
-/* Decorative Elements */
-.about-us__decorative-dot {
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  background-color: var(--color-black);
-  border-radius: 50%;
-  z-index: 1;
-}
-
-.about-us__decorative-dot--1 {
-  top: 231px;
-  right: 729px;
-}
-
-.about-us__decorative-dot--2 {
-  top: 281px;
-  right: 679px;
-}
-
-.about-us__decorative-dot--3 {
-  top: 382px;
-  right: 779px;
-}
-
-.about-us__decorative-square {
-  position: absolute;
-  width: 50px;
-  height: 50px;
-  background-color: #cce6ff;
-  z-index: 1;
-}
-
-.about-us__decorative-square--1 {
-  top: 302px;
-  right: 751px;
-}
-
-.about-us__decorative-square--2 {
-  top: 483px;
-  right: 876px;
-}
-
-/* Expertise Section */
-.about-us__expertise {
-  position: relative;
-  margin-top: 120px;
-  padding-bottom: 200px;
-}
-
-.about-us__expertise-header {
-  text-align: center;
-  margin-bottom: 48px;
-}
-
-.about-us__expertise-title {
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 29.734px;
-  line-height: 1.31;
+  font-size: 20.61px;
+  line-height: 29.444px;
   color: var(--color-black);
-  margin: 0 0 14px;
+  text-decoration: none;
+  width: fit-content;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.about-us__expertise-description {
-  font-family: var(--font-heading);
-  font-weight: 400;
-  font-size: 29.734px;
-  line-height: 1.31;
-  color: #7c7c7c;
-  margin: 0;
+.about-us__grow-button:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px var(--color-black);
 }
 
-.about-us__expertise-content {
-  display: flex;
-  flex-direction: column;
-  gap: 17px;
-  max-width: 1110px;
-  margin: 0 auto;
+.about-us__grow-image-wrapper {
+  flex: 0 0 394px;
+  height: 424px;
 }
 
-.about-us__expertise-row {
-  display: grid;
-  grid-template-columns: 440px 1fr;
-  gap: 72px;
-  align-items: center;
-}
-
-.about-us__expertise-row--reverse {
-  grid-template-columns: 1fr 440px;
-}
-
-.about-us__expertise-row--reverse .about-us__expertise-image-wrapper {
-  order: 2;
-}
-
-.about-us__expertise-row--reverse .about-us__expertise-text {
-  order: 1;
-}
-
-.about-us__expertise-image-wrapper {
-  width: 440px;
-  height: 279px;
-}
-
-.about-us__expertise-image {
+.about-us__grow-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border: 1px solid var(--color-black);
+  border-radius: 8px;
+  box-shadow: 2px 2px 0px 0px var(--color-black);
   display: block;
 }
 
-.about-us__expertise-placeholder {
+.about-us__grow-placeholder {
   width: 100%;
   height: 100%;
   background-color: #d9d9d9;
-  box-shadow: 4px 4px 0px 0px #74a7ff;
-}
-
-.about-us__expertise-text {
-  font-family: var(--font-heading);
-  font-weight: 400;
-  font-size: 24px;
-  line-height: 1.31;
-  color: #7c7c7c;
-}
-
-.about-us__expertise-text p {
-  margin: 0 0 23px;
-}
-
-.about-us__expertise-text p:last-child {
-  margin-bottom: 0;
-}
-
-.about-us__expertise-link {
-  font-family: var(--font-heading);
-  font-weight: 400;
-  font-size: 24px;
-  line-height: 1.31;
-  color: #57a0ff;
-  text-decoration: none;
-}
-
-.about-us__expertise-link:hover {
-  text-decoration: underline;
-}
-
-.about-us__laptop-illustration {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 183.478px;
-  height: 170.688px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transform: rotate(355.527deg);
-}
-
-.about-us__laptop-img {
-  width: 100%;
-  height: auto;
-  display: block;
+  border: 1px solid var(--color-black);
+  border-radius: 8px;
+  box-shadow: 2px 2px 0px 0px var(--color-black);
 }
 
 /* Responsive Design */
+@media screen and (max-width: 1400px) {
+  .about-us__hero {
+    gap: 60px;
+    padding: 0 40px;
+  }
+  
+  .about-us__hero-content {
+    flex: 0 0 auto;
+    max-width: 600px;
+  }
+  
+  .about-us__grow-content {
+    gap: 80px;
+  }
+  
+  .about-us__grow-text {
+    flex: 0 0 auto;
+    max-width: 600px;
+  }
+}
+
 @media screen and (max-width: 1200px) {
   .about-us__hero {
-    grid-template-columns: 1fr;
-    gap: 40px;
-    min-height: auto;
+    flex-direction: column;
+    gap: 60px;
+    padding: 0 var(--container-padding);
+  }
+  
+  .about-us__hero-content {
+    width: 100%;
+    max-width: 100%;
   }
   
   .about-us__hero-visual {
-    height: auto;
-    min-height: 500px;
+    width: 100%;
+    min-height: 400px;
   }
   
-  .about-us__expertise-row {
-    grid-template-columns: 1fr;
+  .about-us__image-card--1 {
+    left: 10%;
+  }
+  
+  .about-us__image-card--2 {
+    left: 20%;
+  }
+  
+  .about-us__image-card--3 {
+    left: 0;
+  }
+  
+  .about-us__feature-cards {
+    gap: 30px;
+  }
+  
+  .about-us__feature-card {
+    width: calc(33.333% - 24px);
+    min-width: 300px;
+  }
+  
+  .about-us__grow-content {
+    flex-direction: column;
     gap: 40px;
   }
   
-  .about-us__expertise-row--reverse {
-    grid-template-columns: 1fr;
-  }
-  
-  .about-us__expertise-row--reverse .about-us__expertise-image-wrapper,
-  .about-us__expertise-row--reverse .about-us__expertise-text {
-    order: initial;
-  }
-  
-  .about-us__expertise-image-wrapper {
+  .about-us__grow-text {
     width: 100%;
-    max-width: 440px;
+    max-width: 100%;
+  }
+  
+  .about-us__grow-image-wrapper {
+    width: 100%;
+    max-width: 394px;
     margin: 0 auto;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .about-us__feature-card {
+    width: calc(50% - 18px);
+    min-width: 300px;
   }
 }
 
 @media screen and (max-width: 768px) {
   .about-us {
-    padding: 80px 0 0;
+    padding: 20px 0 0;
+  }
+  
+  .about-us__hero {
+    padding: 0 var(--container-padding);
+    margin-bottom: 80px;
   }
   
   .about-us__hero-title {
     font-size: 36px;
   }
   
-  .about-us__hero-description {
-    font-size: 16px;
-    line-height: 1.5;
-  }
-  
-  .about-us__hero-button {
-    font-size: 16px;
-    padding: 10px 24px;
-  }
-  
-  .about-us__brands-title {
-    font-size: 16px;
-  }
-  
-  .about-us__brand-placeholder {
-    font-size: 14px;
-  }
-  
-  .about-us__hero-image-wrapper {
-    width: 100%;
-    max-width: 495px;
-    position: relative;
-    top: 0;
-    right: auto;
-    margin: 0 auto;
-  }
-  
-  .about-us__franchise-card {
-    position: relative;
-    top: 0;
-    right: auto;
-    width: 100%;
-    max-width: 234px;
-    margin: 20px auto 0;
-  }
-  
-  .about-us__decorative-dot,
-  .about-us__decorative-square {
-    display: none;
-  }
-  
-  .about-us__expertise-title {
+  .about-us__hero-title--black {
     font-size: 24px;
   }
   
-  .about-us__expertise-description {
+  .about-us__hero-description {
+    font-size: 18px;
+    line-height: 1.5;
+  }
+  
+  .about-us__brands-title {
     font-size: 18px;
   }
   
-  .about-us__expertise-text {
-    font-size: 18px;
+  .about-us__brand-placeholder {
+    font-size: 16px;
   }
   
-  .about-us__laptop-illustration {
+  .about-us__hero-visual {
+    min-height: 300px;
+  }
+  
+  .about-us__image-card--1,
+  .about-us__image-card--2,
+  .about-us__image-card--3 {
     position: relative;
-    margin: 40px auto 0;
-    width: 120px;
-    height: 112px;
+    left: auto;
+    top: auto;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto 20px;
+  }
+  
+  .about-us__tech-standards {
+    margin-bottom: 60px;
+  }
+  
+  .about-us__tech-standards-title {
+    font-size: 28px;
+  }
+  
+  .about-us__tech-standards-description {
+    font-size: 18px;
+    padding: 0 var(--container-padding);
+  }
+  
+  .about-us__feature-cards {
+    flex-direction: column;
+    align-items: center;
+    padding: 0 var(--container-padding);
+  }
+  
+  .about-us__feature-card {
+    width: 100%;
+    max-width: 386px;
+    min-width: auto;
+  }
+  
+  .about-us__grow {
+    padding: 60px 0;
+  }
+  
+  .about-us__grow-title {
+    font-size: 36px;
+    line-height: 1.3;
+  }
+  
+  .about-us__grow-description {
+    font-size: 18px;
+    line-height: 1.5;
+  }
+  
+  .about-us__grow-feature {
+    font-size: 18px;
+    line-height: 1.5;
+  }
+  
+  .about-us__grow-button {
+    font-size: 18px;
+    padding: 10px 24px;
   }
 }
 
@@ -783,12 +780,20 @@
     font-size: 28px;
   }
   
+  .about-us__hero-title--black {
+    font-size: 20px;
+  }
+  
   .about-us__brands-list {
     gap: 16px;
   }
   
-  .about-us__expertise-content {
-    gap: 32px;
+  .about-us__tech-standards-title {
+    font-size: 24px;
+  }
+  
+  .about-us__grow-title {
+    font-size: 28px;
   }
 }
 {% endstylesheet %}
@@ -813,13 +818,7 @@
       "type": "text",
       "id": "hero_title_line_2",
       "label": "Title Line 2",
-      "default": "Redefining Smart"
-    },
-    {
-      "type": "text",
-      "id": "hero_title_line_3",
-      "label": "Title Line 3",
-      "default": "Tech Ownership"
+      "default": "Redefining Smart  Tech Ownership"
     },
     {
       "type": "textarea",
@@ -829,128 +828,138 @@
     },
     {
       "type": "text",
-      "id": "hero_button_text",
-      "label": "Button Text",
-      "default": "Join Franchise"
-    },
-    {
-      "type": "url",
-      "id": "hero_button_link",
-      "label": "Button Link"
-    },
-    {
-      "type": "image_picker",
-      "id": "hero_image",
-      "label": "Hero Image"
-    },
-    {
-      "type": "header",
-      "content": "Franchise Card"
-    },
-    {
-      "type": "text",
-      "id": "franchise_card_title",
-      "label": "Card Title",
-      "default": "ReGuru Franchise"
-    },
-    {
-      "type": "textarea",
-      "id": "franchise_card_description",
-      "label": "Card Description",
-      "default": "Build a high-growth tech retail business with India's most trusted refurbished electronics brand."
-    },
-    {
-      "type": "text",
-      "id": "franchise_feature_1",
-      "label": "Feature 1",
-      "default": "Proven business model"
-    },
-    {
-      "type": "text",
-      "id": "franchise_feature_2",
-      "label": "Feature 2",
-      "default": "High-margin product portfolio"
-    },
-    {
-      "type": "text",
-      "id": "franchise_card_button_text",
-      "label": "Card Button Text",
-      "default": "join franchise"
-    },
-    {
-      "type": "url",
-      "id": "franchise_card_button_link",
-      "label": "Card Button Link"
-    },
-    {
-      "type": "header",
-      "content": "Brands Section"
-    },
-    {
-      "type": "text",
       "id": "brands_title",
       "label": "Brands Title",
       "default": "Top Brands  we sell:"
     },
     {
+      "type": "image_picker",
+      "id": "image_card_1",
+      "label": "Image Card 1 (Top Right)"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_card_2",
+      "label": "Image Card 2 (Middle Right)"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_card_3",
+      "label": "Image Card 3 (Bottom Left)"
+    },
+    {
       "type": "header",
-      "content": "Expertise Section"
+      "content": "Tech Standards Section"
     },
     {
       "type": "text",
-      "id": "expertise_title",
+      "id": "tech_standards_title",
       "label": "Title",
-      "default": "Our expertise"
+      "default": "Tech standards"
     },
     {
       "type": "textarea",
-      "id": "expertise_description",
+      "id": "tech_standards_description",
       "label": "Description",
-      "default": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos."
-    },
-    {
-      "type": "image_picker",
-      "id": "expertise_image_1",
-      "label": "Image 1 (Left)"
-    },
-    {
-      "type": "richtext",
-      "id": "expertise_text_1",
-      "label": "Text 1 (Right)"
-    },
-    {
-      "type": "url",
-      "id": "expertise_link_1",
-      "label": "Link 1"
-    },
-    {
-      "type": "image_picker",
-      "id": "expertise_image_2",
-      "label": "Image 2 (Right)"
-    },
-    {
-      "type": "richtext",
-      "id": "expertise_text_2",
-      "label": "Text 2 (Left)"
-    },
-    {
-      "type": "url",
-      "id": "expertise_link_2",
-      "label": "Link 2"
-    },
-    {
-      "type": "image_picker",
-      "id": "laptop_image",
-      "label": "Laptop Illustration Image"
+      "default": "Our commitment to excellence ensures every device leaving out faiclity meets the highest industrial performance benchmanrks"
     },
     {
       "type": "header",
-      "content": "Background"
+      "content": "Quality Card"
+    },
+    {
+      "type": "text",
+      "id": "quality_title",
+      "label": "Title",
+      "default": "Uncompromising Quality"
+    },
+    {
+      "type": "textarea",
+      "id": "quality_description",
+      "label": "Description",
+      "default": "Every device undergoes  45-point diagnostic check,including battery health, pixel density, and neural board stability"
+    },
+    {
+      "type": "header",
+      "content": "Eco Card"
+    },
+    {
+      "type": "text",
+      "id": "eco_title",
+      "label": "Title",
+      "default": "Eco- First Lifecycle"
+    },
+    {
+      "type": "textarea",
+      "id": "eco_description",
+      "label": "Description",
+      "default": "We operate on a zero-waste policy. Parts that cannot be refurbished are ethically recycled."
+    },
+    {
+      "type": "header",
+      "content": "Affordability Card"
+    },
+    {
+      "type": "text",
+      "id": "affordability_title",
+      "label": "Title",
+      "default": "Affordability"
+    },
+    {
+      "type": "textarea",
+      "id": "affordability_description",
+      "label": "Description",
+      "default": "Premium technology should be accessible. We offer flagship devices at upto 60% less than original retail price"
+    },
+    {
+      "type": "header",
+      "content": "Grow with Us Section"
+    },
+    {
+      "type": "text",
+      "id": "grow_title",
+      "label": "Title",
+      "default": "Grow with Us"
+    },
+    {
+      "type": "textarea",
+      "id": "grow_description",
+      "label": "Description",
+      "default": "Become a part of the circular economy revolution. Our franchise program provides you with the inventory, technical training, and diagnostic software needed to launch your own refurbishment center."
+    },
+    {
+      "type": "text",
+      "id": "grow_feature_1",
+      "label": "Feature 1",
+      "default": "Access to global refurbished inventory pipelines"
+    },
+    {
+      "type": "text",
+      "id": "grow_feature_2",
+      "label": "Feature 2",
+      "default": "Proprietary OS diagnostic tools suite"
+    },
+    {
+      "type": "text",
+      "id": "grow_feature_3",
+      "label": "Feature 3",
+      "default": "Certified technician training & certification"
+    },
+    {
+      "type": "text",
+      "id": "grow_button_text",
+      "label": "Button Text",
+      "default": "Join Franchise"
+    },
+    {
+      "type": "url",
+      "id": "grow_button_link",
+      "label": "Button Link"
     },
     {
       "type": "image_picker",
-      "id": "background_image",
-      "label": "Background Image"
+      "id": "grow_image",
+      "label": "Franchise Image"
     }
   ],
   "blocks": [
