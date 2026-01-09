@@ -1,0 +1,588 @@
+{%- liquid
+  assign section_padding_top = section.settings.padding_top | default: 0
+  assign section_padding_bottom = section.settings.padding_bottom | default: 0
+-%}
+
+<section class="category-showcase" id="category-showcase-{{ section.id }}" style="padding-top: {{ section_padding_top }}px; padding-bottom: {{ section_padding_bottom }}px;">
+  <div class="category-showcase__container">
+    {%- if section.blocks.size > 0 -%}
+      <div class="category-showcase__grid">
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign card_type = block.settings.card_type | default: 'small'
+            assign category_label = block.settings.category_label
+            assign product_title = block.settings.product_title
+            assign product_image = block.settings.product_image
+            assign collection_handle = block.settings.collection
+            assign button_text = block.settings.button_text | default: 'SHOP NOW'
+            assign show_button = block.settings.show_button
+            assign background_color = block.settings.background_color | default: '#5294FF'
+            assign category_label_color = block.settings.category_label_color | default: '#FFFFFF'
+            assign product_title_color = block.settings.product_title_color | default: '#FFFFFF'
+            assign button_bg_color = block.settings.button_bg_color | default: '#1e1a5c'
+            assign button_text_color = block.settings.button_text_color | default: '#FFFFFF'
+            
+            assign collection_url = ''
+            if collection_handle != blank
+              assign collection_obj = collections[collection_handle]
+              if collection_obj != blank
+                assign collection_url = collection_obj.url
+              endif
+            endif
+          -%}
+          
+          <div class="category-showcase__card category-showcase__card--{{ card_type }}" {{ block.shopify_attributes }} style="--card-bg: {{ background_color }}; --category-label-color: {{ category_label_color }}; --product-title-color: {{ product_title_color }}; --button-bg: {{ button_bg_color }}; --button-text: {{ button_text_color }};">
+            {%- if collection_url != blank -%}
+              <a href="{{ collection_url }}" class="category-showcase__link">
+            {%- endif -%}
+              <div class="category-showcase__card-inner">
+                {%- if category_label != blank -%}
+                  <p class="category-showcase__category-label">{{ category_label }}</p>
+                {%- endif -%}
+                
+                {%- if product_title != blank -%}
+                  <h3 class="category-showcase__product-title">{{ product_title }}</h3>
+                {%- endif -%}
+                
+                {%- if product_image != blank -%}
+                  <div class="category-showcase__image-wrapper">
+                    <img 
+                      src="{{ product_image | image_url: width: 600 }}"
+                      srcset="{{ product_image | image_url: width: 300 }} 300w,
+                              {{ product_image | image_url: width: 600 }} 600w,
+                              {{ product_image | image_url: width: 900 }} 900w"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      alt="{{ product_title | default: category_label | default: 'Product' }}"
+                      width="600"
+                      height="400"
+                      loading="lazy"
+                      class="category-showcase__image"
+                    >
+                  </div>
+                {%- endif -%}
+                
+                {%- if show_button and button_text != blank -%}
+                  <div class="category-showcase__button">
+                    <span class="category-showcase__button-text">{{ button_text }}</span>
+                    <svg class="category-showcase__button-icon" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M7 0L8.05 1.05L4.1 5H14V7H4.1L8.05 10.95L7 12L0 5L7 0Z" fill="currentColor"/>
+                    </svg>
+                  </div>
+                {%- endif -%}
+              </div>
+            {%- if collection_url != blank -%}
+              </a>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+.category-showcase {
+  padding: 0;
+  background-color: var(--color-white);
+}
+
+.category-showcase__container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+.category-showcase__grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  align-items: flex-start;
+}
+
+.category-showcase__card {
+  position: relative;
+  height: 390px;
+  background-color: var(--color-white);
+  border-radius: 6px;
+  box-shadow: 4px 4px 0px 0px var(--color-black);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.category-showcase__card--large {
+  width: 690px;
+}
+
+.category-showcase__card--small {
+  width: 345px;
+}
+
+.category-showcase__link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+.category-showcase__card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-white);
+  border-radius: 25px;
+  overflow: hidden;
+}
+
+.category-showcase__card-inner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--card-bg, #5294FF) 0%, var(--card-bg, #5294FF) 100%);
+  border-radius: 6px;
+  z-index: 0;
+}
+
+.category-showcase__category-label {
+  position: relative;
+  z-index: 2;
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 26px;
+  line-height: normal;
+  color: var(--category-label-color, #FFFFFF);
+  margin: 0;
+  padding: 33px 0 0 32px;
+}
+
+.category-showcase__card--small .category-showcase__category-label {
+  font-size: 20px;
+}
+
+.category-showcase__product-title {
+  position: relative;
+  z-index: 2;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 60px;
+  line-height: normal;
+  color: var(--product-title-color, #FFFFFF);
+  margin: 0;
+  padding: 0 0 0 32px;
+  text-transform: uppercase;
+  white-space: pre-line;
+}
+
+.category-showcase__card--small .category-showcase__product-title {
+  font-size: 44px;
+}
+
+.category-showcase__image-wrapper {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  height: 100%;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 40px 0 0;
+  overflow: hidden;
+}
+
+.category-showcase__card--small .category-showcase__image-wrapper {
+  padding: 0 20px 0 0;
+}
+
+.category-showcase__image {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+.category-showcase__button {
+  position: absolute;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background-color: var(--button-bg, #1e1a5c);
+  color: var(--button-text, #FFFFFF);
+  padding: 12px 20px;
+  border-radius: 4px;
+  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 0.63);
+  left: 32px;
+  top: 160px;
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: normal;
+  text-transform: uppercase;
+}
+
+.category-showcase__card--small .category-showcase__button {
+  left: 0;
+  top: 160px;
+}
+
+.category-showcase__button-text {
+  flex-shrink: 0;
+}
+
+.category-showcase__button-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: currentColor;
+}
+
+@media screen and (max-width: 1440px) {
+  .category-showcase__card--large {
+    width: calc(50% - 15px);
+  }
+  
+  .category-showcase__card--small {
+    width: calc(25% - 22.5px);
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .category-showcase__grid {
+    gap: 24px;
+  }
+  
+  .category-showcase__card {
+    height: 350px;
+  }
+  
+  .category-showcase__category-label {
+    font-size: 22px;
+    padding: 28px 0 0 24px;
+  }
+  
+  .category-showcase__product-title {
+    font-size: 48px;
+    padding: 0 0 0 24px;
+  }
+  
+  .category-showcase__button {
+    margin: 0 0 0 24px;
+    padding: 10px 16px;
+    font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .category-showcase__card--large {
+    width: 100%;
+  }
+  
+  .category-showcase__card--small {
+    width: calc(50% - 12px);
+  }
+  
+  .category-showcase__grid {
+    gap: 20px;
+  }
+  
+  .category-showcase__card {
+    height: 320px;
+  }
+  
+  .category-showcase__category-label {
+    font-size: 20px;
+    padding: 24px 0 0 20px;
+  }
+  
+  .category-showcase__product-title {
+    font-size: 40px;
+    padding: 0 0 0 20px;
+  }
+  
+  .category-showcase__image-wrapper {
+    padding: 0 20px 0 0;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .category-showcase__container {
+    padding: 0 16px;
+  }
+  
+  .category-showcase__grid {
+    gap: 16px;
+  }
+  
+  .category-showcase__card {
+    width: 100% !important;
+    height: 300px;
+  }
+  
+  .category-showcase__category-label {
+    font-size: 18px;
+    padding: 20px 0 0 16px;
+  }
+  
+  .category-showcase__product-title {
+    font-size: 32px;
+    padding: 0 0 0 16px;
+  }
+  
+  .category-showcase__image-wrapper {
+    width: 45%;
+    padding: 0 16px 0 0;
+  }
+  
+  .category-showcase__button {
+    margin: 0 0 0 16px;
+    padding: 8px 14px;
+    font-size: 11px;
+  }
+  
+  .category-showcase__button-icon {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .category-showcase__container {
+    padding: 0 12px;
+  }
+  
+  .category-showcase__grid {
+    gap: 12px;
+  }
+  
+  .category-showcase__card {
+    height: 280px;
+  }
+  
+  .category-showcase__category-label {
+    font-size: 16px;
+    padding: 16px 0 0 12px;
+  }
+  
+  .category-showcase__product-title {
+    font-size: 28px;
+    padding: 0 0 0 12px;
+  }
+  
+  .category-showcase__image-wrapper {
+    width: 40%;
+    padding: 0 12px 0 0;
+  }
+  
+  .category-showcase__button {
+    margin: 0 0 0 12px;
+    padding: 6px 12px;
+    font-size: 10px;
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Category Showcase",
+  "tag": "section",
+  "class": "category-showcase-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Settings"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category_card",
+      "name": "Category Card",
+      "settings": [
+        {
+          "type": "select",
+          "id": "card_type",
+          "label": "Card Size",
+          "options": [
+            {
+              "value": "large",
+              "label": "Large"
+            },
+            {
+              "value": "small",
+              "label": "Small"
+            }
+          ],
+          "default": "small"
+        },
+        {
+          "type": "text",
+          "id": "category_label",
+          "label": "Category Label",
+          "default": "Home & Living"
+        },
+        {
+          "type": "text",
+          "id": "product_title",
+          "label": "Product Title",
+          "default": "SOFA"
+        },
+        {
+          "type": "image_picker",
+          "id": "product_image",
+          "label": "Product Image"
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection",
+          "info": "Link this card to a collection"
+        },
+        {
+          "type": "header",
+          "content": "Button Settings"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_button",
+          "label": "Show Button",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button Text",
+          "default": "SHOP NOW"
+        },
+        {
+          "type": "header",
+          "content": "Colors"
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background Color",
+          "default": "#5294FF"
+        },
+        {
+          "type": "color",
+          "id": "category_label_color",
+          "label": "Category Label Color",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "color",
+          "id": "product_title_color",
+          "label": "Product Title Color",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "color",
+          "id": "button_bg_color",
+          "label": "Button Background",
+          "default": "#1e1a5c"
+        },
+        {
+          "type": "color",
+          "id": "button_text_color",
+          "label": "Button Text",
+          "default": "#FFFFFF"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Category Showcase",
+      "blocks": [
+        {
+          "type": "category_card",
+          "settings": {
+            "card_type": "large",
+            "category_label": "Home & Living",
+            "product_title": "SOFA",
+            "background_color": "#5294FF",
+            "category_label_color": "#FFFFFF",
+            "product_title_color": "#FFFFFF",
+            "button_bg_color": "#1e1a5c",
+            "show_button": true
+          }
+        },
+        {
+          "type": "category_card",
+          "settings": {
+            "card_type": "small",
+            "category_label": "Clothing & Shoes",
+            "product_title": "SNEAKERS",
+            "background_color": "#27A3DA",
+            "category_label_color": "#0a73a1",
+            "product_title_color": "rgba(76,76,76,0.65)",
+            "show_button": false
+          }
+        },
+        {
+          "type": "category_card",
+          "settings": {
+            "card_type": "small",
+            "category_label": "Toys & Entertainment",
+            "product_title": "TOY TRAIN",
+            "background_color": "#FEF9C4",
+            "category_label_color": "#d4b100",
+            "product_title_color": "rgba(76,76,76,0.65)",
+            "show_button": false
+          }
+        },
+        {
+          "type": "category_card",
+          "settings": {
+            "card_type": "small",
+            "category_label": "Toys & Entertainment",
+            "product_title": "TOY TRAIN",
+            "background_color": "#3B68AC",
+            "category_label_color": "#FFFFFF",
+            "product_title_color": "#FFFFFF",
+            "show_button": false
+          }
+        },
+        {
+          "type": "category_card",
+          "settings": {
+            "card_type": "large",
+            "category_label": "Jewelry & Accessories",
+            "product_title": "DIAMOND RING",
+            "background_color": "#97EFCC",
+            "category_label_color": "#5a9980",
+            "product_title_color": "rgba(76,76,76,0.65)",
+            "button_bg_color": "#c63d42",
+            "show_button": true
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
