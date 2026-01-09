@@ -123,13 +123,65 @@
     "hero-banner": {
       "type": "hero-banner",
       "settings": {
-        "subheading": "",
+        "subheading": ".",
         "heading": "",
         "discount_text": "",
         "cta_text": "",
         "cta_link": "shopify://pages/product-category",
-        "image": "shopify://shop_images/monitors-ultrawide-removebg-preview.png",
         "background_color": "#171544"
+      }
+    },
+    "product_grid_gLdc4C": {
+      "type": "product-grid",
+      "blocks": {
+        "category_tab_7Pa3HG": {
+          "type": "category_tab",
+          "settings": {
+            "label": "Phone",
+            "collection": "phone"
+          }
+        },
+        "category_tab_jRNpB9": {
+          "type": "category_tab",
+          "settings": {
+            "label": "Laptop",
+            "collection": "apple"
+          }
+        },
+        "category_tab_WhYUT6": {
+          "type": "category_tab",
+          "settings": {
+            "label": "Monitors",
+            "collection": "monitors"
+          }
+        },
+        "category_tab_GJPt8G": {
+          "type": "category_tab",
+          "settings": {
+            "label": "Headphone",
+            "collection": "headphone"
+          }
+        },
+        "category_tab_34p9UV": {
+          "type": "category_tab",
+          "settings": {
+            "label": "Television",
+            "collection": "television"
+          }
+        }
+      },
+      "block_order": [
+        "category_tab_7Pa3HG",
+        "category_tab_jRNpB9",
+        "category_tab_WhYUT6",
+        "category_tab_GJPt8G",
+        "category_tab_34p9UV"
+      ],
+      "name": "Product Grid",
+      "settings": {
+        "title": "Reguru Products",
+        "collection": "apple",
+        "products_to_show": 3
       }
     },
     "feature-cards": {
@@ -184,59 +236,6 @@
         "card-4"
       ],
       "settings": {}
-    },
-    "product_grid_gLdc4C": {
-      "type": "product-grid",
-      "blocks": {
-        "category_tab_7Pa3HG": {
-          "type": "category_tab",
-          "settings": {
-            "label": "Phone",
-            "collection": "phone"
-          }
-        },
-        "category_tab_jRNpB9": {
-          "type": "category_tab",
-          "settings": {
-            "label": "Laptop",
-            "collection": "apple"
-          }
-        },
-        "category_tab_WhYUT6": {
-          "type": "category_tab",
-          "settings": {
-            "label": "Monitors",
-            "collection": "monitors"
-          }
-        },
-        "category_tab_GJPt8G": {
-          "type": "category_tab",
-          "settings": {
-            "label": "Headphone",
-            "collection": "headphone"
-          }
-        },
-        "category_tab_34p9UV": {
-          "type": "category_tab",
-          "settings": {
-            "label": "Television",
-            "collection": "television"
-          }
-        }
-      },
-      "block_order": [
-        "category_tab_7Pa3HG",
-        "category_tab_jRNpB9",
-        "category_tab_WhYUT6",
-        "category_tab_GJPt8G",
-        "category_tab_34p9UV"
-      ],
-      "name": "Product Grid",
-      "settings": {
-        "title": "Reguru Products",
-        "collection": "apple",
-        "products_to_show": 3
-      }
     },
     "testimonials": {
       "type": "testimonials",
@@ -413,8 +412,8 @@
     "header_8wjj8i",
     "mega_menu_czkr3g",
     "hero-banner",
-    "feature-cards",
     "product_grid_gLdc4C",
+    "feature-cards",
     "testimonials",
     "faq",
     "footer_jLdtia"
