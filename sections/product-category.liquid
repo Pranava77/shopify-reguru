@@ -46,18 +46,17 @@
       {%- endif -%}
     {%- endif -%}
 
-    <!-- Header Section -->
-    <div class="product-category__header">
-      <h2 class="product-category__heading">{{ heading }}</h2>
-      {%- if description != blank -%}
-        <p class="product-category__description">{{ description }}</p>
-      {%- endif -%}
-    </div>
-
     <!-- Product Category Sections -->
     {%- assign product_category_blocks = section.blocks | where: 'type', 'product_category' -%}
     {%- if product_category_blocks.size > 0 -%}
       <div class="product-category__sections">
+        <!-- Header Section -->
+        <div class="product-category__header">
+          <h2 class="product-category__heading">{{ heading }}</h2>
+          {%- if description != blank -%}
+            <p class="product-category__description">{{ description }}</p>
+          {%- endif -%}
+        </div>
         {%- for block in product_category_blocks -%}
           {%- liquid
             assign category_title = block.settings.title
