@@ -120,6 +120,64 @@
         "promo_position": "right"
       }
     },
+    "about_us_bETMjV": {
+      "type": "about-us",
+      "blocks": {
+        "brand_logo_n9D7Rj": {
+          "type": "brand_logo",
+          "settings": {
+            "brand_name": "logo one"
+          }
+        },
+        "brand_logo_y6YJAj": {
+          "type": "brand_logo",
+          "settings": {
+            "brand_name": "logo two"
+          }
+        },
+        "brand_logo_m34cXQ": {
+          "type": "brand_logo",
+          "settings": {
+            "brand_name": "logo three",
+            "brand_logo": "shopify://shop_images/gin.png"
+          }
+        },
+        "brand_logo_QVcLVE": {
+          "type": "brand_logo",
+          "settings": {
+            "brand_name": "logo four"
+          }
+        }
+      },
+      "block_order": [
+        "brand_logo_n9D7Rj",
+        "brand_logo_y6YJAj",
+        "brand_logo_m34cXQ",
+        "brand_logo_QVcLVE"
+      ],
+      "name": "About Us",
+      "settings": {
+        "hero_title_line_1": "Beyond Refurbishment",
+        "hero_title_line_2": "Redefining Smart  Tech Ownership",
+        "hero_description": "ReGuru is building a sustainable, circular tech ecosystem — making technology accessible while reducing e-waste.",
+        "brands_title": "Top Brands  we sell:",
+        "tech_standards_title": "Tech standards",
+        "tech_standards_description": "Our commitment to excellence ensures every device leaving out faiclity meets the highest industrial performance benchmanrks",
+        "quality_title": "Uncompromising Quality",
+        "quality_description": "Every device undergoes  45-point diagnostic check,including battery health, pixel density, and neural board stability",
+        "eco_title": "Eco- First Lifecycle",
+        "eco_description": "We operate on a zero-waste policy. Parts that cannot be refurbished are ethically recycled.",
+        "affordability_title": "Affordability",
+        "affordability_description": "Premium technology should be accessible. We offer flagship devices at upto 60% less than original retail price",
+        "grow_title": "Grow with Us",
+        "grow_description": "Become a part of the circular economy revolution. Our franchise program provides you with the inventory, technical training, and diagnostic software needed to launch your own refurbishment center.",
+        "grow_feature_1": "Access to global refurbished inventory pipelines",
+        "grow_feature_2": "Proprietary OS diagnostic tools suite",
+        "grow_feature_3": "Certified technician training & certification",
+        "grow_button_text": "Join Franchise",
+        "grow_button_link": ""
+      }
+    },
     "footer_MeKgAQ": {
       "type": "footer",
       "blocks": {
@@ -209,6 +267,7 @@
   "order": [
     "header_U9K4Tf",
     "mega_menu_DKxVCr",
+    "about_us_bETMjV",
     "footer_MeKgAQ"
   ]
 }
