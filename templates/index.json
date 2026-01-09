@@ -123,7 +123,7 @@
     "hero-banner": {
       "type": "hero-banner",
       "settings": {
-        "background_color": "#171544",
+        "background_color": "#bfd3e1",
         "button_text": "click here",
         "button_link": "shopify://collections/headphone"
       }
