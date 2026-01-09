@@ -4,7 +4,6 @@
   assign discount_text = section.settings.discount_text | default: 'UP to 80% OFF'
   assign cta_text = section.settings.cta_text | default: 'Checkout product'
   assign cta_link = section.settings.cta_link | default: routes.collections_url
-  assign image = section.settings.image
   assign bg_color = section.settings.background_color | default: '#212844'
   assign bg_image = section.settings.background_image
   assign container_bg_image = section.settings.container_background_image
@@ -19,28 +18,6 @@
       <a href="{{ cta_link }}" class="hero-banner__cta">
         {{ cta_text }}
       </a>
-    </div>
-    <div class="hero-banner__image">
-      {%- if image != blank -%}
-        <img 
-          src="{{ image | image_url: width: 600 }}"
-          alt="{{ image.alt | default: heading }}"
-          width="600"
-          height="400"
-          loading="eager"
-        >
-      {%- else -%}
-        <div class="hero-banner__placeholder">
-          <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="200" height="200" fill="#2A3050"/>
-            <rect x="60" y="30" width="80" height="100" rx="10" fill="#1BDE8F"/>
-            <rect x="70" y="40" width="60" height="60" rx="5" fill="#212844"/>
-            <circle cx="100" cy="70" r="20" stroke="#28D98E" stroke-width="3"/>
-            <rect x="65" y="140" width="70" height="20" rx="5" fill="#28D98E"/>
-            <circle cx="100" cy="180" r="10" fill="#5294FF"/>
-          </svg>
-        </div>
-      {%- endif -%}
     </div>
   </div>
 </section>
@@ -57,7 +34,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   min-height: 420px;
   padding: 50px 70px;
   background-color: var(--hero-bg);
@@ -130,32 +107,6 @@
   color: var(--color-green);
 }
 
-.hero-banner__image {
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 45%;
-  max-width: 480px;
-  z-index: 1;
-}
-
-.hero-banner__image img {
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-}
-
-.hero-banner__placeholder {
-  width: 100%;
-  aspect-ratio: 1;
-}
-
-.hero-banner__placeholder svg {
-  width: 100%;
-  height: 100%;
-}
-
 @media screen and (max-width: 992px) {
   .hero-banner__container {
     flex-direction: column;
@@ -174,15 +125,6 @@
   .hero-banner__subheading,
   .hero-banner__discount {
     font-size: 22px;
-  }
-
-  .hero-banner__image {
-    position: relative;
-    right: auto;
-    top: auto;
-    transform: none;
-    width: 60%;
-    margin-top: 30px;
   }
 }
 
