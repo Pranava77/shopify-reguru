@@ -123,10 +123,10 @@
     "hero-banner": {
       "type": "hero-banner",
       "settings": {
-        "subheading": ".",
+        "subheading": "",
         "heading": "",
         "discount_text": "",
-        "cta_text": "",
+        "cta_text": "button",
         "cta_link": "shopify://pages/product-category",
         "background_color": "#171544"
       }
