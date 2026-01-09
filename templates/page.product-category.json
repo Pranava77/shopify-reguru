@@ -120,6 +120,108 @@
         "promo_position": "right"
       }
     },
+    "category_showcase_aMJQ9j": {
+      "type": "category-showcase",
+      "blocks": {
+        "category_card_rTrWVz": {
+          "type": "category_card",
+          "settings": {
+            "card_type": "large",
+            "category_label": "Home & Living",
+            "product_title": "SOFA",
+            "product_image": "shopify://shop_images/103-1039011_flat-screen-tv-png-transparent-png-removebg-preview_d55a1354-b90e-4170-bfb9-6e60c57970d4.png",
+            "collection": "",
+            "show_button": true,
+            "button_text": "SHOP NOW",
+            "background_color": "#5294ff",
+            "category_label_color": "#ffffff",
+            "product_title_color": "#ffffff",
+            "button_bg_color": "#1e1a5c",
+            "button_text_color": "#FFFFFF"
+          }
+        },
+        "category_card_kdmY4G": {
+          "type": "category_card",
+          "settings": {
+            "card_type": "small",
+            "category_label": "Clothing & Shoes",
+            "product_title": "SNEAKERS",
+            "product_image": "shopify://shop_images/20251112034016.png",
+            "collection": "",
+            "show_button": false,
+            "button_text": "SHOP NOW",
+            "background_color": "#27a3da",
+            "category_label_color": "#0a73a1",
+            "product_title_color": "#4c4c4ca6",
+            "button_bg_color": "#1e1a5c",
+            "button_text_color": "#FFFFFF"
+          }
+        },
+        "category_card_QUnQaV": {
+          "type": "category_card",
+          "settings": {
+            "card_type": "small",
+            "category_label": "Toys & Entertainment",
+            "product_title": "TOY TRAIN",
+            "product_image": "shopify://shop_images/FAb9jtNpEjJeGtMP.webp",
+            "collection": "",
+            "show_button": false,
+            "button_text": "SHOP NOW",
+            "background_color": "#fef9c4",
+            "category_label_color": "#d4b100",
+            "product_title_color": "#4c4c4ca6",
+            "button_bg_color": "#1e1a5c",
+            "button_text_color": "#FFFFFF"
+          }
+        },
+        "category_card_7bbpde": {
+          "type": "category_card",
+          "settings": {
+            "card_type": "small",
+            "category_label": "Toys & Entertainment",
+            "product_title": "TOY TRAIN",
+            "product_image": "shopify://shop_images/pngimg.com-headphones_PNG7645.png",
+            "collection": "",
+            "show_button": false,
+            "button_text": "SHOP NOW",
+            "background_color": "#3b68ac",
+            "category_label_color": "#ffffff",
+            "product_title_color": "#ffffff",
+            "button_bg_color": "#1e1a5c",
+            "button_text_color": "#FFFFFF"
+          }
+        },
+        "category_card_anxPtA": {
+          "type": "category_card",
+          "settings": {
+            "card_type": "large",
+            "category_label": "Jewelry & Accessories",
+            "product_title": "DIAMOND RING",
+            "product_image": "shopify://shop_images/71Q-uiqUGSL._AC_CR0_0_0_0_SX480_SY360_-removebg-preview.png",
+            "collection": "",
+            "show_button": true,
+            "button_text": "SHOP NOW",
+            "background_color": "#97efcc",
+            "category_label_color": "#5a9980",
+            "product_title_color": "#4c4c4ca6",
+            "button_bg_color": "#c63d42",
+            "button_text_color": "#FFFFFF"
+          }
+        }
+      },
+      "block_order": [
+        "category_card_rTrWVz",
+        "category_card_kdmY4G",
+        "category_card_QUnQaV",
+        "category_card_7bbpde",
+        "category_card_anxPtA"
+      ],
+      "name": "Category Showcase",
+      "settings": {
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
     "product_category_JheeHV": {
       "type": "product-category",
       "blocks": {
@@ -319,6 +421,7 @@
   "order": [
     "header_U9K4Tf",
     "mega_menu_DKxVCr",
+    "category_showcase_aMJQ9j",
     "product_category_JheeHV",
     "footer_MeKgAQ"
   ]
