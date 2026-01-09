@@ -82,7 +82,7 @@
           "type": "simple_link",
           "settings": {
             "title": "Sale",
-            "link": "",
+            "link": "shopify://pages/about",
             "badge": "Hot",
             "badge_style": "sale"
           }
