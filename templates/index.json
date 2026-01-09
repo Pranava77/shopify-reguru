@@ -123,7 +123,8 @@
     "hero-banner": {
       "type": "hero-banner",
       "settings": {
-        "background_color": "#bfd3e1",
+        "background_color": "rgba(0,0,0,0)",
+        "container_background_image": "shopify://shop_images/Screenshot_2026-01-09_163744.png",
         "button_text": "click here",
         "button_link": "shopify://collections/headphone"
       }
