@@ -123,12 +123,9 @@
     "hero-banner": {
       "type": "hero-banner",
       "settings": {
-        "subheading": "",
-        "heading": "",
-        "discount_text": "",
-        "cta_text": "button",
-        "cta_link": "shopify://pages/product-category",
-        "background_color": "#171544"
+        "background_color": "#171544",
+        "button_text": "click here",
+        "button_link": "shopify://collections/headphone"
       }
     },
     "product_grid_gLdc4C": {
