@@ -14,55 +14,6 @@
       {%- endif -%}
     </div>
 
-    <!-- Category Cards -->
-    {%- if section.blocks.size > 0 -%}
-      <div class="product-category__categories" style="--category-bg: {{ background_color }};">
-        {%- for block in section.blocks -%}
-          {%- if block.type == 'category_card' -%}
-            {%- liquid
-              assign category_title = block.settings.title
-              assign category_image = block.settings.image
-              assign category_collection = block.settings.collection
-              assign category_url = ''
-              
-              if category_collection != blank
-                assign collection_obj = collections[category_collection]
-                if collection_obj != blank
-                  assign category_url = collection_obj.url
-                endif
-              endif
-            -%}
-            <div class="product-category__category-card" {{ block.shopify_attributes }}>
-              {%- if category_url != blank -%}
-                <a href="{{ category_url }}" class="product-category__category-link">
-              {%- endif -%}
-                <div class="product-category__category-image">
-                  {%- if category_image != blank -%}
-                    <img 
-                      src="{{ category_image | image_url: width: 300 }}"
-                      alt="{{ category_title | default: 'Category' }}"
-                      width="300"
-                      height="122"
-                      loading="lazy"
-                    >
-                  {%- else -%}
-                    <div class="product-category__category-placeholder">
-                      {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
-                    </div>
-                  {%- endif -%}
-                </div>
-                <div class="product-category__category-info">
-                  <p class="product-category__category-title">{{ category_title | default: 'Category' }}</p>
-                </div>
-              {%- if category_url != blank -%}
-                </a>
-              {%- endif -%}
-            </div>
-          {%- endif -%}
-        {%- endfor -%}
-      </div>
-    {%- endif -%}
-
     <!-- Top Brands Section -->
     {%- if section.settings.show_brands and section.blocks.size > 0 -%}
       {%- assign brand_blocks = section.blocks | where: 'type', 'brand' -%}
