@@ -46,7 +46,7 @@
             "featured_title": "New Arrivals",
             "featured_link": "",
             "featured_link_text": "Shop Now",
-            "show_promo_banner": false,
+            "show_promo_banner": true,
             "promo_badge": "Limited",
             "promo_text": "Free shipping on orders over $50",
             "promo_link": "",
