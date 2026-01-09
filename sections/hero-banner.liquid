@@ -184,13 +184,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--color-white);
+  background-color: rgba(177, 216, 255, 1);
   border: 2px solid var(--color-black);
   border-radius: 4px;
   box-shadow: 4px 4px 0px 0px var(--color-black);
   cursor: pointer;
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
-  color: var(--color-black);
+  color: rgba(0, 0, 0, 1);
 }
 
 .hero-banner__nav:hover {
@@ -204,11 +204,24 @@
 }
 
 .hero-banner__nav--prev {
-  left: 20px;
+  left: calc(100% - 200px);
 }
 
 .hero-banner__nav--next {
   right: 20px;
+}
+
+/* Large screens - preserve specific positioning */
+@media screen and (min-width: 1600px) {
+  .hero-banner__nav--prev {
+    left: 1063px;
+  }
+}
+
+@media screen and (min-width: 1400px) and (max-width: 1599px) {
+  .hero-banner__nav--prev {
+    left: calc(100% - 250px);
+  }
 }
 
 .hero-banner__nav svg {
@@ -281,6 +294,16 @@
   box-shadow: 2px 2px 0px 0px var(--color-black);
 }
 
+@media screen and (max-width: 1200px) {
+  .hero-banner__nav--prev {
+    left: calc(100% - 220px);
+  }
+
+  .hero-banner__nav--next {
+    right: 15px;
+  }
+}
+
 @media screen and (max-width: 992px) {
   .hero-banner__container {
     padding: 40px 30px;
@@ -320,6 +343,21 @@
   }
 }
 
+@media screen and (max-width: 768px) {
+  .hero-banner__nav {
+    width: 38px;
+    height: 38px;
+  }
+
+  .hero-banner__nav--prev {
+    left: 8px;
+  }
+
+  .hero-banner__nav--next {
+    right: 8px;
+  }
+}
+
 @media screen and (max-width: 576px) {
   .hero-banner__heading {
     font-size: 32px;
@@ -333,6 +371,14 @@
   .hero-banner__nav {
     width: 36px;
     height: 36px;
+  }
+
+  .hero-banner__nav--prev {
+    left: 5px;
+  }
+
+  .hero-banner__nav--next {
+    right: 5px;
   }
 
   .hero-banner__nav svg {
