@@ -91,7 +91,7 @@
           "type": "simple_link",
           "settings": {
             "title": "About",
-            "link": "",
+            "link": "shopify://pages/about",
             "badge": "",
             "badge_style": "new"
           }
@@ -118,62 +118,6 @@
         "enable_sticky": true,
         "menu_style": "default",
         "promo_position": "right"
-      }
-    },
-    "about_us_section": {
-      "type": "about-us",
-      "blocks": {
-        "brand_logo_1": {
-          "type": "brand_logo",
-          "settings": {
-            "brand_name": "logo one"
-          }
-        },
-        "brand_logo_2": {
-          "type": "brand_logo",
-          "settings": {
-            "brand_name": "logo two"
-          }
-        },
-        "brand_logo_3": {
-          "type": "brand_logo",
-          "settings": {
-            "brand_name": "logo three"
-          }
-        },
-        "brand_logo_4": {
-          "type": "brand_logo",
-          "settings": {
-            "brand_name": "logo four"
-          }
-        }
-      },
-      "block_order": [
-        "brand_logo_1",
-        "brand_logo_2",
-        "brand_logo_3",
-        "brand_logo_4"
-      ],
-      "settings": {
-        "hero_title_line_1": "Beyond Refurbishment",
-        "hero_title_line_2": "Redefining Smart",
-        "hero_title_line_3": "Tech Ownership",
-        "hero_description": "ReGuru is building a sustainable, circular tech ecosystem — making technology accessible while reducing e-waste.",
-        "hero_button_text": "Join Franchise",
-        "hero_button_link": "",
-        "franchise_card_title": "ReGuru Franchise",
-        "franchise_card_description": "Build a high-growth tech retail business with India's most trusted refurbished electronics brand.",
-        "franchise_feature_1": "Proven business model",
-        "franchise_feature_2": "High-margin product portfolio",
-        "franchise_card_button_text": "join franchise",
-        "franchise_card_button_link": "",
-        "brands_title": "Top Brands  we sell:",
-        "expertise_title": "Our expertise",
-        "expertise_description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
-        "expertise_text_1": "",
-        "expertise_link_1": "",
-        "expertise_text_2": "",
-        "expertise_link_2": ""
       }
     },
     "footer_MeKgAQ": {
@@ -265,7 +209,6 @@
   "order": [
     "header_U9K4Tf",
     "mega_menu_DKxVCr",
-    "about_us_section",
     "footer_MeKgAQ"
   ]
 }
