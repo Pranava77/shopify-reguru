@@ -48,7 +48,7 @@
             "featured_link_text": "Shop Now",
             "show_promo_banner": true,
             "promo_badge": "Limited",
-            "promo_text": "Free shipping on orders over $50",
+            "promo_text": "Free shipping on orders over ₹50",
             "promo_link": "",
             "promo_link_text": "Learn More"
           }
@@ -73,7 +73,7 @@
             "featured_link_text": "Shop Now",
             "show_promo_banner": false,
             "promo_badge": "Limited",
-            "promo_text": "Free shipping on orders over $50",
+            "promo_text": "Free shipping on orders over ₹50",
             "promo_link": "",
             "promo_link_text": "Learn More"
           }

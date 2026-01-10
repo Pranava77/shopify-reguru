@@ -190,7 +190,7 @@
     // Format money value - matches Shopify's money format
     const formatMoney = (cents) => {
       if (typeof cents !== 'number' || isNaN(cents)) {
-        return '$0.00';
+        return '₹0.00';
       }
       
       // Handle negative values
@@ -202,8 +202,8 @@
       const formatted = dollars.toFixed(2);
       
       // Add currency symbol and formatting
-      // This matches Shopify's default USD format, adjust if needed for other currencies
-      return isNegative ? `-$${formatted}` : `$${formatted}`;
+      // This matches Shopify's default format, adjusted for INR currency
+      return isNegative ? `-₹${formatted}` : `₹${formatted}`;
     };
 
     // Update cart summary with new cart data
