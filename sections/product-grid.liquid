@@ -91,12 +91,12 @@
                   <p class="product-grid__empty">No products available in this category.</p>
                 {%- endif -%}
               </div>
-              <button class="product-grid__nav product-grid__nav--prev" data-carousel-prev aria-label="Previous products">
+              <button type="button" class="product-grid__nav product-grid__nav--prev" data-carousel-prev aria-label="Previous products">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </button>
-              <button class="product-grid__nav product-grid__nav--next" data-carousel-next aria-label="Next products">
+              <button type="button" class="product-grid__nav product-grid__nav--next" data-carousel-next aria-label="Next products">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
@@ -114,12 +114,12 @@
                   {%- render 'product-card', product: product -%}
                 {%- endfor -%}
               </div>
-              <button class="product-grid__nav product-grid__nav--prev" data-carousel-prev aria-label="Previous products">
+              <button type="button" class="product-grid__nav product-grid__nav--prev" data-carousel-prev aria-label="Previous products">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </button>
-              <button class="product-grid__nav product-grid__nav--next" data-carousel-next aria-label="Next products">
+              <button type="button" class="product-grid__nav product-grid__nav--next" data-carousel-next aria-label="Next products">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
@@ -550,6 +550,14 @@
       
       let currentIndex = 0;
       
+      // Ensure track is scrollable on mobile
+      const isMobile = window.innerWidth <= 768;
+      if (isMobile) {
+        // Force scrollable behavior
+        track.style.overflowX = 'auto';
+        track.style.scrollBehavior = 'smooth';
+      }
+      
       function updateButtons() {
         const isMobile = window.innerWidth <= 768;
         if (!isMobile) {
@@ -568,39 +576,48 @@
         const card = cards[index];
         if (!card) return;
         
-        // Ensure layout is calculated by forcing a reflow
+        // Ensure layout is calculated
         void track.offsetHeight;
         void card.offsetHeight;
         
         currentIndex = index;
         
-        // Get the track's current scroll position and dimensions
-        const trackScrollLeft = track.scrollLeft;
-        const trackWidth = track.clientWidth;
-        
-        // Get card position using getBoundingClientRect for accurate positioning
-        const trackRect = track.getBoundingClientRect();
+        // Get card dimensions and position
         const cardRect = card.getBoundingClientRect();
-        
-        // Calculate card's position relative to track's content area
-        // We need: card's left edge in the scrollable content = current scroll + (card's viewport left - track's viewport left)
-        const cardLeftInContent = trackScrollLeft + (cardRect.left - trackRect.left);
-        
-        // Calculate scroll position to center the card
         const cardWidth = cardRect.width;
-        const scrollPosition = cardLeftInContent - (trackWidth / 2) + (cardWidth / 2);
+        const trackRect = track.getBoundingClientRect();
+        const trackWidth = trackRect.width;
+        const currentScroll = track.scrollLeft;
         
-        // Ensure we don't scroll past boundaries
+        // Calculate card's position in scrollable content
+        // cardRect.left is viewport-relative, we need scroll-relative
+        const cardLeftRelative = cardRect.left - trackRect.left;
+        const cardLeftInScrollContent = currentScroll + cardLeftRelative;
+        
+        // Calculate target scroll to center the card
+        const targetScroll = cardLeftInScrollContent - (trackWidth / 2) + (cardWidth / 2);
+        
+        // Clamp to valid scroll range
         const maxScroll = Math.max(0, track.scrollWidth - trackWidth);
-        const finalScroll = Math.max(0, Math.min(scrollPosition, maxScroll));
+        const finalScroll = Math.max(0, Math.min(Math.round(targetScroll), maxScroll));
         
-        // Scroll the track
-        track.scrollTo({
-          left: finalScroll,
-          behavior: 'smooth'
-        });
+        // Perform smooth scroll
+        if (typeof track.scrollTo === 'function') {
+          track.scrollTo({
+            left: finalScroll,
+            behavior: 'smooth'
+          });
+        } else {
+          // Fallback for older browsers
+          track.scrollLeft = finalScroll;
+        }
         
+        // Update buttons immediately and after scroll
         updateButtons();
+        setTimeout(() => {
+          updateCurrentIndex();
+          updateButtons();
+        }, 350);
       }
       
       function updateCurrentIndex() {
@@ -645,12 +662,22 @@
         }
       };
       
+      // Remove any existing listeners by using once: false and adding new ones
+      prevBtn.onclick = null;
+      nextBtn.onclick = null;
+      
       prevBtn.addEventListener('click', handlePrevClick);
       nextBtn.addEventListener('click', handleNextClick);
       
       // Also handle touch events for mobile
-      prevBtn.addEventListener('touchend', handlePrevClick);
-      nextBtn.addEventListener('touchend', handleNextClick);
+      prevBtn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        handlePrevClick(e);
+      });
+      nextBtn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        handleNextClick(e);
+      });
       
       // Update button visibility on scroll
       track.addEventListener('scroll', updateCurrentIndex, { passive: true });
