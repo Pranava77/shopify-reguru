@@ -131,6 +131,32 @@
     },
     "hero-banner": {
       "type": "hero-banner",
+      "blocks": {
+        "slide_fmVDj6": {
+          "type": "slide",
+          "settings": {
+            "subheading": "g sdgdasfas",
+            "heading": "dfasdfasdf",
+            "discount_text": "asdfasdf",
+            "cta_text": "dsfasdf",
+            "cta_link": "shopify://products/h2"
+          }
+        },
+        "slide_zPrAgw": {
+          "type": "slide",
+          "settings": {
+            "subheading": "",
+            "heading": "",
+            "discount_text": "",
+            "cta_text": "",
+            "cta_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "slide_fmVDj6",
+        "slide_zPrAgw"
+      ],
       "settings": {
         "background_color": "rgba(0,0,0,0)",
         "container_background_image": "shopify://shop_images/Screenshot_2026-01-09_163744.png",
