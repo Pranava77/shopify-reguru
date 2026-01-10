@@ -126,26 +126,29 @@
         "brand_logo_n9D7Rj": {
           "type": "brand_logo",
           "settings": {
-            "brand_name": "logo one"
+            "brand_name": "logo one",
+            "brand_logo": "shopify://shop_images/Nothing_Logo_webp.png"
           }
         },
         "brand_logo_y6YJAj": {
           "type": "brand_logo",
           "settings": {
-            "brand_name": "logo two"
+            "brand_name": "logo two",
+            "brand_logo": "shopify://shop_images/360_197_1.jpg"
           }
         },
         "brand_logo_m34cXQ": {
           "type": "brand_logo",
           "settings": {
             "brand_name": "logo three",
-            "brand_logo": "shopify://shop_images/gin.png"
+            "brand_logo": "shopify://shop_images/iPhone-Logo-2007_1.png"
           }
         },
         "brand_logo_QVcLVE": {
           "type": "brand_logo",
           "settings": {
-            "brand_name": "logo four"
+            "brand_name": "logo four",
+            "brand_logo": "shopify://shop_images/oppo-logo-oppo-icon-free-free-vector.jpg"
           }
         }
       },
