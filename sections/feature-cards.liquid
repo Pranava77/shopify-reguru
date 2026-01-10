@@ -111,7 +111,7 @@
     // Update active dot based on scroll position
     const updateActiveDot = () => {
       const scrollLeft = track.scrollLeft;
-      const cardWidth = cards[0]?.offsetWidth || (window.innerWidth <= 768 ? 180 : window.innerWidth <= 1200 ? 530 : 589);
+      const cardWidth = cards[0]?.offsetWidth || (window.innerWidth <= 768 ? 180 : window.innerWidth <= 1200 ? 450 : 589);
       const gap = getGap();
       const activeIndex = Math.round(scrollLeft / (cardWidth + gap));
       
@@ -124,7 +124,7 @@
     dots.forEach((dot) => {
       dot.addEventListener('click', () => {
         const index = parseInt(dot.dataset.index, 10);
-        const cardWidth = cards[0]?.offsetWidth || (window.innerWidth <= 768 ? 180 : window.innerWidth <= 1200 ? 530 : 589);
+        const cardWidth = cards[0]?.offsetWidth || (window.innerWidth <= 768 ? 180 : window.innerWidth <= 1200 ? 450 : 589);
         const gap = getGap();
         const scrollPosition = index * (cardWidth + gap);
         
@@ -330,9 +330,9 @@
   }
 
   .feature-card {
-    width: 530px;
-    min-width: 530px;
-    max-width: 530px;
+    width: 450px;
+    min-width: 450px;
+    max-width: 450px;
   }
 }
 
