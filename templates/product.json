@@ -140,6 +140,60 @@
         "product": ""
       }
     },
+    "feature_cards_Mm6g4q": {
+      "type": "feature-cards",
+      "blocks": {
+        "card_EVtExF": {
+          "type": "card",
+          "settings": {
+            "title": "RRR Policy",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "icon_image": "shopify://shop_images/Layer_3.png"
+          }
+        },
+        "card_UYJxgw": {
+          "type": "card",
+          "settings": {
+            "title": "Affordable",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "icon_image": "shopify://shop_images/Group_159.png"
+          }
+        },
+        "card_jeHLNJ": {
+          "type": "card",
+          "settings": {
+            "title": "Online & Offline Model",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "icon_image": "shopify://shop_images/Group_173.png"
+          }
+        },
+        "card_Y79k6m": {
+          "type": "card",
+          "settings": {
+            "title": "Tailored Solutions",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "icon_image": "shopify://shop_images/Group_161_a7347467-55ed-4553-95c7-978f9bf1b501.png"
+          }
+        },
+        "card_RebnqM": {
+          "type": "card",
+          "settings": {
+            "title": "Sustainability",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "icon_image": "shopify://shop_images/Group_176_04654fd9-7d93-4057-89f3-839d4af8ef9b.png"
+          }
+        }
+      },
+      "block_order": [
+        "card_EVtExF",
+        "card_UYJxgw",
+        "card_jeHLNJ",
+        "card_Y79k6m",
+        "card_RebnqM"
+      ],
+      "name": "Feature Cards",
+      "settings": {}
+    },
     "footer_idKpLa": {
       "type": "footer",
       "blocks": {
@@ -231,6 +285,7 @@
     "header_bDDenX",
     "mega_menu_Rt8Xhn",
     "product_detail",
+    "feature_cards_Mm6g4q",
     "footer_idKpLa"
   ]
 }
