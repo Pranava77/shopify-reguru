@@ -9,13 +9,22 @@
  */
 {
   "sections": {
+    "announcement_bar_mTGPVk": {
+      "type": "announcement-bar",
+      "name": "Announcement Bar",
+      "settings": {
+        "text": "Welcome To ReGuru",
+        "background_color": "#1E1A5C",
+        "text_color": "#28D98E"
+      }
+    },
     "header_JcHWKW": {
       "type": "header",
       "name": "Header",
       "settings": {
         "logo": "shopify://shop_images/gin.png",
         "show_search": true,
-        "show_location": true,
+        "show_location": false,
         "location_text": "Bengaluru",
         "header_icon_type": "bag",
         "header_custom_icon": "shopify://shop_images/Layer_1_1.png",
@@ -225,6 +234,7 @@
     }
   },
   "order": [
+    "announcement_bar_mTGPVk",
     "header_JcHWKW",
     "mega_menu_8gmpVq",
     "cart",
