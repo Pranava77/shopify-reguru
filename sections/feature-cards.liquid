@@ -71,21 +71,6 @@
         {%- endif -%}
       </div>
     </div>
-
-    <!-- Carousel Navigation Dots (Mobile Only) -->
-    <div class="feature-cards__dots" id="feature-dots-{{ section.id }}">
-      {%- assign card_count = section.blocks.size -%}
-      {%- if card_count == 0 -%}
-        {%- assign card_count = 5 -%}
-      {%- endif -%}
-      {%- for i in (1..card_count) -%}
-        <button 
-          class="feature-cards__dot{% if forloop.first %} feature-cards__dot--active{% endif %}" 
-          aria-label="Go to slide {{ forloop.index }}"
-          data-index="{{ forloop.index0 }}"
-        ></button>
-      {%- endfor -%}
-    </div>
   </div>
 </section>
 
@@ -93,60 +78,11 @@
   (function() {
     const sectionId = '{{ section.id }}';
     const carousel = document.getElementById('feature-carousel-' + sectionId);
-    const dotsContainer = document.getElementById('feature-dots-' + sectionId);
     
-    if (!carousel || !dotsContainer) return;
+    if (!carousel) return;
     
     const track = carousel.querySelector('.feature-cards__track');
-    const dots = dotsContainer.querySelectorAll('.feature-cards__dot');
     const cards = track.querySelectorAll('.feature-card');
-    
-    // Get gap based on screen size
-    const getGap = () => {
-      if (window.innerWidth <= 768) return 20;
-      if (window.innerWidth <= 1200) return 30;
-      return 46;
-    };
-    
-    // Update active dot based on scroll position
-    const updateActiveDot = () => {
-      const scrollLeft = track.scrollLeft;
-      const cardWidth = cards[0]?.offsetWidth || (window.innerWidth <= 768 ? 130 : window.innerWidth <= 1200 ? 280 : 320);
-      const gap = getGap();
-      const activeIndex = Math.round(scrollLeft / (cardWidth + gap));
-      
-      dots.forEach((dot, index) => {
-        dot.classList.toggle('feature-cards__dot--active', index === activeIndex);
-      });
-    };
-    
-    // Scroll to specific card when dot is clicked
-    dots.forEach((dot) => {
-      dot.addEventListener('click', () => {
-        const index = parseInt(dot.dataset.index, 10);
-        const cardWidth = cards[0]?.offsetWidth || (window.innerWidth <= 768 ? 130 : window.innerWidth <= 1200 ? 280 : 320);
-        const gap = getGap();
-        const scrollPosition = index * (cardWidth + gap);
-        
-        track.scrollTo({
-          left: scrollPosition,
-          behavior: 'smooth'
-        });
-      });
-    });
-    
-    // Listen for scroll events on the track
-    let scrollTimeout;
-    track.addEventListener('scroll', () => {
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(updateActiveDot, 50);
-    });
-    
-    // Update on resize
-    window.addEventListener('resize', updateActiveDot);
-    
-    // Initial update
-    updateActiveDot();
   })();
 </script>
 
@@ -292,37 +228,6 @@
   height: auto;
 }
 
-/* Navigation Dots */
-.feature-cards__dots {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 16px;
-  padding: 0 var(--container-padding);
-}
-
-.feature-cards__dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: var(--color-navy);
-  opacity: 0.3;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.feature-cards__dot--active {
-  opacity: 1;
-  transform: scale(1.2);
-  background-color: var(--color-navy);
-}
-
-.feature-cards__dot:focus {
-  outline: 2px solid var(--color-navy);
-  outline-offset: 2px;
-}
 
 @media screen and (max-width: 1200px) {
   .feature-cards__track {
@@ -380,11 +285,6 @@
   .feature-card__title {
     font-size: 18px;
   }
-
-  /* Navigation Dots - Mobile padding override */
-  .feature-cards__dots {
-    padding: 0 20px;
-  }
 }
 
 @media screen and (max-width: 480px) {
@@ -396,11 +296,6 @@
 
   .feature-card__title {
     font-size: 16px;
-  }
-
-  .feature-cards__dot {
-    width: 8px;
-    height: 8px;
   }
 }
 {% endstylesheet %}
