@@ -67,39 +67,36 @@
           </div>
           <div class="sale-section__filter-content" data-filter-content="price">
             <div class="sale-section__price-inputs">
-              <div class="sale-section__price-input">
-                <span class="sale-section__price-currency">{{ cart.currency.symbol | default: '₹' }}</span>
-                <input 
-                  type="number" 
-                  id="price-min-{{ section.id }}" 
-                  class="sale-section__price-field"
-                  placeholder="3,000"
-                  min="0"
-                  data-price-min
-                >
-              </div>
+              <input 
+                type="text" 
+                class="sale-section__price-input" 
+                id="price-min-{{ section.id }}"
+                data-price-min
+              >
               <span class="sale-section__price-separator">{{ 'sections.sale.to' | t | default: 'To' }}</span>
-              <div class="sale-section__price-input">
-                <span class="sale-section__price-currency">{{ cart.currency.symbol | default: '₹' }}</span>
-                <input 
-                  type="number" 
-                  id="price-max-{{ section.id }}" 
-                  class="sale-section__price-field"
-                  placeholder="7,000"
-                  min="0"
-                  data-price-max
-                >
-              </div>
+              <input 
+                type="text" 
+                class="sale-section__price-input" 
+                id="price-max-{{ section.id }}"
+                data-price-max
+              >
             </div>
-            <div class="sale-section__price-slider">
+            <div class="sale-section__price-slider" data-price-slider>
               <input 
                 type="range" 
-                id="price-range-{{ section.id }}" 
-                class="sale-section__range-input"
-                min="0"
-                max="100000"
-                step="100"
-                data-price-range
+                class="sale-section__slider sale-section__slider--min" 
+                min="0" 
+                max="100000" 
+                value="0"
+                data-slider-min
+              >
+              <input 
+                type="range" 
+                class="sale-section__slider sale-section__slider--max" 
+                min="0" 
+                max="100000" 
+                value="100000"
+                data-slider-max
               >
             </div>
           </div>
@@ -319,35 +316,32 @@
 
 .sale-section__layout {
   display: grid;
-  grid-template-columns: 288px 1fr;
-  gap: 32px;
+  grid-template-columns: 280px 1fr;
+  gap: 40px;
   margin-bottom: 40px;
+  align-items: start;
 }
 
 .sale-section__filters {
-  background-color: #fdfdfd;
-  border: 1px solid #e5e5e5;
-  border-radius: 8px;
-  padding: 8px;
+  position: sticky;
+  top: 100px;
+  background-color: var(--color-white);
   height: fit-content;
-  overflow: visible;
 }
 
 .sale-section__filters-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px;
-  background-color: #f9f9f9;
-  margin-bottom: 0;
+  margin-bottom: 24px;
 }
 
 .sale-section__filters-title {
-  font-family: 'Roboto', sans-serif;
-  font-weight: 400;
-  font-size: 18px;
-  line-height: 25px;
-  color: #272727;
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: normal;
+  color: var(--color-black);
   margin: 0;
 }
 
@@ -361,26 +355,31 @@
 }
 
 .sale-section__filter-group {
-  border-top: 1px solid rgba(147, 147, 147, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.sale-section__filter-group:last-child {
+  border-bottom: none;
 }
 
 .sale-section__filter-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px;
-  background-color: #fdfdfd;
   cursor: pointer;
 }
 
 .sale-section__filter-title {
-  font-family: 'Roboto', sans-serif;
-  font-weight: 400;
-  font-size: 18px;
-  line-height: 25px;
-  color: #272727;
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: normal;
+  color: var(--color-black);
   margin: 0;
-  text-align: left;
 }
 
 .sale-section__filter-toggle {
@@ -388,8 +387,15 @@
   border: none;
   cursor: pointer;
   padding: 4px;
-  color: #272727;
+  color: var(--color-black);
   transform: rotate(180deg);
+  transition: transform var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.sale-section__filter-toggle svg {
+  width: 16px;
+  height: 16px;
   transition: transform var(--transition-fast);
 }
 
@@ -398,9 +404,9 @@
 }
 
 .sale-section__filter-content {
-  padding: 8px 16px 16px 8px;
-  background-color: #fdfdfd;
-  border-top: 1px solid #fdfdfd;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .sale-section__filter-content[hidden] {
@@ -410,137 +416,94 @@
 .sale-section__price-inputs {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 16px 8px;
-  border-bottom: 1px solid #f3f3f3;
+  gap: 8px;
 }
 
 .sale-section__price-input {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 8px;
-  border: 1px solid #757575;
-  border-radius: 8px;
-  min-height: 32px;
-  width: fit-content;
-}
-
-.sale-section__price-currency {
-  font-family: 'Roboto', sans-serif;
-  font-weight: 400;
-  font-size: 14px;
-  color: var(--color-black);
-  line-height: 17px;
-}
-
-.sale-section__price-field {
   width: 116px;
-  border: none;
-  background: none;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 400;
-  font-size: 12px;
-  color: #757575;
-  outline: none;
-  min-width: 0;
+  padding: 8px 12px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  border: 1px solid var(--color-black);
+  border-radius: 4px;
+  background-color: var(--color-white);
 }
 
 .sale-section__price-separator {
-  font-family: 'Roboto', sans-serif;
-  font-weight: 400;
+  font-family: var(--font-body);
   font-size: 14px;
-  color: #272727;
-  line-height: 17px;
-  white-space: nowrap;
+  color: var(--color-black);
 }
 
 .sale-section__price-slider {
   position: relative;
-  padding: 8px;
-  background-color: #f9f9f9;
+  height: 4px;
+  background-color: #e0e0e0;
+  border-radius: 2px;
+  margin-top: 8px;
 }
 
-.sale-section__range-input {
+.sale-section__slider {
+  position: absolute;
   width: 100%;
-  height: 5px;
-  background-color: #e5e5e5;
-  border-radius: 56px;
-  outline: none;
+  height: 4px;
   -webkit-appearance: none;
   appearance: none;
+  background: transparent;
+  pointer-events: none;
 }
 
-.sale-section__range-input::-webkit-slider-thumb {
+.sale-section__slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 24px;
-  height: 24px;
-  background-color: #272727;
-  border: 1px solid var(--color-black);
+  width: 16px;
+  height: 16px;
+  background-color: var(--color-blue);
+  border: 2px solid var(--color-black);
   border-radius: 50%;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  pointer-events: all;
+  box-shadow: 2px 2px 0px 0px var(--color-black);
 }
 
-.sale-section__range-input::-moz-range-thumb {
-  width: 24px;
-  height: 24px;
-  background-color: #272727;
-  border: 1px solid var(--color-black);
+.sale-section__slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background-color: var(--color-blue);
+  border: 2px solid var(--color-black);
   border-radius: 50%;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  pointer-events: all;
+  box-shadow: 2px 2px 0px 0px var(--color-black);
+}
+
+.sale-section__slider--min {
+  z-index: 2;
+}
+
+.sale-section__slider--max {
+  z-index: 1;
 }
 
 .sale-section__filter-checkbox {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 0;
   cursor: pointer;
-  min-height: 19px;
 }
 
 .sale-section__filter-checkbox input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  min-width: 16px;
-  border: 1px solid #272727;
-  border-radius: 4px;
-  background-color: #fdfdfd;
+  width: 18px;
+  height: 18px;
   cursor: pointer;
-  appearance: none;
-  -webkit-appearance: none;
-  position: relative;
-  flex-shrink: 0;
-}
-
-.sale-section__filter-checkbox input[type="checkbox"]:checked {
-  background-color: #1a4de1;
-  border-color: #1a4de1;
-}
-
-.sale-section__filter-checkbox input[type="checkbox"]:checked::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 8px;
-  height: 8px;
-  background-image: url("data:image/svg+xml,%3Csvg width='8' height='8' viewBox='0 0 8 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 4L3 6L7 2' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
+  accent-color: var(--color-blue);
+  border: 1px solid var(--color-black);
 }
 
 .sale-section__filter-checkbox-label {
-  font-family: 'Roboto', sans-serif;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 1.5;
-  color: #424242;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-black);
   display: flex;
   align-items: center;
   gap: 4px;
@@ -548,7 +511,7 @@
 
 .sale-section__filter-count {
   font-size: 12px;
-  color: #aeaeae;
+  color: var(--color-text-secondary);
 }
 
 .sale-section__products {
@@ -606,6 +569,11 @@
 }
 
 @media screen and (max-width: 1200px) {
+  .sale-section__layout {
+    grid-template-columns: 240px 1fr;
+    gap: 32px;
+  }
+
   .sale-section__products-grid {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -618,15 +586,8 @@
   }
 
   .sale-section__filters {
-    max-height: none;
-    overflow: visible;
-  }
-
-  .sale-section__filters-header {
-    position: sticky;
+    position: relative;
     top: 0;
-    z-index: 10;
-    background-color: #f9f9f9;
   }
 
   .sale-section__filters-toggle {
@@ -742,26 +703,85 @@
     });
   }
 
-  // Price range slider
-  const priceRange = saleSection.querySelector('[data-price-range]');
-  const priceMin = saleSection.querySelector('[data-price-min]');
-  const priceMax = saleSection.querySelector('[data-price-max]');
+  // Price range sliders and inputs
+  const priceMinInput = saleSection.querySelector('[data-price-min]');
+  const priceMaxInput = saleSection.querySelector('[data-price-max]');
+  const priceMinSlider = saleSection.querySelector('[data-slider-min]');
+  const priceMaxSlider = saleSection.querySelector('[data-slider-max]');
   
-  if (priceRange && priceMin && priceMax) {
-    // Initialize values
-    const updatePriceInputs = () => {
-      const value = parseInt(priceRange.value);
-      priceMin.value = Math.floor(value * 0.3);
-      priceMax.value = Math.floor(value * 0.7);
-    };
+  // Format price for display
+  function formatPrice(value) {
+    return '₹' + parseInt(value).toLocaleString('en-IN');
+  }
 
-    priceRange.addEventListener('input', function() {
+  // Parse price from display format
+  function parsePrice(value) {
+    if (typeof value === 'string') {
+      return parseInt(value.replace(/[₹,]/g, '')) || 0;
+    }
+    return parseInt(value) || 0;
+  }
+
+  // Update price inputs from sliders
+  function updatePriceInputs() {
+    if (priceMinSlider && priceMaxSlider && priceMinInput && priceMaxInput) {
+      const minValue = parseInt(priceMinSlider.value);
+      const maxValue = parseInt(priceMaxSlider.value);
+      
+      priceMinInput.value = formatPrice(minValue);
+      priceMaxInput.value = formatPrice(maxValue);
+      
+      // Ensure min doesn't exceed max
+      if (minValue > maxValue) {
+        priceMinSlider.value = maxValue;
+        priceMinInput.value = formatPrice(maxValue);
+      }
+    }
+  }
+
+  // Update sliders from inputs
+  function updatePriceSliders() {
+    if (priceMinInput && priceMaxInput && priceMinSlider && priceMaxSlider) {
+      const minValue = parsePrice(priceMinInput.value) || 0;
+      const maxValue = parsePrice(priceMaxInput.value) || 100000;
+      
+      priceMinSlider.value = Math.min(minValue, parseInt(priceMaxSlider.max));
+      priceMaxSlider.value = Math.min(maxValue, parseInt(priceMaxSlider.max));
+      
+      // Ensure min doesn't exceed max
+      if (minValue > maxValue) {
+        priceMinInput.value = formatPrice(maxValue);
+        priceMinSlider.value = maxValue;
+      }
+    }
+  }
+
+  if (priceMinSlider) {
+    priceMinSlider.addEventListener('input', () => {
       updatePriceInputs();
     });
-
-    // Initialize on load
-    updatePriceInputs();
   }
+
+  if (priceMaxSlider) {
+    priceMaxSlider.addEventListener('input', () => {
+      updatePriceInputs();
+    });
+  }
+
+  if (priceMinInput) {
+    priceMinInput.addEventListener('blur', () => {
+      updatePriceSliders();
+    });
+  }
+
+  if (priceMaxInput) {
+    priceMaxInput.addEventListener('blur', () => {
+      updatePriceSliders();
+    });
+  }
+
+  // Initialize
+  updatePriceInputs();
 
   // Filter products (basic implementation)
   const categoryCheckboxes = saleSection.querySelectorAll('[data-filter-category]');
