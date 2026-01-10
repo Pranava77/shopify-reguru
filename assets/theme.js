@@ -420,7 +420,10 @@ class ThemeUtils {
     const cartType = header?.getAttribute('data-cart-type') || 'drawer';
     
     const drawer = document.querySelector('[data-cart-drawer]');
-    if (!drawer) return;
+    if (!drawer) {
+      console.warn('Cart drawer element not found');
+      return;
+    }
     
     // Hide drawer if cart type is set to page
     if (cartType !== 'drawer') {
@@ -431,17 +434,22 @@ class ThemeUtils {
     // Remove hidden class if it exists
     drawer.classList.remove('is-hidden');
 
-    this.cartDrawer = new CartDrawer(drawer);
+    try {
+      this.cartDrawer = new CartDrawer(drawer);
+    } catch (error) {
+      console.error('Error initializing cart drawer:', error);
+      return;
+    }
     
-    // Handle cart drawer trigger from header
-    const trigger = document.querySelector('[data-cart-drawer-trigger]');
-    if (trigger) {
-      trigger.addEventListener('click', (e) => {
+    // Handle cart drawer trigger from header - use event delegation
+    document.addEventListener('click', (e) => {
+      const cartTrigger = e.target.closest('[data-cart-drawer-trigger]');
+      if (cartTrigger && this.cartDrawer) {
         e.preventDefault();
         e.stopPropagation();
         this.cartDrawer.open();
-      });
-    }
+      }
+    });
     
     // Listen for cart updates to refresh drawer if open
     document.addEventListener('cart:updated', () => {
@@ -1262,95 +1270,98 @@ class CartDrawer {
       }
     });
     
-    // Initialize cart drawer functionality if form exists
-    this.form = this.drawer.querySelector('#cart-drawer-form');
-    if (this.form) {
-      this.#initCartActions();
-    }
+    // Initialize cart drawer functionality - use event delegation on drawer
+    // This works even when content is dynamically updated
+    this.#initCartActions();
   }
 
   #initCartActions() {
-    // Quantity buttons
-    const increaseButtons = this.form.querySelectorAll('[data-increase-quantity]');
-    const decreaseButtons = this.form.querySelectorAll('[data-decrease-quantity]');
+    // Use event delegation on the drawer itself for dynamic content
+    // This ensures buttons work even when cart content is updated
     
-    for (const button of increaseButtons) {
-      button.addEventListener('click', async (e) => {
+    // Quantity buttons - increase
+    this.drawer.addEventListener('click', async (e) => {
+      const increaseBtn = e.target.closest('[data-increase-quantity]');
+      if (increaseBtn) {
         e.preventDefault();
-        const key = button.getAttribute('data-key');
-        await this.#updateQuantity(key, 1);
-      });
-    }
-    
-    for (const button of decreaseButtons) {
-      button.addEventListener('click', async (e) => {
-        e.preventDefault();
-        const key = button.getAttribute('data-key');
-        await this.#updateQuantity(key, -1);
-      });
-    }
-    
-    // Quantity inputs
-    const quantityInputs = this.form.querySelectorAll('.cart-drawer__quantity-input');
-    for (const input of quantityInputs) {
-      let originalValue = parseInt(input.value, 10) || 0;
+        e.stopPropagation();
+        const key = increaseBtn.getAttribute('data-key');
+        if (key) {
+          await this.#updateQuantity(key, 1);
+        }
+      }
       
-      input.addEventListener('change', async () => {
+      // Quantity buttons - decrease
+      const decreaseBtn = e.target.closest('[data-decrease-quantity]');
+      if (decreaseBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const key = decreaseBtn.getAttribute('data-key');
+        if (key) {
+          await this.#updateQuantity(key, -1);
+        }
+      }
+      
+      // Remove buttons
+      const removeBtn = e.target.closest('[data-remove-item]');
+      if (removeBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const key = removeBtn.getAttribute('data-key');
+        if (key) {
+          await this.#removeItem(key);
+        }
+      }
+    });
+    
+    // Quantity inputs - use event delegation
+    this.drawer.addEventListener('change', async (e) => {
+      const input = e.target.closest('.cart-drawer__quantity-input');
+      if (input && input.hasAttribute('data-key')) {
         let newValue = parseInt(input.value, 10);
         if (isNaN(newValue) || newValue < 0) {
           newValue = 0;
           input.value = 0;
         }
         
+        const key = input.getAttribute('data-key');
+        const originalValue = parseInt(input.getAttribute('data-original-value') || input.value, 10) || 0;
+        
         if (newValue === originalValue) return;
         
-        const key = input.getAttribute('data-key');
-        const previousValue = originalValue;
-        originalValue = newValue;
-        
+        input.setAttribute('data-original-value', newValue);
         input.disabled = true;
         
         try {
           await this.#setQuantity(key, newValue);
         } catch (error) {
-          input.value = previousValue;
-          originalValue = previousValue;
+          input.value = originalValue;
+          input.setAttribute('data-original-value', originalValue);
           alert('Failed to update cart. Please try again.');
         } finally {
           input.disabled = false;
         }
-      });
-    }
-    
-    // Remove buttons
-    const removeButtons = this.form.querySelectorAll('[data-remove-item]');
-    for (const button of removeButtons) {
-      button.addEventListener('click', async (e) => {
-        e.preventDefault();
-        const key = button.getAttribute('data-key');
-        await this.#removeItem(key);
-      });
-    }
-    
-    // Form submission
-    this.form.addEventListener('submit', (e) => {
-      const submitButton = e.submitter;
-      if (!submitButton || submitButton.name !== 'checkout') {
-        e.preventDefault();
       }
     });
     
-    // Continue shopping buttons
-    const continueButtons = this.drawer.querySelectorAll('[data-continue-shopping]');
-    for (const button of continueButtons) {
-      button.addEventListener('click', () => {
-        this.close();
-      });
-    }
+    // Form submission - use event delegation
+    this.drawer.addEventListener('submit', (e) => {
+      const form = e.target.closest('#cart-drawer-form');
+      if (form) {
+        const submitButton = e.submitter;
+        if (!submitButton || submitButton.name !== 'checkout') {
+          e.preventDefault();
+        }
+      }
+    });
+    
+    // Continue shopping buttons - already handled in click handler above
   }
 
   async #updateQuantity(key, change) {
-    const input = this.form.querySelector(`input[data-key="${key}"]`);
+    const form = this.drawer.querySelector('#cart-drawer-form');
+    if (!form) return;
+    const input = form.querySelector(`input[data-key="${key}"]`);
     if (!input) return;
     
     const currentValue = parseInt(input.value, 10) || 0;
@@ -1359,21 +1370,34 @@ class CartDrawer {
     if (newValue === currentValue) return;
     
     input.value = newValue;
+    input.setAttribute('data-original-value', newValue);
     input.disabled = true;
+    
+    // Disable all quantity buttons during update
+    const buttons = form.querySelectorAll('[data-increase-quantity], [data-decrease-quantity]');
+    buttons.forEach(btn => btn.disabled = true);
     
     try {
       await this.#setQuantity(key, newValue);
     } catch (error) {
       input.value = currentValue;
+      input.setAttribute('data-original-value', currentValue);
       alert('Failed to update cart. Please try again.');
     } finally {
       input.disabled = false;
+      buttons.forEach(btn => btn.disabled = false);
     }
   }
 
   async #setQuantity(key, quantity) {
+    // Get the form - it might have been updated
+    const form = this.drawer.querySelector('#cart-drawer-form');
+    if (!form) {
+      throw new Error('Cart form not found');
+    }
+    
     const formData = new FormData();
-    const items = this.form.querySelectorAll('input[name="updates[]"]');
+    const items = form.querySelectorAll('input[name="updates[]"]');
     
     for (const input of items) {
       const itemKey = input.getAttribute('data-key');
@@ -1400,7 +1424,10 @@ class CartDrawer {
   }
 
   async #removeItem(key) {
-    const itemRow = this.form.querySelector(`[data-line-item="${key}"]`);
+    const form = this.drawer.querySelector('#cart-drawer-form');
+    if (!form) return;
+    
+    const itemRow = form.querySelector(`[data-line-item="${key}"]`);
     if (itemRow) {
       itemRow.style.opacity = '0.5';
       itemRow.style.transition = 'opacity 0.3s';
@@ -1529,7 +1556,7 @@ class CartDrawer {
             <div class="cart-drawer__item-price" data-item-price>${this.#formatMoney(item.final_price)}</div>
             <div class="cart-drawer__item-quantity">
               <button type="button" class="cart-drawer__quantity-btn" data-decrease-quantity data-key="${item.key}" aria-label="Decrease quantity"><span>-</span></button>
-              <input type="number" name="updates[]" value="${item.quantity}" min="0" class="cart-drawer__quantity-input" data-key="${item.key}">
+              <input type="number" name="updates[]" value="${item.quantity}" min="0" class="cart-drawer__quantity-input" data-key="${item.key}" data-original-value="${item.quantity}">
               <button type="button" class="cart-drawer__quantity-btn" data-increase-quantity data-key="${item.key}" aria-label="Increase quantity"><span>+</span></button>
             </div>
           </div>
@@ -1598,11 +1625,9 @@ class CartDrawer {
     
     this.content.innerHTML = itemsHtml;
     
-    // Update form reference and reinitialize actions
+    // Update form reference (for compatibility)
     this.form = this.content.querySelector('#cart-drawer-form');
-    if (this.form) {
-      this.#initCartActions();
-    }
+    // Actions are handled via event delegation on drawer, so no need to reinitialize
   }
 
   #formatMoney(cents) {
@@ -1626,8 +1651,10 @@ class CartDrawer {
     this.drawer.setAttribute('aria-hidden', 'false');
     // Prevent body scroll
     document.body.style.overflow = 'hidden';
-    // Refresh cart when opening
+    // Refresh cart when opening to ensure latest data
     this.refreshCart();
+    // Update form reference in case it was updated
+    this.form = this.drawer.querySelector('#cart-drawer-form');
   }
 
   close() {
