@@ -292,10 +292,10 @@
                     {{ price | money }}
                   </div>
                   <div class="filtered-product-card__actions">
-                    <a href="{{ product.url }}" class="filtered-product-card__btn filtered-product-card__btn--buy">
-                      Buy Now
+                    <a href="{{ product.url }}" class="filtered-product-card__btn filtered-product-card__btn--primary">
+                      View Details
                     </a>
-                    <button type="button" class="filtered-product-card__btn filtered-product-card__btn--cart" data-add-to-cart data-variant-id="{{ product.selected_or_first_available_variant.id }}">
+                    <button type="button" class="filtered-product-card__btn filtered-product-card__btn--secondary" data-add-to-cart data-variant-id="{{ product.selected_or_first_available_variant.id }}">
                       Add to cart
                     </button>
                   </div>
@@ -610,7 +610,7 @@
 .filtered-product-card__badge {
   position: absolute;
   top: 0;
-  right: 0;
+  left: 0;
   padding: 4px 12px;
   font-family: var(--font-body);
   font-weight: 500;
@@ -682,8 +682,7 @@
 
 .filtered-product-card__rating {
   display: flex;
-  align-items: center;
-  gap: 4px;
+  gap: 2px;
 }
 
 .filtered-product-card__star {
@@ -717,15 +716,11 @@
 }
 
 .filtered-product-card__price {
-  padding: 6px 12px;
   font-family: var(--font-heading);
   font-weight: 700;
   font-size: 18px;
-  color: var(--color-white);
-  background-color: var(--color-green);
-  border-radius: 4px;
+  color: var(--color-black);
   text-align: center;
-  box-shadow: 2px 2px 0px 0px var(--color-black);
 }
 
 .filtered-product-card__actions {
@@ -741,7 +736,7 @@
   font-size: 14px;
   text-align: center;
   text-decoration: none;
-  border: 2px solid var(--color-blue);
+  border: 2px solid var(--color-black);
   border-radius: 4px;
   box-shadow: 3px 3px 0px 0px var(--color-black);
   cursor: pointer;
@@ -752,15 +747,14 @@
   justify-content: center;
 }
 
-.filtered-product-card__btn--buy {
-  background-color: var(--color-white);
-  color: var(--color-blue);
+.filtered-product-card__btn--primary {
+  background-color: var(--color-green);
+  color: var(--color-black);
 }
 
-.filtered-product-card__btn--cart {
-  background-color: var(--color-blue);
-  color: var(--color-white);
-  border: 2px solid var(--color-blue);
+.filtered-product-card__btn--secondary {
+  background-color: rgba(177, 216, 255, 1);
+  color: var(--color-black);
 }
 
 .filtered-product-card__btn:hover {
@@ -814,6 +808,26 @@
     grid-template-columns: 1fr;
     gap: 16px;
   }
+
+  .filtered-product-card {
+    padding: 14px;
+    gap: 12px;
+    box-shadow: 4px 4px 0px 0px var(--color-black);
+  }
+
+  .filtered-product-card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px 0px var(--color-black);
+  }
+
+  .filtered-product-card__price {
+    font-size: 16px;
+  }
+
+  .filtered-product-card__btn {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
 }
 
 @media screen and (max-width: 576px) {
@@ -826,17 +840,44 @@
   }
 
   .filtered-product-card {
-    padding: 14px;
-    gap: 12px;
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .filtered-product-card__title {
+    font-size: 15px;
+  }
+
+  .filtered-product-card__description {
+    font-size: 11px;
   }
 
   .filtered-product-card__price {
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .filtered-product-card__btn {
-    padding: 10px 14px;
-    font-size: 13px;
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .filtered-product-card {
+    padding: 10px;
+  }
+
+  .filtered-product-card__title {
+    font-size: 14px;
+  }
+
+  .filtered-product-card__price {
+    font-size: 14px;
+  }
+
+  .filtered-product-card__btn {
+    font-size: 11px;
+    padding: 9px 10px;
   }
 }
 {% endstylesheet %}
