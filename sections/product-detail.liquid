@@ -1,0 +1,1019 @@
+{%- liquid
+  if product == blank
+    assign product = all_products[section.settings.product] | default: all_products.first
+  endif
+
+  assign selected_variant = product.selected_or_first_available_variant
+  assign compare_at_price = selected_variant.compare_at_price
+  assign price = selected_variant.price
+  
+  if compare_at_price > price
+    assign discount_percentage = compare_at_price | minus: price | times: 100 | divided_by: compare_at_price | round
+  endif
+
+  assign current_image_index = 0
+  assign product_images = product.images
+-%}
+
+<section class="product-detail" id="product-detail-{{ section.id }}">
+  <div class="product-detail__container">
+    <div class="product-detail__main">
+      <!-- Left Column: Product Images -->
+      <div class="product-detail__images">
+        <div class="product-detail__main-image">
+          {%- if product.featured_image != blank -%}
+            <img 
+              id="product-main-image"
+              src="{{ product.featured_image | image_url: width: 800 }}"
+              alt="{{ product.featured_image.alt | default: product.title }}"
+              width="800"
+              height="800"
+              loading="eager"
+            >
+          {%- else -%}
+            <div class="product-detail__placeholder">
+              {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+            </div>
+          {%- endif -%}
+        </div>
+        
+        <div class="product-detail__thumbnails">
+          {%- for image in product_images limit: 4 -%}
+            <button 
+              type="button"
+              class="product-detail__thumbnail{% if forloop.first %} product-detail__thumbnail--active{% endif %}"
+              data-image-index="{{ forloop.index0 }}"
+              data-image-url="{{ image | image_url: width: 800 }}"
+              aria-label="View product image {{ forloop.index }}"
+            >
+              <img 
+                src="{{ image | image_url: width: 200 }}"
+                alt="{{ image.alt | default: product.title }}"
+                width="134"
+                height="134"
+                loading="lazy"
+              >
+            </button>
+          {%- endfor -%}
+        </div>
+      </div>
+
+      <!-- Right Column: Product Information -->
+      <div class="product-detail__info">
+        <div class="product-detail__header">
+          <h1 class="product-detail__title">{{ product.title }}</h1>
+          
+          <div class="product-detail__rating">
+            {%- if product.metafields.reviews.rating.value -%}
+              {%- assign rating = product.metafields.reviews.rating.value -%}
+            {%- else -%}
+              {%- assign rating = 4.8 -%}
+            {%- endif -%}
+            
+            <div class="product-detail__stars">
+              {%- for i in (1..5) -%}
+                <svg 
+                  class="product-detail__star{% if i <= rating %} product-detail__star--filled{% endif %}" 
+                  width="16" 
+                  height="16" 
+                  viewBox="0 0 16 16" 
+                  fill="none" 
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M8 1L9.5 5H13.5L10 8L11.5 12L8 9.5L4.5 12L6 8L2.5 5H6.5L8 1Z" fill="currentColor"/>
+                </svg>
+              {%- endfor -%}
+            </div>
+            
+            <span class="product-detail__rating-text">
+              {{ rating }} ({{ product.metafields.reviews.rating_count.value | default: 2847 }} reviews)
+            </span>
+          </div>
+
+          <div class="product-detail__pricing">
+            <span class="product-detail__price">{{ price | money }}</span>
+            {%- if compare_at_price > price -%}
+              <span class="product-detail__compare-price">{{ compare_at_price | money }}</span>
+              <span class="product-detail__badge">{{ discount_percentage }}% OFF</span>
+            {%- endif -%}
+          </div>
+        </div>
+
+        <div class="product-detail__divider"></div>
+
+        <div class="product-detail__description">
+          <p>{{ product.description | strip_html | truncate: 200 | default: 'Experience unparalleled sound quality with our premium wireless headphones. Featuring advanced noise cancellation technology, 40-hour battery life, and exceptional comfort for all-day wear. Perfect for music lovers, travelers, and professionals alike.' }}</p>
+        </div>
+
+        <!-- Color Options -->
+        {%- if product.options_with_values.size > 0 -%}
+          {%- assign color_option = product.options_with_values | where: 'name', 'Color' | first -%}
+          {%- if color_option == blank -%}
+            {%- assign color_option = product.options_with_values.first -%}
+          {%- endif -%}
+          
+          {%- if color_option != blank and color_option.values.size > 0 -%}
+            <div class="product-detail__options">
+              <label class="product-detail__option-label">Color</label>
+              <div class="product-detail__color-options">
+                {%- for value in color_option.values limit: 3 -%}
+                  <button 
+                    type="button"
+                    class="product-detail__color-option{% if forloop.first %} product-detail__color-option--active{% endif %}"
+                    data-option-name="{{ color_option.name }}"
+                    data-option-value="{{ value }}"
+                  >
+                    {{ value }}
+                  </button>
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endif -%}
+
+        <!-- Quantity and Add to Cart -->
+        <div class="product-detail__purchase">
+          <div class="product-detail__quantity-section">
+            <label class="product-detail__quantity-label">Quantity</label>
+            <div class="product-detail__quantity-controls">
+              <div class="product-detail__quantity-selector">
+                <button 
+                  type="button" 
+                  class="product-detail__quantity-btn"
+                  data-quantity-decrease
+                  aria-label="Decrease quantity"
+                >
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 8H12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </button>
+                <input 
+                  type="number" 
+                  class="product-detail__quantity-input"
+                  id="product-quantity-{{ section.id }}"
+                  value="1" 
+                  min="1"
+                  aria-label="Quantity"
+                >
+                <button 
+                  type="button" 
+                  class="product-detail__quantity-btn"
+                  data-quantity-increase
+                  aria-label="Increase quantity"
+                >
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 4V12M4 8H12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </button>
+              </div>
+              
+              <button 
+                type="button"
+                class="product-detail__btn product-detail__btn--add-cart"
+                data-add-to-cart
+                data-variant-id="{{ selected_variant.id }}"
+              >
+                Add to cart
+              </button>
+            </div>
+          </div>
+          
+          <button 
+            type="button"
+            class="product-detail__btn product-detail__btn--buy-now"
+            data-buy-now
+            data-variant-id="{{ selected_variant.id }}"
+          >
+            Buy Now
+          </button>
+        </div>
+
+        <!-- Service Guarantees -->
+        <div class="product-detail__guarantees">
+          <div class="product-detail__guarantee">
+            <svg class="product-detail__guarantee-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.5 8.75L10 2.5L17.5 8.75V16.25C17.5 16.5815 17.3683 16.8995 17.1339 17.1339C16.8995 17.3683 16.5815 17.5 16.25 17.5H3.75C3.41848 17.5 3.10054 17.3683 2.86612 17.1339C2.6317 16.8995 2.5 16.5815 2.5 16.25V8.75Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M7.5 17.5V10H12.5V17.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="product-detail__guarantee-content">
+              <p class="product-detail__guarantee-title">Free Shipping</p>
+              <p class="product-detail__guarantee-subtitle">On orders over $50</p>
+            </div>
+          </div>
+          
+          <div class="product-detail__guarantee">
+            <svg class="product-detail__guarantee-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 18.3333C14.6024 18.3333 18.3333 14.6024 18.3333 10C18.3333 5.39763 14.6024 1.66667 10 1.66667C5.39763 1.66667 1.66667 5.39763 1.66667 10C1.66667 14.6024 5.39763 18.3333 10 18.3333Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M10 6.66667V10L12.5 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="product-detail__guarantee-content">
+              <p class="product-detail__guarantee-title">2 Year Warranty</p>
+              <p class="product-detail__guarantee-subtitle">Full coverage</p>
+            </div>
+          </div>
+          
+          <div class="product-detail__guarantee">
+            <svg class="product-detail__guarantee-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1.66667 10H18.3333" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M10 1.66667L15 6.66667L10 11.6667M10 1.66667L5 6.66667L10 11.6667" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M10 11.6667V18.3333" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="product-detail__guarantee-content">
+              <p class="product-detail__guarantee-title">30-Day Returns</p>
+              <p class="product-detail__guarantee-subtitle">Money back guarantee</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs Section -->
+    <div class="product-detail__tabs-section">
+      <div class="product-detail__tabs">
+        <button 
+          type="button"
+          class="product-detail__tab product-detail__tab--active"
+          data-tab="description"
+        >
+          Description
+        </button>
+        <button 
+          type="button"
+          class="product-detail__tab"
+          data-tab="specifications"
+        >
+          Specifications
+        </button>
+        <button 
+          type="button"
+          class="product-detail__tab"
+          data-tab="reviews"
+        >
+          Reviews ({{ product.metafields.reviews.rating_count.value | default: 2847 }})
+        </button>
+      </div>
+
+      <div class="product-detail__tab-content">
+        <div class="product-detail__tab-panel product-detail__tab-panel--active" data-tab-panel="description">
+          <div class="product-detail__description-content">
+            <h3 class="product-detail__description-heading">Premium Audio Experience</h3>
+            <p class="product-detail__description-text">
+              Our Premium Wireless Headphones deliver studio-quality sound with deep, powerful bass and crystal-clear highs. The advanced 40mm drivers provide an immersive listening experience that brings your music to life.
+            </p>
+            
+            <h3 class="product-detail__description-heading">Active Noise Cancellation</h3>
+            <p class="product-detail__description-text">
+              Block out the world and focus on what matters. Our industry-leading ANC technology adapts to your environment, reducing unwanted noise by up to 95%. Perfect for travel, work, or simply enjoying your favorite tracks in peace.
+            </p>
+            
+            <h3 class="product-detail__description-heading">All-Day Comfort</h3>
+            <p class="product-detail__description-text">
+              Designed for extended wear, these headphones feature plush memory foam ear cushions and an adjustable headband that conforms to your head shape. The lightweight design ensures you can wear them comfortably for hours.
+            </p>
+            
+            <h3 class="product-detail__description-heading">Long-Lasting Battery</h3>
+            <p class="product-detail__description-text">
+              Enjoy up to 40 hours of wireless playback on a single charge. Quick charging technology provides 5 hours of playback from just 10 minutes of charging.
+            </p>
+          </div>
+        </div>
+
+        <div class="product-detail__tab-panel" data-tab-panel="specifications">
+          <div class="product-detail__specifications">
+            <p>Specifications content will be displayed here.</p>
+          </div>
+        </div>
+
+        <div class="product-detail__tab-panel" data-tab-panel="reviews">
+          <div class="product-detail__reviews">
+            <p>Reviews content will be displayed here.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.product-detail {
+  padding: 48px 0;
+  background-color: var(--color-white);
+}
+
+.product-detail__container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+.product-detail__main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  margin-bottom: 64px;
+}
+
+/* Product Images */
+.product-detail__images {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.product-detail__main-image {
+  width: 100%;
+  aspect-ratio: 1;
+  background-color: #f3f4f6;
+  border-radius: 10px;
+  box-shadow: 4px 4px 0px 0px var(--color-black);
+  overflow: hidden;
+  position: relative;
+}
+
+.product-detail__main-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-detail__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-gray);
+}
+
+.product-detail__thumbnails {
+  display: flex;
+  gap: 16px;
+}
+
+.product-detail__thumbnail {
+  width: 134px;
+  height: 134px;
+  padding: 2px;
+  background-color: #f3f4f6;
+  border: 1.818px solid transparent;
+  border-radius: 10px;
+  box-shadow: 2px 2px 0px 0px var(--color-black);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), transform var(--transition-fast);
+  overflow: hidden;
+}
+
+.product-detail__thumbnail--active {
+  border-color: var(--color-black);
+}
+
+.product-detail__thumbnail:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px 0px var(--color-black);
+}
+
+.product-detail__thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* Product Information */
+.product-detail__info {
+  display: flex;
+  flex-direction: column;
+  gap: 19px;
+}
+
+.product-detail__header {
+  display: flex;
+  flex-direction: column;
+  gap: 19px;
+}
+
+.product-detail__title {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 24px;
+  color: var(--color-black);
+  margin: 0;
+}
+
+.product-detail__rating {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.product-detail__stars {
+  display: flex;
+  gap: 4px;
+}
+
+.product-detail__star {
+  width: 16px;
+  height: 16px;
+  color: #d1d5db;
+}
+
+.product-detail__star--filled {
+  color: var(--color-star);
+}
+
+.product-detail__rating-text {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: #4a5565;
+}
+
+.product-detail__pricing {
+  display: flex;
+  align-items: center;
+  gap: 21px;
+}
+
+.product-detail__price {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 36px;
+  color: var(--color-black);
+}
+
+.product-detail__compare-price {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 28px;
+  color: #6a7282;
+  text-decoration: line-through;
+}
+
+.product-detail__badge {
+  padding: 3px 9px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--color-white);
+  background-color: #d4183d;
+  border: 0.909px solid transparent;
+  border-radius: 8px;
+}
+
+.product-detail__divider {
+  height: 1px;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.product-detail__description {
+  min-height: 96px;
+}
+
+.product-detail__description p {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: #4a5565;
+  margin: 0;
+}
+
+/* Color Options */
+.product-detail__options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.product-detail__option-label {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--color-black);
+}
+
+.product-detail__color-options {
+  display: flex;
+  gap: 12px;
+}
+
+.product-detail__color-option {
+  padding: 8px 21px;
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: normal;
+  color: var(--color-black);
+  background-color: var(--color-white);
+  border: 0.5px solid var(--color-black);
+  border-radius: 6px;
+  box-shadow: 4px 4px 0px 0px var(--color-black);
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.product-detail__color-option:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px var(--color-black);
+}
+
+.product-detail__color-option:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0px 0px var(--color-black);
+}
+
+.product-detail__color-option--active {
+  background-color: var(--color-white);
+  border-color: var(--color-black);
+}
+
+/* Purchase Section */
+.product-detail__purchase {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.product-detail__quantity-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.product-detail__quantity-label {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--color-black);
+}
+
+.product-detail__quantity-controls {
+  display: flex;
+  gap: 2px;
+  align-items: flex-start;
+}
+
+.product-detail__quantity-selector {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  width: 143px;
+  background-color: var(--color-white);
+  border: 0.5px solid var(--color-black);
+  border-radius: 6px;
+  box-shadow: 2px 2px 0px 0px var(--color-black);
+  overflow: hidden;
+}
+
+.product-detail__quantity-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-white);
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  color: var(--color-black);
+}
+
+.product-detail__quantity-btn:hover {
+  background-color: #f3f4f6;
+}
+
+.product-detail__quantity-input {
+  flex: 1;
+  height: 100%;
+  border: none;
+  text-align: center;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--color-black);
+  background-color: transparent;
+  -moz-appearance: textfield;
+}
+
+.product-detail__quantity-input::-webkit-outer-spin-button,
+.product-detail__quantity-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.product-detail__btn {
+  padding: 8px 21px;
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: normal;
+  text-align: center;
+  border: 0.5px solid var(--color-black);
+  border-radius: 6px;
+  box-shadow: 4px 4px 0px 0px var(--color-black);
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  white-space: nowrap;
+}
+
+.product-detail__btn--add-cart {
+  width: 278px;
+  background-color: var(--color-white);
+  color: var(--color-black);
+}
+
+.product-detail__btn--buy-now {
+  width: 100%;
+  background-color: var(--color-green-alt);
+  color: var(--color-black);
+  font-weight: 600;
+  font-size: 24px;
+}
+
+.product-detail__btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px var(--color-black);
+}
+
+.product-detail__btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0px 0px var(--color-black);
+}
+
+/* Service Guarantees */
+.product-detail__guarantees {
+  display: flex;
+  gap: 0;
+  margin-top: 24px;
+}
+
+.product-detail__guarantee {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 184px;
+}
+
+.product-detail__guarantee-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--color-black);
+}
+
+.product-detail__guarantee-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.product-detail__guarantee-title {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--color-black);
+  margin: 0;
+}
+
+.product-detail__guarantee-subtitle {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: #6a7282;
+  margin: 0;
+}
+
+/* Tabs Section */
+.product-detail__tabs-section {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.product-detail__tabs {
+  display: flex;
+  border-bottom: 0.909px solid rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.product-detail__tab {
+  padding: 5px 9px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--color-black);
+  background-color: transparent;
+  border: 0.909px solid transparent;
+  border-bottom: 1.818px solid transparent;
+  border-top: 0.909px solid transparent;
+  border-left: 0.909px solid transparent;
+  border-right: 0.909px solid transparent;
+  border-radius: 6px 6px 0 0;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  min-width: 405px;
+  text-align: center;
+}
+
+.product-detail__tab--active {
+  background-color: var(--color-white);
+  border-color: var(--color-black);
+  border-bottom-color: var(--color-white);
+  box-shadow: 4px 4px 0px 0px var(--color-black);
+  position: relative;
+  z-index: 1;
+}
+
+.product-detail__tab-content {
+  position: relative;
+  min-height: 400px;
+}
+
+.product-detail__tab-panel {
+  display: none;
+}
+
+.product-detail__tab-panel--active {
+  display: block;
+}
+
+.product-detail__description-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 768px;
+}
+
+.product-detail__description-heading {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 27px;
+  color: var(--color-black);
+  margin: 0;
+}
+
+.product-detail__description-text {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: #4a5565;
+  margin: 0;
+}
+
+.product-detail__specifications,
+.product-detail__reviews {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: #4a5565;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 992px) {
+  .product-detail__main {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .product-detail__thumbnails {
+    justify-content: center;
+  }
+
+  .product-detail__guarantees {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .product-detail__guarantee {
+    width: auto;
+    flex: 1 1 calc(33.333% - 11px);
+    min-width: 150px;
+  }
+
+  .product-detail__tab {
+    min-width: auto;
+    flex: 1;
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .product-detail {
+    padding: 32px 0;
+  }
+
+  .product-detail__container {
+    padding: 0 16px;
+  }
+
+  .product-detail__main {
+    gap: 32px;
+    margin-bottom: 40px;
+  }
+
+  .product-detail__title {
+    font-size: 24px;
+  }
+
+  .product-detail__price {
+    font-size: 24px;
+  }
+
+  .product-detail__quantity-controls {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .product-detail__btn--add-cart {
+    width: 100%;
+  }
+
+  .product-detail__guarantees {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .product-detail__guarantee {
+    width: 100%;
+  }
+
+  .product-detail__tabs {
+    flex-direction: column;
+    border-bottom: none;
+  }
+
+  .product-detail__tab {
+    border: 0.5px solid var(--color-black);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    box-shadow: 2px 2px 0px 0px var(--color-black);
+  }
+
+  .product-detail__tab--active {
+    border-bottom-color: var(--color-black);
+    box-shadow: 4px 4px 0px 0px var(--color-black);
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .product-detail {
+    padding: 24px 0;
+  }
+
+  .product-detail__container {
+    padding: 0 12px;
+  }
+
+  .product-detail__title {
+    font-size: 20px;
+  }
+
+  .product-detail__btn--buy-now {
+    font-size: 18px;
+  }
+
+  .product-detail__thumbnails {
+    gap: 8px;
+  }
+
+  .product-detail__thumbnail {
+    width: 100px;
+    height: 100px;
+  }
+}
+{% endstylesheet %}
+
+{% javascript %}
+(function() {
+  const productDetail = document.querySelector('.product-detail');
+  if (!productDetail) return;
+
+  // Image thumbnail switching
+  const thumbnails = productDetail.querySelectorAll('.product-detail__thumbnail');
+  const mainImage = productDetail.querySelector('#product-main-image');
+  
+  for (const thumbnail of thumbnails) {
+    thumbnail.addEventListener('click', function() {
+      const imageUrl = this.dataset.imageUrl;
+      if (mainImage && imageUrl) {
+        mainImage.src = imageUrl;
+        
+        // Update active state
+        thumbnails.forEach(t => t.classList.remove('product-detail__thumbnail--active'));
+        this.classList.add('product-detail__thumbnail--active');
+      }
+    });
+  }
+
+  // Quantity controls
+  const quantityInput = productDetail.querySelector('.product-detail__quantity-input');
+  const decreaseBtn = productDetail.querySelector('[data-quantity-decrease]');
+  const increaseBtn = productDetail.querySelector('[data-quantity-increase]');
+
+  if (quantityInput && decreaseBtn && increaseBtn) {
+    decreaseBtn.addEventListener('click', function() {
+      const currentValue = parseInt(quantityInput.value) || 1;
+      if (currentValue > 1) {
+        quantityInput.value = currentValue - 1;
+      }
+    });
+
+    increaseBtn.addEventListener('click', function() {
+      const currentValue = parseInt(quantityInput.value) || 1;
+      quantityInput.value = currentValue + 1;
+    });
+  }
+
+  // Tab switching
+  const tabs = productDetail.querySelectorAll('.product-detail__tab');
+  const tabPanels = productDetail.querySelectorAll('.product-detail__tab-panel');
+
+  for (const tab of tabs) {
+    tab.addEventListener('click', function() {
+      const targetTab = this.dataset.tab;
+      
+      // Update tab active state
+      tabs.forEach(t => t.classList.remove('product-detail__tab--active'));
+      this.classList.add('product-detail__tab--active');
+      
+      // Update panel active state
+      tabPanels.forEach(panel => {
+        panel.classList.remove('product-detail__tab-panel--active');
+        if (panel.dataset.tabPanel === targetTab) {
+          panel.classList.add('product-detail__tab-panel--active');
+        }
+      });
+    });
+  }
+
+  // Color option selection
+  const colorOptions = productDetail.querySelectorAll('.product-detail__color-option');
+  for (const option of colorOptions) {
+    option.addEventListener('click', function() {
+      colorOptions.forEach(o => o.classList.remove('product-detail__color-option--active'));
+      this.classList.add('product-detail__color-option--active');
+    });
+  }
+
+  // Add to cart functionality
+  const addToCartBtn = productDetail.querySelector('[data-add-to-cart]');
+  if (addToCartBtn) {
+    addToCartBtn.addEventListener('click', function() {
+      const variantId = this.dataset.variantId;
+      const quantity = quantityInput ? parseInt(quantityInput.value) || 1 : 1;
+      
+      // Add to cart logic would go here
+      console.log('Add to cart:', { variantId, quantity });
+    });
+  }
+
+  // Buy now functionality
+  const buyNowBtn = productDetail.querySelector('[data-buy-now]');
+  if (buyNowBtn) {
+    buyNowBtn.addEventListener('click', function() {
+      const variantId = this.dataset.variantId;
+      const quantity = quantityInput ? parseInt(quantityInput.value) || 1 : 1;
+      
+      // Buy now logic would go here
+      console.log('Buy now:', { variantId, quantity });
+    });
+  }
+})();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Product Detail",
+  "tag": "section",
+  "class": "product-detail-section",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product",
+      "info": "Select a product to display. If not selected, the first available product will be shown."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Detail"
+    }
+  ]
+}
+{% endschema %}
