@@ -1,0 +1,72 @@
+{
+  "sections": {
+    "filtered_product_grid": {
+      "type": "filtered-product-grid",
+      "settings": {
+        "title": "",
+        "collection": "",
+        "products_per_page": 9
+      },
+      "blocks": {
+        "filter_screen_size": {
+          "type": "filter_group",
+          "settings": {
+            "title": "Screen size",
+            "filter_type": "product_option",
+            "option_name": "Screen size"
+          }
+        },
+        "filter_ram": {
+          "type": "filter_group",
+          "settings": {
+            "title": "Ram",
+            "filter_type": "product_option",
+            "option_name": "Ram"
+          }
+        },
+        "filter_brand": {
+          "type": "filter_group",
+          "settings": {
+            "title": "Brand",
+            "filter_type": "vendor"
+          }
+        },
+        "filter_os": {
+          "type": "filter_group",
+          "settings": {
+            "title": "Operating system",
+            "filter_type": "product_option",
+            "option_name": "Operating system"
+          }
+        },
+        "filter_memory": {
+          "type": "filter_group",
+          "settings": {
+            "title": "Internal memory type",
+            "filter_type": "product_option",
+            "option_name": "Internal memory type"
+          }
+        },
+        "filter_refresh_rate": {
+          "type": "filter_group",
+          "settings": {
+            "title": "Image refresh rate",
+            "filter_type": "product_option",
+            "option_name": "Image refresh rate"
+          }
+        }
+      },
+      "block_order": [
+        "filter_screen_size",
+        "filter_ram",
+        "filter_brand",
+        "filter_os",
+        "filter_memory",
+        "filter_refresh_rate"
+      ]
+    }
+  },
+  "order": [
+    "filtered_product_grid"
+  ]
+}

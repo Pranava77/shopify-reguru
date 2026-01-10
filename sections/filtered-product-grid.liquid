@@ -1,8 +1,37 @@
 {%- liquid
-  assign collection_handle = section.settings.collection
-  assign collection_obj = collections[collection_handle]
-  assign section_title = section.settings.title | default: collection_obj.title | default: 'Products'
+  comment
+    Use current collection if on a collection page, otherwise use section setting
+  endcomment
+  if collection != blank
+    assign collection_obj = collection
+    assign section_title = section.settings.title | default: collection.title | default: 'Products'
+  elsif section.settings.collection != blank
+    assign collection_handle = section.settings.collection
+    assign collection_obj = collections[collection_handle]
+    assign section_title = section.settings.title | default: collection_obj.title | default: 'Products'
+  else
+    assign collection_obj = blank
+    assign section_title = section.settings.title | default: 'Products'
+  endif
+  
   assign products_per_page = section.settings.products_per_page | default: 9
+  
+  comment
+    Calculate price range from collection products
+  endcomment
+  assign min_price = 0
+  assign max_price = 100000
+  
+  if collection_obj != blank and collection_obj.products.size > 0
+    for product in collection_obj.products
+      if product.price < min_price or min_price == 0
+        assign min_price = product.price
+      endif
+      if product.price > max_price
+        assign max_price = product.price
+      endif
+    endfor
+  endif
 -%}
 
 <section class="filtered-product-grid" id="filtered-product-grid-{{ section.id }}" data-section-id="{{ section.id }}">
@@ -19,7 +48,7 @@
                 type="text" 
                 class="filter__price-input" 
                 id="price-min-{{ section.id }}"
-                value="₹3,000"
+                value="{{ min_price | money | remove: '.00' }}"
                 data-price-min
               >
               <span class="filter__price-separator">To</span>
@@ -27,7 +56,7 @@
                 type="text" 
                 class="filter__price-input" 
                 id="price-max-{{ section.id }}"
-                value="₹7,000"
+                value="{{ max_price | money | remove: '.00' }}"
                 data-price-max
               >
             </div>
@@ -35,18 +64,22 @@
               <input 
                 type="range" 
                 class="filter__slider filter__slider--min" 
-                min="0" 
-                max="100000" 
-                value="3000"
+                min="{{ min_price }}" 
+                max="{{ max_price }}" 
+                value="{{ min_price }}"
                 data-slider-min
+                data-min-price="{{ min_price }}"
+                data-max-price="{{ max_price }}"
               >
               <input 
                 type="range" 
                 class="filter__slider filter__slider--max" 
-                min="0" 
-                max="100000" 
-                value="7000"
+                min="{{ min_price }}" 
+                max="{{ max_price }}" 
+                value="{{ max_price }}"
                 data-slider-max
+                data-min-price="{{ min_price }}"
+                data-max-price="{{ max_price }}"
               >
             </div>
           </div>
@@ -195,7 +228,7 @@
       <!-- Main Content Area -->
       <main class="filtered-product-grid__main">
         <h1 class="filtered-product-grid__title">{{ section_title }}</h1>
-        <div class="filtered-product-grid__products" data-product-grid>
+        <div class="filtered-product-grid__products" data-product-grid data-collection-handle="{{ collection_obj.handle | default: '' }}" data-min-price="{{ min_price }}" data-max-price="{{ max_price }}">
           {%- if collection_obj != blank and collection_obj.products.size > 0 -%}
             {%- for product in collection_obj.products limit: products_per_page -%}
               <article class="filtered-product-card">
@@ -822,6 +855,10 @@
   const productGrid = section.querySelector('[data-product-grid]');
   const checkboxes = section.querySelectorAll('.filter__checkbox');
 
+  // Get price range from data attributes or sliders
+  const minPrice = productGrid ? parseInt(productGrid.dataset.minPrice) || (priceMinSlider ? parseInt(priceMinSlider.dataset.minPrice) : 0) : 0;
+  const maxPrice = productGrid ? parseInt(productGrid.dataset.maxPrice) || (priceMaxSlider ? parseInt(priceMaxSlider.dataset.maxPrice) : 100000) : 100000;
+
   // Format price for display
   function formatPrice(value) {
     return '₹' + parseInt(value).toLocaleString('en-IN');
@@ -829,7 +866,10 @@
 
   // Parse price from display format
   function parsePrice(value) {
-    return parseInt(value.replace(/[₹,]/g, ''));
+    if (typeof value === 'string') {
+      return parseInt(value.replace(/[₹,]/g, '')) || 0;
+    }
+    return parseInt(value) || 0;
   }
 
   // Update price inputs from sliders
@@ -871,8 +911,8 @@
     if (!productGrid) return;
 
     const products = productGrid.querySelectorAll('.filtered-product-card');
-    const minPrice = priceMinSlider ? parseInt(priceMinSlider.value) : 0;
-    const maxPrice = priceMaxSlider ? parseInt(priceMaxSlider.value) : 100000;
+    const currentMinPrice = priceMinSlider ? parseInt(priceMinSlider.value) : minPrice;
+    const currentMaxPrice = priceMaxSlider ? parseInt(priceMaxSlider.value) : maxPrice;
     const onlyAvailable = availabilityFilter ? availabilityFilter.checked : false;
     
     // Get selected filter values
@@ -899,7 +939,7 @@
       if (priceElement) {
         const priceText = priceElement.textContent.trim();
         const productPrice = parsePrice(priceText);
-        if (productPrice < minPrice || productPrice > maxPrice) {
+        if (productPrice < currentMinPrice || productPrice > currentMaxPrice) {
           shouldShow = false;
         }
       }
@@ -999,7 +1039,7 @@
       "type": "collection",
       "id": "collection",
       "label": "Collection",
-      "info": "Select the collection to display products from"
+      "info": "Select a collection to display products from. If left empty and used on a collection page, it will automatically use the current collection."
     },
     {
       "type": "range",
