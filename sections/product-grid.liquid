@@ -91,6 +91,16 @@
                   <p class="product-grid__empty">No products available in this category.</p>
                 {%- endif -%}
               </div>
+              <button class="product-grid__nav product-grid__nav--prev" data-carousel-prev aria-label="Previous products">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <button class="product-grid__nav product-grid__nav--next" data-carousel-next aria-label="Next products">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
             </div>
           </div>
         {%- endfor -%}
@@ -104,6 +114,16 @@
                   {%- render 'product-card', product: product -%}
                 {%- endfor -%}
               </div>
+              <button class="product-grid__nav product-grid__nav--prev" data-carousel-prev aria-label="Previous products">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <button class="product-grid__nav product-grid__nav--next" data-carousel-next aria-label="Next products">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
             </div>
           </div>
         {%- endif -%}
@@ -517,8 +537,10 @@
       }
       
       const track = carousel.querySelector('[data-carousel-track]');
+      const prevBtn = carousel.querySelector('[data-carousel-prev]');
+      const nextBtn = carousel.querySelector('[data-carousel-next]');
       
-      if (!track) continue;
+      if (!track || !prevBtn || !nextBtn) continue;
       
       const cards = Array.from(track.querySelectorAll('.product-card'));
       if (cards.length === 0) continue;
@@ -526,13 +548,131 @@
       // Mark as initialized
       initializedCarousels.add(carousel);
       
-      // Ensure track is scrollable on mobile
-      const isMobile = window.innerWidth <= 768;
-      if (isMobile) {
-        // Force scrollable behavior
-        track.style.overflowX = 'auto';
-        track.style.scrollBehavior = 'smooth';
+      let currentIndex = 0;
+      
+      function updateButtons() {
+        const isMobile = window.innerWidth <= 768;
+        if (!isMobile) {
+          prevBtn.style.display = 'none';
+          nextBtn.style.display = 'none';
+          return;
+        }
+        
+        prevBtn.style.display = currentIndex > 0 ? 'flex' : 'none';
+        nextBtn.style.display = currentIndex < cards.length - 1 ? 'flex' : 'none';
       }
+      
+      function scrollToIndex(index) {
+        if (index < 0 || index >= cards.length) return;
+        
+        const card = cards[index];
+        if (!card) return;
+        
+        // Ensure layout is calculated by forcing a reflow
+        void track.offsetHeight;
+        void card.offsetHeight;
+        
+        currentIndex = index;
+        
+        // Get the track's current scroll position and dimensions
+        const trackScrollLeft = track.scrollLeft;
+        const trackWidth = track.clientWidth;
+        
+        // Get card position using getBoundingClientRect for accurate positioning
+        const trackRect = track.getBoundingClientRect();
+        const cardRect = card.getBoundingClientRect();
+        
+        // Calculate card's position relative to track's content area
+        // We need: card's left edge in the scrollable content = current scroll + (card's viewport left - track's viewport left)
+        const cardLeftInContent = trackScrollLeft + (cardRect.left - trackRect.left);
+        
+        // Calculate scroll position to center the card
+        const cardWidth = cardRect.width;
+        const scrollPosition = cardLeftInContent - (trackWidth / 2) + (cardWidth / 2);
+        
+        // Ensure we don't scroll past boundaries
+        const maxScroll = Math.max(0, track.scrollWidth - trackWidth);
+        const finalScroll = Math.max(0, Math.min(scrollPosition, maxScroll));
+        
+        // Scroll the track
+        track.scrollTo({
+          left: finalScroll,
+          behavior: 'smooth'
+        });
+        
+        updateButtons();
+      }
+      
+      function updateCurrentIndex() {
+        // Find which card is currently most visible
+        const trackRect = track.getBoundingClientRect();
+        const trackCenter = trackRect.left + trackRect.width / 2;
+        
+        let closestIndex = 0;
+        let closestDistance = Infinity;
+        
+        cards.forEach((card, index) => {
+          const cardRect = card.getBoundingClientRect();
+          const cardCenter = cardRect.left + cardRect.width / 2;
+          const distance = Math.abs(cardCenter - trackCenter);
+          
+          if (distance < closestDistance) {
+            closestDistance = distance;
+            closestIndex = index;
+          }
+        });
+        
+        if (closestIndex !== currentIndex) {
+          currentIndex = closestIndex;
+          updateButtons();
+        }
+      }
+      
+      // Add click handlers with proper event handling
+      const handlePrevClick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (currentIndex > 0) {
+          scrollToIndex(currentIndex - 1);
+        }
+      };
+      
+      const handleNextClick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (currentIndex < cards.length - 1) {
+          scrollToIndex(currentIndex + 1);
+        }
+      };
+      
+      prevBtn.addEventListener('click', handlePrevClick);
+      nextBtn.addEventListener('click', handleNextClick);
+      
+      // Also handle touch events for mobile
+      prevBtn.addEventListener('touchend', handlePrevClick);
+      nextBtn.addEventListener('touchend', handleNextClick);
+      
+      // Update button visibility on scroll
+      track.addEventListener('scroll', updateCurrentIndex, { passive: true });
+      
+      // Handle window resize
+      let resizeTimer;
+      const handleResize = () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          updateButtons();
+          updateCurrentIndex();
+        }, 250);
+      };
+      window.addEventListener('resize', handleResize);
+      
+      // Initial button state - wait for layout to be ready
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          updateButtons();
+          updateCurrentIndex();
+        });
+      });
     }
   }
   
