@@ -34,6 +34,106 @@
         "franchise_url": ""
       }
     },
+    "mega_menu_Rt8Xhn": {
+      "type": "mega-menu",
+      "blocks": {
+        "menu_item_HXcEV3": {
+          "type": "menu_item",
+          "settings": {
+            "title": "Shop",
+            "link": "",
+            "enable_mega_dropdown": true,
+            "dropdown_columns": "3",
+            "column_1_title": "Categories",
+            "menu_1": "",
+            "column_2_title": "Collections",
+            "menu_2": "",
+            "column_3_title": "Trending",
+            "menu_3": "",
+            "column_4_title": "",
+            "menu_4": "",
+            "featured_title": "New Arrivals",
+            "featured_link": "",
+            "featured_link_text": "Shop Now",
+            "show_promo_banner": false,
+            "promo_badge": "Limited",
+            "promo_text": "Free shipping on orders over ₹50",
+            "promo_link": "",
+            "promo_link_text": "Learn More"
+          }
+        },
+        "menu_item_dFiBff": {
+          "type": "menu_item",
+          "settings": {
+            "title": "product",
+            "link": "shopify://pages/product-category",
+            "enable_mega_dropdown": false,
+            "dropdown_columns": "3",
+            "column_1_title": "",
+            "menu_1": "",
+            "column_2_title": "",
+            "menu_2": "",
+            "column_3_title": "",
+            "menu_3": "",
+            "column_4_title": "",
+            "menu_4": "",
+            "featured_title": "New Arrivals",
+            "featured_link": "",
+            "featured_link_text": "Shop Now",
+            "show_promo_banner": false,
+            "promo_badge": "Limited",
+            "promo_text": "Free shipping on orders over ₹50",
+            "promo_link": "",
+            "promo_link_text": "Learn More"
+          }
+        },
+        "simple_link_a8EMJc": {
+          "type": "simple_link",
+          "settings": {
+            "title": "Sale",
+            "link": "",
+            "badge": "Hot",
+            "badge_style": "sale"
+          }
+        },
+        "separator_WKnKAx": {
+          "type": "separator",
+          "settings": {}
+        },
+        "simple_link_WtAE3C": {
+          "type": "simple_link",
+          "settings": {
+            "title": "About",
+            "link": "",
+            "badge": "",
+            "badge_style": "new"
+          }
+        },
+        "simple_link_8KrntT": {
+          "type": "simple_link",
+          "settings": {
+            "title": "Contact",
+            "link": "",
+            "badge": "",
+            "badge_style": "new"
+          }
+        }
+      },
+      "block_order": [
+        "menu_item_HXcEV3",
+        "menu_item_dFiBff",
+        "simple_link_a8EMJc",
+        "separator_WKnKAx",
+        "simple_link_WtAE3C",
+        "simple_link_8KrntT"
+      ],
+      "name": "Mega Menu",
+      "settings": {
+        "enable_sticky": true,
+        "menu_style": "default",
+        "promo_position": "right"
+      }
+    },
     "product_detail": {
       "type": "product-detail",
       "settings": {
@@ -129,6 +229,7 @@
   "order": [
     "announcement_bar_4hhfqw",
     "header_bDDenX",
+    "mega_menu_Rt8Xhn",
     "product_detail",
     "footer_idKpLa"
   ]
