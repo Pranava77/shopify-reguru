@@ -80,7 +80,7 @@
           assign icon_aria_label = 'Franchise'
         endif
       -%}
-      <a href="{{ icon_url }}" class="header__cart" aria-label="{{ icon_aria_label }}">
+      <a href="{{ icon_url }}" class="header__cart" aria-label="{{ icon_aria_label }}"{% if icon_type == 'cart' %} data-cart-drawer-trigger{% endif %}>
         {%- if custom_icon != blank -%}
           <img 
             src="{{ custom_icon | image_url: width: 74 }}" 

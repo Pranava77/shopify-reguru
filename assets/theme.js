@@ -43,6 +43,9 @@ class ThemeUtils {
     // Initialize cart functionality
     this.#initCart();
     
+    // Initialize cart drawer
+    this.#initCartDrawer();
+    
     // Initialize FAQ tabs
     this.#initFaqTabs();
     
@@ -300,7 +303,7 @@ class ThemeUtils {
   }
 
   #initCart() {
-    // Handle add to cart buttons - add to cart and redirect
+    // Handle add to cart buttons - add to cart and open drawer
     const addToCartButtons = document.querySelectorAll('[data-add-to-cart]');
     
     for (const button of addToCartButtons) {
@@ -339,8 +342,11 @@ class ThemeUtils {
           // Optimistic UI update - update cart count
           this.#updateCartCount();
           
-          // Redirect to cart page
-          window.location.href = '/cart';
+          // Refresh cart drawer and open it
+          if (this.cartDrawer) {
+            await this.cartDrawer.refreshCart();
+            this.cartDrawer.open();
+          }
           
         } catch (error) {
           console.error('Error adding to cart:', error);
@@ -351,7 +357,7 @@ class ThemeUtils {
       });
     }
     
-    // Handle buy now buttons - add to cart and redirect
+    // Handle buy now buttons - add to cart and redirect to checkout
     const buyNowButtons = document.querySelectorAll('[data-buy-now]');
     
     for (const button of buyNowButtons) {
@@ -390,8 +396,8 @@ class ThemeUtils {
           // Optimistic UI update - update cart count
           this.#updateCartCount();
           
-          // Redirect to cart page
-          window.location.href = '/cart';
+          // Redirect to checkout
+          window.location.href = '/checkout';
           
         } catch (error) {
           console.error('Error adding to cart:', error);
@@ -401,6 +407,30 @@ class ThemeUtils {
         }
       });
     }
+  }
+
+  #initCartDrawer() {
+    const drawer = document.querySelector('[data-cart-drawer]');
+    if (!drawer) return;
+
+    this.cartDrawer = new CartDrawer(drawer);
+    
+    // Handle cart drawer trigger from header
+    const trigger = document.querySelector('[data-cart-drawer-trigger]');
+    if (trigger) {
+      trigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.cartDrawer.open();
+      });
+    }
+    
+    // Listen for cart updates to refresh drawer if open
+    document.addEventListener('cart:updated', () => {
+      if (this.cartDrawer && this.cartDrawer.isOpen()) {
+        this.cartDrawer.refreshCart();
+      }
+    });
   }
 
   #updateCartCount() {
@@ -1172,10 +1202,415 @@ class ThemeUtils {
   }
 }
 
+/**
+ * Cart Drawer Class
+ */
+class CartDrawer {
+  constructor(drawerElement) {
+    this.drawer = drawerElement;
+    this.overlay = drawerElement.querySelector('[data-cart-drawer-overlay]');
+    this.panel = drawerElement.querySelector('[data-cart-drawer-panel]');
+    this.closeBtn = drawerElement.querySelector('[data-cart-drawer-close]');
+    this.content = drawerElement.querySelector('[data-cart-drawer-content]');
+    this.form = drawerElement.querySelector('#cart-drawer-form');
+    
+    this.#init();
+  }
+
+  #init() {
+    // Close button
+    if (this.closeBtn) {
+      this.closeBtn.addEventListener('click', () => this.close());
+    }
+    
+    // Overlay click
+    if (this.overlay) {
+      this.overlay.addEventListener('click', () => this.close());
+    }
+    
+    // Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && this.isOpen()) {
+        this.close();
+      }
+    });
+    
+    // Prevent body scroll when drawer is open
+    this.drawer.addEventListener('transitionend', () => {
+      if (this.isOpen()) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+    });
+    
+    // Initialize cart drawer functionality if form exists
+    this.form = this.drawer.querySelector('#cart-drawer-form');
+    if (this.form) {
+      this.#initCartActions();
+    }
+  }
+
+  #initCartActions() {
+    // Quantity buttons
+    const increaseButtons = this.form.querySelectorAll('[data-increase-quantity]');
+    const decreaseButtons = this.form.querySelectorAll('[data-decrease-quantity]');
+    
+    for (const button of increaseButtons) {
+      button.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const key = button.getAttribute('data-key');
+        await this.#updateQuantity(key, 1);
+      });
+    }
+    
+    for (const button of decreaseButtons) {
+      button.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const key = button.getAttribute('data-key');
+        await this.#updateQuantity(key, -1);
+      });
+    }
+    
+    // Quantity inputs
+    const quantityInputs = this.form.querySelectorAll('.cart-drawer__quantity-input');
+    for (const input of quantityInputs) {
+      let originalValue = parseInt(input.value, 10) || 0;
+      
+      input.addEventListener('change', async () => {
+        let newValue = parseInt(input.value, 10);
+        if (isNaN(newValue) || newValue < 0) {
+          newValue = 0;
+          input.value = 0;
+        }
+        
+        if (newValue === originalValue) return;
+        
+        const key = input.getAttribute('data-key');
+        const previousValue = originalValue;
+        originalValue = newValue;
+        
+        input.disabled = true;
+        
+        try {
+          await this.#setQuantity(key, newValue);
+        } catch (error) {
+          input.value = previousValue;
+          originalValue = previousValue;
+          alert('Failed to update cart. Please try again.');
+        } finally {
+          input.disabled = false;
+        }
+      });
+    }
+    
+    // Remove buttons
+    const removeButtons = this.form.querySelectorAll('[data-remove-item]');
+    for (const button of removeButtons) {
+      button.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const key = button.getAttribute('data-key');
+        await this.#removeItem(key);
+      });
+    }
+    
+    // Form submission
+    this.form.addEventListener('submit', (e) => {
+      const submitButton = e.submitter;
+      if (!submitButton || submitButton.name !== 'checkout') {
+        e.preventDefault();
+      }
+    });
+    
+    // Continue shopping buttons
+    const continueButtons = this.drawer.querySelectorAll('[data-continue-shopping]');
+    for (const button of continueButtons) {
+      button.addEventListener('click', () => {
+        this.close();
+      });
+    }
+  }
+
+  async #updateQuantity(key, change) {
+    const input = this.form.querySelector(`input[data-key="${key}"]`);
+    if (!input) return;
+    
+    const currentValue = parseInt(input.value, 10) || 0;
+    const newValue = Math.max(0, currentValue + change);
+    
+    if (newValue === currentValue) return;
+    
+    input.value = newValue;
+    input.disabled = true;
+    
+    try {
+      await this.#setQuantity(key, newValue);
+    } catch (error) {
+      input.value = currentValue;
+      alert('Failed to update cart. Please try again.');
+    } finally {
+      input.disabled = false;
+    }
+  }
+
+  async #setQuantity(key, quantity) {
+    const formData = new FormData();
+    const items = this.form.querySelectorAll('input[name="updates[]"]');
+    
+    for (const input of items) {
+      const itemKey = input.getAttribute('data-key');
+      const qty = itemKey === key ? quantity : parseInt(input.value, 10) || 0;
+      formData.append('updates[]', qty);
+    }
+    
+    try {
+      const response = await fetch('/cart/update.js', {
+        method: 'POST',
+        body: formData
+      });
+      
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.description || 'Failed to update cart');
+      }
+      
+      await this.refreshCart();
+    } catch (error) {
+      console.error('Error updating cart:', error);
+      throw error;
+    }
+  }
+
+  async #removeItem(key) {
+    const itemRow = this.form.querySelector(`[data-line-item="${key}"]`);
+    if (itemRow) {
+      itemRow.style.opacity = '0.5';
+      itemRow.style.transition = 'opacity 0.3s';
+    }
+    
+    try {
+      await this.#setQuantity(key, 0);
+    } catch (error) {
+      if (itemRow) {
+        itemRow.style.opacity = '1';
+      }
+      alert('Failed to remove item. Please try again.');
+    }
+  }
+
+  async refreshCart() {
+    try {
+      const response = await fetch('/cart.js');
+      if (!response.ok) {
+        throw new Error(`Failed to fetch cart: ${response.status}`);
+      }
+      
+      const cart = await response.json();
+      
+      if (!cart || typeof cart !== 'object') {
+        throw new Error('Invalid cart data received');
+      }
+      
+      // Update cart drawer content
+      this.#updateCartContent(cart);
+      
+      // Update cart count
+      const cartCountElements = document.querySelectorAll('[data-cart-count]');
+      for (const element of cartCountElements) {
+        element.textContent = cart.item_count || 0;
+      }
+      
+      // Dispatch event
+      document.dispatchEvent(new CustomEvent('cart:updated', {
+        detail: { cart }
+      }));
+      
+      return cart;
+    } catch (error) {
+      console.error('Error refreshing cart:', error);
+      // Fallback: reload page if cart is empty
+      if (this.form && (!cart || !cart.items || cart.items.length === 0)) {
+        window.location.reload();
+      }
+      throw error;
+    }
+  }
+
+  #updateCartContent(cart) {
+    if (!cart.items || cart.items.length === 0) {
+      // Show empty state
+      this.content.innerHTML = `
+        <div class="cart-drawer__empty">
+          <h3 class="cart-drawer__empty-title">Your cart is empty</h3>
+          <p class="cart-drawer__empty-text">Continue shopping to add items to your cart.</p>
+          <a href="/collections/all" class="cart-drawer__btn cart-drawer__btn--primary" data-continue-shopping>
+            continue shopping
+          </a>
+        </div>
+      `;
+      // Reinitialize continue shopping button
+      const continueBtn = this.content.querySelector('[data-continue-shopping]');
+      if (continueBtn) {
+        continueBtn.addEventListener('click', () => this.close());
+      }
+      return;
+    }
+    
+    // Calculate discounts
+    let totalItemDiscounts = 0;
+    for (const item of cart.items) {
+      if (item.discount_allocated_amount && item.discount_allocated_amount > 0) {
+        totalItemDiscounts += item.discount_allocated_amount;
+      }
+    }
+    
+    let cartDiscountTotal = 0;
+    if (cart.cart_level_discount_applications) {
+      for (const discount of cart.cart_level_discount_applications) {
+        if (discount.total_allocated_amount) {
+          cartDiscountTotal += discount.total_allocated_amount;
+        }
+      }
+    }
+    
+    const taxAmount = cart.total_price - cart.items_subtotal_price;
+    
+    // Build items HTML
+    let itemsHtml = '<div class="cart-drawer__progress"><div class="cart-drawer__progress-bar"><span class="cart-drawer__progress-text" data-cart-item-count>' + cart.item_count + ' ITEMS SELECTED</span></div></div>';
+    itemsHtml += '<form action="/cart" method="post" id="cart-drawer-form" class="cart-drawer__form">';
+    itemsHtml += '<div class="cart-drawer__items" data-cart-items>';
+    
+    for (const item of cart.items) {
+      const imageUrl = item.image || (item.featured_image || '');
+      const variantTitle = item.variant_title && item.variant_title !== 'Default Title' ? item.variant_title : '';
+      
+      itemsHtml += `
+        <div class="cart-drawer__item" data-line-item="${item.key}">
+          <div class="cart-drawer__item-image">
+            ${imageUrl ? `<img src="${imageUrl}" alt="${this.#escapeHtml(item.product_title)}" width="120" height="120" loading="lazy">` : '<div class="cart-drawer__item-placeholder"><svg>...</svg></div>'}
+          </div>
+          <div class="cart-drawer__item-details">
+            <h3 class="cart-drawer__item-name"><a href="${item.url}">${this.#escapeHtml(item.product_title)}</a></h3>
+            ${variantTitle ? `<p class="cart-drawer__item-variant">${this.#escapeHtml(variantTitle)}</p>` : ''}
+            <div class="cart-drawer__item-price" data-item-price>${this.#formatMoney(item.final_price)}</div>
+            <div class="cart-drawer__item-quantity">
+              <button type="button" class="cart-drawer__quantity-btn" data-decrease-quantity data-key="${item.key}" aria-label="Decrease quantity"><span>-</span></button>
+              <input type="number" name="updates[]" value="${item.quantity}" min="0" class="cart-drawer__quantity-input" data-key="${item.key}">
+              <button type="button" class="cart-drawer__quantity-btn" data-increase-quantity data-key="${item.key}" aria-label="Increase quantity"><span>+</span></button>
+            </div>
+          </div>
+          <div class="cart-drawer__item-total" data-item-total>${this.#formatMoney(item.final_line_price)}</div>
+          <button type="button" class="cart-drawer__item-remove" data-remove-item data-key="${item.key}" aria-label="Remove ${this.#escapeHtml(item.product_title)}">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+      `;
+    }
+    
+    itemsHtml += '</div>';
+    
+    // Build summary HTML
+    itemsHtml += `
+      <div class="cart-drawer__summary">
+        <div class="cart-drawer__summary-row">
+          <span class="cart-drawer__summary-label">SUBTOTAL</span>
+          <span class="cart-drawer__summary-value" data-cart-subtotal>${this.#formatMoney(cart.items_subtotal_price)}</span>
+        </div>
+        <div class="cart-drawer__summary-row">
+          <span class="cart-drawer__summary-label">TAXES</span>
+          <span class="cart-drawer__summary-value" data-cart-taxes>${this.#formatMoney(taxAmount > 0 ? taxAmount : 0)}</span>
+        </div>
+    `;
+    
+    if (totalItemDiscounts > 0) {
+      itemsHtml += `
+        <div class="cart-drawer__summary-row cart-drawer__summary-row--discount" data-item-discounts-row>
+          <span class="cart-drawer__summary-label">Item Discounts</span>
+          <span class="cart-drawer__summary-value" data-cart-item-discounts>-${this.#formatMoney(totalItemDiscounts)}</span>
+        </div>
+      `;
+    }
+    
+    if (cart.cart_level_discount_applications && cart.cart_level_discount_applications.length > 0) {
+      for (const discount of cart.cart_level_discount_applications) {
+        if (discount.total_allocated_amount) {
+          itemsHtml += `
+            <div class="cart-drawer__summary-row cart-drawer__summary-row--discount" data-cart-discount-row>
+              <span class="cart-drawer__summary-label">Discount (${this.#escapeHtml(discount.title || 'Discount')})</span>
+              <span class="cart-drawer__summary-value" data-cart-discount-amount>-${this.#formatMoney(discount.total_allocated_amount)}</span>
+            </div>
+          `;
+        }
+      }
+    }
+    
+    itemsHtml += `
+        <div class="cart-drawer__summary-divider"></div>
+        <div class="cart-drawer__summary-promo">
+          <label for="cart-drawer-promo-code" class="cart-drawer__promo-label">PROMO CODE</label>
+          <input type="text" id="cart-drawer-promo-code" class="cart-drawer__promo-input" placeholder="ENTER HERE" data-promo-code>
+        </div>
+        <div class="cart-drawer__summary-row cart-drawer__summary-row--total">
+          <span class="cart-drawer__summary-label">TOTAL</span>
+          <span class="cart-drawer__summary-value cart-drawer__summary-value--total" data-cart-total>${this.#formatMoney(cart.total_price)}</span>
+        </div>
+        <div class="cart-drawer__actions">
+          <button type="submit" name="checkout" class="cart-drawer__btn cart-drawer__btn--primary">Buy Now →</button>
+          <a href="/collections/all" class="cart-drawer__btn cart-drawer__btn--secondary" data-continue-shopping>continue shopping</a>
+        </div>
+      </div>
+    </form>
+    `;
+    
+    this.content.innerHTML = itemsHtml;
+    
+    // Update form reference and reinitialize actions
+    this.form = this.content.querySelector('#cart-drawer-form');
+    if (this.form) {
+      this.#initCartActions();
+    }
+  }
+
+  #formatMoney(cents) {
+    if (typeof cents !== 'number' || isNaN(cents)) {
+      return '₹0.00';
+    }
+    const isNegative = cents < 0;
+    const absCents = Math.abs(cents);
+    const dollars = absCents / 100;
+    const formatted = dollars.toFixed(2);
+    return isNegative ? `-₹${formatted}` : `₹${formatted}`;
+  }
+
+  #escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  open() {
+    this.drawer.setAttribute('aria-hidden', 'false');
+    // Prevent body scroll
+    document.body.style.overflow = 'hidden';
+    // Refresh cart when opening
+    this.refreshCart();
+  }
+
+  close() {
+    this.drawer.setAttribute('aria-hidden', 'true');
+    // Restore body scroll
+    document.body.style.overflow = '';
+  }
+
+  isOpen() {
+    return this.drawer.getAttribute('aria-hidden') === 'false';
+  }
+}
+
 // Initialize theme
 const theme = new ThemeUtils();
 
 // Export for module usage
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { ThemeUtils };
+  module.exports = { ThemeUtils, CartDrawer };
 }
