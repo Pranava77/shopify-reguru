@@ -21,8 +21,8 @@
     "cart_show_vendor": false,
     "background_image": "shopify://shop_images/4.png",
     "background_size": "cover",
-    "background_position": "bottom",
-    "background_overlay_enable": true,
+    "background_position": "center",
+    "background_overlay_enable": false,
     "background_overlay_color": "#1d1c1c",
     "background_overlay_opacity": 20,
     "content_for_index": []
