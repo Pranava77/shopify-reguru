@@ -21,7 +21,21 @@
   endfor
 -%}
 
-<div class="cart-drawer" id="cart-drawer" data-cart-drawer aria-hidden="true" data-cart-drawer-wrapper>
+<div 
+  class="cart-drawer" 
+  id="cart-drawer" 
+  data-cart-drawer 
+  aria-hidden="true" 
+  data-cart-drawer-wrapper
+  data-cart-title="{{ cart_title }}"
+  data-empty-title="{{ empty_cart_title }}"
+  data-empty-text="{{ empty_cart_text }}"
+  data-continue-shopping-text="{{ continue_shopping_text }}"
+  data-continue-shopping-url="{{ continue_shopping_url }}"
+  data-buy-now-text="{{ buy_now_text }}"
+  data-promo-label="{{ promo_code_label }}"
+  data-promo-placeholder="{{ promo_code_placeholder }}"
+>
   <div class="cart-drawer__overlay" data-cart-drawer-overlay></div>
   
   <div class="cart-drawer__panel" data-cart-drawer-panel>
