@@ -138,6 +138,50 @@
         "instagram_url": ""
       }
     },
+    "feature_cards_zcgaex": {
+      "type": "feature-cards",
+      "blocks": {
+        "card_abiPcy": {
+          "type": "card",
+          "settings": {
+            "title": "RRR Policy"
+          }
+        },
+        "card_DVNq6L": {
+          "type": "card",
+          "settings": {
+            "title": "Affordable"
+          }
+        },
+        "card_Xyj8Cg": {
+          "type": "card",
+          "settings": {
+            "title": "Online & Offline Model"
+          }
+        },
+        "card_TKNWfA": {
+          "type": "card",
+          "settings": {
+            "title": "Tailored Solutions"
+          }
+        },
+        "card_tcHfTk": {
+          "type": "card",
+          "settings": {
+            "title": "Sustainability"
+          }
+        }
+      },
+      "block_order": [
+        "card_abiPcy",
+        "card_DVNq6L",
+        "card_Xyj8Cg",
+        "card_TKNWfA",
+        "card_tcHfTk"
+      ],
+      "name": "Feature Cards",
+      "settings": {}
+    },
     "footer_MeKgAQ": {
       "type": "footer",
       "blocks": {
@@ -228,6 +272,7 @@
     "header_U9K4Tf",
     "mega_menu_DKxVCr",
     "franchise",
+    "feature_cards_zcgaex",
     "footer_MeKgAQ"
   ]
 }
