@@ -8,7 +8,7 @@
   assign icon_color_primary = section.settings.header_icon_color_primary
   assign icon_color_accent = section.settings.header_icon_color_accent
   assign bg_image = section.settings.background_image
-  assign cart_type = section.settings.cart_type | default: 'drawer'
+  assign cart_type = settings.cart_type | default: 'drawer'
 -%}
 
 <header class="header" data-cart-type="{{ cart_type }}"{% if bg_image != blank %} style="background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
@@ -649,27 +649,6 @@
       "label": "Icon Accent Color",
       "default": "#28D98E",
       "info": "Accent/fill color for icon details"
-    },
-    {
-      "type": "header",
-      "content": "Cart Settings"
-    },
-    {
-      "type": "select",
-      "id": "cart_type",
-      "label": "Cart Type",
-      "options": [
-        {
-          "value": "drawer",
-          "label": "Cart Drawer"
-        },
-        {
-          "value": "page",
-          "label": "Cart Page"
-        }
-      ],
-      "default": "drawer",
-      "info": "Choose whether clicking the cart icon opens a drawer or navigates to the cart page."
     },
     {
       "type": "header",

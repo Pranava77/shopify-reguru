@@ -130,6 +130,59 @@
     ]
   },
   {
+    "name": "Cart Drawer",
+    "settings": [
+      {
+        "type": "text",
+        "id": "cart_drawer_title",
+        "label": "Cart title",
+        "default": "YOUR CART"
+      },
+      {
+        "type": "text",
+        "id": "cart_drawer_empty_title",
+        "label": "Empty cart title",
+        "default": "Your cart is empty"
+      },
+      {
+        "type": "textarea",
+        "id": "cart_drawer_empty_text",
+        "label": "Empty cart text",
+        "default": "Continue shopping to add items to your cart."
+      },
+      {
+        "type": "text",
+        "id": "cart_drawer_continue_shopping_text",
+        "label": "Continue shopping button text",
+        "default": "continue shopping"
+      },
+      {
+        "type": "url",
+        "id": "cart_drawer_continue_shopping_url",
+        "label": "Continue shopping link",
+        "info": "Select a page, collection, or enter a custom URL for the Continue Shopping button. If left empty, it will link to all products."
+      },
+      {
+        "type": "text",
+        "id": "cart_drawer_buy_now_text",
+        "label": "Buy now button text",
+        "default": "Buy Now"
+      },
+      {
+        "type": "text",
+        "id": "cart_drawer_promo_code_label",
+        "label": "Promo code label",
+        "default": "PROMO CODE"
+      },
+      {
+        "type": "text",
+        "id": "cart_drawer_promo_code_placeholder",
+        "label": "Promo code placeholder",
+        "default": "ENTER HERE"
+      }
+    ]
+  },
+  {
     "name": "Social media",
     "settings": [
       {

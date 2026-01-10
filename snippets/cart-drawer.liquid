@@ -1,12 +1,16 @@
 {%- liquid
-  assign cart_title = 'cart.general.title' | t | default: 'YOUR CART'
-  assign empty_cart_title = 'cart.general.empty' | t | default: 'Your cart is empty'
-  assign empty_cart_text = 'cart.general.empty_text' | t | default: 'Continue shopping to add items to your cart.'
-  assign continue_shopping_text = 'cart.general.continue_shopping' | t | default: 'continue shopping'
-  assign continue_shopping_url = routes.all_products_collection_url
-  assign buy_now_text = 'cart.general.checkout' | t | default: 'Buy Now'
-  assign promo_code_label = 'cart.general.promo_code' | t | default: 'PROMO CODE'
-  assign promo_code_placeholder = 'cart.general.promo_code_placeholder' | t | default: 'ENTER HERE'
+  assign cart_title = settings.cart_drawer_title | default: 'YOUR CART'
+  assign empty_cart_title = settings.cart_drawer_empty_title | default: 'Your cart is empty'
+  assign empty_cart_text = settings.cart_drawer_empty_text | default: 'Continue shopping to add items to your cart.'
+  assign continue_shopping_text = settings.cart_drawer_continue_shopping_text | default: 'continue shopping'
+  if settings.cart_drawer_continue_shopping_url != blank
+    assign continue_shopping_url = settings.cart_drawer_continue_shopping_url
+  else
+    assign continue_shopping_url = routes.all_products_collection_url
+  endif
+  assign buy_now_text = settings.cart_drawer_buy_now_text | default: 'Buy Now'
+  assign promo_code_label = settings.cart_drawer_promo_code_label | default: 'PROMO CODE'
+  assign promo_code_placeholder = settings.cart_drawer_promo_code_placeholder | default: 'ENTER HERE'
   
   # Calculate total item-level discounts
   assign total_item_discounts = 0
