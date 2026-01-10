@@ -1,1 +1,298 @@
-[]
+[
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "font_picker",
+        "id": "type_header_font",
+        "label": "Heading font",
+        "default": "assistant_n4"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_body_font",
+        "label": "Body font",
+        "default": "assistant_n4"
+      }
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "color",
+        "id": "color_primary",
+        "label": "Primary",
+        "default": "#1E1A5C"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Accent",
+        "default": "#28D98E"
+      },
+      {
+        "type": "color",
+        "id": "color_secondary",
+        "label": "Secondary",
+        "default": "#041C66"
+      },
+      {
+        "type": "color",
+        "id": "color_accent_blue",
+        "label": "Accent blue",
+        "default": "#5294FF"
+      },
+      {
+        "type": "header",
+        "content": "Background"
+      },
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "Background",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "color_background_dark",
+        "label": "Background dark",
+        "default": "#212844"
+      },
+      {
+        "type": "header",
+        "content": "Text"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Text",
+        "default": "#151875"
+      },
+      {
+        "type": "color",
+        "id": "color_text_secondary",
+        "label": "Text secondary",
+        "default": "#636270"
+      }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "range",
+        "id": "container_max_width",
+        "label": "Container max width",
+        "min": 1200,
+        "max": 1920,
+        "step": 20,
+        "default": 1440,
+        "unit": "px"
+      },
+      {
+        "type": "range",
+        "id": "container_padding",
+        "label": "Container padding",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "default": 24,
+        "unit": "px"
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "select",
+        "id": "cart_type",
+        "label": "Cart type",
+        "options": [
+          {
+            "value": "drawer",
+            "label": "Drawer"
+          },
+          {
+            "value": "page",
+            "label": "Page"
+          }
+        ],
+        "default": "drawer"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_show_vendor",
+        "label": "Show vendor",
+        "default": false
+      }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      {
+        "type": "url",
+        "id": "social_facebook",
+        "label": "Facebook",
+        "info": "Your Facebook page URL"
+      },
+      {
+        "type": "url",
+        "id": "social_instagram",
+        "label": "Instagram",
+        "info": "Your Instagram profile URL"
+      },
+      {
+        "type": "url",
+        "id": "social_twitter",
+        "label": "Twitter / X",
+        "info": "Your Twitter/X profile URL"
+      },
+      {
+        "type": "url",
+        "id": "social_youtube",
+        "label": "YouTube",
+        "info": "Your YouTube channel URL"
+      }
+    ]
+  },
+  {
+    "name": "Background",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "background_image",
+        "label": "Image"
+      },
+      {
+        "type": "select",
+        "id": "background_size",
+        "label": "Size",
+        "options": [
+          {
+            "value": "cover",
+            "label": "Cover"
+          },
+          {
+            "value": "contain",
+            "label": "Contain"
+          },
+          {
+            "value": "auto",
+            "label": "Auto"
+          }
+        ],
+        "default": "cover"
+      },
+      {
+        "type": "select",
+        "id": "background_position",
+        "label": "Position",
+        "options": [
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "top",
+            "label": "Top"
+          },
+          {
+            "value": "bottom",
+            "label": "Bottom"
+          },
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "center"
+      },
+      {
+        "type": "select",
+        "id": "background_attachment",
+        "label": "Attachment",
+        "options": [
+          {
+            "value": "scroll",
+            "label": "Scroll"
+          },
+          {
+            "value": "fixed",
+            "label": "Fixed"
+          }
+        ],
+        "default": "scroll"
+      },
+      {
+        "type": "select",
+        "id": "background_repeat",
+        "label": "Repeat",
+        "options": [
+          {
+            "value": "no-repeat",
+            "label": "No repeat"
+          },
+          {
+            "value": "repeat",
+            "label": "Repeat"
+          },
+          {
+            "value": "repeat-x",
+            "label": "Repeat X"
+          },
+          {
+            "value": "repeat-y",
+            "label": "Repeat Y"
+          }
+        ],
+        "default": "no-repeat"
+      },
+      {
+        "type": "header",
+        "content": "Overlay"
+      },
+      {
+        "type": "checkbox",
+        "id": "background_overlay_enable",
+        "label": "Enable overlay",
+        "default": false
+      },
+      {
+        "type": "color",
+        "id": "background_overlay_color",
+        "label": "Color",
+        "default": "#000000",
+        "info": "Only applies when overlay is enabled"
+      },
+      {
+        "type": "range",
+        "id": "background_overlay_opacity",
+        "label": "Opacity",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "default": 50,
+        "unit": "%",
+        "info": "Only applies when overlay is enabled"
+      }
+    ]
+  },
+  {
+    "name": "General",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon",
+        "info": "Recommended size: 32x32 pixels"
+      }
+    ]
+  }
+]
