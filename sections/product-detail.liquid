@@ -11,7 +11,6 @@
     assign discount_percentage = compare_at_price | minus: price | times: 100 | divided_by: compare_at_price | round
   endif
 
-  assign current_image_index = 0
   assign product_images = product.images
 -%}
 
@@ -43,6 +42,7 @@
               type="button"
               class="product-detail__thumbnail{% if forloop.first %} product-detail__thumbnail--active{% endif %}"
               data-image-index="{{ forloop.index0 }}"
+              data-image-id="{{ image.id }}"
               data-image-url="{{ image | image_url: width: 800 }}"
               aria-label="View product image {{ forloop.index }}"
             >
@@ -108,35 +108,32 @@
         <!-- Product Options -->
         {%- if product.options_with_values.size > 0 -%}
           {%- for option in product.options_with_values -%}
-            {%- assign option_name = option.name | downcase -%}
-            {%- if option_name == 'color' or option_name == 'colour' or forloop.first -%}
-              <div class="product-detail__options" data-product-option="{{ option.position }}">
-                <label class="product-detail__option-label">{{ option.name }}</label>
-                <div class="product-detail__color-options">
-                  {%- for value in option.values -%}
-                    {%- liquid
-                      assign variant_for_option = blank
-                      for variant in product.variants
-                        if variant.options[option.position0] == value
-                          assign variant_for_option = variant
-                          break
-                        endif
-                      endfor
-                    -%}
-                    <button 
-                      type="button"
-                      class="product-detail__color-option{% if variant_for_option.id == selected_variant.id %} product-detail__color-option--active{% endif %}"
-                      data-option-position="{{ option.position0 }}"
-                      data-option-value="{{ value | escape }}"
-                      data-variant-id="{{ variant_for_option.id }}"
-                      {% unless variant_for_option.available %}disabled{% endunless %}
-                    >
-                      {{ value }}
-                    </button>
-                  {%- endfor -%}
-                </div>
+            <div class="product-detail__options" data-product-option="{{ option.position }}">
+              <label class="product-detail__option-label">{{ option.name }}</label>
+              <div class="product-detail__option-values">
+                {%- for value in option.values -%}
+                  {%- liquid
+                    assign variant_for_option = blank
+                    for variant in product.variants
+                      if variant.options[option.position0] == value
+                        assign variant_for_option = variant
+                        break
+                      endif
+                    endfor
+                  -%}
+                  <button 
+                    type="button"
+                    class="product-detail__option-value{% if variant_for_option.id == selected_variant.id %} product-detail__option-value--active{% endif %}"
+                    data-option-position="{{ option.position0 }}"
+                    data-option-value="{{ value | escape }}"
+                    data-variant-id="{{ variant_for_option.id }}"
+                    {% unless variant_for_option.available %}disabled{% endunless %}
+                  >
+                    {{ value }}
+                  </button>
+                {%- endfor -%}
               </div>
-            {%- endif -%}
+            </div>
           {%- endfor -%}
         {%- endif -%}
 
@@ -503,7 +500,7 @@
   margin: 0;
 }
 
-/* Color Options */
+/* Product Options */
 .product-detail__options {
   display: flex;
   flex-direction: column;
@@ -518,12 +515,13 @@
   color: var(--color-black);
 }
 
-.product-detail__color-options {
+.product-detail__option-values {
   display: flex;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
-.product-detail__color-option {
+.product-detail__option-value {
   padding: 8px 21px;
   font-family: var(--font-heading);
   font-weight: 400;
@@ -538,19 +536,24 @@
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.product-detail__color-option:hover {
+.product-detail__option-value:hover:not(:disabled) {
   transform: translate(-2px, -2px);
   box-shadow: 6px 6px 0px 0px var(--color-black);
 }
 
-.product-detail__color-option:active {
+.product-detail__option-value:active:not(:disabled) {
   transform: translate(1px, 1px);
   box-shadow: 2px 2px 0px 0px var(--color-black);
 }
 
-.product-detail__color-option--active {
+.product-detail__option-value--active {
   background-color: var(--color-white);
   border-color: var(--color-black);
+}
+
+.product-detail__option-value:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* Purchase Section */
@@ -656,8 +659,19 @@
   border-radius: 6px;
   box-shadow: 4px 4px 0px 0px var(--color-black);
   cursor: pointer;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), opacity var(--transition-fast);
   white-space: nowrap;
+}
+
+.product-detail__btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.product-detail__btn--loading {
+  opacity: 0.7;
+  cursor: wait;
+  pointer-events: none;
 }
 
 .product-detail__btn--add-cart {
@@ -940,7 +954,7 @@
   const productDetail = document.querySelector('.product-detail');
   if (!productDetail) return;
 
-  // Store variant data
+  // Store variant data with image information
   const variantData = {};
   {%- for variant in product.variants -%}
     variantData[{{ variant.id }}] = {
@@ -950,8 +964,21 @@
       available: {{ variant.available | json }},
       options: {{ variant.options | json }},
       priceFormatted: '{{ variant.price | money }}',
-      comparePriceFormatted: '{{ variant.compare_at_price | money }}'
+      comparePriceFormatted: '{{ variant.compare_at_price | money }}',
+      imageId: {% if variant.featured_image %}{{ variant.featured_image.id }}{% else %}null{% endif %},
+      imageUrl: {% if variant.featured_image %}'{{ variant.featured_image | image_url: width: 800 }}'{% else %}null{% endif %}
     };
+  {%- endfor -%}
+
+  // Store product images with IDs for variant matching
+  const productImages = [];
+  {%- for image in product.images -%}
+    productImages.push({
+      id: {{ image.id }},
+      url: '{{ image | image_url: width: 800 }}',
+      thumbnailUrl: '{{ image | image_url: width: 200 }}',
+      alt: {{ image.alt | json }}
+    });
   {%- endfor -%}
 
   let currentVariantId = {{ selected_variant.id }};
@@ -1096,6 +1123,31 @@
     }
   }
 
+  // Update variant image
+  function updateVariantImage(variant) {
+    if (!variant || !mainImage) return;
+    
+    // If variant has a specific image, use it
+    if (variant.imageUrl && variant.imageId) {
+      mainImage.src = variant.imageUrl;
+      const variantImage = productImages.find(img => img.id === variant.imageId);
+      if (variantImage) {
+        mainImage.alt = variantImage.alt || mainImage.alt;
+        
+        // Update thumbnail active state by matching image ID
+        const matchingThumbnail = Array.from(thumbnails).find(thumb => {
+          const thumbImageId = parseInt(thumb.dataset.imageId);
+          return thumbImageId === variant.imageId;
+        });
+        
+        if (matchingThumbnail) {
+          thumbnails.forEach(t => t.classList.remove('product-detail__thumbnail--active'));
+          matchingThumbnail.classList.add('product-detail__thumbnail--active');
+        }
+      }
+    }
+  }
+
   // Update variant availability
   function updateVariantAvailability(variant) {
     const addToCartBtn = productDetail.querySelector('[data-add-to-cart]');
@@ -1106,36 +1158,47 @@
       if (variant.available) {
         addToCartBtn.disabled = false;
         addToCartBtn.textContent = 'Add to cart';
+        addToCartBtn.classList.remove('product-detail__btn--loading');
       } else {
         addToCartBtn.disabled = true;
         addToCartBtn.textContent = 'Sold out';
+        addToCartBtn.classList.remove('product-detail__btn--loading');
       }
     }
     
     if (buyNowBtn) {
       buyNowBtn.dataset.variantId = variant.id;
       buyNowBtn.disabled = !variant.available;
+      buyNowBtn.classList.remove('product-detail__btn--loading');
     }
   }
 
   // Find variant based on selected options
   function findVariantFromOptions() {
     const selectedOptions = {};
-    const optionButtons = productDetail.querySelectorAll('.product-detail__color-option.product-detail__color-option--active');
+    const optionButtons = productDetail.querySelectorAll('.product-detail__option-value.product-detail__option-value--active');
     
+    // Collect all selected options
     for (const button of optionButtons) {
       const position = parseInt(button.dataset.optionPosition);
       const value = button.dataset.optionValue;
       selectedOptions[position] = value;
     }
     
-    // Find matching variant
+    // Check if we have all required options selected
+    const totalOptions = productDetail.querySelectorAll('.product-detail__options').length;
+    if (Object.keys(selectedOptions).length < totalOptions) {
+      // Not all options selected, return null to indicate incomplete selection
+      return null;
+    }
+    
+    // Find matching variant - all options must match exactly
     for (const variantId in variantData) {
       const variant = variantData[variantId];
       let match = true;
       
       for (let i = 0; i < variant.options.length; i++) {
-        if (selectedOptions[i] && variant.options[i] !== selectedOptions[i]) {
+        if (selectedOptions[i] !== variant.options[i]) {
           match = false;
           break;
         }
@@ -1146,21 +1209,25 @@
       }
     }
     
+    // No exact match found, return current variant as fallback
     return variantData[currentVariantId] || Object.values(variantData)[0];
   }
 
-  // Option selection handler
-  const colorOptions = productDetail.querySelectorAll('.product-detail__color-option');
-  for (const option of colorOptions) {
-    option.addEventListener('click', function() {
+  // Option selection handler - handle all product options
+  const optionButtons = productDetail.querySelectorAll('.product-detail__option-value');
+  for (const option of optionButtons) {
+    option.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation(); // Prevent theme.js from handling this
+      
       if (this.disabled) return;
       
       const optionPosition = parseInt(this.dataset.optionPosition);
       const samePositionOptions = productDetail.querySelectorAll(`[data-option-position="${optionPosition}"]`);
       
       // Update active state for same position options
-      samePositionOptions.forEach(o => o.classList.remove('product-detail__color-option--active'));
-      this.classList.add('product-detail__color-option--active');
+      samePositionOptions.forEach(o => o.classList.remove('product-detail__option-value--active'));
+      this.classList.add('product-detail__option-value--active');
       
       // Find and update to new variant
       const newVariant = findVariantFromOptions();
@@ -1168,18 +1235,55 @@
         currentVariantId = newVariant.id;
         updatePrice(newVariant);
         updateVariantAvailability(newVariant);
+        updateVariantImage(newVariant);
+      } else if (!newVariant) {
+        // Incomplete selection - disable buttons
+        const addToCartBtn = productDetail.querySelector('[data-add-to-cart]');
+        const buyNowBtn = productDetail.querySelector('[data-buy-now]');
+        if (addToCartBtn) addToCartBtn.disabled = true;
+        if (buyNowBtn) buyNowBtn.disabled = true;
       }
     });
+  }
+
+  // Update cart count in header
+  function updateCartCount() {
+    fetch('/cart.js')
+      .then(response => response.json())
+      .then(cart => {
+        const cartCount = cart.item_count || 0;
+        const cartCountElements = document.querySelectorAll('[data-cart-count]');
+        for (const element of cartCountElements) {
+          element.textContent = cartCount;
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching cart count:', error);
+      });
   }
 
   // Add to cart functionality
   const addToCartBtn = productDetail.querySelector('[data-add-to-cart]');
   if (addToCartBtn) {
-    addToCartBtn.addEventListener('click', async function() {
-      if (this.disabled) return;
+    addToCartBtn.addEventListener('click', async function(e) {
+      e.preventDefault();
+      e.stopPropagation(); // Prevent theme.js from handling this
+      
+      if (this.disabled || this.classList.contains('product-detail__btn--loading')) return;
       
       const variantId = this.dataset.variantId;
-      const quantity = quantityInput ? parseInt(quantityInput.value) || 1 : 1;
+      if (!variantId) {
+        alert('Please select a variant');
+        return;
+      }
+      
+      const quantity = quantityInput ? Math.max(1, parseInt(quantityInput.value) || 1) : 1;
+      
+      // Show loading state
+      const originalText = this.textContent;
+      this.disabled = true;
+      this.classList.add('product-detail__btn--loading');
+      this.textContent = 'Adding...';
       
       try {
         const response = await fetch('/cart/add.js', {
@@ -1197,17 +1301,32 @@
         
         if (response.ok) {
           const data = await response.json();
-          // Trigger cart update event
-          document.dispatchEvent(new CustomEvent('cart:updated'));
           
-          // Optional: Show success message or open cart drawer
-          console.log('Added to cart:', data);
+          // Update cart count
+          updateCartCount();
+          
+          // Trigger cart update event for other components
+          document.dispatchEvent(new CustomEvent('cart:updated', {
+            detail: { cart: data }
+          }));
+          
+          // Show success feedback
+          this.textContent = 'Added!';
+          setTimeout(() => {
+            this.textContent = originalText;
+            this.disabled = false;
+            this.classList.remove('product-detail__btn--loading');
+          }, 1000);
         } else {
-          throw new Error('Failed to add to cart');
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.description || 'Failed to add to cart');
         }
       } catch (error) {
         console.error('Error adding to cart:', error);
-        alert('Failed to add item to cart. Please try again.');
+        alert(error.message || 'Failed to add item to cart. Please try again.');
+        this.textContent = originalText;
+        this.disabled = false;
+        this.classList.remove('product-detail__btn--loading');
       }
     });
   }
@@ -1215,11 +1334,25 @@
   // Buy now functionality
   const buyNowBtn = productDetail.querySelector('[data-buy-now]');
   if (buyNowBtn) {
-    buyNowBtn.addEventListener('click', async function() {
-      if (this.disabled) return;
+    buyNowBtn.addEventListener('click', async function(e) {
+      e.preventDefault();
+      e.stopPropagation(); // Prevent theme.js from handling this
+      
+      if (this.disabled || this.classList.contains('product-detail__btn--loading')) return;
       
       const variantId = this.dataset.variantId;
-      const quantity = quantityInput ? parseInt(quantityInput.value) || 1 : 1;
+      if (!variantId) {
+        alert('Please select a variant');
+        return;
+      }
+      
+      const quantity = quantityInput ? Math.max(1, parseInt(quantityInput.value) || 1) : 1;
+      
+      // Show loading state
+      const originalText = this.textContent;
+      this.disabled = true;
+      this.classList.add('product-detail__btn--loading');
+      this.textContent = 'Adding...';
       
       try {
         // Add to cart first
@@ -1237,16 +1370,29 @@
         });
         
         if (response.ok) {
-          // Redirect to checkout
-          window.location.href = '/checkout';
+          // Update cart count
+          updateCartCount();
+          
+          // Redirect to cart page (consistent with theme.js)
+          window.location.href = '/cart';
         } else {
-          throw new Error('Failed to add to cart');
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.description || 'Failed to add to cart');
         }
       } catch (error) {
         console.error('Error in buy now:', error);
-        alert('Failed to proceed to checkout. Please try again.');
+        alert(error.message || 'Failed to proceed to checkout. Please try again.');
+        this.textContent = originalText;
+        this.disabled = false;
+        this.classList.remove('product-detail__btn--loading');
       }
     });
+  }
+
+  // Initialize variant image on page load (after all functions are defined)
+  const initialVariant = variantData[currentVariantId];
+  if (initialVariant && mainImage) {
+    updateVariantImage(initialVariant);
   }
 })();
 {% endjavascript %}
