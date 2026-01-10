@@ -330,8 +330,7 @@
   border-radius: 8px;
   padding: 8px;
   height: fit-content;
-  max-height: 511px;
-  overflow-y: auto;
+  overflow: visible;
 }
 
 .sale-section__filters-header {
@@ -417,7 +416,6 @@
 }
 
 .sale-section__price-input {
-  flex: 1;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -425,6 +423,7 @@
   border: 1px solid #757575;
   border-radius: 8px;
   min-height: 32px;
+  width: fit-content;
 }
 
 .sale-section__price-currency {
@@ -436,7 +435,7 @@
 }
 
 .sale-section__price-field {
-  flex: 1;
+  width: 116px;
   border: none;
   background: none;
   font-family: 'Roboto', sans-serif;
@@ -620,6 +619,7 @@
 
   .sale-section__filters {
     max-height: none;
+    overflow: visible;
   }
 
   .sale-section__filters-header {
