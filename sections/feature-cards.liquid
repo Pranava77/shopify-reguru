@@ -111,7 +111,7 @@
     // Update active dot based on scroll position
     const updateActiveDot = () => {
       const scrollLeft = track.scrollLeft;
-      const cardWidth = cards[0]?.offsetWidth || (window.innerWidth <= 768 ? 180 : window.innerWidth <= 1200 ? 450 : 589);
+      const cardWidth = cards[0]?.offsetWidth || (window.innerWidth <= 768 ? 150 : window.innerWidth <= 1200 ? 320 : 400);
       const gap = getGap();
       const activeIndex = Math.round(scrollLeft / (cardWidth + gap));
       
@@ -124,7 +124,7 @@
     dots.forEach((dot) => {
       dot.addEventListener('click', () => {
         const index = parseInt(dot.dataset.index, 10);
-        const cardWidth = cards[0]?.offsetWidth || (window.innerWidth <= 768 ? 180 : window.innerWidth <= 1200 ? 450 : 589);
+        const cardWidth = cards[0]?.offsetWidth || (window.innerWidth <= 768 ? 150 : window.innerWidth <= 1200 ? 320 : 400);
         const gap = getGap();
         const scrollPosition = index * (cardWidth + gap);
         
@@ -194,9 +194,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 589px;
-  min-width: 589px;
-  max-width: 589px;
+  width: 400px;
+  min-width: 400px;
+  max-width: 400px;
   aspect-ratio: 0.63;
   border-radius: 8px;
   overflow: visible;
@@ -330,9 +330,9 @@
   }
 
   .feature-card {
-    width: 450px;
-    min-width: 450px;
-    max-width: 450px;
+    width: 320px;
+    min-width: 320px;
+    max-width: 320px;
   }
 }
 
@@ -368,9 +368,9 @@
 
   .feature-card {
     scroll-snap-align: start;
-    width: calc((100vw - 70px) / 2.5);
-    min-width: calc((100vw - 70px) / 2.5);
-    max-width: calc((100vw - 70px) / 2.5);
+    width: calc((100vw - 70px) / 3);
+    min-width: calc((100vw - 70px) / 3);
+    max-width: calc((100vw - 70px) / 3);
   }
 
   .feature-card:hover {
@@ -389,9 +389,9 @@
 
 @media screen and (max-width: 480px) {
   .feature-card {
-    width: calc((100vw - 70px) / 2.5);
-    min-width: calc((100vw - 70px) / 2.5);
-    max-width: calc((100vw - 70px) / 2.5);
+    width: calc((100vw - 70px) / 3);
+    min-width: calc((100vw - 70px) / 3);
+    max-width: calc((100vw - 70px) / 3);
   }
 
   .feature-card__title {
