@@ -11,7 +11,7 @@
   assign bg_image = section.settings.background_image
 -%}
 
-<section class="franchise-section"{% if bg_image != blank %} style="background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
+<section class="franchise-section">
   <div class="franchise-section__background">
     <div class="franchise-section__pattern franchise-section__pattern--top"></div>
     <div class="franchise-section__pattern franchise-section__pattern--bottom"></div>
@@ -177,38 +177,24 @@
   position: relative;
   min-height: 100vh;
   padding: 120px 0 80px;
-  background-color: var(--color-white);
+  background-color: transparent;
   overflow: hidden;
 }
 
 .franchise-section__background {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
+  display: none;
 }
 
 .franchise-section__pattern {
-  position: absolute;
-  opacity: 0.42;
+  display: none;
 }
 
 .franchise-section__pattern--top {
-  top: 7.33%;
-  left: -0.21%;
-  right: 0;
-  bottom: 42.37%;
-  background: linear-gradient(135deg, rgba(177, 216, 255, 0.3) 0%, rgba(82, 148, 255, 0.2) 100%);
-  clip-path: polygon(0 0, 100% 0, 100% 50%, 0 100%);
+  display: none;
 }
 
 .franchise-section__pattern--bottom {
-  top: 55.74%;
-  left: 0.28%;
-  right: -0.49%;
-  bottom: -26.92%;
-  background: linear-gradient(135deg, rgba(177, 216, 255, 0.3) 0%, rgba(82, 148, 255, 0.2) 100%);
-  clip-path: polygon(0 50%, 100% 0, 100% 100%, 0 100%);
+  display: none;
 }
 
 .franchise-section__inner {
