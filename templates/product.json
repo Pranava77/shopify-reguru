@@ -1,11 +1,291 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
+    "announcement_bar_4hhfqw": {
+      "type": "announcement-bar",
+      "name": "Announcement Bar",
+      "settings": {
+        "text": "Welcome To ReGuru",
+        "background_color": "#1e1a5c",
+        "text_color": "#28d98e"
+      }
+    },
+    "header_bDDenX": {
+      "type": "header",
+      "name": "Header",
+      "settings": {
+        "logo": "shopify://shop_images/gin.png",
+        "show_search": true,
+        "show_location": true,
+        "location_text": "Bengaluru",
+        "header_icon_type": "bag",
+        "header_custom_icon": "shopify://shop_images/Layer_1_1.png",
+        "header_icon_color_primary": "#1e1a5c",
+        "header_icon_color_accent": "#28d98e",
+        "franchise_page": "",
+        "franchise_url": ""
+      }
+    },
+    "mega_menu_Rt8Xhn": {
+      "type": "mega-menu",
+      "blocks": {
+        "menu_item_HXcEV3": {
+          "type": "menu_item",
+          "settings": {
+            "title": "Shop",
+            "link": "",
+            "enable_mega_dropdown": true,
+            "dropdown_columns": "3",
+            "column_1_title": "Categories",
+            "menu_1": "",
+            "column_2_title": "Collections",
+            "menu_2": "",
+            "column_3_title": "Trending",
+            "menu_3": "",
+            "column_4_title": "",
+            "menu_4": "",
+            "featured_title": "New Arrivals",
+            "featured_link": "",
+            "featured_link_text": "Shop Now",
+            "show_promo_banner": false,
+            "promo_badge": "Limited",
+            "promo_text": "Free shipping on orders over ₹50",
+            "promo_link": "",
+            "promo_link_text": "Learn More"
+          }
+        },
+        "menu_item_dFiBff": {
+          "type": "menu_item",
+          "settings": {
+            "title": "product",
+            "link": "shopify://pages/product-category",
+            "enable_mega_dropdown": false,
+            "dropdown_columns": "3",
+            "column_1_title": "",
+            "menu_1": "",
+            "column_2_title": "",
+            "menu_2": "",
+            "column_3_title": "",
+            "menu_3": "",
+            "column_4_title": "",
+            "menu_4": "",
+            "featured_title": "New Arrivals",
+            "featured_link": "",
+            "featured_link_text": "Shop Now",
+            "show_promo_banner": false,
+            "promo_badge": "Limited",
+            "promo_text": "Free shipping on orders over ₹50",
+            "promo_link": "",
+            "promo_link_text": "Learn More"
+          }
+        },
+        "simple_link_a8EMJc": {
+          "type": "simple_link",
+          "settings": {
+            "title": "Sale",
+            "link": "",
+            "badge": "Hot",
+            "badge_style": "sale"
+          }
+        },
+        "separator_WKnKAx": {
+          "type": "separator",
+          "settings": {}
+        },
+        "simple_link_WtAE3C": {
+          "type": "simple_link",
+          "settings": {
+            "title": "About",
+            "link": "",
+            "badge": "",
+            "badge_style": "new"
+          }
+        },
+        "simple_link_8KrntT": {
+          "type": "simple_link",
+          "settings": {
+            "title": "Contact",
+            "link": "",
+            "badge": "",
+            "badge_style": "new"
+          }
+        }
+      },
+      "block_order": [
+        "menu_item_HXcEV3",
+        "menu_item_dFiBff",
+        "simple_link_a8EMJc",
+        "separator_WKnKAx",
+        "simple_link_WtAE3C",
+        "simple_link_8KrntT"
+      ],
+      "name": "Mega Menu",
+      "settings": {
+        "enable_sticky": true,
+        "menu_style": "default",
+        "promo_position": "right"
+      }
+    },
     "product_detail": {
       "type": "product-detail",
+      "settings": {
+        "product": ""
+      }
+    },
+    "feature_cards_Mm6g4q": {
+      "type": "feature-cards",
+      "blocks": {
+        "card_EVtExF": {
+          "type": "card",
+          "settings": {
+            "title": "RRR Policy",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "icon_image": "shopify://shop_images/Layer_3.png"
+          }
+        },
+        "card_UYJxgw": {
+          "type": "card",
+          "settings": {
+            "title": "Affordable",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "icon_image": "shopify://shop_images/Group_159.png"
+          }
+        },
+        "card_jeHLNJ": {
+          "type": "card",
+          "settings": {
+            "title": "Online & Offline Model",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "icon_image": "shopify://shop_images/Group_173.png"
+          }
+        },
+        "card_Y79k6m": {
+          "type": "card",
+          "settings": {
+            "title": "Tailored Solutions",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "icon_image": "shopify://shop_images/Group_161_a7347467-55ed-4553-95c7-978f9bf1b501.png"
+          }
+        },
+        "card_RebnqM": {
+          "type": "card",
+          "settings": {
+            "title": "Sustainability",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "icon_image": "shopify://shop_images/Group_176_04654fd9-7d93-4057-89f3-839d4af8ef9b.png"
+          }
+        }
+      },
+      "block_order": [
+        "card_EVtExF",
+        "card_UYJxgw",
+        "card_jeHLNJ",
+        "card_Y79k6m",
+        "card_RebnqM"
+      ],
+      "name": "Feature Cards",
       "settings": {}
+    },
+    "footer_idKpLa": {
+      "type": "footer",
+      "blocks": {
+        "category_link_nWmMHC": {
+          "type": "category_link",
+          "settings": {
+            "label": "Sofa",
+            "link": ""
+          }
+        },
+        "category_link_nqFbYr": {
+          "type": "category_link",
+          "settings": {
+            "label": "Armchair",
+            "link": ""
+          }
+        },
+        "category_link_A9hPzy": {
+          "type": "category_link",
+          "settings": {
+            "label": "Desk Chair",
+            "link": ""
+          }
+        },
+        "category_link_kbeGwg": {
+          "type": "category_link",
+          "settings": {
+            "label": "wooden Chair",
+            "link": ""
+          }
+        },
+        "category_link_8B4T8w": {
+          "type": "category_link",
+          "settings": {
+            "label": "Park Bench",
+            "link": ""
+          }
+        },
+        "support_link_JVJDTy": {
+          "type": "support_link",
+          "settings": {
+            "label": "Help & Support",
+            "link": ""
+          }
+        },
+        "support_link_KwPbpx": {
+          "type": "support_link",
+          "settings": {
+            "label": "Terms & Conditions",
+            "link": ""
+          }
+        },
+        "support_link_wWNQRk": {
+          "type": "support_link",
+          "settings": {
+            "label": "Privacy Policy",
+            "link": ""
+          }
+        },
+        "support_link_eLjffV": {
+          "type": "support_link",
+          "settings": {
+            "label": "Help",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "category_link_nWmMHC",
+        "category_link_nqFbYr",
+        "category_link_A9hPzy",
+        "category_link_kbeGwg",
+        "category_link_8B4T8w",
+        "support_link_JVJDTy",
+        "support_link_KwPbpx",
+        "support_link_wWNQRk",
+        "support_link_eLjffV"
+      ],
+      "name": "Footer",
+      "settings": {
+        "address": "Address: 2nd floor central complex sv road near mantri mall seshadripuram bengaluru 560020",
+        "background_color": "#041c66",
+        "laptop_image": "shopify://shop_images/generated-image__20_-removebg-preview.png"
+      }
     }
   },
   "order": [
-    "product_detail"
+    "announcement_bar_4hhfqw",
+    "header_bDDenX",
+    "mega_menu_Rt8Xhn",
+    "product_detail",
+    "feature_cards_Mm6g4q",
+    "footer_idKpLa"
   ]
 }

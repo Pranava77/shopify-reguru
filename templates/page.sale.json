@@ -9,6 +9,15 @@
  */
 {
   "sections": {
+    "announcement_bar_KVVcCJ": {
+      "type": "announcement-bar",
+      "name": "Announcement Bar",
+      "settings": {
+        "text": "Welcome To ReGuru",
+        "background_color": "#1E1A5C",
+        "text_color": "#ffffff"
+      }
+    },
     "header_U9K4Tf": {
       "type": "header",
       "name": "Header",
@@ -56,8 +65,8 @@
         "menu_item_XiRTHk": {
           "type": "menu_item",
           "settings": {
-            "title": "New Arrivals",
-            "link": "",
+            "title": "products",
+            "link": "shopify://pages/product-category",
             "enable_mega_dropdown": false,
             "dropdown_columns": "3",
             "column_1_title": "",
@@ -91,7 +100,7 @@
           "type": "simple_link",
           "settings": {
             "title": "About",
-            "link": "",
+            "link": "shopify://pages/about",
             "badge": "",
             "badge_style": "new"
           }
@@ -303,6 +312,7 @@
     }
   },
   "order": [
+    "announcement_bar_KVVcCJ",
     "header_U9K4Tf",
     "mega_menu_DKxVCr",
     "sale_ibwxHC",

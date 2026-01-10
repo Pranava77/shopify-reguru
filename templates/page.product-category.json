@@ -56,7 +56,7 @@
         "menu_item_XiRTHk": {
           "type": "menu_item",
           "settings": {
-            "title": "New Arrivals",
+            "title": "products",
             "link": "",
             "enable_mega_dropdown": false,
             "dropdown_columns": "3",
@@ -82,7 +82,7 @@
           "type": "simple_link",
           "settings": {
             "title": "Sale",
-            "link": "",
+            "link": "shopify://pages/sale",
             "badge": "Hot",
             "badge_style": "sale"
           }
@@ -91,7 +91,7 @@
           "type": "simple_link",
           "settings": {
             "title": "About",
-            "link": "",
+            "link": "shopify://pages/about",
             "badge": "",
             "badge_style": "new"
           }
@@ -137,7 +137,7 @@
             "category_label_color": "#ffffff",
             "product_title_color": "#ffffff",
             "button_bg_color": "#1e1a5c",
-            "button_text_color": "#FFFFFF"
+            "button_text_color": "#ffffff"
           }
         },
         "category_card_kdmY4G": {
@@ -154,7 +154,7 @@
             "category_label_color": "#0a73a1",
             "product_title_color": "#4c4c4ca6",
             "button_bg_color": "#1e1a5c",
-            "button_text_color": "#FFFFFF"
+            "button_text_color": "#ffffff"
           }
         },
         "category_card_QUnQaV": {
@@ -171,7 +171,7 @@
             "category_label_color": "#d4b100",
             "product_title_color": "#4c4c4ca6",
             "button_bg_color": "#1e1a5c",
-            "button_text_color": "#FFFFFF"
+            "button_text_color": "#ffffff"
           }
         },
         "category_card_7bbpde": {
@@ -188,7 +188,7 @@
             "category_label_color": "#ffffff",
             "product_title_color": "#ffffff",
             "button_bg_color": "#1e1a5c",
-            "button_text_color": "#FFFFFF"
+            "button_text_color": "#ffffff"
           }
         },
         "category_card_anxPtA": {
@@ -205,7 +205,7 @@
             "category_label_color": "#5a9980",
             "product_title_color": "#4c4c4ca6",
             "button_bg_color": "#c63d42",
-            "button_text_color": "#FFFFFF"
+            "button_text_color": "#ffffff"
           }
         }
       },
@@ -219,7 +219,9 @@
       "name": "Category Showcase",
       "settings": {
         "padding_top": 0,
-        "padding_bottom": 0
+        "padding_bottom": 0,
+        "heading": "Checkout our products",
+        "description": "Find the perfect laptop for work, play and everything in between."
       }
     },
     "product_category_JheeHV": {

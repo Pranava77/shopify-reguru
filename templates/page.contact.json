@@ -56,8 +56,8 @@
         "menu_item_WtnVfK": {
           "type": "menu_item",
           "settings": {
-            "title": "New Arrivals",
-            "link": "",
+            "title": "products",
+            "link": "shopify://pages/product-category",
             "enable_mega_dropdown": false,
             "dropdown_columns": "3",
             "column_1_title": "",
