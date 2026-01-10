@@ -10,7 +10,7 @@
   <div class="hero-banner__container"{% if container_bg_image != blank %} style="background-image: url('{{ container_bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
     <div class="hero-banner__carousel" data-carousel>
       <div class="hero-banner__carousel-track" data-carousel-track>
-        {%- for block in section.blocks limit: 5 -%}
+        {%- for block in section.blocks limit: 10 -%}
           <div class="hero-banner__slide" data-slide {{ block.shopify_attributes }}>
             <div class="hero-banner__content">
               {%- if block.settings.subheading != blank -%}
@@ -501,7 +501,7 @@
     {
       "type": "slide",
       "name": "Slide",
-      "limit": 5,
+      "limit": 10,
       "settings": [
         {
           "type": "text",
@@ -535,6 +535,21 @@
     {
       "name": "Hero Banner Carousel",
       "blocks": [
+        {
+          "type": "slide"
+        },
+        {
+          "type": "slide"
+        },
+        {
+          "type": "slide"
+        },
+        {
+          "type": "slide"
+        },
+        {
+          "type": "slide"
+        },
         {
           "type": "slide"
         },
