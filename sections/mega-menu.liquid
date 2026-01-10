@@ -2,6 +2,7 @@
   assign enable_sticky = section.settings.enable_sticky
   assign menu_style = section.settings.menu_style
   assign promo_position = section.settings.promo_position
+  assign bg_image = section.settings.background_image
 -%}
 
 <nav 
@@ -9,6 +10,7 @@
   role="navigation"
   aria-label="{{ 'general.accessibility.main_navigation' | t }}"
   data-mega-menu
+  {% if bg_image != blank %} style="background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}
 >
   <div class="mega-menu__inner">
     <ul class="mega-menu__list">
@@ -1035,6 +1037,11 @@
       "default": "right",
       "info": "Position of the featured image in mega dropdowns"
     },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
+    }
   ],
   "blocks": [
     {

@@ -1,9 +1,10 @@
 {%- liquid
   assign bg_color = section.settings.background_color | default: '#1E1A5C'
   assign text_color = section.settings.text_color | default: '#28D98E'
+  assign bg_image = section.settings.background_image
 -%}
 
-<div class="announcement-bar" style="background-color: {{ bg_color }};">
+<div class="announcement-bar" style="background-color: {{ bg_color }};{% if bg_image != blank %} background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;{% endif %}">
   <div class="announcement-bar__content">
     <p class="announcement-bar__text" style="color: {{ text_color }};">
       {{ section.settings.text | default: 'Welcome To ReGuru' }}
@@ -79,6 +80,11 @@
       "id": "text_color",
       "label": "Text Color",
       "default": "#28D98E"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
     }
   ],
   "presets": [
