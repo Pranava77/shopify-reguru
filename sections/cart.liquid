@@ -3,6 +3,7 @@
   assign empty_cart_title = section.settings.empty_title | default: 'Your cart is empty'
   assign empty_cart_text = section.settings.empty_text | default: 'Continue shopping to add items to your cart.'
   assign continue_shopping_text = section.settings.continue_shopping_text | default: 'continue shopping'
+  assign continue_shopping_url = section.settings.continue_shopping_url | default: routes.all_products_collection_url
   assign buy_now_text = section.settings.buy_now_text | default: 'Buy Now'
   assign promo_code_label = section.settings.promo_code_label | default: 'PROMO CODE'
   assign promo_code_placeholder = section.settings.promo_code_placeholder | default: 'ENTER HERE'
@@ -182,7 +183,7 @@
                 <button type="submit" name="checkout" class="cart-summary__btn cart-summary__btn--primary">
                   {{ buy_now_text }} →
                 </button>
-                <a href="{{ routes.all_products_collection_url }}" class="cart-summary__btn cart-summary__btn--secondary">
+                <a href="{{ continue_shopping_url }}" class="cart-summary__btn cart-summary__btn--secondary">
                   {{ continue_shopping_text }}
                 </a>
               </div>
@@ -201,7 +202,7 @@
         <div class="cart-empty">
           <h2 class="cart-empty__title">{{ empty_cart_title }}</h2>
           <p class="cart-empty__text">{{ empty_cart_text }}</p>
-          <a href="{{ routes.all_products_collection_url }}" class="cart-summary__btn cart-summary__btn--primary">
+          <a href="{{ continue_shopping_url }}" class="cart-summary__btn cart-summary__btn--primary">
             {{ continue_shopping_text }}
           </a>
         </div>
@@ -1104,6 +1105,12 @@
       "id": "continue_shopping_text",
       "label": "Continue Shopping Button Text",
       "default": "continue shopping"
+    },
+    {
+      "type": "url",
+      "id": "continue_shopping_url",
+      "label": "Continue Shopping Link",
+      "info": "Select a page, collection, or enter a custom URL for the Continue Shopping button. If left empty, it will link to all products."
     },
     {
       "type": "text",
