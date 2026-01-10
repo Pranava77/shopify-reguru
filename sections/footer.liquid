@@ -3,10 +3,9 @@
   assign address = section.settings.address
   assign bg_color = section.settings.background_color | default: '#041C66'
   assign laptop_image = section.settings.laptop_image
-  assign bg_image = section.settings.background_image
 -%}
 
-<footer class="footer-wrapper"{% if bg_image != blank %} style="background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
+<footer class="footer-wrapper">
   <!-- Laptop Illustration -->
   <div class="footer__laptop-illustration">
     {%- if laptop_image != blank -%}
@@ -422,15 +421,6 @@
       "label": "Laptop image",
       "info": "Decorative laptop illustration shown above the footer. Leave empty for default SVG."
     },
-    {
-      "type": "header",
-      "content": "Background"
-    },
-    {
-      "type": "image_picker",
-      "id": "background_image",
-      "label": "Background Image"
-    }
   ],
   "blocks": [
     {

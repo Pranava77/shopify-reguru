@@ -1,10 +1,9 @@
 {%- liquid
   assign heading = section.settings.heading | default: 'Testimonials'
   assign bg_color = section.settings.background_color | default: '#B1D8FF'
-  assign bg_image = section.settings.background_image
 -%}
 
-<section class="testimonials" style="--testimonials-bg: {{ bg_color }};{% if bg_image != blank %} background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;{% endif %}">
+<section class="testimonials" style="--testimonials-bg: {{ bg_color }};">
   <div class="testimonials__container">
     <div class="testimonials__header">
       <h2 class="testimonials__title">{{ heading }}</h2>
@@ -195,11 +194,6 @@
       "id": "background_color",
       "label": "Background Color",
       "default": "#B1D8FF"
-    },
-    {
-      "type": "image_picker",
-      "id": "background_image",
-      "label": "Background Image"
     }
   ],
   "blocks": [

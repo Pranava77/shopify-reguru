@@ -1,13 +1,9 @@
-{%- liquid
-  assign bg_image = section.settings.background_image
--%}
-
 {%- comment -%}
   Category Navigation Section
   Displays category links with dropdown arrows
 {%- endcomment -%}
 
-<nav class="category-nav"{% if bg_image != blank %} style="background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
+<nav class="category-nav">
   <div class="category-nav__inner">
     <ul class="category-nav__list">
       {%- for link in section.settings.menu.links -%}
@@ -170,11 +166,6 @@
       "id": "menu",
       "label": "Category Menu",
       "default": "main-menu"
-    },
-    {
-      "type": "image_picker",
-      "id": "background_image",
-      "label": "Background Image"
     }
   ],
   "presets": [

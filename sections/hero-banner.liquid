@@ -1,13 +1,11 @@
 {%- liquid
   assign bg_color = section.settings.background_color | default: '#212844'
-  assign bg_image = section.settings.background_image
-  assign container_bg_image = section.settings.container_background_image
   assign button_text = section.settings.button_text
   assign button_link = section.settings.button_link
 -%}
 
-<section class="hero-banner" style="--hero-bg: {{ bg_color }};{% if bg_image != blank %} background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;{% endif %}">
-  <div class="hero-banner__container"{% if container_bg_image != blank %} style="background-image: url('{{ container_bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
+<section class="hero-banner" style="--hero-bg: {{ bg_color }};">
+  <div class="hero-banner__container">
     <div class="hero-banner__carousel" data-carousel>
       <div class="hero-banner__carousel-track" data-carousel-track>
         {%- for block in section.blocks limit: 5 -%}
@@ -75,20 +73,6 @@
   overflow: hidden;
 }
 
-.hero-banner__container::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-color: var(--hero-bg);
-  opacity: 0.85;
-  z-index: 0;
-  pointer-events: none;
-  display: none;
-}
-
-.hero-banner__container[style*="background-image"]::before {
-  display: block;
-}
 
 .hero-banner__carousel {
   position: relative;
@@ -466,21 +450,6 @@
       "id": "background_color",
       "label": "Background Color",
       "default": "#212844"
-    },
-    {
-      "type": "image_picker",
-      "id": "background_image",
-      "label": "Background Image"
-    },
-    {
-      "type": "header",
-      "content": "Container Background"
-    },
-    {
-      "type": "image_picker",
-      "id": "container_background_image",
-      "label": "Container Background Image",
-      "info": "Background image for the hero banner container. The background color will show as an overlay for better text readability."
     },
     {
       "type": "header",
