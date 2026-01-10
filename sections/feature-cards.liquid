@@ -103,13 +103,15 @@
     
     // Get gap based on screen size
     const getGap = () => {
-      return window.innerWidth <= 768 ? 20 : 46;
+      if (window.innerWidth <= 768) return 20;
+      if (window.innerWidth <= 1200) return 30;
+      return 46;
     };
     
     // Update active dot based on scroll position
     const updateActiveDot = () => {
       const scrollLeft = track.scrollLeft;
-      const cardWidth = cards[0]?.offsetWidth || (window.innerWidth <= 768 ? 180 : 589);
+      const cardWidth = cards[0]?.offsetWidth || (window.innerWidth <= 768 ? 180 : window.innerWidth <= 1200 ? 530 : 589);
       const gap = getGap();
       const activeIndex = Math.round(scrollLeft / (cardWidth + gap));
       
@@ -122,7 +124,7 @@
     dots.forEach((dot) => {
       dot.addEventListener('click', () => {
         const index = parseInt(dot.dataset.index, 10);
-        const cardWidth = cards[0]?.offsetWidth || (window.innerWidth <= 768 ? 180 : 589);
+        const cardWidth = cards[0]?.offsetWidth || (window.innerWidth <= 768 ? 180 : window.innerWidth <= 1200 ? 530 : 589);
         const gap = getGap();
         const scrollPosition = index * (cardWidth + gap);
         
@@ -325,6 +327,12 @@
 @media screen and (max-width: 1200px) {
   .feature-cards__track {
     gap: 30px;
+  }
+
+  .feature-card {
+    width: 530px;
+    min-width: 530px;
+    max-width: 530px;
   }
 }
 
