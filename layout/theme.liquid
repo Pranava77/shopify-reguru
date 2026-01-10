@@ -45,6 +45,15 @@
     {{ body_font_bold_italic | font_face: font_display: 'swap' }}
     {{ settings.type_header_font | font_face: font_display: 'swap' }}
 
+    /* Global background image - full width, height cropped to page */
+    body {
+      background-image: url('{{ "background-grid.png" | asset_url }}');
+      background-size: 100% auto;
+      background-position: center top;
+      background-repeat: no-repeat;
+      background-attachment: scroll;
+    }
+
     {%- if settings.background_image != blank -%}
       body {
         background-image: url('{{ settings.background_image | image_url: width: 2000 }}');
