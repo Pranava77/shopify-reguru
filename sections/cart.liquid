@@ -608,6 +608,7 @@
   background-color: var(--color-light-blue);
   border-radius: 6px;
   margin-bottom: 20px;
+  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
 }
 
 .cart-products__header-cell {
@@ -650,6 +651,10 @@
   padding: 20px;
   background-color: var(--color-white);
   border-radius: 6px;
+  background-clip: text;
+  -webkit-background-clip: text;
+  border: 1px solid rgba(0, 0, 0, 1);
+  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 0.5);
 }
 
 .cart-product__details {
@@ -672,6 +677,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 6px;
 }
 
 .cart-product__placeholder {
@@ -718,7 +724,7 @@
 }
 
 .cart-product__price {
-  font-family: var(--font-heading);
+  font-family: 'Overpass', sans-serif;
   font-weight: 400;
   font-size: 18px;
   line-height: 1;
@@ -776,7 +782,7 @@
 }
 
 .cart-product__total {
-  font-family: var(--font-heading);
+  font-family: 'Overpass', sans-serif;
   font-weight: 400;
   font-size: 18px;
   line-height: 1;
@@ -812,15 +818,17 @@
   padding: 24px;
   background-color: var(--color-light-blue);
   border-radius: 6px;
+  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
 }
 
 .cart-summary__title {
   font-family: var(--font-heading);
   font-weight: 700;
-  font-size: 18px;
+  font-size: 30px;
   line-height: 1;
   color: var(--color-dark-blue);
   text-transform: uppercase;
+  text-align: center;
   margin: 0 0 20px 0;
 }
 
@@ -836,18 +844,18 @@
 }
 
 .cart-summary__label {
-  font-family: var(--font-heading);
-  font-weight: 400;
-  font-size: 14px;
+  font-family: 'Overpass', sans-serif;
+  font-weight: 600;
+  font-size: 24px;
   line-height: 1;
   color: var(--color-dark-blue);
   text-transform: uppercase;
 }
 
 .cart-summary__value {
-  font-family: var(--font-heading);
+  font-family: 'Overpass', sans-serif;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 20px;
   line-height: 1;
   color: var(--color-dark-blue);
 }
