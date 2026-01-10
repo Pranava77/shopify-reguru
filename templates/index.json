@@ -14,8 +14,8 @@
       "name": "Announcement Bar",
       "settings": {
         "text": "Welcome To ReGuru",
-        "background_color": "#1E1A5C",
-        "text_color": "#28D98E"
+        "background_color": "#1e1a5c",
+        "text_color": "#28d98e"
       }
     },
     "header_8wjj8i": {
@@ -135,7 +135,7 @@
         "background_color": "rgba(0,0,0,0)",
         "container_background_image": "shopify://shop_images/Screenshot_2026-01-09_163744.png",
         "button_text": "click here",
-        "button_link": "shopify://collections/headphone"
+        "button_link": "shopify://collections/apple"
       }
     },
     "product_grid_gLdc4C": {
@@ -419,8 +419,8 @@
       "name": "Announcement Bar",
       "settings": {
         "text": "built by webfixus",
-        "background_color": "#1E1A5C",
-        "text_color": "#28D98E"
+        "background_color": "#1e1a5c",
+        "text_color": "#28d98e"
       }
     }
   },
