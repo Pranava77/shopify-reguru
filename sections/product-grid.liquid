@@ -381,6 +381,8 @@
 @media screen and (max-width: 768px) {
   .product-grid__carousel {
     overflow: visible;
+    padding-bottom: 4px;
+    padding-right: 0;
   }
 
   .product-grid__items {
@@ -393,7 +395,8 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
     padding-left: 7.5%;
-    padding-right: 7.5%;
+    padding-right: calc(7.5% + 4px);
+    padding-bottom: 4px;
   }
 
   .product-grid__items::-webkit-scrollbar {
@@ -462,7 +465,8 @@
 
   .product-grid__items {
     padding-left: 5%;
-    padding-right: 5%;
+    padding-right: calc(5% + 4px);
+    padding-bottom: 4px;
   }
 
   .product-grid__items .product-card {
