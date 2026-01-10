@@ -101,16 +101,16 @@
     const dots = dotsContainer.querySelectorAll('.feature-cards__dot');
     const cards = track.querySelectorAll('.feature-card');
     
-    // Only enable carousel functionality on mobile
-    const isMobile = () => window.innerWidth <= 768;
+    // Get gap based on screen size
+    const getGap = () => {
+      return window.innerWidth <= 768 ? 20 : 46;
+    };
     
     // Update active dot based on scroll position
     const updateActiveDot = () => {
-      if (!isMobile()) return;
-      
       const scrollLeft = track.scrollLeft;
-      const cardWidth = cards[0]?.offsetWidth || 180;
-      const gap = 20;
+      const cardWidth = cards[0]?.offsetWidth || (window.innerWidth <= 768 ? 180 : 589);
+      const gap = getGap();
       const activeIndex = Math.round(scrollLeft / (cardWidth + gap));
       
       dots.forEach((dot, index) => {
@@ -121,11 +121,9 @@
     // Scroll to specific card when dot is clicked
     dots.forEach((dot) => {
       dot.addEventListener('click', () => {
-        if (!isMobile()) return;
-        
         const index = parseInt(dot.dataset.index, 10);
-        const cardWidth = cards[0]?.offsetWidth || 180;
-        const gap = 20;
+        const cardWidth = cards[0]?.offsetWidth || (window.innerWidth <= 768 ? 180 : 589);
+        const gap = getGap();
         const scrollPosition = index * (cardWidth + gap);
         
         track.scrollTo({
@@ -144,6 +142,9 @@
     
     // Update on resize
     window.addEventListener('resize', updateActiveDot);
+    
+    // Initial update
+    updateActiveDot();
   })();
 </script>
 
@@ -163,10 +164,27 @@
 }
 
 .feature-cards__track {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  display: flex;
   gap: 46px;
-  justify-items: center;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gray) transparent;
+  padding: 10px 0 20px;
+}
+
+.feature-cards__track::-webkit-scrollbar {
+  height: 8px;
+}
+
+.feature-cards__track::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.feature-cards__track::-webkit-scrollbar-thumb {
+  background-color: var(--color-gray);
+  border-radius: 4px;
 }
 
 .feature-card {
@@ -174,14 +192,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  max-width: 512px;
+  width: 589px;
+  min-width: 589px;
+  max-width: 589px;
   aspect-ratio: 0.63;
   border-radius: 8px;
   overflow: visible;
   cursor: pointer;
   transition: transform var(--transition-base);
   flex-shrink: 0;
+  scroll-snap-align: start;
 }
 
 .feature-card:hover {
@@ -270,14 +290,40 @@
   height: auto;
 }
 
-/* Navigation Dots - Hidden on Desktop */
+/* Navigation Dots */
 .feature-cards__dots {
-  display: none;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 0 var(--container-padding);
+}
+
+.feature-cards__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--color-navy);
+  opacity: 0.3;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.feature-cards__dot--active {
+  opacity: 1;
+  transform: scale(1.2);
+  background-color: var(--color-navy);
+}
+
+.feature-cards__dot:focus {
+  outline: 2px solid var(--color-navy);
+  outline-offset: 2px;
 }
 
 @media screen and (max-width: 1200px) {
   .feature-cards__track {
-    grid-template-columns: repeat(3, 1fr);
     gap: 30px;
   }
 }
@@ -327,36 +373,9 @@
     font-size: 18px;
   }
 
-  /* Show Navigation Dots on Mobile */
+  /* Navigation Dots - Mobile padding override */
   .feature-cards__dots {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 16px;
     padding: 0 20px;
-  }
-
-  .feature-cards__dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: var(--color-navy);
-    opacity: 0.3;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-  }
-
-  .feature-cards__dot--active {
-    opacity: 1;
-    transform: scale(1.2);
-    background-color: var(--color-accent);
-  }
-
-  .feature-cards__dot:focus {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
   }
 }
 
