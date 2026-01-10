@@ -979,16 +979,63 @@
   const increaseBtn = productDetail.querySelector('[data-quantity-increase]');
 
   if (quantityInput && decreaseBtn && increaseBtn) {
-    decreaseBtn.addEventListener('click', function() {
+    // Function to update quantity value
+    function updateQuantity(newValue) {
+      const min = parseInt(quantityInput.min) || 1;
+      const value = Math.max(min, parseInt(newValue) || min);
+      quantityInput.value = value;
+      
+      // Trigger input and change events
+      quantityInput.dispatchEvent(new Event('input', { bubbles: true }));
+      quantityInput.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    // Decrease button
+    decreaseBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
       const currentValue = parseInt(quantityInput.value) || 1;
-      if (currentValue > 1) {
-        quantityInput.value = currentValue - 1;
+      const min = parseInt(quantityInput.min) || 1;
+      if (currentValue > min) {
+        updateQuantity(currentValue - 1);
       }
     });
 
-    increaseBtn.addEventListener('click', function() {
+    // Increase button
+    increaseBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
       const currentValue = parseInt(quantityInput.value) || 1;
-      quantityInput.value = currentValue + 1;
+      updateQuantity(currentValue + 1);
+    });
+
+    // Validate input on manual entry
+    quantityInput.addEventListener('blur', function() {
+      const min = parseInt(this.min) || 1;
+      const value = parseInt(this.value) || min;
+      if (value < min) {
+        this.value = min;
+      }
+      this.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+
+    // Prevent invalid input
+    quantityInput.addEventListener('keydown', function(e) {
+      // Allow: backspace, delete, tab, escape, enter, and decimal point
+      if ([46, 8, 9, 27, 13, 110, 190].indexOf(e.keyCode) !== -1 ||
+        // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+        (e.keyCode === 65 && e.ctrlKey === true) ||
+        (e.keyCode === 67 && e.ctrlKey === true) ||
+        (e.keyCode === 86 && e.ctrlKey === true) ||
+        (e.keyCode === 88 && e.ctrlKey === true) ||
+        // Allow: home, end, left, right
+        (e.keyCode >= 35 && e.keyCode <= 39)) {
+        return;
+      }
+      // Ensure that it is a number and stop the keypress
+      if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+        e.preventDefault();
+      }
     });
   }
 
