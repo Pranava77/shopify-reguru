@@ -39,7 +39,15 @@
     <div class="filtered-product-grid__layout">
       <!-- Left Sidebar - Filters -->
       <aside class="filtered-product-grid__sidebar">
-        <div class="filtered-product-grid__filters">
+        <div class="filtered-product-grid__filters-header">
+          <h3 class="filtered-product-grid__filters-title">Filters</h3>
+          <button type="button" class="filtered-product-grid__filters-toggle" data-filters-toggle aria-label="Toggle filters">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="filtered-product-grid__filters" data-filters-content>
           <!-- Price Filter -->
           <div class="filter__group">
             <h3 class="filter__title">Price</h3>
@@ -335,6 +343,44 @@
   top: 100px;
 }
 
+.filtered-product-grid__filters-header {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.filtered-product-grid__filters-title {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 18px;
+  line-height: normal;
+  color: var(--color-black);
+  margin: 0;
+}
+
+.filtered-product-grid__filters-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--color-black);
+  transition: transform var(--transition-fast);
+}
+
+.filtered-product-grid__filters-toggle svg {
+  width: 16px;
+  height: 16px;
+  transition: transform var(--transition-fast);
+}
+
+.filtered-product-grid__filters-toggle[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+
 .filtered-product-grid__filters {
   display: flex;
   flex-direction: column;
@@ -379,6 +425,9 @@
   list-style: none;
   cursor: pointer;
   gap: 12px;
+  padding: 8px 0;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .filter__summary::-webkit-details-marker {
@@ -409,12 +458,14 @@
 
 .filter__price-input {
   flex: 1;
+  min-width: 0;
   padding: 8px 12px;
   font-family: var(--font-body);
   font-size: 14px;
   border: 1px solid var(--color-black);
   border-radius: 4px;
   background-color: var(--color-white);
+  width: 116px;
 }
 
 .filter__price-separator {
@@ -478,6 +529,8 @@
   align-items: center;
   gap: 12px;
   cursor: pointer;
+  padding: 4px 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .filter__toggle-input {
@@ -534,6 +587,8 @@
   align-items: center;
   gap: 8px;
   cursor: pointer;
+  padding: 4px 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .filter__checkbox {
@@ -785,6 +840,18 @@
     top: 0;
   }
 
+  .filtered-product-grid__filters-header {
+    display: flex;
+  }
+
+  .filtered-product-grid__filters-toggle {
+    display: block;
+  }
+
+  .filtered-product-grid__filters[data-filters-collapsed="true"] {
+    display: none;
+  }
+
   .filtered-product-grid__products {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
@@ -802,6 +869,24 @@
 
   .filtered-product-grid__title {
     font-size: 24px;
+  }
+
+  .filtered-product-grid__filters-header {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+  }
+
+  .filtered-product-grid__filters-title {
+    font-size: 16px;
+  }
+
+  .filter__group {
+    padding-bottom: 16px;
+  }
+
+  .filter__price-input {
+    width: 100%;
+    max-width: 116px;
   }
 
   .filtered-product-grid__products {
@@ -839,6 +924,61 @@
     font-size: 20px;
   }
 
+  .filtered-product-grid__filters-header {
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+  }
+
+  .filtered-product-grid__filters-title {
+    font-size: 16px;
+  }
+
+  .filter__group {
+    gap: 12px;
+    padding-bottom: 16px;
+  }
+
+  .filter__title {
+    font-size: 14px;
+  }
+
+  .filter__price-inputs {
+    gap: 6px;
+  }
+
+  .filter__price-input {
+    width: 100%;
+    max-width: 100px;
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .filter__price-separator {
+    font-size: 12px;
+  }
+
+  .filter__summary {
+    padding: 4px 0;
+  }
+
+  .filter__chevron {
+    width: 14px;
+    height: 14px;
+  }
+
+  .filter__toggle-label {
+    font-size: 12px;
+  }
+
+  .filter__option-label {
+    font-size: 12px;
+  }
+
+  .filter__checkbox {
+    width: 16px;
+    height: 16px;
+  }
+
   .filtered-product-card {
     padding: 12px;
     gap: 10px;
@@ -863,6 +1003,33 @@
 }
 
 @media screen and (max-width: 480px) {
+  .filtered-product-grid__filters-header {
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+  }
+
+  .filter__group {
+    gap: 10px;
+    padding-bottom: 12px;
+  }
+
+  .filter__price-inputs {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .filter__price-input {
+    width: calc(50% - 3px);
+    max-width: none;
+    min-width: 80px;
+  }
+
+  .filter__price-separator {
+    width: 100%;
+    text-align: center;
+    order: 3;
+  }
+
   .filtered-product-card {
     padding: 10px;
   }
@@ -886,6 +1053,18 @@
 (function() {
   const sectionElement = document.querySelector('.filtered-product-grid[data-section-id]');
   if (!sectionElement) return;
+
+  // Mobile filters toggle
+  const filtersToggle = sectionElement.querySelector('[data-filters-toggle]');
+  const filtersContent = sectionElement.querySelector('[data-filters-content]');
+  
+  if (filtersToggle && filtersContent) {
+    filtersToggle.addEventListener('click', function() {
+      const isCollapsed = filtersContent.getAttribute('data-filters-collapsed') === 'true';
+      filtersContent.setAttribute('data-filters-collapsed', !isCollapsed);
+      filtersToggle.setAttribute('aria-expanded', isCollapsed);
+    });
+  }
   
   const section = sectionElement;
   const priceMinInput = section.querySelector('[data-price-min]');
@@ -1060,6 +1239,32 @@
 
   // Initialize
   updatePriceInputs();
+
+  // Initialize filters as collapsed on mobile
+  if (window.innerWidth <= 992 && filtersContent) {
+    filtersContent.setAttribute('data-filters-collapsed', 'true');
+    if (filtersToggle) {
+      filtersToggle.setAttribute('aria-expanded', 'false');
+    }
+  }
+
+  // Handle window resize
+  window.addEventListener('resize', function() {
+    if (window.innerWidth <= 992 && filtersContent) {
+      // On mobile, ensure toggle is visible
+      if (filtersToggle) {
+        filtersToggle.setAttribute('aria-expanded', filtersContent.getAttribute('data-filters-collapsed') !== 'true');
+      }
+    } else {
+      // On desktop, always show filters
+      if (filtersContent) {
+        filtersContent.removeAttribute('data-filters-collapsed');
+      }
+      if (filtersToggle) {
+        filtersToggle.setAttribute('aria-expanded', 'true');
+      }
+    }
+  });
 })();
 {% endjavascript %}
 
