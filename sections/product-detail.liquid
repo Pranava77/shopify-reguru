@@ -90,11 +90,11 @@
             </span>
           </div>
 
-          <div class="product-detail__pricing">
-            <span class="product-detail__price">{{ price | money }}</span>
+          <div class="product-detail__pricing" data-product-pricing data-variant-id="{{ selected_variant.id }}">
+            <span class="product-detail__price" data-price>{{ price | money }}</span>
             {%- if compare_at_price > price -%}
-              <span class="product-detail__compare-price">{{ compare_at_price | money }}</span>
-              <span class="product-detail__badge">{{ discount_percentage }}% OFF</span>
+              <span class="product-detail__compare-price" data-compare-price>{{ compare_at_price | money }}</span>
+              <span class="product-detail__badge" data-discount-badge>{{ discount_percentage }}% OFF</span>
             {%- endif -%}
           </div>
         </div>
@@ -105,30 +105,39 @@
           <p>{{ product.description | strip_html | truncate: 200 | default: 'Experience unparalleled sound quality with our premium wireless headphones. Featuring advanced noise cancellation technology, 40-hour battery life, and exceptional comfort for all-day wear. Perfect for music lovers, travelers, and professionals alike.' }}</p>
         </div>
 
-        <!-- Color Options -->
+        <!-- Product Options -->
         {%- if product.options_with_values.size > 0 -%}
-          {%- assign color_option = product.options_with_values | where: 'name', 'Color' | first -%}
-          {%- if color_option == blank -%}
-            {%- assign color_option = product.options_with_values.first -%}
-          {%- endif -%}
-          
-          {%- if color_option != blank and color_option.values.size > 0 -%}
-            <div class="product-detail__options">
-              <label class="product-detail__option-label">Color</label>
-              <div class="product-detail__color-options">
-                {%- for value in color_option.values limit: 3 -%}
-                  <button 
-                    type="button"
-                    class="product-detail__color-option{% if forloop.first %} product-detail__color-option--active{% endif %}"
-                    data-option-name="{{ color_option.name }}"
-                    data-option-value="{{ value }}"
-                  >
-                    {{ value }}
-                  </button>
-                {%- endfor -%}
+          {%- for option in product.options_with_values -%}
+            {%- assign option_name = option.name | downcase -%}
+            {%- if option_name == 'color' or option_name == 'colour' or forloop.first -%}
+              <div class="product-detail__options" data-product-option="{{ option.position }}">
+                <label class="product-detail__option-label">{{ option.name }}</label>
+                <div class="product-detail__color-options">
+                  {%- for value in option.values -%}
+                    {%- liquid
+                      assign variant_for_option = blank
+                      for variant in product.variants
+                        if variant.options[option.position0] == value
+                          assign variant_for_option = variant
+                          break
+                        endif
+                      endfor
+                    -%}
+                    <button 
+                      type="button"
+                      class="product-detail__color-option{% if variant_for_option.id == selected_variant.id %} product-detail__color-option--active{% endif %}"
+                      data-option-position="{{ option.position0 }}"
+                      data-option-value="{{ value | escape }}"
+                      data-variant-id="{{ variant_for_option.id }}"
+                      {% unless variant_for_option.available %}disabled{% endunless %}
+                    >
+                      {{ value }}
+                    </button>
+                  {%- endfor -%}
+                </div>
               </div>
-            </div>
-          {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
         {%- endif -%}
 
         <!-- Quantity and Add to Cart -->
@@ -172,8 +181,13 @@
                 class="product-detail__btn product-detail__btn--add-cart"
                 data-add-to-cart
                 data-variant-id="{{ selected_variant.id }}"
+                {% unless selected_variant.available %}disabled{% endunless %}
               >
-                Add to cart
+                {%- if selected_variant.available -%}
+                  Add to cart
+                {%- else -%}
+                  Sold out
+                {%- endif -%}
               </button>
             </div>
           </div>
@@ -183,6 +197,7 @@
             class="product-detail__btn product-detail__btn--buy-now"
             data-buy-now
             data-variant-id="{{ selected_variant.id }}"
+            {% unless selected_variant.available %}disabled{% endunless %}
           >
             Buy Now
           </button>
@@ -256,25 +271,29 @@
       <div class="product-detail__tab-content">
         <div class="product-detail__tab-panel product-detail__tab-panel--active" data-tab-panel="description">
           <div class="product-detail__description-content">
-            <h3 class="product-detail__description-heading">Premium Audio Experience</h3>
-            <p class="product-detail__description-text">
-              Our Premium Wireless Headphones deliver studio-quality sound with deep, powerful bass and crystal-clear highs. The advanced 40mm drivers provide an immersive listening experience that brings your music to life.
-            </p>
-            
-            <h3 class="product-detail__description-heading">Active Noise Cancellation</h3>
-            <p class="product-detail__description-text">
-              Block out the world and focus on what matters. Our industry-leading ANC technology adapts to your environment, reducing unwanted noise by up to 95%. Perfect for travel, work, or simply enjoying your favorite tracks in peace.
-            </p>
-            
-            <h3 class="product-detail__description-heading">All-Day Comfort</h3>
-            <p class="product-detail__description-text">
-              Designed for extended wear, these headphones feature plush memory foam ear cushions and an adjustable headband that conforms to your head shape. The lightweight design ensures you can wear them comfortably for hours.
-            </p>
-            
-            <h3 class="product-detail__description-heading">Long-Lasting Battery</h3>
-            <p class="product-detail__description-text">
-              Enjoy up to 40 hours of wireless playback on a single charge. Quick charging technology provides 5 hours of playback from just 10 minutes of charging.
-            </p>
+            {%- if product.description != blank -%}
+              {{ product.description }}
+            {%- else -%}
+              <h3 class="product-detail__description-heading">Premium Audio Experience</h3>
+              <p class="product-detail__description-text">
+                Our Premium Wireless Headphones deliver studio-quality sound with deep, powerful bass and crystal-clear highs. The advanced 40mm drivers provide an immersive listening experience that brings your music to life.
+              </p>
+              
+              <h3 class="product-detail__description-heading">Active Noise Cancellation</h3>
+              <p class="product-detail__description-text">
+                Block out the world and focus on what matters. Our industry-leading ANC technology adapts to your environment, reducing unwanted noise by up to 95%. Perfect for travel, work, or simply enjoying your favorite tracks in peace.
+              </p>
+              
+              <h3 class="product-detail__description-heading">All-Day Comfort</h3>
+              <p class="product-detail__description-text">
+                Designed for extended wear, these headphones feature plush memory foam ear cushions and an adjustable headband that conforms to your head shape. The lightweight design ensures you can wear them comfortably for hours.
+              </p>
+              
+              <h3 class="product-detail__description-heading">Long-Lasting Battery</h3>
+              <p class="product-detail__description-text">
+                Enjoy up to 40 hours of wireless playback on a single charge. Quick charging technology provides 5 hours of playback from just 10 minutes of charging.
+              </p>
+            {%- endif -%}
           </div>
         </div>
 
@@ -904,6 +923,22 @@
   const productDetail = document.querySelector('.product-detail');
   if (!productDetail) return;
 
+  // Store variant data
+  const variantData = {};
+  {%- for variant in product.variants -%}
+    variantData[{{ variant.id }}] = {
+      id: {{ variant.id }},
+      price: {{ variant.price }},
+      compareAtPrice: {{ variant.compare_at_price | default: 0 }},
+      available: {{ variant.available | json }},
+      options: {{ variant.options | json }},
+      priceFormatted: '{{ variant.price | money }}',
+      comparePriceFormatted: '{{ variant.compare_at_price | money }}'
+    };
+  {%- endfor -%}
+
+  let currentVariantId = {{ selected_variant.id }};
+
   // Image thumbnail switching
   const thumbnails = productDetail.querySelectorAll('.product-detail__thumbnail');
   const mainImage = productDetail.querySelector('#product-main-image');
@@ -962,36 +997,191 @@
     });
   }
 
-  // Color option selection
+  // Update price display
+  function updatePrice(variant) {
+    if (!variant) return;
+    
+    const priceEl = productDetail.querySelector('[data-price]');
+    const comparePriceEl = productDetail.querySelector('[data-compare-price]');
+    const badgeEl = productDetail.querySelector('[data-discount-badge]');
+    const pricingContainer = productDetail.querySelector('[data-product-pricing]');
+    
+    if (priceEl && variant.priceFormatted) {
+      priceEl.textContent = variant.priceFormatted;
+    }
+    
+    if (pricingContainer) {
+      pricingContainer.dataset.variantId = variant.id;
+    }
+    
+    if (variant.compareAtPrice > variant.price) {
+      const discount = Math.round(((variant.compareAtPrice - variant.price) / variant.compareAtPrice) * 100);
+      
+      if (comparePriceEl && variant.comparePriceFormatted) {
+        comparePriceEl.textContent = variant.comparePriceFormatted;
+        comparePriceEl.style.display = 'inline';
+      }
+      
+      if (badgeEl) {
+        badgeEl.textContent = discount + '% OFF';
+        badgeEl.style.display = 'inline-block';
+      }
+    } else {
+      if (comparePriceEl) comparePriceEl.style.display = 'none';
+      if (badgeEl) badgeEl.style.display = 'none';
+    }
+  }
+
+  // Update variant availability
+  function updateVariantAvailability(variant) {
+    const addToCartBtn = productDetail.querySelector('[data-add-to-cart]');
+    const buyNowBtn = productDetail.querySelector('[data-buy-now]');
+    
+    if (addToCartBtn) {
+      addToCartBtn.dataset.variantId = variant.id;
+      if (variant.available) {
+        addToCartBtn.disabled = false;
+        addToCartBtn.textContent = 'Add to cart';
+      } else {
+        addToCartBtn.disabled = true;
+        addToCartBtn.textContent = 'Sold out';
+      }
+    }
+    
+    if (buyNowBtn) {
+      buyNowBtn.dataset.variantId = variant.id;
+      buyNowBtn.disabled = !variant.available;
+    }
+  }
+
+  // Find variant based on selected options
+  function findVariantFromOptions() {
+    const selectedOptions = {};
+    const optionButtons = productDetail.querySelectorAll('.product-detail__color-option.product-detail__color-option--active');
+    
+    for (const button of optionButtons) {
+      const position = parseInt(button.dataset.optionPosition);
+      const value = button.dataset.optionValue;
+      selectedOptions[position] = value;
+    }
+    
+    // Find matching variant
+    for (const variantId in variantData) {
+      const variant = variantData[variantId];
+      let match = true;
+      
+      for (let i = 0; i < variant.options.length; i++) {
+        if (selectedOptions[i] && variant.options[i] !== selectedOptions[i]) {
+          match = false;
+          break;
+        }
+      }
+      
+      if (match) {
+        return variant;
+      }
+    }
+    
+    return variantData[currentVariantId] || Object.values(variantData)[0];
+  }
+
+  // Option selection handler
   const colorOptions = productDetail.querySelectorAll('.product-detail__color-option');
   for (const option of colorOptions) {
     option.addEventListener('click', function() {
-      colorOptions.forEach(o => o.classList.remove('product-detail__color-option--active'));
+      if (this.disabled) return;
+      
+      const optionPosition = parseInt(this.dataset.optionPosition);
+      const samePositionOptions = productDetail.querySelectorAll(`[data-option-position="${optionPosition}"]`);
+      
+      // Update active state for same position options
+      samePositionOptions.forEach(o => o.classList.remove('product-detail__color-option--active'));
       this.classList.add('product-detail__color-option--active');
+      
+      // Find and update to new variant
+      const newVariant = findVariantFromOptions();
+      if (newVariant && newVariant.id !== currentVariantId) {
+        currentVariantId = newVariant.id;
+        updatePrice(newVariant);
+        updateVariantAvailability(newVariant);
+      }
     });
   }
 
   // Add to cart functionality
   const addToCartBtn = productDetail.querySelector('[data-add-to-cart]');
   if (addToCartBtn) {
-    addToCartBtn.addEventListener('click', function() {
+    addToCartBtn.addEventListener('click', async function() {
+      if (this.disabled) return;
+      
       const variantId = this.dataset.variantId;
       const quantity = quantityInput ? parseInt(quantityInput.value) || 1 : 1;
       
-      // Add to cart logic would go here
-      console.log('Add to cart:', { variantId, quantity });
+      try {
+        const response = await fetch('/cart/add.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            items: [{
+              id: variantId,
+              quantity: quantity
+            }]
+          })
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          // Trigger cart update event
+          document.dispatchEvent(new CustomEvent('cart:updated'));
+          
+          // Optional: Show success message or open cart drawer
+          console.log('Added to cart:', data);
+        } else {
+          throw new Error('Failed to add to cart');
+        }
+      } catch (error) {
+        console.error('Error adding to cart:', error);
+        alert('Failed to add item to cart. Please try again.');
+      }
     });
   }
 
   // Buy now functionality
   const buyNowBtn = productDetail.querySelector('[data-buy-now]');
   if (buyNowBtn) {
-    buyNowBtn.addEventListener('click', function() {
+    buyNowBtn.addEventListener('click', async function() {
+      if (this.disabled) return;
+      
       const variantId = this.dataset.variantId;
       const quantity = quantityInput ? parseInt(quantityInput.value) || 1 : 1;
       
-      // Buy now logic would go here
-      console.log('Buy now:', { variantId, quantity });
+      try {
+        // Add to cart first
+        const response = await fetch('/cart/add.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            items: [{
+              id: variantId,
+              quantity: quantity
+            }]
+          })
+        });
+        
+        if (response.ok) {
+          // Redirect to checkout
+          window.location.href = '/checkout';
+        } else {
+          throw new Error('Failed to add to cart');
+        }
+      } catch (error) {
+        console.error('Error in buy now:', error);
+        alert('Failed to proceed to checkout. Please try again.');
+      }
     });
   }
 })();
