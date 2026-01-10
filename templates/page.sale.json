@@ -91,7 +91,7 @@
           "type": "simple_link",
           "settings": {
             "title": "About",
-            "link": "",
+            "link": "shopify://pages/about",
             "badge": "",
             "badge_style": "new"
           }
