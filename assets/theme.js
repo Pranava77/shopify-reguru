@@ -1232,18 +1232,6 @@ class CartDrawer {
     this.content = drawerElement.querySelector('[data-cart-drawer-content]');
     this.form = drawerElement.querySelector('#cart-drawer-form');
     
-    // Get settings from data attributes
-    this.settings = {
-      cartTitle: drawerElement.getAttribute('data-cart-title') || 'YOUR CART',
-      emptyTitle: drawerElement.getAttribute('data-empty-title') || 'Your cart is empty',
-      emptyText: drawerElement.getAttribute('data-empty-text') || 'Continue shopping to add items to your cart.',
-      continueShoppingText: drawerElement.getAttribute('data-continue-shopping-text') || 'continue shopping',
-      continueShoppingUrl: drawerElement.getAttribute('data-continue-shopping-url') || '/collections/all',
-      buyNowText: drawerElement.getAttribute('data-buy-now-text') || 'Buy Now',
-      promoLabel: drawerElement.getAttribute('data-promo-label') || 'PROMO CODE',
-      promoPlaceholder: drawerElement.getAttribute('data-promo-placeholder') || 'ENTER HERE'
-    };
-    
     this.#init();
   }
 
@@ -1467,14 +1455,30 @@ class CartDrawer {
   }
 
   #updateCartContent(cart) {
+    // Get text values from existing DOM or use defaults
+    const emptyTitleEl = this.content.querySelector('.cart-drawer__empty-title');
+    const emptyTextEl = this.content.querySelector('.cart-drawer__empty-text');
+    const continueShoppingEl = this.content.querySelector('[data-continue-shopping]');
+    const buyNowBtn = this.content.querySelector('.cart-drawer__btn--primary[name="checkout"]');
+    const promoLabelEl = this.content.querySelector('.cart-drawer__promo-label');
+    const promoInputEl = this.content.querySelector('.cart-drawer__promo-input');
+    
+    const emptyTitle = emptyTitleEl ? emptyTitleEl.textContent.trim() : 'Your cart is empty';
+    const emptyText = emptyTextEl ? emptyTextEl.textContent.trim() : 'Continue shopping to add items to your cart.';
+    const continueShoppingText = continueShoppingEl ? continueShoppingEl.textContent.trim() : 'continue shopping';
+    const continueShoppingUrl = continueShoppingEl ? continueShoppingEl.href : '/collections/all';
+    const buyNowText = buyNowBtn ? buyNowBtn.textContent.replace('→', '').trim() : 'Buy Now';
+    const promoLabel = promoLabelEl ? promoLabelEl.textContent.trim() : 'PROMO CODE';
+    const promoPlaceholder = promoInputEl ? promoInputEl.placeholder : 'ENTER HERE';
+    
     if (!cart.items || cart.items.length === 0) {
       // Show empty state
       this.content.innerHTML = `
         <div class="cart-drawer__empty">
-          <h3 class="cart-drawer__empty-title">${this.#escapeHtml(this.settings.emptyTitle)}</h3>
-          <p class="cart-drawer__empty-text">${this.#escapeHtml(this.settings.emptyText)}</p>
-          <a href="${this.#escapeHtml(this.settings.continueShoppingUrl)}" class="cart-drawer__btn cart-drawer__btn--primary" data-continue-shopping>
-            ${this.#escapeHtml(this.settings.continueShoppingText)}
+          <h3 class="cart-drawer__empty-title">${this.#escapeHtml(emptyTitle)}</h3>
+          <p class="cart-drawer__empty-text">${this.#escapeHtml(emptyText)}</p>
+          <a href="${continueShoppingUrl}" class="cart-drawer__btn cart-drawer__btn--primary" data-continue-shopping>
+            ${this.#escapeHtml(continueShoppingText)}
           </a>
         </div>
       `;
@@ -1505,36 +1509,19 @@ class CartDrawer {
     
     const taxAmount = cart.total_price - cart.items_subtotal_price;
     
-    // Update cart title if it exists
-    const cartTitleEl = this.drawer.querySelector('.cart-drawer__title');
-    if (cartTitleEl) {
-      cartTitleEl.textContent = this.settings.cartTitle;
-    }
-    
     // Build items HTML
     let itemsHtml = '<div class="cart-drawer__progress"><div class="cart-drawer__progress-bar"><span class="cart-drawer__progress-text" data-cart-item-count>' + cart.item_count + ' ITEMS SELECTED</span></div></div>';
     itemsHtml += '<form action="/cart" method="post" id="cart-drawer-form" class="cart-drawer__form">';
     itemsHtml += '<div class="cart-drawer__items" data-cart-items>';
     
     for (const item of cart.items) {
-      // Handle image URL - cart.js returns image as a full URL string
-      // Shopify cart.js API returns item.image as a full URL
-      let imageUrl = item.image || '';
-      
-      // If we need to resize, we can use Shopify CDN parameters, but for now use as-is
-      // The image from cart.js is typically already optimized
-      if (imageUrl && !imageUrl.includes('width=')) {
-        // Add width parameter if not present (optional optimization)
-        const separator = imageUrl.includes('?') ? '&' : '?';
-        imageUrl = `${imageUrl}${separator}width=120`;
-      }
-      
+      const imageUrl = item.image || (item.featured_image || '');
       const variantTitle = item.variant_title && item.variant_title !== 'Default Title' ? item.variant_title : '';
       
       itemsHtml += `
         <div class="cart-drawer__item" data-line-item="${item.key}">
           <div class="cart-drawer__item-image">
-            ${imageUrl ? `<img src="${this.#escapeHtml(imageUrl)}" alt="${this.#escapeHtml(item.product_title)}" width="120" height="120" loading="lazy">` : '<div class="cart-drawer__item-placeholder"><svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="60" height="60" fill="#F5F5DC"/></svg></div>'}
+            ${imageUrl ? `<img src="${imageUrl}" alt="${this.#escapeHtml(item.product_title)}" width="120" height="120" loading="lazy">` : '<div class="cart-drawer__item-placeholder"><svg>...</svg></div>'}
           </div>
           <div class="cart-drawer__item-details">
             <h3 class="cart-drawer__item-name"><a href="${item.url}">${this.#escapeHtml(item.product_title)}</a></h3>
@@ -1594,16 +1581,16 @@ class CartDrawer {
     itemsHtml += `
         <div class="cart-drawer__summary-divider"></div>
         <div class="cart-drawer__summary-promo">
-          <label for="cart-drawer-promo-code" class="cart-drawer__promo-label">${this.#escapeHtml(this.settings.promoLabel)}</label>
-          <input type="text" id="cart-drawer-promo-code" class="cart-drawer__promo-input" placeholder="${this.#escapeHtml(this.settings.promoPlaceholder)}" data-promo-code>
+          <label for="cart-drawer-promo-code" class="cart-drawer__promo-label">${this.#escapeHtml(promoLabel)}</label>
+          <input type="text" id="cart-drawer-promo-code" class="cart-drawer__promo-input" placeholder="${this.#escapeHtml(promoPlaceholder)}" data-promo-code>
         </div>
         <div class="cart-drawer__summary-row cart-drawer__summary-row--total">
           <span class="cart-drawer__summary-label">TOTAL</span>
           <span class="cart-drawer__summary-value cart-drawer__summary-value--total" data-cart-total>${this.#formatMoney(cart.total_price)}</span>
         </div>
         <div class="cart-drawer__actions">
-          <button type="submit" name="checkout" class="cart-drawer__btn cart-drawer__btn--primary">${this.#escapeHtml(this.settings.buyNowText)} →</button>
-          <a href="${this.#escapeHtml(this.settings.continueShoppingUrl)}" class="cart-drawer__btn cart-drawer__btn--secondary" data-continue-shopping>${this.#escapeHtml(this.settings.continueShoppingText)}</a>
+          <button type="submit" name="checkout" class="cart-drawer__btn cart-drawer__btn--primary">${this.#escapeHtml(buyNowText)} →</button>
+          <a href="${continueShoppingUrl}" class="cart-drawer__btn cart-drawer__btn--secondary" data-continue-shopping>${this.#escapeHtml(continueShoppingText)}</a>
         </div>
       </div>
     </form>

@@ -1,16 +1,18 @@
 {%- liquid
-  assign cart_title = settings.cart_drawer_title | default: 'YOUR CART'
-  assign empty_cart_title = settings.cart_drawer_empty_title | default: 'Your cart is empty'
-  assign empty_cart_text = settings.cart_drawer_empty_text | default: 'Continue shopping to add items to your cart.'
-  assign continue_shopping_text = settings.cart_drawer_continue_shopping_text | default: 'continue shopping'
-  if settings.cart_drawer_continue_shopping_url != blank
+  assign cart_title = section.settings.cart_title | default: settings.cart_drawer_title | default: 'YOUR CART'
+  assign empty_cart_title = section.settings.empty_cart_title | default: settings.cart_drawer_empty_title | default: 'Your cart is empty'
+  assign empty_cart_text = section.settings.empty_cart_text | default: settings.cart_drawer_empty_text | default: 'Continue shopping to add items to your cart.'
+  assign continue_shopping_text = section.settings.continue_shopping_text | default: settings.cart_drawer_continue_shopping_text | default: 'continue shopping'
+  if section.settings.continue_shopping_url != blank
+    assign continue_shopping_url = section.settings.continue_shopping_url
+  elsif settings.cart_drawer_continue_shopping_url != blank
     assign continue_shopping_url = settings.cart_drawer_continue_shopping_url
   else
     assign continue_shopping_url = routes.all_products_collection_url
   endif
-  assign buy_now_text = settings.cart_drawer_buy_now_text | default: 'Buy Now'
-  assign promo_code_label = settings.cart_drawer_promo_code_label | default: 'PROMO CODE'
-  assign promo_code_placeholder = settings.cart_drawer_promo_code_placeholder | default: 'ENTER HERE'
+  assign buy_now_text = section.settings.buy_now_text | default: settings.cart_drawer_buy_now_text | default: 'Buy Now'
+  assign promo_code_label = section.settings.promo_code_label | default: settings.cart_drawer_promo_code_label | default: 'PROMO CODE'
+  assign promo_code_placeholder = section.settings.promo_code_placeholder | default: settings.cart_drawer_promo_code_placeholder | default: 'ENTER HERE'
   
   # Calculate total item-level discounts
   assign total_item_discounts = 0
@@ -755,3 +757,73 @@
   }
 }
 {% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Cart Drawer",
+  "tag": "section",
+  "class": "cart-drawer-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Text Settings"
+    },
+    {
+      "type": "text",
+      "id": "cart_title",
+      "label": "Cart title",
+      "default": "YOUR CART",
+      "info": "Title displayed at the top of the cart drawer"
+    },
+    {
+      "type": "text",
+      "id": "empty_cart_title",
+      "label": "Empty cart title",
+      "default": "Your cart is empty",
+      "info": "Title shown when the cart is empty"
+    },
+    {
+      "type": "textarea",
+      "id": "empty_cart_text",
+      "label": "Empty cart text",
+      "default": "Continue shopping to add items to your cart.",
+      "info": "Description text shown when the cart is empty"
+    },
+    {
+      "type": "text",
+      "id": "continue_shopping_text",
+      "label": "Continue shopping button text",
+      "default": "continue shopping"
+    },
+    {
+      "type": "url",
+      "id": "continue_shopping_url",
+      "label": "Continue shopping link",
+      "info": "Select a page, collection, or enter a custom URL for the Continue Shopping button. If left empty, it will link to all products."
+    },
+    {
+      "type": "text",
+      "id": "buy_now_text",
+      "label": "Buy now button text",
+      "default": "Buy Now"
+    },
+    {
+      "type": "text",
+      "id": "promo_code_label",
+      "label": "Promo code label",
+      "default": "PROMO CODE"
+    },
+    {
+      "type": "text",
+      "id": "promo_code_placeholder",
+      "label": "Promo code placeholder",
+      "default": "ENTER HERE"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cart Drawer"
+    }
+  ]
+}
+{% endschema %}
