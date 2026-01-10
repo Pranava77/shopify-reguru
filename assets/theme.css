@@ -90,6 +90,17 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Ensure smooth scrolling for the document and body */
+html,
+body {
+  scroll-behavior: smooth;
+}
+
+/* Override for elements that should scroll instantly */
+.scroll-instant {
+  scroll-behavior: auto;
+}
+
 body {
   font-family: var(--font-body);
   font-size: 16px;

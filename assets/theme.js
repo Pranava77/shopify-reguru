@@ -49,6 +49,9 @@ class ThemeUtils {
     // Initialize universal search
     this.#initUniversalSearch();
     
+    // Initialize smooth scroll
+    this.#initSmoothScroll();
+    
     // Initialize cart count on page load
     this.#updateCartCount();
   }
@@ -889,6 +892,91 @@ class ThemeUtils {
         e.preventDefault();
       }
     });
+  }
+
+  #initSmoothScroll() {
+    // Handle anchor link clicks for smooth scrolling
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('a[href^="#"]');
+      
+      if (!link) return;
+      
+      const href = link.getAttribute('href');
+      // Skip empty hash or just "#"
+      if (!href || href === '#') return;
+      
+      // Get the target element
+      const targetId = href.substring(1);
+      const targetElement = document.getElementById(targetId) || document.querySelector(`[name="${targetId}"]`);
+      
+      if (!targetElement) return;
+      
+      // Prevent default anchor behavior
+      e.preventDefault();
+      
+      // Calculate offset for fixed headers (if any)
+      // Check for sticky/fixed header elements
+      const header = document.querySelector('header, .header, [data-header]');
+      let offset = 0;
+      
+      if (header) {
+        const headerStyle = window.getComputedStyle(header);
+        const position = headerStyle.position;
+        if (position === 'fixed' || position === 'sticky') {
+          const headerHeight = header.offsetHeight;
+          offset = headerHeight + 20; // Add 20px padding
+        }
+      }
+      
+      // Get the target element's position
+      const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+      
+      // Scroll to target with offset
+      window.scrollTo({
+        top: targetPosition - offset,
+        behavior: 'smooth'
+      });
+      
+      // Update URL hash without triggering scroll
+      if (history.pushState) {
+        history.pushState(null, null, href);
+      } else {
+        window.location.hash = href;
+      }
+    });
+    
+    // Handle initial page load with hash in URL
+    if (window.location.hash) {
+      // Wait for page to be fully loaded
+      const handleHashScroll = () => {
+        const hash = window.location.hash.substring(1);
+        const targetElement = document.getElementById(hash) || document.querySelector(`[name="${hash}"]`);
+        
+        if (targetElement) {
+          const header = document.querySelector('header, .header, [data-header]');
+          let offset = 0;
+          
+          if (header) {
+            const headerStyle = window.getComputedStyle(header);
+            const position = headerStyle.position;
+            if (position === 'fixed' || position === 'sticky') {
+              offset = header.offsetHeight + 20;
+            }
+          }
+          
+          const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+          
+          window.scrollTo({
+            top: targetPosition - offset,
+            behavior: 'smooth'
+          });
+        }
+      };
+      
+      // Try immediately, then after a short delay to ensure layout is complete
+      handleHashScroll();
+      setTimeout(handleHashScroll, 100);
+    }
   }
   
   #formatPrice(price) {
