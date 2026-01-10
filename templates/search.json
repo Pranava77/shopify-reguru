@@ -1,0 +1,207 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "announcement_bar_search": {
+      "type": "announcement-bar",
+      "name": "Announcement Bar",
+      "settings": {
+        "text": "Welcome To ReGuru",
+        "background_color": "#1e1a5c",
+        "text_color": "#28d98e"
+      }
+    },
+    "header_search": {
+      "type": "header",
+      "name": "Header",
+      "settings": {
+        "logo": "shopify://shop_images/gin.png",
+        "show_search": true,
+        "show_location": false,
+        "location_text": "Bengaluru",
+        "header_icon_type": "bag",
+        "header_custom_icon": "shopify://shop_images/Layer_1_1.png",
+        "header_icon_color_primary": "#1e1a5c",
+        "header_icon_color_accent": "#28d98e",
+        "franchise_page": "franchise",
+        "franchise_url": ""
+      }
+    },
+    "mega_menu_search": {
+      "type": "mega-menu",
+      "blocks": {
+        "menu_item_search": {
+          "type": "menu_item",
+          "settings": {
+            "title": "Shop",
+            "link": "",
+            "enable_mega_dropdown": true,
+            "dropdown_columns": "3",
+            "column_1_title": "Categories",
+            "menu_1": "",
+            "column_2_title": "Collections",
+            "menu_2": "",
+            "column_3_title": "Trending",
+            "menu_3": "",
+            "column_4_title": "",
+            "menu_4": "",
+            "featured_title": "New Arrivals",
+            "featured_link": "",
+            "featured_link_text": "Shop Now",
+            "show_promo_banner": false,
+            "promo_badge": "Limited",
+            "promo_text": "Free shipping on orders over ₹50",
+            "promo_link": "",
+            "promo_link_text": "Learn More"
+          }
+        },
+        "simple_link_sale": {
+          "type": "simple_link",
+          "settings": {
+            "title": "Sale",
+            "link": "shopify://pages/sale",
+            "badge": "Hot",
+            "badge_style": "sale"
+          }
+        },
+        "simple_link_about": {
+          "type": "simple_link",
+          "settings": {
+            "title": "About",
+            "link": "shopify://pages/about",
+            "badge": "",
+            "badge_style": "new"
+          }
+        },
+        "simple_link_contact": {
+          "type": "simple_link",
+          "settings": {
+            "title": "Contact",
+            "link": "shopify://pages/contact",
+            "badge": "",
+            "badge_style": "new"
+          }
+        }
+      },
+      "block_order": [
+        "menu_item_search",
+        "simple_link_sale",
+        "simple_link_about",
+        "simple_link_contact"
+      ],
+      "name": "Mega Menu",
+      "settings": {
+        "enable_sticky": true,
+        "menu_style": "default",
+        "promo_position": "right"
+      }
+    },
+    "search_results": {
+      "type": "search-results",
+      "name": "Search Results",
+      "settings": {
+        "results_per_page": 12,
+        "show_product_count": true
+      }
+    },
+    "footer_search": {
+      "type": "footer",
+      "blocks": {
+        "category_link_1": {
+          "type": "category_link",
+          "settings": {
+            "label": "Sofa",
+            "link": ""
+          }
+        },
+        "category_link_2": {
+          "type": "category_link",
+          "settings": {
+            "label": "Armchair",
+            "link": ""
+          }
+        },
+        "category_link_3": {
+          "type": "category_link",
+          "settings": {
+            "label": "Desk Chair",
+            "link": ""
+          }
+        },
+        "category_link_4": {
+          "type": "category_link",
+          "settings": {
+            "label": "wooden Chair",
+            "link": ""
+          }
+        },
+        "category_link_5": {
+          "type": "category_link",
+          "settings": {
+            "label": "Park Bench",
+            "link": ""
+          }
+        },
+        "support_link_1": {
+          "type": "support_link",
+          "settings": {
+            "label": "Help & Support",
+            "link": ""
+          }
+        },
+        "support_link_2": {
+          "type": "support_link",
+          "settings": {
+            "label": "Terms & Conditions",
+            "link": ""
+          }
+        },
+        "support_link_3": {
+          "type": "support_link",
+          "settings": {
+            "label": "Privacy Policy",
+            "link": ""
+          }
+        },
+        "support_link_4": {
+          "type": "support_link",
+          "settings": {
+            "label": "Help",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "category_link_1",
+        "category_link_2",
+        "category_link_3",
+        "category_link_4",
+        "category_link_5",
+        "support_link_1",
+        "support_link_2",
+        "support_link_3",
+        "support_link_4"
+      ],
+      "name": "Footer",
+      "settings": {
+        "address": "Address: 2nd floor central complex sv road near mantri mall seshadripuram bengaluru 560020",
+        "background_color": "#041c66",
+        "laptop_image": "shopify://shop_images/generated-image__20_-removebg-preview.png"
+      }
+    }
+  },
+  "order": [
+    "announcement_bar_search",
+    "header_search",
+    "mega_menu_search",
+    "search_results",
+    "footer_search"
+  ]
+}

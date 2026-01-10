@@ -10,8 +10,19 @@
 {
   "general": {
     "search": {
+      "title": "Search",
       "placeholder": "Search for products...",
-      "submit": "Search"
+      "submit": "Search",
+      "results_for": "Search results for \"{{ terms }}\"",
+      "no_results": "No results for \"{{ terms }}\"",
+      "results_count": "{{ count }} result found",
+      "results_count_plural": "{{ count }} results found",
+      "no_results_text": "Sorry, we couldn't find any products matching your search.",
+      "enter_search": "Enter a search term above to find products.",
+      "suggestions": "Search suggestions:",
+      "suggestion_1": "Check your spelling",
+      "suggestion_2": "Try different keywords",
+      "suggestion_3": "Browse our categories"
     },
     "cart": {
       "title": "Cart",
@@ -24,7 +35,8 @@
     },
     "pagination": {
       "previous": "Previous",
-      "next": "Next"
+      "next": "Next",
+      "page": "Page {{ current }} of {{ total }}"
     }
   },
   "accessibility": {
