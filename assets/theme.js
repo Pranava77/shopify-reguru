@@ -342,10 +342,15 @@ class ThemeUtils {
           // Optimistic UI update - update cart count
           this.#updateCartCount();
           
-          // Refresh cart drawer and open it
-          if (this.cartDrawer) {
+          // Refresh cart drawer and open it (if drawer is enabled)
+          const header = document.querySelector('.header');
+          const cartType = header?.getAttribute('data-cart-type') || 'drawer';
+          if (cartType === 'drawer' && this.cartDrawer) {
             await this.cartDrawer.refreshCart();
             this.cartDrawer.open();
+          } else {
+            // Redirect to cart page if drawer is disabled
+            window.location.href = '/cart';
           }
           
         } catch (error) {
@@ -410,8 +415,21 @@ class ThemeUtils {
   }
 
   #initCartDrawer() {
+    // Check if cart drawer is enabled (check header data attribute or trigger existence)
+    const header = document.querySelector('.header');
+    const cartType = header?.getAttribute('data-cart-type') || 'drawer';
+    
     const drawer = document.querySelector('[data-cart-drawer]');
     if (!drawer) return;
+    
+    // Hide drawer if cart type is set to page
+    if (cartType !== 'drawer') {
+      drawer.classList.add('is-hidden');
+      return;
+    }
+    
+    // Remove hidden class if it exists
+    drawer.classList.remove('is-hidden');
 
     this.cartDrawer = new CartDrawer(drawer);
     

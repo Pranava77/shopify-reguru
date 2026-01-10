@@ -8,9 +8,10 @@
   assign icon_color_primary = section.settings.header_icon_color_primary
   assign icon_color_accent = section.settings.header_icon_color_accent
   assign bg_image = section.settings.background_image
+  assign cart_type = section.settings.cart_type | default: 'drawer'
 -%}
 
-<header class="header"{% if bg_image != blank %} style="background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
+<header class="header" data-cart-type="{{ cart_type }}"{% if bg_image != blank %} style="background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
   <div class="header__inner">
     <div class="header__content">
       <!-- Logo -->
@@ -80,7 +81,7 @@
           assign icon_aria_label = 'Franchise'
         endif
       -%}
-      <a href="{{ icon_url }}" class="header__cart" aria-label="{{ icon_aria_label }}"{% if icon_type == 'cart' %} data-cart-drawer-trigger{% endif %}>
+      <a href="{{ icon_url }}" class="header__cart" aria-label="{{ icon_aria_label }}"{% if icon_type == 'cart' and cart_type == 'drawer' %} data-cart-drawer-trigger{% endif %}>
         {%- if custom_icon != blank -%}
           <img 
             src="{{ custom_icon | image_url: width: 74 }}" 
@@ -648,6 +649,27 @@
       "label": "Icon Accent Color",
       "default": "#28D98E",
       "info": "Accent/fill color for icon details"
+    },
+    {
+      "type": "header",
+      "content": "Cart Settings"
+    },
+    {
+      "type": "select",
+      "id": "cart_type",
+      "label": "Cart Type",
+      "options": [
+        {
+          "value": "drawer",
+          "label": "Cart Drawer"
+        },
+        {
+          "value": "page",
+          "label": "Cart Page"
+        }
+      ],
+      "default": "drawer",
+      "info": "Choose whether clicking the cart icon opens a drawer or navigates to the cart page."
     },
     {
       "type": "header",

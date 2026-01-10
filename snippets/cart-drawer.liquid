@@ -17,7 +17,7 @@
   endfor
 -%}
 
-<div class="cart-drawer" id="cart-drawer" data-cart-drawer aria-hidden="true">
+<div class="cart-drawer" id="cart-drawer" data-cart-drawer aria-hidden="true" data-cart-drawer-wrapper>
   <div class="cart-drawer__overlay" data-cart-drawer-overlay></div>
   
   <div class="cart-drawer__panel" data-cart-drawer-panel>
@@ -216,6 +216,10 @@
   height: 100%;
   z-index: 1000;
   pointer-events: none;
+}
+
+.cart-drawer.is-hidden {
+  display: none;
 }
 
 .cart-drawer[aria-hidden="true"] {
