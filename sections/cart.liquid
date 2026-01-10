@@ -1,10 +1,11 @@
 {%- liquid
-  assign cart_title = section.settings.title | default: 'Shopping Cart'
+  assign cart_title = section.settings.title | default: 'YOUR CART'
   assign empty_cart_title = section.settings.empty_title | default: 'Your cart is empty'
   assign empty_cart_text = section.settings.empty_text | default: 'Continue shopping to add items to your cart.'
-  assign continue_shopping_text = section.settings.continue_shopping_text | default: 'Continue Shopping'
-  assign checkout_text = section.settings.checkout_text | default: 'Checkout'
-  assign bg_image = section.settings.background_image
+  assign continue_shopping_text = section.settings.continue_shopping_text | default: 'continue shopping'
+  assign buy_now_text = section.settings.buy_now_text | default: 'Buy Now'
+  assign promo_code_label = section.settings.promo_code_label | default: 'PROMO CODE'
+  assign promo_code_placeholder = section.settings.promo_code_placeholder | default: 'ENTER HERE'
   
   # Calculate total item-level discounts
   assign total_item_discounts = 0
@@ -15,94 +16,98 @@
   endfor
 -%}
 
-<section class="cart bg-grid-pattern"{% if bg_image != blank %} style="background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
-  <div class="cart__container">
-    <h1 class="cart__title section__title">{{ cart_title }}</h1>
+<section class="cart-page" id="cart-page-{{ section.id }}">
+  <div class="cart-page__container">
+    <h1 class="cart-page__title">{{ cart_title }}</h1>
 
     {%- if cart.item_count > 0 -%}
-      <form action="{{ routes.cart_url }}" method="post" id="cart-form" class="cart__form">
-        <div class="cart__content">
-          <div class="cart__items">
-            {%- for item in cart.items -%}
-              <div class="cart-item" data-line-item="{{ item.key }}">
-                <div class="cart-item__image">
-                  {%- if item.image != blank -%}
-                    <img 
-                      src="{{ item.image | image_url: width: 150 }}" 
-                      alt="{{ item.image.alt | default: item.title }}"
-                      width="150"
-                      height="150"
-                      loading="lazy"
-                    >
-                  {%- else -%}
-                    <div class="cart-item__placeholder">
-                      {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+      <div class="cart-page__progress">
+        <div class="cart-page__progress-bar">
+          <span class="cart-page__progress-text">{{ cart.item_count }} ITEMS SELECTED</span>
+        </div>
+      </div>
+
+      <form action="{{ routes.cart_url }}" method="post" id="cart-form" class="cart-page__form">
+        <div class="cart-page__content">
+          <div class="cart-page__products">
+            <div class="cart-products__header">
+              <div class="cart-products__header-cell cart-products__header-cell--product">PRODUCT DETAILS</div>
+              <div class="cart-products__header-cell cart-products__header-cell--price">PRICE</div>
+              <div class="cart-products__header-cell cart-products__header-cell--qty">QTY</div>
+              <div class="cart-products__header-cell cart-products__header-cell--total">TOTAL</div>
+            </div>
+
+            <div class="cart-products__items">
+              {%- for item in cart.items -%}
+                <div class="cart-product" data-line-item="{{ item.key }}">
+                  <div class="cart-product__details">
+                    <div class="cart-product__image">
+                      {%- if item.image != blank -%}
+                        <img 
+                          src="{{ item.image | image_url: width: 150 }}" 
+                          alt="{{ item.image.alt | default: item.title }}"
+                          width="150"
+                          height="150"
+                          loading="lazy"
+                        >
+                      {%- else -%}
+                        <div class="cart-product__placeholder">
+                          {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                        </div>
+                      {%- endif -%}
                     </div>
-                  {%- endif -%}
-                </div>
-
-                <div class="cart-item__details">
-                  <div class="cart-item__header">
-                    <h3 class="cart-item__title">
-                      <a href="{{ item.url }}">{{ item.product.title }}</a>
-                    </h3>
-                    {%- unless item.product.has_only_default_variant -%}
-                      <p class="cart-item__variant">{{ item.variant.title }}</p>
-                    {%- endunless -%}
+                    <div class="cart-product__info">
+                      <h3 class="cart-product__name">
+                        <a href="{{ item.url }}">{{ item.product.title }}</a>
+                      </h3>
+                      {%- unless item.product.has_only_default_variant -%}
+                        <p class="cart-product__description">{{ item.variant.title }}</p>
+                      {%- else -%}
+                        <p class="cart-product__description">product description</p>
+                      {%- endunless -%}
+                    </div>
                   </div>
 
-                  <div class="cart-item__price">
-                    {%- if item.original_line_price != item.final_line_price -%}
-                      <span class="cart-item__price-original">{{ item.original_price | money }}</span>
-                      <span class="cart-item__price-final">{{ item.final_price | money }}</span>
-                    {%- else -%}
-                      <span class="cart-item__price-final">{{ item.final_price | money }}</span>
-                    {%- endif -%}
+                  <div class="cart-product__price">
+                    {{ item.final_price | money }}
                   </div>
 
-                  <div class="cart-item__quantity">
-                    <label for="quantity-{{ item.key }}" class="visually-hidden">Quantity</label>
+                  <div class="cart-product__quantity">
                     <button 
                       type="button" 
-                      class="cart-item__quantity-btn" 
+                      class="cart-product__quantity-btn" 
                       data-decrease-quantity
                       data-key="{{ item.key }}"
                       aria-label="Decrease quantity"
                     >
-                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M2 6H10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                      </svg>
+                      <span>-</span>
                     </button>
                     <input 
                       type="number" 
-                      id="quantity-{{ item.key }}"
                       name="updates[]" 
                       value="{{ item.quantity }}" 
                       min="0" 
-                      class="cart-item__quantity-input"
+                      class="cart-product__quantity-input"
                       data-key="{{ item.key }}"
                     >
                     <button 
                       type="button" 
-                      class="cart-item__quantity-btn" 
+                      class="cart-product__quantity-btn" 
                       data-increase-quantity
                       data-key="{{ item.key }}"
                       aria-label="Increase quantity"
                     >
-                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M6 2V10M2 6H10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                      </svg>
+                      <span>+</span>
                     </button>
                   </div>
 
-                  <div class="cart-item__total">
-                    <span class="cart-item__total-label">Total:</span>
-                    <span class="cart-item__total-amount">{{ item.final_line_price | money }}</span>
+                  <div class="cart-product__total">
+                    {{ item.final_line_price | money }}
                   </div>
 
                   <button 
                     type="button" 
-                    class="cart-item__remove" 
+                    class="cart-product__remove" 
                     data-remove-item
                     data-key="{{ item.key }}"
                     aria-label="Remove {{ item.product.title }}"
@@ -112,17 +117,29 @@
                     </svg>
                   </button>
                 </div>
-              </div>
-            {%- endfor -%}
+              {%- endfor -%}
+            </div>
           </div>
 
-          <div class="cart__summary">
+          <div class="cart-page__summary">
             <div class="cart-summary">
-              <h2 class="cart-summary__title">Order Summary</h2>
+              <h2 class="cart-summary__title">ORDER SUMMARY</h2>
               
               <div class="cart-summary__row">
-                <span class="cart-summary__label">Subtotal</span>
+                <span class="cart-summary__label">SUBTOTAL</span>
                 <span class="cart-summary__value" data-cart-subtotal>{{ cart.items_subtotal_price | money }}</span>
+              </div>
+
+              <div class="cart-summary__row">
+                <span class="cart-summary__label">TAXES</span>
+                <span class="cart-summary__value" data-cart-taxes>
+                  {%- assign tax_amount = cart.total_price | minus: cart.items_subtotal_price -%}
+                  {%- if tax_amount > 0 -%}
+                    {{ tax_amount | money }}
+                  {%- else -%}
+                    {{ 0 | money }}
+                  {%- endif -%}
+                </span>
               </div>
 
               {%- if total_item_discounts > 0 -%}
@@ -143,15 +160,31 @@
                 {%- endfor -%}
               {%- endif -%}
 
+              <div class="cart-summary__divider"></div>
+
+              <div class="cart-summary__promo">
+                <label for="promo-code-{{ section.id }}" class="cart-summary__promo-label">{{ promo_code_label }}</label>
+                <input 
+                  type="text" 
+                  id="promo-code-{{ section.id }}"
+                  class="cart-summary__promo-input" 
+                  placeholder="{{ promo_code_placeholder }}"
+                  data-promo-code
+                >
+              </div>
+
               <div class="cart-summary__row cart-summary__row--total">
-                <span class="cart-summary__label">Total</span>
-                <span class="cart-summary__value" data-cart-total>{{ cart.total_price | money }}</span>
+                <span class="cart-summary__label">TOTAL</span>
+                <span class="cart-summary__value cart-summary__value--total" data-cart-total>{{ cart.total_price | money }}</span>
               </div>
 
               <div class="cart-summary__actions">
-                <button type="submit" name="checkout" class="btn btn--blue cart-summary__checkout">
-                  {{ checkout_text }}
+                <button type="submit" name="checkout" class="cart-summary__btn cart-summary__btn--primary">
+                  {{ buy_now_text }} →
                 </button>
+                <a href="{{ routes.all_products_collection_url }}" class="cart-summary__btn cart-summary__btn--secondary">
+                  {{ continue_shopping_text }}
+                </a>
               </div>
 
               {%- if additional_checkout_buttons -%}
@@ -164,11 +197,11 @@
         </div>
       </form>
     {%- else -%}
-      <div class="cart__empty">
+      <div class="cart-page__empty">
         <div class="cart-empty">
           <h2 class="cart-empty__title">{{ empty_cart_title }}</h2>
           <p class="cart-empty__text">{{ empty_cart_text }}</p>
-          <a href="{{ routes.all_products_collection_url }}" class="btn btn--blue cart-empty__button">
+          <a href="{{ routes.all_products_collection_url }}" class="cart-summary__btn cart-summary__btn--primary">
             {{ continue_shopping_text }}
           </a>
         </div>
@@ -179,7 +212,6 @@
 
 <script>
   (function() {
-    // Wait for DOM to be ready
     const initCart = () => {
       const cartForm = document.getElementById('cart-form');
       if (!cartForm) {
@@ -187,469 +219,462 @@
         return;
       }
 
-    // Format money value - matches Shopify's money format
-    const formatMoney = (cents) => {
-      if (typeof cents !== 'number' || isNaN(cents)) {
-        return '₹0.00';
-      }
-      
-      // Handle negative values
-      const isNegative = cents < 0;
-      const absCents = Math.abs(cents);
-      
-      // Convert cents to dollars
-      const dollars = absCents / 100;
-      const formatted = dollars.toFixed(2);
-      
-      // Add currency symbol and formatting
-      // This matches Shopify's default format, adjusted for INR currency
-      return isNegative ? `-₹${formatted}` : `₹${formatted}`;
-    };
-
-    // Update cart summary with new cart data
-    const updateCartSummary = (cart) => {
-      if (!cart) {
-        console.warn('Cart data is missing');
-        return;
-      }
-      
-      if (!cart.items || cart.items.length === 0) {
-        // Cart is empty, reload to show empty state
-        location.reload();
-        return;
-      }
-
-      // Calculate item-level discounts
-      let totalItemDiscounts = 0;
-      for (const item of cart.items) {
-        if (item.discount_allocated_amount && item.discount_allocated_amount > 0) {
-          totalItemDiscounts += item.discount_allocated_amount;
+      const formatMoney = (cents) => {
+        if (typeof cents !== 'number' || isNaN(cents)) {
+          return '₹0.00';
         }
-      }
+        const isNegative = cents < 0;
+        const absCents = Math.abs(cents);
+        const dollars = absCents / 100;
+        const formatted = dollars.toFixed(2);
+        return isNegative ? `-₹${formatted}` : `₹${formatted}`;
+      };
 
-      // Calculate cart-level discounts
-      let cartDiscountTotal = 0;
-      if (cart.cart_level_discount_applications) {
-        for (const discount of cart.cart_level_discount_applications) {
-          if (discount.total_allocated_amount) {
-            cartDiscountTotal += discount.total_allocated_amount;
-          }
+      const updateCartSummary = (cart) => {
+        if (!cart) {
+          console.warn('Cart data is missing');
+          return;
         }
-      }
-
-      // Update subtotal
-      const subtotalEl = cartForm.querySelector('[data-cart-subtotal]');
-      if (subtotalEl && cart.items_subtotal_price !== undefined) {
-        subtotalEl.textContent = formatMoney(cart.items_subtotal_price);
-      }
-
-      // Update item discounts
-      const itemDiscountsEl = cartForm.querySelector('[data-cart-item-discounts]');
-      const itemDiscountsRow = itemDiscountsEl?.closest('.cart-summary__row');
-      if (totalItemDiscounts > 0) {
-        if (!itemDiscountsRow) {
-          // Create item discounts row if it doesn't exist
-          const subtotalRow = cartForm.querySelector('[data-cart-subtotal]')?.closest('.cart-summary__row');
-          if (subtotalRow) {
-            const newRow = document.createElement('div');
-            newRow.className = 'cart-summary__row cart-summary__row--discount';
-            newRow.innerHTML = `
-              <span class="cart-summary__label">Item Discounts</span>
-              <span class="cart-summary__value" data-cart-item-discounts>-${formatMoney(totalItemDiscounts)}</span>
-            `;
-            subtotalRow.after(newRow);
-          }
-        } else if (itemDiscountsEl) {
-          itemDiscountsEl.textContent = `-${formatMoney(totalItemDiscounts)}`;
-        }
-      } else if (itemDiscountsRow) {
-        itemDiscountsRow.remove();
-      }
-
-      // Update cart-level discounts
-      const existingDiscountRows = cartForm.querySelectorAll('[data-cart-discount-row]');
-      existingDiscountRows.forEach(row => row.remove());
-
-      if (cart.cart_level_discount_applications && cart.cart_level_discount_applications.length > 0) {
-        const itemDiscountsRow = cartForm.querySelector('[data-cart-item-discounts]')?.closest('.cart-summary__row');
-        const insertAfter = itemDiscountsRow || cartForm.querySelector('[data-cart-subtotal]')?.closest('.cart-summary__row');
         
-        for (const discount of cart.cart_level_discount_applications) {
-          if (discount.total_allocated_amount) {
-            const newRow = document.createElement('div');
-            newRow.className = 'cart-summary__row cart-summary__row--discount';
-            newRow.setAttribute('data-cart-discount-row', '');
-            newRow.innerHTML = `
-              <span class="cart-summary__label">Discount (${discount.title || 'Discount'})</span>
-              <span class="cart-summary__value" data-cart-discount-amount>-${formatMoney(discount.total_allocated_amount)}</span>
-            `;
-            if (insertAfter) {
-              insertAfter.after(newRow);
+        if (!cart.items || cart.items.length === 0) {
+          location.reload();
+          return;
+        }
+
+        let totalItemDiscounts = 0;
+        for (const item of cart.items) {
+          if (item.discount_allocated_amount && item.discount_allocated_amount > 0) {
+            totalItemDiscounts += item.discount_allocated_amount;
+          }
+        }
+
+        let cartDiscountTotal = 0;
+        if (cart.cart_level_discount_applications) {
+          for (const discount of cart.cart_level_discount_applications) {
+            if (discount.total_allocated_amount) {
+              cartDiscountTotal += discount.total_allocated_amount;
             }
           }
         }
-      }
 
-      // Update total
-      const totalEl = cartForm.querySelector('[data-cart-total]');
-      if (totalEl && cart.total_price !== undefined) {
-        totalEl.textContent = formatMoney(cart.total_price);
-      }
-
-      // Verification: Check if calculated total matches Shopify's total
-      const subtotal = cart.items_subtotal_price || 0;
-      const expectedTotal = subtotal - totalItemDiscounts - cartDiscountTotal;
-      const actualTotal = cart.total_price || 0;
-      const difference = Math.abs(expectedTotal - actualTotal);
-      
-      // Log warning if there's a significant difference (more than 1 cent)
-      // Note: Small differences might occur due to rounding, but we log for debugging
-      if (difference > 1) {
-        console.warn('Cart total mismatch detected:', {
-          subtotal: subtotal,
-          itemDiscounts: totalItemDiscounts,
-          cartDiscounts: cartDiscountTotal,
-          expected: expectedTotal,
-          actual: actualTotal,
-          difference: difference
-        });
-      }
-      
-      // Ensure we never display negative totals (shouldn't happen, but safety check)
-      if (actualTotal < 0) {
-        console.error('Cart total is negative, this should not happen');
-      }
-    };
-
-    // Update individual cart items
-    const updateCartItems = (cart) => {
-      if (!cart || !cart.items || cart.items.length === 0) {
-        return;
-      }
-
-      for (const cartItem of cart.items) {
-        const itemRow = cartForm.querySelector(`[data-line-item="${cartItem.key}"]`);
-        if (!itemRow) continue;
-
-        // Update quantity input
-        const quantityInput = itemRow.querySelector(`input[data-key="${cartItem.key}"]`);
-        if (quantityInput) {
-          quantityInput.value = cartItem.quantity;
+        const subtotalEl = cartForm.querySelector('[data-cart-subtotal]');
+        if (subtotalEl && cart.items_subtotal_price !== undefined) {
+          subtotalEl.textContent = formatMoney(cart.items_subtotal_price);
         }
 
-        // Update item total
-        const itemTotalEl = itemRow.querySelector('.cart-item__total-amount');
-        if (itemTotalEl && cartItem.final_line_price !== undefined) {
-          itemTotalEl.textContent = formatMoney(cartItem.final_line_price);
+        const taxesEl = cartForm.querySelector('[data-cart-taxes]');
+        if (taxesEl) {
+          const taxAmount = cart.total_price - cart.items_subtotal_price;
+          taxesEl.textContent = formatMoney(taxAmount > 0 ? taxAmount : 0);
         }
 
-        // Update item price
-        const priceFinalEl = itemRow.querySelector('.cart-item__price-final');
-        if (priceFinalEl && cartItem.final_price !== undefined) {
-          priceFinalEl.textContent = formatMoney(cartItem.final_price);
+        const itemDiscountsEl = cartForm.querySelector('[data-cart-item-discounts]');
+        const itemDiscountsRow = itemDiscountsEl?.closest('.cart-summary__row');
+        if (totalItemDiscounts > 0) {
+          if (!itemDiscountsRow) {
+            const subtotalRow = cartForm.querySelector('[data-cart-subtotal]')?.closest('.cart-summary__row');
+            if (subtotalRow) {
+              const newRow = document.createElement('div');
+              newRow.className = 'cart-summary__row cart-summary__row--discount';
+              newRow.innerHTML = `
+                <span class="cart-summary__label">Item Discounts</span>
+                <span class="cart-summary__value" data-cart-item-discounts>-${formatMoney(totalItemDiscounts)}</span>
+              `;
+              subtotalRow.after(newRow);
+            }
+          } else if (itemDiscountsEl) {
+            itemDiscountsEl.textContent = `-${formatMoney(totalItemDiscounts)}`;
+          }
+        } else if (itemDiscountsRow) {
+          itemDiscountsRow.remove();
         }
 
-        // Update original price if discounted
-        if (cartItem.original_line_price !== cartItem.final_line_price) {
-          let priceOriginalEl = itemRow.querySelector('.cart-item__price-original');
-          if (!priceOriginalEl && cartItem.original_price) {
-            const priceContainer = itemRow.querySelector('.cart-item__price');
-            if (priceContainer) {
-              priceOriginalEl = document.createElement('span');
-              priceOriginalEl.className = 'cart-item__price-original';
-              const priceFinal = priceContainer.querySelector('.cart-item__price-final');
-              if (priceFinal) {
-                priceContainer.insertBefore(priceOriginalEl, priceFinal);
+        const existingDiscountRows = cartForm.querySelectorAll('[data-cart-discount-row]');
+        existingDiscountRows.forEach(row => row.remove());
+
+        if (cart.cart_level_discount_applications && cart.cart_level_discount_applications.length > 0) {
+          const itemDiscountsRow = cartForm.querySelector('[data-cart-item-discounts]')?.closest('.cart-summary__row');
+          const insertAfter = itemDiscountsRow || cartForm.querySelector('[data-cart-subtotal]')?.closest('.cart-summary__row');
+          
+          for (const discount of cart.cart_level_discount_applications) {
+            if (discount.total_allocated_amount) {
+              const newRow = document.createElement('div');
+              newRow.className = 'cart-summary__row cart-summary__row--discount';
+              newRow.setAttribute('data-cart-discount-row', '');
+              newRow.innerHTML = `
+                <span class="cart-summary__label">Discount (${discount.title || 'Discount'})</span>
+                <span class="cart-summary__value" data-cart-discount-amount>-${formatMoney(discount.total_allocated_amount)}</span>
+              `;
+              if (insertAfter) {
+                insertAfter.after(newRow);
               }
             }
           }
-          if (priceOriginalEl && cartItem.original_price) {
-            priceOriginalEl.textContent = formatMoney(cartItem.original_price);
+        }
+
+        const totalEl = cartForm.querySelector('[data-cart-total]');
+        if (totalEl && cart.total_price !== undefined) {
+          totalEl.textContent = formatMoney(cart.total_price);
+        }
+
+        const progressText = document.querySelector('.cart-page__progress-text');
+        if (progressText) {
+          progressText.textContent = `${cart.item_count} ITEMS SELECTED`;
+        }
+      };
+
+      const updateCartItems = (cart) => {
+        if (!cart || !cart.items || cart.items.length === 0) {
+          return;
+        }
+
+        for (const cartItem of cart.items) {
+          const itemRow = cartForm.querySelector(`[data-line-item="${cartItem.key}"]`);
+          if (!itemRow) continue;
+
+          const quantityInput = itemRow.querySelector(`input[data-key="${cartItem.key}"]`);
+          if (quantityInput) {
+            quantityInput.value = cartItem.quantity;
           }
-        } else {
-          const priceOriginalEl = itemRow.querySelector('.cart-item__price-original');
-          if (priceOriginalEl) {
-            priceOriginalEl.remove();
+
+          const itemTotalEl = itemRow.querySelector('.cart-product__total');
+          if (itemTotalEl && cartItem.final_line_price !== undefined) {
+            itemTotalEl.textContent = formatMoney(cartItem.final_line_price);
+          }
+
+          const priceEl = itemRow.querySelector('.cart-product__price');
+          if (priceEl && cartItem.final_price !== undefined) {
+            priceEl.textContent = formatMoney(cartItem.final_price);
           }
         }
-      }
 
-      // Remove items that are no longer in cart
-      const allItemRows = cartForm.querySelectorAll('[data-line-item]');
-      const cartItemKeys = new Set(cart.items.map(item => item.key));
-      for (const row of allItemRows) {
-        const itemKey = row.getAttribute('data-line-item');
-        if (!cartItemKeys.has(itemKey)) {
-          row.remove();
+        const allItemRows = cartForm.querySelectorAll('[data-line-item]');
+        const cartItemKeys = new Set(cart.items.map(item => item.key));
+        for (const row of allItemRows) {
+          const itemKey = row.getAttribute('data-line-item');
+          if (!cartItemKeys.has(itemKey)) {
+            row.remove();
+          }
         }
-      }
-    };
+      };
 
-    // Fetch and update cart
-    const refreshCart = async () => {
-      try {
-        const response = await fetch('/cart.js');
-        if (!response.ok) {
-          throw new Error(`Failed to fetch cart: ${response.status} ${response.statusText}`);
+      const refreshCart = async () => {
+        try {
+          const response = await fetch('/cart.js');
+          if (!response.ok) {
+            throw new Error(`Failed to fetch cart: ${response.status} ${response.statusText}`);
+          }
+          const cart = await response.json();
+          
+          if (!cart || typeof cart !== 'object') {
+            throw new Error('Invalid cart data received');
+          }
+          
+          updateCartSummary(cart);
+          updateCartItems(cart);
+          return cart;
+        } catch (error) {
+          console.error('Error refreshing cart:', error);
+          location.reload();
+          throw error;
         }
-        const cart = await response.json();
+      };
+
+      const updateCart = async () => {
+        const formData = new FormData(cartForm);
         
-        // Validate cart data structure
-        if (!cart || typeof cart !== 'object') {
-          throw new Error('Invalid cart data received');
-        }
-        
-        updateCartSummary(cart);
-        updateCartItems(cart);
-        return cart;
-      } catch (error) {
-        console.error('Error refreshing cart:', error);
-        // Fallback to page reload on error to ensure consistency
-        location.reload();
-        throw error;
-      }
-    };
+        try {
+          const response = await fetch('/cart/update.js', {
+            method: 'POST',
+            body: formData
+          });
 
-    // Update cart using Liquid form structure
-    const updateCart = async () => {
-      const formData = new FormData(cartForm);
+          if (response.ok) {
+            await refreshCart();
+          } else {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.description || 'Failed to update cart');
+          }
+        } catch (error) {
+          console.error('Error updating cart:', error);
+          throw error;
+        }
+      };
+
+      const quantityButtons = cartForm.querySelectorAll('[data-increase-quantity], [data-decrease-quantity]');
       
-      try {
-        const response = await fetch('/cart/update.js', {
-          method: 'POST',
-          body: formData
+      for (const button of quantityButtons) {
+        button.addEventListener('click', async (e) => {
+          e.preventDefault();
+          const key = button.getAttribute('data-key');
+          const input = cartForm.querySelector(`input[data-key="${key}"]`);
+          if (!input) return;
+
+          const currentValue = parseInt(input.value, 10) || 0;
+          const isIncrease = button.hasAttribute('data-increase-quantity');
+          let newValue = isIncrease ? currentValue + 1 : Math.max(0, currentValue - 1);
+          
+          if (isNaN(newValue) || newValue < 0) {
+            newValue = 0;
+          }
+
+          if (newValue === currentValue) return;
+
+          input.value = newValue;
+          button.disabled = true;
+
+          try {
+            await updateCart();
+          } catch (error) {
+            input.value = currentValue;
+            alert('Failed to update cart. Please try again.');
+          } finally {
+            button.disabled = false;
+          }
+        });
+      }
+
+      const quantityInputs = cartForm.querySelectorAll('.cart-product__quantity-input');
+      
+      for (const input of quantityInputs) {
+        let originalValue = parseInt(input.value, 10) || 0;
+        
+        input.addEventListener('change', async () => {
+          let newValue = parseInt(input.value, 10);
+          
+          if (isNaN(newValue) || newValue < 0) {
+            newValue = 0;
+            input.value = 0;
+          }
+
+          if (newValue === originalValue) return;
+
+          const previousValue = originalValue;
+          originalValue = newValue;
+
+          input.disabled = true;
+
+          try {
+            await updateCart();
+          } catch (error) {
+            input.value = previousValue;
+            originalValue = previousValue;
+            alert('Failed to update cart. Please try again.');
+          } finally {
+            input.disabled = false;
+          }
         });
 
-        if (response.ok) {
-          // Update cart without reload
-          await refreshCart();
-        } else {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.description || 'Failed to update cart');
-        }
-      } catch (error) {
-        console.error('Error updating cart:', error);
-        throw error;
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            input.blur();
+          }
+        });
       }
-    };
 
-    // Handle quantity changes via buttons
-    const quantityButtons = cartForm.querySelectorAll('[data-increase-quantity], [data-decrease-quantity]');
-    
-    for (const button of quantityButtons) {
-      button.addEventListener('click', async (e) => {
-        e.preventDefault();
-        const key = button.getAttribute('data-key');
-        const input = cartForm.querySelector(`input[data-key="${key}"]`);
-        if (!input) return;
-
-        const currentValue = parseInt(input.value, 10) || 0;
-        const isIncrease = button.hasAttribute('data-increase-quantity');
-        let newValue = isIncrease ? currentValue + 1 : Math.max(0, currentValue - 1);
-        
-        // Ensure newValue is a valid number
-        if (isNaN(newValue) || newValue < 0) {
-          newValue = 0;
-        }
-
-        if (newValue === currentValue) return;
-
-        // Update input value immediately for better UX
-        input.value = newValue;
-
-        // Disable button during update
-        button.disabled = true;
-
-        try {
-          await updateCart();
-        } catch (error) {
-          // Revert input value on error
-          input.value = currentValue;
-          alert('Failed to update cart. Please try again.');
-        } finally {
-          button.disabled = false;
-        }
-      });
-    }
-
-    // Handle live quantity updates from input field
-    const quantityInputs = cartForm.querySelectorAll('.cart-item__quantity-input');
-    
-    for (const input of quantityInputs) {
-      // Store original value for error recovery
-      let originalValue = parseInt(input.value, 10) || 0;
+      const removeButtons = cartForm.querySelectorAll('[data-remove-item]');
       
-      // Handle input change (when user types and leaves field)
-      input.addEventListener('change', async () => {
-        let newValue = parseInt(input.value, 10);
-        
-        // Validate and sanitize input
-        if (isNaN(newValue) || newValue < 0) {
-          newValue = 0;
-          input.value = 0;
-        }
-
-        // If value hasn't changed, do nothing
-        if (newValue === originalValue) return;
-
-        // Update original value for next change
-        const previousValue = originalValue;
-        originalValue = newValue;
-
-        // Disable input during update
-        input.disabled = true;
-
-        try {
-          await updateCart();
-        } catch (error) {
-          // Revert input value on error
-          input.value = previousValue;
-          originalValue = previousValue;
-          alert('Failed to update cart. Please try again.');
-        } finally {
-          input.disabled = false;
-        }
-      });
-
-      // Handle Enter key to prevent form submission
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
+      for (const button of removeButtons) {
+        button.addEventListener('click', async (e) => {
           e.preventDefault();
-          input.blur(); // Trigger change event
-        }
-      });
-    }
+          const key = button.getAttribute('data-key');
+          const input = cartForm.querySelector(`input[data-key="${key}"]`);
+          const itemRow = cartForm.querySelector(`[data-line-item="${key}"]`);
 
-    // Handle remove item
-    const removeButtons = cartForm.querySelectorAll('[data-remove-item]');
-    
-    for (const button of removeButtons) {
-      button.addEventListener('click', async (e) => {
-        e.preventDefault();
-        const key = button.getAttribute('data-key');
-        const input = cartForm.querySelector(`input[data-key="${key}"]`);
-        const itemRow = cartForm.querySelector(`[data-line-item="${key}"]`);
+          if (!input) return;
 
-        if (!input) return;
+          const previousValue = parseInt(input.value, 10) || 0;
+          input.value = 0;
 
-        // Set quantity to 0 to remove item
-        const previousValue = parseInt(input.value, 10) || 0;
-        input.value = 0;
-
-        // Remove item row immediately for better UX
-        if (itemRow) {
-          itemRow.style.opacity = '0.5';
-          itemRow.style.transition = 'opacity 0.3s';
-        }
-
-        // Disable button during update
-        button.disabled = true;
-
-        try {
-          await updateCart();
-          
-          // Update cart
-          const cart = await refreshCart();
-          
-          // If cart is empty, reload to show empty state
-          if (!cart || !cart.items || cart.items.length === 0) {
-            location.reload();
-          }
-        } catch (error) {
-          console.error('Error removing item:', error);
-          // Revert input value on error
-          input.value = previousValue;
           if (itemRow) {
-            itemRow.style.opacity = '1';
+            itemRow.style.opacity = '0.5';
+            itemRow.style.transition = 'opacity 0.3s';
           }
-          alert('Failed to remove item. Please try again.');
-        } finally {
-          button.disabled = false;
+
+          button.disabled = true;
+
+          try {
+            await updateCart();
+            const cart = await refreshCart();
+            
+            if (!cart || !cart.items || cart.items.length === 0) {
+              location.reload();
+            }
+          } catch (error) {
+            console.error('Error removing item:', error);
+            input.value = previousValue;
+            if (itemRow) {
+              itemRow.style.opacity = '1';
+            }
+            alert('Failed to remove item. Please try again.');
+          } finally {
+            button.disabled = false;
+          }
+        });
+      }
+
+      cartForm.addEventListener('submit', (e) => {
+        const submitButton = e.submitter;
+        if (!submitButton || submitButton.name !== 'checkout') {
+          e.preventDefault();
         }
       });
-    }
-
-    // Prevent form submission on Enter key (only allow checkout button)
-    cartForm.addEventListener('submit', (e) => {
-      const submitButton = e.submitter;
-      // Only allow checkout button to submit
-      if (!submitButton || submitButton.name !== 'checkout') {
-        e.preventDefault();
-      }
-    });
     };
     
-    // Initialize when DOM is ready
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initCart);
     } else {
-      // DOM already loaded
       initCart();
     }
   })();
 </script>
 
 {% stylesheet %}
-.cart {
+.cart-page {
+  width: 100%;
   padding: 60px 0;
   min-height: 60vh;
+  background-color: var(--color-white);
 }
 
-.cart__container {
+.cart-page__container {
   max-width: var(--container-max);
   margin: 0 auto;
   padding: 0 var(--container-padding);
 }
 
-.cart__title {
+.cart-page__title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 48px;
+  line-height: 1;
+  color: var(--color-black);
+  margin: 0 0 24px 0;
+  text-align: left;
+}
+
+.cart-page__progress {
   margin-bottom: 40px;
-  text-align: center;
 }
 
-.cart__form {
-  width: 100%;
+.cart-page__progress-bar {
+  display: flex;
+  align-items: center;
+  height: 40px;
 }
 
-.cart__content {
+.cart-page__progress-bar::after {
+  content: '';
+  flex: 1;
+  height: 2px;
+  background-color: var(--color-dark-blue);
+  margin-left: 0;
+}
+
+.cart-page__progress-text {
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 20px;
+  background-color: var(--color-dark-blue);
+  border-radius: 6px 0 0 6px;
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--color-white);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.cart-page__content {
   display: grid;
   grid-template-columns: 1fr 400px;
   gap: 40px;
   align-items: start;
 }
 
-.cart__items {
+.cart-page__products {
   display: flex;
   flex-direction: column;
-  gap: 24px;
 }
 
-.cart-item {
+.cart-products__header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 20px;
+  padding: 16px 20px;
+  background-color: var(--color-light-blue);
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+.cart-products__header-cell {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--color-dark-blue);
+  text-transform: uppercase;
+}
+
+.cart-products__header-cell--product {
+  text-align: left;
+}
+
+.cart-products__header-cell--price {
+  text-align: center;
+}
+
+.cart-products__header-cell--qty {
+  text-align: center;
+}
+
+.cart-products__header-cell--total {
+  text-align: right;
+}
+
+.cart-products__items {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cart-product {
   position: relative;
   display: grid;
-  grid-template-columns: 150px 1fr;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: 20px;
+  align-items: center;
   padding: 20px;
   background-color: var(--color-white);
-  border: 0.5px solid var(--color-black);
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-md);
+  border-radius: 6px;
 }
 
-.cart-item__image {
-  width: 150px;
-  height: 150px;
+.cart-product__details {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.cart-product__image {
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
   overflow: hidden;
-  border-radius: var(--radius-xs);
-  border: 0.5px solid var(--color-black);
+  border-radius: 6px;
+  background-color: #F5F5DC;
+  border: 1px solid var(--color-black);
 }
 
-.cart-item__image img {
+.cart-product__image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.cart-item__placeholder {
+.cart-product__placeholder {
   width: 100%;
   height: 100%;
   display: flex;
@@ -658,78 +683,57 @@
   background-color: var(--color-gray);
 }
 
-.cart-item__placeholder svg {
+.cart-product__placeholder svg {
   width: 60%;
   height: 60%;
   opacity: 0.5;
 }
 
-.cart-item__details {
+.cart-product__info {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  position: relative;
+  gap: 8px;
 }
 
-.cart-item__header {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.cart-item__title {
-  font-family: var(--font-product);
-  font-weight: 700;
+.cart-product__name {
+  font-family: var(--font-heading);
+  font-weight: 400;
   font-size: 18px;
   line-height: 1.2;
   color: var(--color-black);
   margin: 0;
 }
 
-.cart-item__title a {
+.cart-product__name a {
   color: inherit;
   text-decoration: none;
-  transition: color var(--transition-fast);
 }
 
-.cart-item__title a:hover {
-  color: var(--color-navy);
-}
-
-.cart-item__variant {
+.cart-product__description {
   font-family: var(--font-body);
   font-size: 14px;
+  line-height: 1.2;
   color: var(--color-text-secondary);
   margin: 0;
 }
 
-.cart-item__price {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.cart-item__price-original {
-  font-family: var(--font-body);
-  font-size: 14px;
-  color: var(--color-text-secondary);
-  text-decoration: line-through;
-}
-
-.cart-item__price-final {
-  font-family: var(--font-product);
-  font-weight: 700;
+.cart-product__price {
+  font-family: var(--font-heading);
+  font-weight: 400;
   font-size: 18px;
+  line-height: 1;
   color: var(--color-black);
+  text-align: center;
 }
 
-.cart-item__quantity {
+.cart-product__quantity {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
 }
 
-.cart-item__quantity-btn {
+.cart-product__quantity-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -738,104 +742,85 @@
   padding: 0;
   background-color: var(--color-white);
   border: 1px solid var(--color-black);
-  border-radius: var(--radius-xs);
-  box-shadow: var(--shadow-xs);
+  border-radius: 6px;
   color: var(--color-black);
   cursor: pointer;
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1;
 }
 
-.cart-item__quantity-btn:hover {
+.cart-product__quantity-btn:hover {
   transform: translate(-1px, -1px);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 2px 2px 0px 0px var(--color-black);
 }
 
-.cart-item__quantity-btn:active {
+.cart-product__quantity-btn:active {
   transform: translate(1px, 1px);
   box-shadow: 1px 1px 0px 0px var(--color-black);
 }
 
-.cart-item__quantity-input {
-  width: 60px;
+.cart-product__quantity-input {
+  width: 50px;
   height: 32px;
   padding: 0 8px;
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: 14px;
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 16px;
   text-align: center;
   background-color: var(--color-white);
   border: 1px solid var(--color-black);
-  border-radius: var(--radius-xs);
-  box-shadow: var(--shadow-xs);
+  border-radius: 6px;
 }
 
-.cart-item__total {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 8px;
-  border-top: 1px solid var(--color-gray);
-}
-
-.cart-item__total-label {
-  font-family: var(--font-body);
-  font-weight: 500;
-  font-size: 14px;
-  color: var(--color-text-secondary);
-}
-
-.cart-item__total-amount {
-  font-family: var(--font-product);
-  font-weight: 700;
-  font-size: 20px;
+.cart-product__total {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1;
   color: var(--color-black);
+  text-align: right;
 }
 
-.cart-item__remove {
+.cart-product__remove {
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 32px;
-  height: 32px;
+  top: 10px;
+  right: 10px;
+  width: 24px;
+  height: 24px;
   padding: 0;
-  background-color: var(--color-white);
-  border: 1px solid var(--color-black);
-  border-radius: var(--radius-xs);
-  box-shadow: var(--shadow-xs);
+  background-color: transparent;
+  border: none;
   color: var(--color-text-secondary);
   cursor: pointer;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast), color var(--transition-fast);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
 }
 
-.cart-item__remove:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: var(--shadow-sm);
-  color: var(--color-navy);
+.cart-product:hover .cart-product__remove {
+  opacity: 1;
 }
 
-.cart-item__remove:active {
-  transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0px 0px var(--color-black);
-}
-
-.cart__summary {
+.cart-page__summary {
   position: sticky;
   top: 100px;
 }
 
 .cart-summary {
   padding: 24px;
-  background-color: var(--color-white);
-  border: 0.5px solid var(--color-black);
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-md);
+  background-color: var(--color-light-blue);
+  border-radius: 6px;
 }
 
 .cart-summary__title {
   font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 24px;
-  color: var(--color-black);
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--color-dark-blue);
+  text-transform: uppercase;
   margin: 0 0 20px 0;
 }
 
@@ -844,36 +829,79 @@
   align-items: center;
   justify-content: space-between;
   padding: 12px 0;
-  border-bottom: 1px solid var(--color-gray);
 }
 
 .cart-summary__row--discount {
   color: var(--color-green);
 }
 
-.cart-summary__row--total {
-  border-bottom: none;
-  border-top: 2px solid var(--color-black);
-  padding-top: 16px;
-  margin-top: 8px;
-}
-
 .cart-summary__label {
-  font-family: var(--font-body);
-  font-weight: 500;
-  font-size: 16px;
-  color: var(--color-black);
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--color-dark-blue);
+  text-transform: uppercase;
 }
 
 .cart-summary__value {
-  font-family: var(--font-product);
-  font-weight: 700;
-  font-size: 18px;
-  color: var(--color-black);
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--color-dark-blue);
 }
 
-.cart-summary__row--total .cart-summary__value {
-  font-size: 24px;
+.cart-summary__row--total {
+  margin-top: 8px;
+  padding-top: 16px;
+}
+
+.cart-summary__row--total .cart-summary__label {
+  font-size: 14px;
+}
+
+.cart-summary__value--total {
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.cart-summary__divider {
+  height: 1px;
+  border-top: 1px dashed var(--color-dark-blue);
+  margin: 16px 0;
+}
+
+.cart-summary__promo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.cart-summary__promo-label {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--color-dark-blue);
+  text-transform: uppercase;
+}
+
+.cart-summary__promo-input {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-black);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-black);
+  border-radius: 6px;
+}
+
+.cart-summary__promo-input::placeholder {
+  color: var(--color-text-secondary);
 }
 
 .cart-summary__actions {
@@ -883,10 +911,54 @@
   margin-top: 24px;
 }
 
-.cart-summary__checkout {
+.cart-summary__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  padding: 12px 24px;
-  font-size: 14px;
+  height: 48px;
+  padding: 0 24px;
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1;
+  text-decoration: none;
+  border-radius: 6px;
+  border: 2px solid var(--color-black);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  cursor: pointer;
+}
+
+.cart-summary__btn--primary {
+  background-color: var(--color-green);
+  color: var(--color-black);
+  box-shadow: 4px 4px 0px 0px var(--color-black);
+}
+
+.cart-summary__btn--primary:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px var(--color-black);
+}
+
+.cart-summary__btn--primary:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px 0px var(--color-black);
+}
+
+.cart-summary__btn--secondary {
+  background-color: var(--color-white);
+  color: var(--color-dark-blue);
+  box-shadow: 4px 4px 0px 0px var(--color-dark-blue);
+}
+
+.cart-summary__btn--secondary:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px var(--color-dark-blue);
+}
+
+.cart-summary__btn--secondary:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px 0px var(--color-dark-blue);
 }
 
 .cart-summary__additional-checkout {
@@ -895,7 +967,7 @@
   border-top: 1px solid var(--color-gray);
 }
 
-.cart__empty {
+.cart-page__empty {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -922,55 +994,71 @@
   margin: 0 0 24px 0;
 }
 
-.cart-empty__button {
-  padding: 12px 32px;
-  font-size: 14px;
-}
-
 @media screen and (max-width: 992px) {
-  .cart__content {
+  .cart-page__content {
     grid-template-columns: 1fr;
     gap: 32px;
   }
 
-  .cart__summary {
+  .cart-page__summary {
     position: static;
   }
 
-  .cart-item {
-    grid-template-columns: 120px 1fr;
-    gap: 16px;
-    padding: 16px;
-  }
-
-  .cart-item__image {
-    width: 120px;
-    height: 120px;
-  }
-}
-
-@media screen and (max-width: 576px) {
-  .cart {
-    padding: 40px 0;
-  }
-
-  .cart__title {
-    margin-bottom: 32px;
-    font-size: 28px;
-  }
-
-  .cart-item {
+  .cart-products__header {
     grid-template-columns: 1fr;
     gap: 12px;
   }
 
-  .cart-item__image {
-    width: 100%;
-    height: 200px;
+  .cart-products__header-cell {
+    text-align: left;
+  }
+
+  .cart-product {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .cart-product__price,
+  .cart-product__quantity,
+  .cart-product__total {
+    justify-self: start;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .cart-page {
+    padding: 40px 0;
+  }
+
+  .cart-page__title {
+    font-size: 32px;
+    margin-bottom: 20px;
+  }
+
+  .cart-page__progress-text {
+    font-size: 14px;
+    padding: 0 16px;
+  }
+
+  .cart-products__header {
+    padding: 12px 16px;
+  }
+
+  .cart-product {
+    padding: 16px;
+  }
+
+  .cart-product__image {
+    width: 100px;
+    height: 100px;
   }
 
   .cart-summary {
     padding: 20px;
+  }
+
+  .cart-summary__value--total {
+    font-size: 24px;
   }
 
   .cart-empty__title {
@@ -989,7 +1077,7 @@
       "type": "text",
       "id": "title",
       "label": "Cart Title",
-      "default": "Shopping Cart"
+      "default": "YOUR CART"
     },
     {
       "type": "text",
@@ -1007,18 +1095,25 @@
       "type": "text",
       "id": "continue_shopping_text",
       "label": "Continue Shopping Button Text",
-      "default": "Continue Shopping"
+      "default": "continue shopping"
     },
     {
       "type": "text",
-      "id": "checkout_text",
-      "label": "Checkout Button Text",
-      "default": "Checkout"
+      "id": "buy_now_text",
+      "label": "Buy Now Button Text",
+      "default": "Buy Now"
     },
     {
-      "type": "image_picker",
-      "id": "background_image",
-      "label": "Background Image"
+      "type": "text",
+      "id": "promo_code_label",
+      "label": "Promo Code Label",
+      "default": "PROMO CODE"
+    },
+    {
+      "type": "text",
+      "id": "promo_code_placeholder",
+      "label": "Promo Code Placeholder",
+      "default": "ENTER HERE"
     }
   ],
   "presets": [
@@ -1028,4 +1123,3 @@
   ]
 }
 {% endschema %}
-
