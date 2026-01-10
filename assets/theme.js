@@ -46,6 +46,9 @@ class ThemeUtils {
     // Initialize FAQ tabs
     this.#initFaqTabs();
     
+    // Initialize universal search
+    this.#initUniversalSearch();
+    
     // Initialize cart count on page load
     this.#updateCartCount();
   }
@@ -552,6 +555,368 @@ class ThemeUtils {
         }
       }
     }
+  }
+
+  #initUniversalSearch() {
+    const searchInput = document.querySelector('[data-search-input]');
+    const searchForm = document.querySelector('[data-search-form]');
+    const searchResults = document.querySelector('[data-search-results]');
+    const searchResultsContent = document.querySelector('[data-search-results-content]');
+    
+    if (!searchInput || !searchResults || !searchResultsContent) return;
+    
+    let searchTimeout;
+    let currentSearchQuery = '';
+    let selectedIndex = -1;
+    let searchResultsData = [];
+    let isSearching = false;
+    
+    // Debounced search function
+    const performSearch = async (query) => {
+      if (!query || query.trim().length < 2) {
+        searchResults.classList.remove('is-visible');
+        return;
+      }
+      
+      if (query === currentSearchQuery && searchResultsData.length > 0) {
+        displayResults(searchResultsData, query);
+        return;
+      }
+      
+      isSearching = true;
+      currentSearchQuery = query;
+      selectedIndex = -1;
+      
+      // Show loading state
+      searchResultsContent.innerHTML = '<div class="header__search-loading">Searching...</div>';
+      searchResults.classList.add('is-visible');
+      
+      try {
+        // Use Shopify's search suggest API
+        // Try to get root path from Shopify object or use default
+        let root = '/';
+        if (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) {
+          root = window.Shopify.routes.root;
+        } else if (window.Shopify && window.Shopify.routes && window.Shopify.routes.root_url) {
+          root = window.Shopify.routes.root_url;
+        }
+        
+        // Remove trailing slash if present
+        root = root.replace(/\/$/, '');
+        if (!root) root = '';
+        
+        const searchUrl = `${root}/search/suggest.json?q=${encodeURIComponent(query)}&resources[type]=product&resources[limit]=5&resources[options][unavailable_products]=last&resources[options][fields]=title,product_type,variants.title,vendor,image,price&resources[type]=collection&resources[limit]=3&resources[type]=page&resources[limit]=3&resources[type]=article&resources[limit]=3`;
+        
+        const response = await fetch(searchUrl);
+        
+        if (!response.ok) {
+          throw new Error(`Search failed: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        searchResultsData = data;
+        displayResults(data, query);
+        
+      } catch (error) {
+        console.error('Search error:', error);
+        searchResultsContent.innerHTML = '<div class="header__search-no-results">Unable to search. Please try again.</div>';
+      } finally {
+        isSearching = false;
+      }
+    };
+    
+    // Display search results
+    const displayResults = (data, query) => {
+      if (!data || (!data.resources && !data.products)) {
+        searchResultsContent.innerHTML = '<div class="header__search-no-results">No results found</div>';
+        return;
+      }
+      
+      let html = '';
+      let hasResults = false;
+      
+      // Products
+      if (data.resources?.results?.products && data.resources.results.products.length > 0) {
+        hasResults = true;
+        html += '<div class="header__search-results-group">';
+        html += '<div class="header__search-results-title">Products</div>';
+        html += '<ul class="header__search-results-list">';
+        
+        data.resources.results.products.forEach((product, index) => {
+          let imageUrl = '';
+          if (product.image) {
+            imageUrl = product.image;
+          } else if (product.featured_image) {
+            imageUrl = product.featured_image;
+          } else if (product.images && product.images.length > 0) {
+            imageUrl = product.images[0];
+          }
+          
+          // Format image URL if needed
+          if (imageUrl && !imageUrl.startsWith('http')) {
+            imageUrl = imageUrl.startsWith('//') ? `https:${imageUrl}` : imageUrl;
+          }
+          
+          let price = '';
+          if (product.price) {
+            price = this.#formatPrice(product.price);
+          } else if (product.variants && product.variants.length > 0 && product.variants[0].price) {
+            price = this.#formatPrice(product.variants[0].price);
+          }
+          
+          const url = product.url || (product.handle ? `/products/${product.handle}` : '#');
+          
+          html += `
+            <li class="header__search-result-item">
+              <a href="${url}" class="header__search-result-link" data-result-index="${index}" data-result-type="product">
+                ${imageUrl ? `<img src="${imageUrl}" alt="${this.#escapeHtml(product.title || 'Product')}" class="header__search-result-image" loading="lazy" onerror="this.style.display='none'">` : '<div class="header__search-result-image" style="background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #999;">No Image</div>'}
+                <div class="header__search-result-info">
+                  <div class="header__search-result-title">${this.#highlightText(this.#escapeHtml(product.title || 'Untitled Product'), query)}</div>
+                  ${price ? `<div class="header__search-result-price">${price}</div>` : ''}
+                </div>
+              </a>
+            </li>
+          `;
+        });
+        
+        html += '</ul></div>';
+      }
+      
+      // Collections
+      if (data.resources?.results?.collections && data.resources.results.collections.length > 0) {
+        hasResults = true;
+        html += '<div class="header__search-results-group">';
+        html += '<div class="header__search-results-title">Collections</div>';
+        html += '<ul class="header__search-results-list">';
+        
+        data.resources.results.collections.forEach((collection, index) => {
+          const url = collection.url || (collection.handle ? `/collections/${collection.handle}` : '#');
+          
+          html += `
+            <li class="header__search-result-item">
+              <a href="${url}" class="header__search-result-link" data-result-index="${index}" data-result-type="collection">
+                <div class="header__search-result-info">
+                  <div class="header__search-result-title">${this.#highlightText(this.#escapeHtml(collection.title || 'Untitled Collection'), query)}</div>
+                  <div class="header__search-result-type">Collection</div>
+                </div>
+              </a>
+            </li>
+          `;
+        });
+        
+        html += '</ul></div>';
+      }
+      
+      // Pages
+      if (data.resources?.results?.pages && data.resources.results.pages.length > 0) {
+        hasResults = true;
+        html += '<div class="header__search-results-group">';
+        html += '<div class="header__search-results-title">Pages</div>';
+        html += '<ul class="header__search-results-list">';
+        
+        data.resources.results.pages.forEach((page, index) => {
+          const url = page.url || (page.handle ? `/pages/${page.handle}` : '#');
+          
+          html += `
+            <li class="header__search-result-item">
+              <a href="${url}" class="header__search-result-link" data-result-index="${index}" data-result-type="page">
+                <div class="header__search-result-info">
+                  <div class="header__search-result-title">${this.#highlightText(this.#escapeHtml(page.title || 'Untitled Page'), query)}</div>
+                  <div class="header__search-result-type">Page</div>
+                </div>
+              </a>
+            </li>
+          `;
+        });
+        
+        html += '</ul></div>';
+      }
+      
+      // Articles
+      if (data.resources?.results?.articles && data.resources.results.articles.length > 0) {
+        hasResults = true;
+        html += '<div class="header__search-results-group">';
+        html += '<div class="header__search-results-title">Articles</div>';
+        html += '<ul class="header__search-results-list">';
+        
+        data.resources.results.articles.forEach((article, index) => {
+          let url = article.url;
+          if (!url && article.handle) {
+            const blogHandle = article.blog || 'news';
+            url = `/blogs/${blogHandle}/${article.handle}`;
+          }
+          if (!url) url = '#';
+          
+          html += `
+            <li class="header__search-result-item">
+              <a href="${url}" class="header__search-result-link" data-result-index="${index}" data-result-type="article">
+                <div class="header__search-result-info">
+                  <div class="header__search-result-title">${this.#highlightText(this.#escapeHtml(article.title || 'Untitled Article'), query)}</div>
+                  <div class="header__search-result-type">Article</div>
+                </div>
+              </a>
+            </li>
+          `;
+        });
+        
+        html += '</ul></div>';
+      }
+      
+      // Fallback: Try alternative data structure (direct products)
+      if (!hasResults && data.products && Array.isArray(data.products) && data.products.length > 0) {
+        hasResults = true;
+        html += '<div class="header__search-results-group">';
+        html += '<div class="header__search-results-title">Products</div>';
+        html += '<ul class="header__search-results-list">';
+        
+        data.products.forEach((product, index) => {
+          let imageUrl = product.featured_image || product.images?.[0] || '';
+          if (imageUrl && !imageUrl.startsWith('http')) {
+            imageUrl = imageUrl.startsWith('//') ? `https:${imageUrl}` : imageUrl;
+          }
+          
+          let price = '';
+          if (product.variants?.[0]?.price) {
+            price = this.#formatPrice(product.variants[0].price);
+          }
+          
+          const url = product.url || (product.handle ? `/products/${product.handle}` : '#');
+          
+          html += `
+            <li class="header__search-result-item">
+              <a href="${url}" class="header__search-result-link" data-result-index="${index}" data-result-type="product">
+                ${imageUrl ? `<img src="${imageUrl}" alt="${this.#escapeHtml(product.title || 'Product')}" class="header__search-result-image" loading="lazy" onerror="this.style.display='none'">` : '<div class="header__search-result-image" style="background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #999;">No Image</div>'}
+                <div class="header__search-result-info">
+                  <div class="header__search-result-title">${this.#highlightText(this.#escapeHtml(product.title || 'Untitled Product'), query)}</div>
+                  ${price ? `<div class="header__search-result-price">${price}</div>` : ''}
+                </div>
+              </a>
+            </li>
+          `;
+        });
+        
+        html += '</ul></div>';
+      }
+      
+      if (!hasResults) {
+        html = '<div class="header__search-no-results">No results found for "' + this.#escapeHtml(query) + '"</div>';
+      } else {
+        // Add "View all results" footer
+        html += `
+          <div class="header__search-results-footer">
+            <a href="/search?q=${encodeURIComponent(query)}" class="header__search-view-all">View all results</a>
+          </div>
+        `;
+      }
+      
+      searchResultsContent.innerHTML = html;
+      searchResults.classList.add('is-visible');
+      
+      // Update selected index tracking
+      const allLinks = searchResultsContent.querySelectorAll('.header__search-result-link');
+      searchResultsData = Array.from(allLinks).map(link => ({
+        element: link,
+        url: link.href
+      }));
+    };
+    
+    // Handle input
+    searchInput.addEventListener('input', (e) => {
+      const query = e.target.value.trim();
+      
+      clearTimeout(searchTimeout);
+      
+      if (query.length < 2) {
+        searchResults.classList.remove('is-visible');
+        return;
+      }
+      
+      searchTimeout = setTimeout(() => {
+        performSearch(query);
+      }, 300);
+    });
+    
+    // Handle keyboard navigation
+    searchInput.addEventListener('keydown', (e) => {
+      const allLinks = searchResultsContent.querySelectorAll('.header__search-result-link');
+      
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        selectedIndex = Math.min(selectedIndex + 1, allLinks.length - 1);
+        updateSelection();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        selectedIndex = Math.max(selectedIndex - 1, -1);
+        updateSelection();
+      } else if (e.key === 'Enter') {
+        if (selectedIndex >= 0 && allLinks[selectedIndex]) {
+          e.preventDefault();
+          window.location.href = allLinks[selectedIndex].href;
+        } else if (searchInput.value.trim().length > 0) {
+          // Submit form normally if no result is selected
+          searchForm.submit();
+        }
+      } else if (e.key === 'Escape') {
+        searchResults.classList.remove('is-visible');
+        selectedIndex = -1;
+      }
+    });
+    
+    const updateSelection = () => {
+      const allLinks = searchResultsContent.querySelectorAll('.header__search-result-link');
+      allLinks.forEach((link, index) => {
+        if (index === selectedIndex) {
+          link.classList.add('is-focused');
+          link.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        } else {
+          link.classList.remove('is-focused');
+        }
+      });
+    };
+    
+    // Close results when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+        searchResults.classList.remove('is-visible');
+        selectedIndex = -1;
+      }
+    });
+    
+    // Handle form submission
+    searchForm.addEventListener('submit', (e) => {
+      const query = searchInput.value.trim();
+      if (query.length === 0) {
+        e.preventDefault();
+      }
+    });
+  }
+  
+  #formatPrice(price) {
+    if (typeof price === 'string') {
+      price = parseFloat(price) / 100;
+    }
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(price);
+  }
+  
+  #escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+  
+  #highlightText(text, query) {
+    if (!query) return text;
+    const regex = new RegExp(`(${this.#escapeRegex(query)})`, 'gi');
+    return text.replace(regex, '<mark>$1</mark>');
+  }
+  
+  #escapeRegex(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 
   #initMegaMenu() {
