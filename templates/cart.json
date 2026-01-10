@@ -66,7 +66,7 @@
           "type": "menu_item",
           "settings": {
             "title": "products",
-            "link": "",
+            "link": "shopify://pages/product-category",
             "enable_mega_dropdown": false,
             "dropdown_columns": "3",
             "column_1_title": "",

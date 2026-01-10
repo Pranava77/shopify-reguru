@@ -9,6 +9,15 @@
  */
 {
   "sections": {
+    "announcement_bar_RLRXAf": {
+      "type": "announcement-bar",
+      "name": "Announcement Bar",
+      "settings": {
+        "text": "Welcome To ReGuru",
+        "background_color": "#1E1A5C",
+        "text_color": "#28D98E"
+      }
+    },
     "header_U9K4Tf": {
       "type": "header",
       "name": "Header",
@@ -87,10 +96,6 @@
             "badge_style": "sale"
           }
         },
-        "separator_QQjJjT": {
-          "type": "separator",
-          "settings": {}
-        },
         "simple_link_4Jcq7V": {
           "type": "simple_link",
           "settings": {
@@ -114,7 +119,6 @@
         "menu_item_NrEfzi",
         "menu_item_XiRTHk",
         "simple_link_VGXdQz",
-        "separator_QQjJjT",
         "simple_link_4Jcq7V",
         "simple_link_xJh9xm"
       ],
@@ -269,6 +273,7 @@
     }
   },
   "order": [
+    "announcement_bar_RLRXAf",
     "header_U9K4Tf",
     "mega_menu_DKxVCr",
     "franchise",
