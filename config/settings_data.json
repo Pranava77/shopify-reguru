@@ -17,7 +17,7 @@
     "color_background_dark": "#212844",
     "color_text": "#151875",
     "color_text_secondary": "#636270",
-    "cart_type": "page",
+    "cart_type": "drawer",
     "cart_show_vendor": false,
     "background_image": "shopify://shop_images/4.png",
     "background_size": "cover",
