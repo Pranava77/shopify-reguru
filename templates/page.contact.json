@@ -266,9 +266,19 @@
         "background_color": "#041c66",
         "laptop_image": "shopify://shop_images/generated-image__20_-removebg-preview.png"
       }
+    },
+    "announcement_bar_PEUW9J": {
+      "type": "announcement-bar",
+      "name": "Announcement Bar",
+      "settings": {
+        "text": "Welcome To ReGuru",
+        "background_color": "#1E1A5C",
+        "text_color": "#28D98E"
+      }
     }
   },
   "order": [
+    "announcement_bar_PEUW9J",
     "header_bX9UWd",
     "mega_menu_pLYehj",
     "contact_section",

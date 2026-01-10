@@ -14,21 +14,23 @@
       "name": "Announcement Bar",
       "settings": {
         "text": "Welcome To ReGuru",
-        "background_color": "#1E1A5C",
-        "text_color": "#28D98E"
+        "background_color": "#1e1a5c",
+        "text_color": "#28d98e"
       }
     },
     "header_aQDp8g": {
       "type": "header",
       "name": "Header",
       "settings": {
+        "logo": "shopify://shop_images/gin.png",
         "show_search": true,
-        "show_location": true,
+        "show_location": false,
         "location_text": "Bengaluru",
         "header_icon_type": "bag",
-        "header_icon_color_primary": "#1E1A5C",
-        "header_icon_color_accent": "#28D98E",
-        "franchise_page": "",
+        "header_custom_icon": "shopify://shop_images/Layer_1_1.png",
+        "header_icon_color_primary": "#1e1a5c",
+        "header_icon_color_accent": "#28d98e",
+        "franchise_page": "franchise",
         "franchise_url": ""
       }
     },
@@ -94,10 +96,6 @@
             "badge_style": "sale"
           }
         },
-        "separator_RVGrAi": {
-          "type": "separator",
-          "settings": {}
-        },
         "simple_link_cjf3JY": {
           "type": "simple_link",
           "settings": {
@@ -121,7 +119,6 @@
         "menu_item_T8WdJF",
         "menu_item_3bgLK4",
         "simple_link_T94Mrp",
-        "separator_RVGrAi",
         "simple_link_cjf3JY",
         "simple_link_kpTPhB"
       ],
@@ -285,7 +282,7 @@
       "name": "Footer",
       "settings": {
         "address": "Address: 2nd floor central complex sv road near mantri mall seshadripuram bengaluru 560020",
-        "background_color": "#041C66",
+        "background_color": "#041c66",
         "laptop_image": "shopify://shop_images/generated-image__20_-removebg-preview.png"
       }
     }
