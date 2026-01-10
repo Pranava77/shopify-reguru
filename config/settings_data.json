@@ -11,14 +11,15 @@
   "current": {
     "color_primary": "#1E1A5C",
     "color_accent": "#28D98E",
-    "color_background": "#FFFFFF",
-    "color_text": "#151875",
-    "cart_type": "drawer",
-    "cart_show_vendor": false,
     "color_secondary": "#041C66",
     "color_accent_blue": "#5294FF",
-    "color_text_secondary": "#636270",
+    "color_background": "#FFFFFF",
     "color_background_dark": "#212844",
+    "color_text": "#151875",
+    "color_text_secondary": "#636270",
+    "cart_type": "drawer",
+    "cart_show_vendor": false,
+    "background_image": "shopify://shop_images/Group_1000001777_e3b57b47-d83e-42ff-b5c5-6c3667808f17.png",
     "content_for_index": []
   }
 }
