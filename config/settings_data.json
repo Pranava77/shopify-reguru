@@ -17,7 +17,7 @@
     "color_background_dark": "#212844",
     "color_text": "#151875",
     "color_text_secondary": "#636270",
-    "cart_type": "drawer",
+    "cart_type": "page",
     "cart_show_vendor": false,
     "background_image": "shopify://shop_images/4.png",
     "background_size": "cover",
@@ -25,6 +25,21 @@
     "background_overlay_enable": false,
     "background_overlay_color": "#1d1c1c",
     "background_overlay_opacity": 20,
+    "sections": {
+      "cart-drawer": {
+        "type": "cart-drawer",
+        "settings": {
+          "cart_title": "YOUR CART",
+          "empty_cart_title": "Your cart is empty",
+          "empty_cart_text": "Continue shopping to add items to your cart.",
+          "continue_shopping_text": "continue shopping",
+          "continue_shopping_url": "",
+          "buy_now_text": "Buy Now",
+          "promo_code_label": "PROMO CODE",
+          "promo_code_placeholder": "ENTER HERE"
+        }
+      }
+    },
     "content_for_index": []
   }
 }
