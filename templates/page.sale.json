@@ -14,7 +14,7 @@
       "name": "Announcement Bar",
       "settings": {
         "text": "Welcome To ReGuru",
-        "background_color": "#1E1A5C",
+        "background_color": "#1e1a5c",
         "text_color": "#ffffff"
       }
     },
@@ -219,7 +219,7 @@
         "hero_button_text": "Browse Gadgets",
         "hero_button_url": "",
         "collection": "monitors",
-        "products_to_show": 12,
+        "products_to_show": 16,
         "show_franchise_button": false,
         "franchise_text": "Join Franchise",
         "franchise_url": ""
