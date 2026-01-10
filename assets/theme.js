@@ -5,6 +5,7 @@
 
 class ThemeUtils {
   constructor() {
+    this.cartTriggerHandler = null;
     this.init();
   }
 
@@ -441,15 +442,19 @@ class ThemeUtils {
       return;
     }
     
-    // Handle cart drawer trigger from header - use event delegation
-    document.addEventListener('click', (e) => {
-      const cartTrigger = e.target.closest('[data-cart-drawer-trigger]');
-      if (cartTrigger && this.cartDrawer) {
-        e.preventDefault();
-        e.stopPropagation();
-        this.cartDrawer.open();
-      }
-    });
+    // Handle cart drawer trigger from header - use event delegation (only add once)
+    // Store handler reference to avoid duplicate listeners
+    if (!this.cartTriggerHandler) {
+      this.cartTriggerHandler = (e) => {
+        const cartTrigger = e.target.closest('[data-cart-drawer-trigger]');
+        if (cartTrigger && this.cartDrawer) {
+          e.preventDefault();
+          e.stopPropagation();
+          this.cartDrawer.open();
+        }
+      };
+      document.addEventListener('click', this.cartTriggerHandler);
+    }
     
     // Listen for cart updates to refresh drawer if open
     document.addEventListener('cart:updated', () => {
@@ -1239,27 +1244,34 @@ class CartDrawer {
     this.closeBtn = drawerElement.querySelector('[data-cart-drawer-close]');
     this.content = drawerElement.querySelector('[data-cart-drawer-content]');
     this.form = drawerElement.querySelector('#cart-drawer-form');
+    this.escapeHandler = null;
     
     this.#init();
   }
 
   #init() {
-    // Close button
-    if (this.closeBtn) {
-      this.closeBtn.addEventListener('click', () => this.close());
-    }
+    // Close button - use event delegation to handle dynamic updates
+    this.drawer.addEventListener('click', (e) => {
+      const closeBtn = e.target.closest('[data-cart-drawer-close]');
+      if (closeBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.close();
+      }
+    });
     
     // Overlay click
     if (this.overlay) {
       this.overlay.addEventListener('click', () => this.close());
     }
     
-    // Escape key
-    document.addEventListener('keydown', (e) => {
+    // Escape key - only add once per instance
+    this.escapeHandler = (e) => {
       if (e.key === 'Escape' && this.isOpen()) {
         this.close();
       }
-    });
+    };
+    document.addEventListener('keydown', this.escapeHandler);
     
     // Prevent body scroll when drawer is open
     this.drawer.addEventListener('transitionend', () => {
@@ -1474,8 +1486,12 @@ class CartDrawer {
     } catch (error) {
       console.error('Error refreshing cart:', error);
       // Fallback: reload page if cart is empty
-      if (this.form && (!cart || !cart.items || cart.items.length === 0)) {
-        window.location.reload();
+      const form = this.drawer.querySelector('#cart-drawer-form');
+      if (form) {
+        const cartData = await fetch('/cart.js').then(r => r.json()).catch(() => null);
+        if (!cartData || !cartData.items || cartData.items.length === 0) {
+          window.location.reload();
+        }
       }
       throw error;
     }
@@ -1483,6 +1499,7 @@ class CartDrawer {
 
   #updateCartContent(cart) {
     // Get text values from existing DOM or use defaults
+    // Store values before clearing content to avoid losing them
     const emptyTitleEl = this.content.querySelector('.cart-drawer__empty-title');
     const emptyTextEl = this.content.querySelector('.cart-drawer__empty-text');
     const continueShoppingEl = this.content.querySelector('[data-continue-shopping]');
@@ -1494,7 +1511,7 @@ class CartDrawer {
     const emptyText = emptyTextEl ? emptyTextEl.textContent.trim() : 'Continue shopping to add items to your cart.';
     const continueShoppingText = continueShoppingEl ? continueShoppingEl.textContent.trim() : 'continue shopping';
     const continueShoppingUrl = continueShoppingEl ? continueShoppingEl.href : '/collections/all';
-    const buyNowText = buyNowBtn ? buyNowBtn.textContent.replace('→', '').trim() : 'Buy Now';
+    const buyNowText = buyNowBtn ? buyNowBtn.textContent.replace('→', '').replace('→', '').trim() : 'Buy Now';
     const promoLabel = promoLabelEl ? promoLabelEl.textContent.trim() : 'PROMO CODE';
     const promoPlaceholder = promoInputEl ? promoInputEl.placeholder : 'ENTER HERE';
     
@@ -1509,11 +1526,7 @@ class CartDrawer {
           </a>
         </div>
       `;
-      // Reinitialize continue shopping button
-      const continueBtn = this.content.querySelector('[data-continue-shopping]');
-      if (continueBtn) {
-        continueBtn.addEventListener('click', () => this.close());
-      }
+      // Continue shopping button is handled by event delegation, no need to reinitialize
       return;
     }
     
@@ -1542,13 +1555,27 @@ class CartDrawer {
     itemsHtml += '<div class="cart-drawer__items" data-cart-items>';
     
     for (const item of cart.items) {
-      const imageUrl = item.image || (item.featured_image || '');
+      // Handle image URL - Shopify cart API returns full URLs or relative paths
+      let imageUrl = '';
+      if (item.image) {
+        imageUrl = item.image;
+      } else if (item.featured_image) {
+        imageUrl = item.featured_image;
+      } else if (item.product && item.product.featured_image) {
+        imageUrl = item.product.featured_image;
+      }
+      
+      // Ensure image URL is properly formatted
+      if (imageUrl && !imageUrl.startsWith('http') && !imageUrl.startsWith('//')) {
+        imageUrl = imageUrl.startsWith('/') ? imageUrl : '/' + imageUrl;
+      }
+      
       const variantTitle = item.variant_title && item.variant_title !== 'Default Title' ? item.variant_title : '';
       
       itemsHtml += `
         <div class="cart-drawer__item" data-line-item="${item.key}">
           <div class="cart-drawer__item-image">
-            ${imageUrl ? `<img src="${imageUrl}" alt="${this.#escapeHtml(item.product_title)}" width="120" height="120" loading="lazy">` : '<div class="cart-drawer__item-placeholder"><svg>...</svg></div>'}
+            ${imageUrl ? `<img src="${imageUrl}" alt="${this.#escapeHtml(item.product_title || 'Product')}" width="120" height="120" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'cart-drawer__item-placeholder\\'><svg width=\\'60\\' height=\\'60\\' viewBox=\\'0 0 60 60\\'><rect width=\\'60\\' height=\\'60\\' fill=\\'#f0f0f0\\'/></svg></div>'">` : '<div class="cart-drawer__item-placeholder"><svg width="60" height="60" viewBox="0 0 60 60"><rect width="60" height="60" fill="#f0f0f0"/></svg></div>'}
           </div>
           <div class="cart-drawer__item-details">
             <h3 class="cart-drawer__item-name"><a href="${item.url}">${this.#escapeHtml(item.product_title)}</a></h3>
@@ -1623,10 +1650,19 @@ class CartDrawer {
     </form>
     `;
     
+    // Store scroll position before update
+    const scrollTop = this.content.scrollTop;
+    
     this.content.innerHTML = itemsHtml;
     
     // Update form reference (for compatibility)
     this.form = this.content.querySelector('#cart-drawer-form');
+    
+    // Restore scroll position if possible
+    if (scrollTop > 0 && this.content.scrollHeight > scrollTop) {
+      this.content.scrollTop = Math.min(scrollTop, this.content.scrollHeight);
+    }
+    
     // Actions are handled via event delegation on drawer, so no need to reinitialize
   }
 
@@ -1648,11 +1684,16 @@ class CartDrawer {
   }
 
   open() {
+    // Set visibility first for smooth transition
     this.drawer.setAttribute('aria-hidden', 'false');
     // Prevent body scroll
     document.body.style.overflow = 'hidden';
+    // Force reflow to ensure transition starts
+    void this.drawer.offsetHeight;
     // Refresh cart when opening to ensure latest data
-    this.refreshCart();
+    this.refreshCart().catch(error => {
+      console.error('Error refreshing cart on open:', error);
+    });
     // Update form reference in case it was updated
     this.form = this.drawer.querySelector('#cart-drawer-form');
   }
@@ -1661,6 +1702,13 @@ class CartDrawer {
     this.drawer.setAttribute('aria-hidden', 'true');
     // Restore body scroll
     document.body.style.overflow = '';
+  }
+  
+  destroy() {
+    // Clean up event listeners
+    if (this.escapeHandler) {
+      document.removeEventListener('keydown', this.escapeHandler);
+    }
   }
 
   isOpen() {
