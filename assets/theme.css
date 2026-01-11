@@ -528,3 +528,286 @@ h1, h2, h3, h4, h5, h6 {
     grid-template-columns: 1fr;
   }
 }
+
+/* --------------------------------------------------------------------------
+   Collections Listing Page Styles
+   -------------------------------------------------------------------------- */
+.template-list-collections .main-content,
+body[class*="template-list-collections"] .main-content {
+  padding: var(--spacing-2xl) 0;
+}
+
+/* Target default Shopify collections listing structure */
+.template-list-collections .main-content > *,
+body[class*="template-list-collections"] .main-content > * {
+  max-width: var(--container-max);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+}
+
+.collections-list,
+.collection-list,
+.list-collections,
+.template-list-collections .main-content > div,
+body[class*="template-list-collections"] .main-content > div {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+.collections-list h1,
+.collection-list h1,
+.list-collections h1,
+.template-list-collections h1,
+.template-list-collections .main-content h1,
+body[class*="template-list-collections"] h1,
+body[class*="template-list-collections"] .main-content h1 {
+  font-family: var(--font-heading);
+  font-size: 42px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--spacing-2xl);
+  text-align: center;
+}
+
+.collections-list h2,
+.collection-list h2,
+.list-collections h2,
+.template-list-collections h2,
+body[class*="template-list-collections"] h2 {
+  font-family: var(--font-heading);
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--spacing-xl);
+  text-align: center;
+}
+
+.collections-list ul,
+.collection-list ul,
+.list-collections ul,
+.template-list-collections ul,
+.template-list-collections .main-content ul,
+body[class*="template-list-collections"] ul,
+body[class*="template-list-collections"] .main-content ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--spacing-lg);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.collections-list li,
+.collection-list li,
+.list-collections li,
+.template-list-collections li,
+.template-list-collections .main-content li,
+body[class*="template-list-collections"] li,
+body[class*="template-list-collections"] .main-content li {
+  margin: 0;
+}
+
+.collections-list a,
+.collection-list a,
+.list-collections a,
+.template-list-collections a,
+.template-list-collections .main-content a,
+body[class*="template-list-collections"] a,
+body[class*="template-list-collections"] .main-content a {
+  display: block;
+  padding: var(--spacing-lg);
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--color-black);
+  background-color: var(--color-white);
+  border: 2px solid var(--color-black);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  text-align: center;
+  text-decoration: none;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.collections-list a:hover,
+.collection-list a:hover,
+.list-collections a:hover,
+.template-list-collections a:hover,
+body[class*="template-list-collections"] a:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Responsive styles for collections listing page */
+@media screen and (max-width: 992px) {
+  .collections-list ul,
+  .collection-list ul,
+  .list-collections ul,
+  .template-list-collections ul,
+  .template-list-collections .main-content ul,
+  body[class*="template-list-collections"] ul,
+  body[class*="template-list-collections"] .main-content ul {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: var(--spacing-md);
+  }
+
+  .collections-list h1,
+  .collection-list h1,
+  .list-collections h1,
+  .template-list-collections h1,
+  .template-list-collections .main-content h1,
+  body[class*="template-list-collections"] h1,
+  body[class*="template-list-collections"] .main-content h1 {
+    font-size: 36px;
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .collections-list h2,
+  .collection-list h2,
+  .list-collections h2,
+  .template-list-collections h2,
+  body[class*="template-list-collections"] h2 {
+    font-size: 28px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .template-list-collections .main-content,
+  body[class*="template-list-collections"] .main-content {
+    padding: var(--spacing-xl) 0;
+  }
+
+  .collections-list,
+  .collection-list,
+  .list-collections,
+  .template-list-collections .main-content > div,
+  body[class*="template-list-collections"] .main-content > div {
+    padding: 0 16px;
+  }
+
+  .collections-list h1,
+  .collection-list h1,
+  .list-collections h1,
+  .template-list-collections h1,
+  .template-list-collections .main-content h1,
+  body[class*="template-list-collections"] h1,
+  body[class*="template-list-collections"] .main-content h1 {
+    font-size: 28px;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .collections-list h2,
+  .collection-list h2,
+  .list-collections h2,
+  .template-list-collections h2,
+  body[class*="template-list-collections"] h2 {
+    font-size: 24px;
+  }
+
+  .collections-list ul,
+  .collection-list ul,
+  .list-collections ul,
+  .template-list-collections ul,
+  .template-list-collections .main-content ul,
+  body[class*="template-list-collections"] ul,
+  body[class*="template-list-collections"] .main-content ul {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+  }
+
+  .collections-list a,
+  .collection-list a,
+  .list-collections a,
+  .template-list-collections a,
+  .template-list-collections .main-content a,
+  body[class*="template-list-collections"] a,
+  body[class*="template-list-collections"] .main-content a {
+    padding: var(--spacing-md);
+    font-size: 16px;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .collections-list h1,
+  .collection-list h1,
+  .list-collections h1,
+  .template-list-collections h1,
+  .template-list-collections .main-content h1,
+  body[class*="template-list-collections"] h1,
+  body[class*="template-list-collections"] .main-content h1 {
+    font-size: 24px;
+    margin-bottom: var(--spacing-md);
+  }
+
+  .collections-list h2,
+  .collection-list h2,
+  .list-collections h2,
+  .template-list-collections h2,
+  body[class*="template-list-collections"] h2 {
+    font-size: 20px;
+  }
+
+  .collections-list ul,
+  .collection-list ul,
+  .list-collections ul,
+  .template-list-collections ul,
+  .template-list-collections .main-content ul,
+  body[class*="template-list-collections"] ul,
+  body[class*="template-list-collections"] .main-content ul {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .collections-list a,
+  .collection-list a,
+  .list-collections a,
+  .template-list-collections a,
+  .template-list-collections .main-content a,
+  body[class*="template-list-collections"] a,
+  body[class*="template-list-collections"] .main-content a {
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: 15px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .collections-list,
+  .collection-list,
+  .list-collections,
+  .template-list-collections .main-content > div,
+  body[class*="template-list-collections"] .main-content > div {
+    padding: 0 12px;
+  }
+
+  .collections-list h1,
+  .collection-list h1,
+  .list-collections h1,
+  .template-list-collections h1,
+  .template-list-collections .main-content h1,
+  body[class*="template-list-collections"] h1,
+  body[class*="template-list-collections"] .main-content h1 {
+    font-size: 20px;
+  }
+
+  .collections-list h2,
+  .collection-list h2,
+  .list-collections h2,
+  .template-list-collections h2,
+  body[class*="template-list-collections"] h2 {
+    font-size: 18px;
+  }
+
+  .collections-list a,
+  .collection-list a,
+  .list-collections a,
+  .template-list-collections a,
+  .template-list-collections .main-content a,
+  body[class*="template-list-collections"] a,
+  body[class*="template-list-collections"] .main-content a {
+    padding: 12px var(--spacing-md);
+    font-size: 14px;
+  }
+}
