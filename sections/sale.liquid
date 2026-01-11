@@ -170,6 +170,13 @@
 
       {%- comment -%} Product Grid {%- endcomment -%}
       <div class="sale-section__products">
+        {%- comment -%} Mobile Filter Button {%- endcomment -%}
+        <button type="button" class="sale-section__filter-trigger" data-filter-drawer-trigger aria-label="Open filters">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2 4H18M5 10H15M8 16H12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span>Filters</span>
+        </button>
         <div class="sale-section__products-grid" data-products-grid>
           {%- if collection != blank and collection.products.size > 0 -%}
             {%- for product in collection.products limit: products_to_show -%}
@@ -190,6 +197,138 @@
         </a>
       </div>
     {%- endif -%}
+  </div>
+
+  {%- comment -%} Mobile Filter Drawer {%- endcomment -%}
+  <div class="sale-section__filter-drawer" data-filter-drawer aria-hidden="true">
+    <div class="sale-section__filter-overlay" data-filter-overlay></div>
+    <div class="sale-section__filter-panel" data-filter-panel>
+      <div class="sale-section__filter-drawer-header">
+        <h3 class="sale-section__filter-drawer-title">{{ 'sections.sale.filters' | t | default: 'Filters' }}</h3>
+        <button type="button" class="sale-section__filter-drawer-close" data-filter-drawer-close aria-label="Close filters">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 4L20 20M20 4L4 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="sale-section__filter-drawer-content">
+        {%- comment -%} Price Filter {%- endcomment -%}
+        <div class="sale-section__filter-group">
+          <div class="sale-section__filter-header">
+            <h4 class="sale-section__filter-title">{{ 'sections.sale.price' | t | default: 'Price' }}</h4>
+            <button type="button" class="sale-section__filter-toggle" data-filter-toggle="price-drawer" aria-label="Toggle price filter" aria-expanded="true">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+          <div class="sale-section__filter-content" data-filter-content="price-drawer">
+            <div class="sale-section__price-inputs">
+              <input 
+                type="text" 
+                class="sale-section__price-input" 
+                id="price-min-drawer-{{ section.id }}"
+                data-price-min-drawer
+              >
+              <span class="sale-section__price-separator">{{ 'sections.sale.to' | t | default: 'To' }}</span>
+              <input 
+                type="text" 
+                class="sale-section__price-input" 
+                id="price-max-drawer-{{ section.id }}"
+                data-price-max-drawer
+              >
+            </div>
+            <div class="sale-section__price-slider" data-price-slider-drawer>
+              <input 
+                type="range" 
+                class="sale-section__slider sale-section__slider--min" 
+                min="0" 
+                max="100000" 
+                value="0"
+                data-slider-min-drawer
+              >
+              <input 
+                type="range" 
+                class="sale-section__slider sale-section__slider--max" 
+                min="0" 
+                max="100000" 
+                value="100000"
+                data-slider-max-drawer
+              >
+            </div>
+          </div>
+        </div>
+
+        {%- comment -%} Category Filter {%- endcomment -%}
+        {%- if section.blocks.size > 0 -%}
+          {%- assign category_blocks = section.blocks | where: 'type', 'category' -%}
+          {%- if category_blocks.size > 0 -%}
+            <div class="sale-section__filter-group">
+              <div class="sale-section__filter-header">
+                <h4 class="sale-section__filter-title">{{ 'sections.sale.category' | t | default: 'Category' }}</h4>
+                <button type="button" class="sale-section__filter-toggle" data-filter-toggle="category-drawer" aria-label="Toggle category filter" aria-expanded="true">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="sale-section__filter-content" data-filter-content="category-drawer">
+                {%- for block in category_blocks -%}
+                  <label class="sale-section__filter-checkbox">
+                    <input 
+                      type="checkbox" 
+                      value="{{ block.settings.value | default: block.settings.label | handleize }}"
+                      data-filter-category-drawer
+                      {{ block.shopify_attributes }}
+                    >
+                    <span class="sale-section__filter-checkbox-label">{{ block.settings.label | default: 'Category' }}</span>
+                  </label>
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endif -%}
+
+        {%- comment -%} Brand Filter {%- endcomment -%}
+        {%- if section.blocks.size > 0 -%}
+          {%- assign brand_blocks = section.blocks | where: 'type', 'brand' -%}
+          {%- if brand_blocks.size > 0 -%}
+            <div class="sale-section__filter-group">
+              <div class="sale-section__filter-header">
+                <h4 class="sale-section__filter-title">{{ 'sections.sale.brand' | t | default: 'Brand' }}</h4>
+                <button type="button" class="sale-section__filter-toggle" data-filter-toggle="brand-drawer" aria-label="Toggle brand filter" aria-expanded="true">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="sale-section__filter-content" data-filter-content="brand-drawer">
+                {%- for block in brand_blocks -%}
+                  <label class="sale-section__filter-checkbox">
+                    <input 
+                      type="checkbox" 
+                      value="{{ block.settings.value | default: block.settings.label | handleize }}"
+                      data-filter-brand-drawer
+                      {{ block.shopify_attributes }}
+                    >
+                    <span class="sale-section__filter-checkbox-label">
+                      {{ block.settings.label | default: 'Brand' }}
+                      {%- if block.settings.count != blank -%}
+                        <span class="sale-section__filter-count">({{ block.settings.count }})</span>
+                      {%- endif -%}
+                    </span>
+                  </label>
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+      <div class="sale-section__filter-drawer-footer">
+        <button type="button" class="sale-section__filter-apply" data-filter-apply>Apply Filters</button>
+        <button type="button" class="sale-section__filter-clear" data-filter-clear>Clear All</button>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -568,6 +707,219 @@
   box-shadow: 2px 2px 0px 0px var(--color-black);
 }
 
+/* Mobile Filter Trigger Button */
+.sale-section__filter-trigger {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  margin-bottom: 20px;
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--color-black);
+  background-color: var(--color-white);
+  border: 2px solid var(--color-black);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.sale-section__filter-trigger:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.sale-section__filter-trigger:active {
+  transform: translate(2px, 2px);
+  box-shadow: var(--shadow-xs);
+}
+
+.sale-section__filter-trigger svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* Mobile Filter Drawer */
+.sale-section__filter-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.sale-section__filter-drawer[aria-hidden="true"] {
+  visibility: hidden;
+}
+
+.sale-section__filter-drawer[aria-hidden="false"] {
+  visibility: visible;
+  pointer-events: all;
+}
+
+.sale-section__filter-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.sale-section__filter-drawer[aria-hidden="false"] .sale-section__filter-overlay {
+  opacity: 1;
+}
+
+.sale-section__filter-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 400px;
+  background-color: var(--color-white);
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+  transform: translateX(100%);
+  transition: transform var(--transition-base);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.sale-section__filter-drawer[aria-hidden="false"] .sale-section__filter-panel {
+  transform: translateX(0);
+}
+
+.sale-section__filter-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  border-bottom: 1px solid #e0e0e0;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  background-color: var(--color-white);
+  z-index: 1;
+}
+
+.sale-section__filter-drawer-title {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 20px;
+  line-height: normal;
+  color: var(--color-black);
+  margin: 0;
+}
+
+.sale-section__filter-drawer-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  color: var(--color-black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 4px;
+  transition: background-color var(--transition-fast);
+}
+
+.sale-section__filter-drawer-close:hover {
+  background-color: #f5f5f5;
+}
+
+.sale-section__filter-drawer-close svg {
+  width: 24px;
+  height: 24px;
+}
+
+.sale-section__filter-drawer-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.sale-section__filter-drawer-footer {
+  display: flex;
+  gap: 12px;
+  padding: 20px;
+  border-top: 1px solid #e0e0e0;
+  flex-shrink: 0;
+  position: sticky;
+  bottom: 0;
+  background-color: var(--color-white);
+  z-index: 1;
+}
+
+.sale-section__filter-apply,
+.sale-section__filter-clear {
+  flex: 1;
+  padding: 14px 20px;
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1;
+  text-align: center;
+  border: 2px solid var(--color-black);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  min-height: 44px;
+}
+
+.sale-section__filter-apply {
+  color: var(--color-white);
+  background-color: var(--color-navy);
+  box-shadow: var(--shadow-md);
+}
+
+.sale-section__filter-apply:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.sale-section__filter-apply:active {
+  transform: translate(2px, 2px);
+  box-shadow: var(--shadow-xs);
+}
+
+.sale-section__filter-clear {
+  color: var(--color-black);
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-sm);
+}
+
+.sale-section__filter-clear:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-md);
+}
+
+.sale-section__filter-clear:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px 0px var(--color-black);
+}
+
+/* Initialize filter toggles as expanded */
+.sale-section__filter-toggle {
+  transform: rotate(180deg);
+}
+
+.sale-section__filter-toggle[aria-expanded="false"] {
+  transform: rotate(0deg);
+}
+
 @media screen and (max-width: 1200px) {
   .sale-section__layout {
     grid-template-columns: 240px 1fr;
@@ -613,6 +965,10 @@
 }
 
 @media screen and (max-width: 768px) {
+  .sale-section__container {
+    padding: 0 16px;
+  }
+
   .sale-section__hero-content {
     padding: 24px;
   }
@@ -634,6 +990,20 @@
     font-size: 14px;
   }
 
+  /* Hide desktop filters on mobile */
+  .sale-section__filters {
+    display: none;
+  }
+
+  /* Show mobile filter trigger button */
+  .sale-section__filter-trigger {
+    display: flex;
+  }
+
+  .sale-section__products {
+    position: relative;
+  }
+
   .sale-section__products-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
@@ -643,9 +1013,68 @@
     padding: 10px 24px;
     font-size: 18px;
   }
+
+  /* Mobile drawer panel width */
+  .sale-section__filter-panel {
+    max-width: 85%;
+  }
+
+  .sale-section__filter-drawer-header {
+    padding: 16px;
+  }
+
+  .sale-section__filter-drawer-title {
+    font-size: 18px;
+  }
+
+  .sale-section__filter-drawer-content {
+    padding: 16px;
+  }
+
+  .sale-section__filter-group {
+    padding-bottom: 20px;
+    gap: 12px;
+  }
+
+  .sale-section__filter-title {
+    font-size: 15px;
+  }
+
+  .sale-section__price-input {
+    width: 100px;
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .sale-section__filter-checkbox {
+    min-height: 44px;
+    padding: 8px 0;
+  }
+
+  .sale-section__filter-checkbox input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+  }
+
+  .sale-section__filter-drawer-footer {
+    padding: 16px;
+    gap: 10px;
+  }
+
+  .sale-section__filter-apply,
+  .sale-section__filter-clear {
+    padding: 12px 16px;
+    font-size: 15px;
+  }
 }
 
 @media screen and (max-width: 576px) {
+  .sale-section__container {
+    padding: 0 12px;
+  }
+
   .sale-section__hero-image {
     height: 300px;
   }
@@ -662,6 +1091,17 @@
     font-size: 28px;
   }
 
+  .sale-section__filter-trigger {
+    padding: 10px 16px;
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+
+  .sale-section__filter-trigger svg {
+    width: 18px;
+    height: 18px;
+  }
+
   .sale-section__products-grid {
     grid-template-columns: 1fr;
     gap: 12px;
@@ -671,6 +1111,60 @@
     padding: 10px 20px;
     font-size: 16px;
   }
+
+  /* Smaller drawer on very small screens */
+  .sale-section__filter-panel {
+    max-width: 90%;
+  }
+
+  .sale-section__filter-drawer-header {
+    padding: 14px;
+  }
+
+  .sale-section__filter-drawer-title {
+    font-size: 16px;
+  }
+
+  .sale-section__filter-drawer-content {
+    padding: 14px;
+  }
+
+  .sale-section__filter-group {
+    padding-bottom: 16px;
+    gap: 10px;
+  }
+
+  .sale-section__filter-title {
+    font-size: 14px;
+  }
+
+  .sale-section__price-inputs {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .sale-section__price-input {
+    width: 90px;
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  .sale-section__filter-checkbox-label {
+    font-size: 13px;
+  }
+
+  .sale-section__filter-drawer-footer {
+    padding: 14px;
+    gap: 8px;
+    flex-direction: column;
+  }
+
+  .sale-section__filter-apply,
+  .sale-section__filter-clear {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 14px;
+  }
 }
 {% endstylesheet %}
 
@@ -679,35 +1173,104 @@
   const saleSection = document.querySelector('[id^="sale-"]');
   if (!saleSection) return;
 
-  // Filter toggle functionality
-  const filterToggles = saleSection.querySelectorAll('[data-filter-toggle]');
-  for (const toggle of filterToggles) {
-    toggle.addEventListener('click', function() {
-      const filterType = this.getAttribute('data-filter-toggle');
-      const content = saleSection.querySelector(`[data-filter-content="${filterType}"]`);
-      if (!content) return;
+  // Mobile Filter Drawer Elements
+  const filterDrawer = saleSection.querySelector('[data-filter-drawer]');
+  const filterDrawerTrigger = saleSection.querySelector('[data-filter-drawer-trigger]');
+  const filterDrawerClose = saleSection.querySelector('[data-filter-drawer-close]');
+  const filterOverlay = saleSection.querySelector('[data-filter-overlay]');
+  const filterPanel = saleSection.querySelector('[data-filter-panel]');
 
-      const isExpanded = this.getAttribute('aria-expanded') === 'true';
-      this.setAttribute('aria-expanded', !isExpanded);
-      content.hidden = isExpanded;
-    });
+  // Body scroll lock helper
+  function lockBodyScroll() {
+    document.body.style.overflow = 'hidden';
   }
 
-  // Mobile filters toggle
+  function unlockBodyScroll() {
+    document.body.style.overflow = '';
+  }
+
+  // Drawer open/close functions
+  function openDrawer() {
+    if (!filterDrawer) return;
+    filterDrawer.setAttribute('aria-hidden', 'false');
+    lockBodyScroll();
+  }
+
+  function closeDrawer() {
+    if (!filterDrawer) return;
+    filterDrawer.setAttribute('aria-hidden', 'true');
+    unlockBodyScroll();
+  }
+
+  // Drawer event listeners
+  if (filterDrawerTrigger) {
+    filterDrawerTrigger.addEventListener('click', openDrawer);
+  }
+
+  if (filterDrawerClose) {
+    filterDrawerClose.addEventListener('click', closeDrawer);
+  }
+
+  if (filterOverlay) {
+    filterOverlay.addEventListener('click', closeDrawer);
+  }
+
+  // Escape key to close drawer
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && filterDrawer && filterDrawer.getAttribute('aria-hidden') === 'false') {
+      closeDrawer();
+    }
+  });
+
+  // Filter toggle functionality (works for both desktop and drawer)
+  function initializeFilterToggles() {
+    const filterToggles = saleSection.querySelectorAll('[data-filter-toggle]');
+    for (const toggle of filterToggles) {
+      // Initialize aria-expanded if not set
+      if (!toggle.hasAttribute('aria-expanded')) {
+        const filterType = toggle.getAttribute('data-filter-toggle');
+        const content = saleSection.querySelector(`[data-filter-content="${filterType}"]`);
+        if (content) {
+          toggle.setAttribute('aria-expanded', content.hidden ? 'false' : 'true');
+        }
+      }
+
+      toggle.addEventListener('click', function() {
+        const filterType = this.getAttribute('data-filter-toggle');
+        const content = saleSection.querySelector(`[data-filter-content="${filterType}"]`);
+        if (!content) return;
+
+        const isExpanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', !isExpanded);
+        content.hidden = isExpanded;
+      });
+    }
+  }
+
+  initializeFilterToggles();
+
+  // Mobile filters toggle (desktop collapse)
   const filtersToggle = saleSection.querySelector('[data-filters-toggle]');
   const filters = saleSection.querySelector('[data-sale-filters]');
   if (filtersToggle && filters) {
     filtersToggle.addEventListener('click', function() {
       const isCollapsed = filters.getAttribute('data-filters-collapsed') === 'true';
       filters.setAttribute('data-filters-collapsed', !isCollapsed);
+      this.setAttribute('aria-expanded', isCollapsed);
     });
   }
 
-  // Price range sliders and inputs
+  // Price range sliders and inputs (desktop)
   const priceMinInput = saleSection.querySelector('[data-price-min]');
   const priceMaxInput = saleSection.querySelector('[data-price-max]');
   const priceMinSlider = saleSection.querySelector('[data-slider-min]');
   const priceMaxSlider = saleSection.querySelector('[data-slider-max]');
+
+  // Price range sliders and inputs (drawer)
+  const priceMinInputDrawer = saleSection.querySelector('[data-price-min-drawer]');
+  const priceMaxInputDrawer = saleSection.querySelector('[data-price-max-drawer]');
+  const priceMinSliderDrawer = saleSection.querySelector('[data-slider-min-drawer]');
+  const priceMaxSliderDrawer = saleSection.querySelector('[data-slider-max-drawer]');
   
   // Format price for display
   function formatPrice(value) {
@@ -722,70 +1285,191 @@
     return parseInt(value) || 0;
   }
 
+  // Sync price between desktop and drawer
+  function syncPriceInputs(sourceInput, targetInput, sourceSlider, targetSlider) {
+    if (sourceInput && targetInput) {
+      targetInput.value = sourceInput.value;
+    }
+    if (sourceSlider && targetSlider) {
+      targetSlider.value = sourceSlider.value;
+    }
+  }
+
   // Update price inputs from sliders
-  function updatePriceInputs() {
-    if (priceMinSlider && priceMaxSlider && priceMinInput && priceMaxInput) {
-      const minValue = parseInt(priceMinSlider.value);
-      const maxValue = parseInt(priceMaxSlider.value);
-      
-      priceMinInput.value = formatPrice(minValue);
-      priceMaxInput.value = formatPrice(maxValue);
-      
-      // Ensure min doesn't exceed max
-      if (minValue > maxValue) {
-        priceMinSlider.value = maxValue;
-        priceMinInput.value = formatPrice(maxValue);
+  function updatePriceInputs(slider, input, isDrawer = false) {
+    if (!slider || !input) return;
+    const value = parseInt(slider.value);
+    input.value = formatPrice(value);
+    
+    // Sync with other side
+    if (isDrawer) {
+      if (priceMinInput && slider === priceMinSliderDrawer) {
+        priceMinInput.value = formatPrice(value);
+        if (priceMinSlider) priceMinSlider.value = value;
+      }
+      if (priceMaxInput && slider === priceMaxSliderDrawer) {
+        priceMaxInput.value = formatPrice(value);
+        if (priceMaxSlider) priceMaxSlider.value = value;
+      }
+    } else {
+      if (priceMinInputDrawer && slider === priceMinSlider) {
+        priceMinInputDrawer.value = formatPrice(value);
+        if (priceMinSliderDrawer) priceMinSliderDrawer.value = value;
+      }
+      if (priceMaxInputDrawer && slider === priceMaxSlider) {
+        priceMaxInputDrawer.value = formatPrice(value);
+        if (priceMaxSliderDrawer) priceMaxSliderDrawer.value = value;
       }
     }
   }
 
   // Update sliders from inputs
-  function updatePriceSliders() {
-    if (priceMinInput && priceMaxInput && priceMinSlider && priceMaxSlider) {
-      const minValue = parsePrice(priceMinInput.value) || 0;
-      const maxValue = parsePrice(priceMaxInput.value) || 100000;
-      
-      priceMinSlider.value = Math.min(minValue, parseInt(priceMaxSlider.max));
-      priceMaxSlider.value = Math.min(maxValue, parseInt(priceMaxSlider.max));
-      
-      // Ensure min doesn't exceed max
-      if (minValue > maxValue) {
-        priceMinInput.value = formatPrice(maxValue);
-        priceMinSlider.value = maxValue;
+  function updatePriceSliders(input, slider, isDrawer = false) {
+    if (!input || !slider) return;
+    const value = parsePrice(input.value) || 0;
+    const maxValue = parseInt(slider.max) || 100000;
+    slider.value = Math.min(value, maxValue);
+    input.value = formatPrice(slider.value);
+    
+    // Sync with other side
+    if (isDrawer) {
+      if (priceMinInput && input === priceMinInputDrawer) {
+        priceMinInput.value = formatPrice(slider.value);
+        if (priceMinSlider) priceMinSlider.value = slider.value;
+      }
+      if (priceMaxInput && input === priceMaxInputDrawer) {
+        priceMaxInput.value = formatPrice(slider.value);
+        if (priceMaxSlider) priceMaxSlider.value = slider.value;
+      }
+    } else {
+      if (priceMinInputDrawer && input === priceMinInput) {
+        priceMinInputDrawer.value = formatPrice(slider.value);
+        if (priceMinSliderDrawer) priceMinSliderDrawer.value = slider.value;
+      }
+      if (priceMaxInputDrawer && input === priceMaxInput) {
+        priceMaxInputDrawer.value = formatPrice(slider.value);
+        if (priceMaxSliderDrawer) priceMaxSliderDrawer.value = slider.value;
       }
     }
   }
 
+  // Desktop price sliders
   if (priceMinSlider) {
     priceMinSlider.addEventListener('input', () => {
-      updatePriceInputs();
+      updatePriceInputs(priceMinSlider, priceMinInput, false);
     });
   }
 
   if (priceMaxSlider) {
     priceMaxSlider.addEventListener('input', () => {
-      updatePriceInputs();
+      updatePriceInputs(priceMaxSlider, priceMaxInput, false);
     });
   }
 
   if (priceMinInput) {
     priceMinInput.addEventListener('blur', () => {
-      updatePriceSliders();
+      updatePriceSliders(priceMinInput, priceMinSlider, false);
     });
   }
 
   if (priceMaxInput) {
     priceMaxInput.addEventListener('blur', () => {
-      updatePriceSliders();
+      updatePriceSliders(priceMaxInput, priceMaxSlider, false);
     });
   }
 
-  // Initialize
-  updatePriceInputs();
+  // Drawer price sliders
+  if (priceMinSliderDrawer) {
+    priceMinSliderDrawer.addEventListener('input', () => {
+      updatePriceInputs(priceMinSliderDrawer, priceMinInputDrawer, true);
+    });
+  }
+
+  if (priceMaxSliderDrawer) {
+    priceMaxSliderDrawer.addEventListener('input', () => {
+      updatePriceInputs(priceMaxSliderDrawer, priceMaxInputDrawer, true);
+    });
+  }
+
+  if (priceMinInputDrawer) {
+    priceMinInputDrawer.addEventListener('blur', () => {
+      updatePriceSliders(priceMinInputDrawer, priceMinSliderDrawer, true);
+    });
+  }
+
+  if (priceMaxInputDrawer) {
+    priceMaxInputDrawer.addEventListener('blur', () => {
+      updatePriceSliders(priceMaxInputDrawer, priceMaxSliderDrawer, true);
+    });
+  }
+
+  // Initialize price inputs
+  if (priceMinSlider && priceMinInput) {
+    updatePriceInputs(priceMinSlider, priceMinInput, false);
+  }
+  if (priceMaxSlider && priceMaxInput) {
+    updatePriceInputs(priceMaxSlider, priceMaxInput, false);
+  }
+
+  // Sync drawer prices when opening
+  if (filterDrawerTrigger) {
+    filterDrawerTrigger.addEventListener('click', () => {
+      setTimeout(() => {
+        if (priceMinInput && priceMinInputDrawer) {
+          priceMinInputDrawer.value = priceMinInput.value;
+        }
+        if (priceMaxInput && priceMaxInputDrawer) {
+          priceMaxInputDrawer.value = priceMaxInput.value;
+        }
+        if (priceMinSlider && priceMinSliderDrawer) {
+          priceMinSliderDrawer.value = priceMinSlider.value;
+        }
+        if (priceMaxSlider && priceMaxSliderDrawer) {
+          priceMaxSliderDrawer.value = priceMaxSlider.value;
+        }
+      }, 100);
+    });
+  }
+
+  // Sync checkboxes between desktop and drawer
+  function syncCheckboxes() {
+    const categoryCheckboxes = saleSection.querySelectorAll('[data-filter-category]');
+    const categoryCheckboxesDrawer = saleSection.querySelectorAll('[data-filter-category-drawer]');
+    const brandCheckboxes = saleSection.querySelectorAll('[data-filter-brand]');
+    const brandCheckboxesDrawer = saleSection.querySelectorAll('[data-filter-brand-drawer]');
+
+    // Sync category checkboxes
+    categoryCheckboxes.forEach((cb, index) => {
+      const drawerCb = categoryCheckboxesDrawer[index];
+      if (drawerCb) {
+        cb.addEventListener('change', () => {
+          drawerCb.checked = cb.checked;
+        });
+        drawerCb.addEventListener('change', () => {
+          cb.checked = drawerCb.checked;
+        });
+      }
+    });
+
+    // Sync brand checkboxes
+    brandCheckboxes.forEach((cb, index) => {
+      const drawerCb = brandCheckboxesDrawer[index];
+      if (drawerCb) {
+        cb.addEventListener('change', () => {
+          drawerCb.checked = cb.checked;
+        });
+        drawerCb.addEventListener('change', () => {
+          cb.checked = drawerCb.checked;
+        });
+      }
+    });
+  }
+
+  syncCheckboxes();
 
   // Filter products (basic implementation)
-  const categoryCheckboxes = saleSection.querySelectorAll('[data-filter-category]');
-  const brandCheckboxes = saleSection.querySelectorAll('[data-filter-brand]');
+  const categoryCheckboxes = saleSection.querySelectorAll('[data-filter-category], [data-filter-category-drawer]');
+  const brandCheckboxes = saleSection.querySelectorAll('[data-filter-brand], [data-filter-brand-drawer]');
   const productsGrid = saleSection.querySelector('[data-products-grid]');
 
   const filterProducts = () => {
@@ -817,6 +1501,40 @@
 
   for (const checkbox of [...categoryCheckboxes, ...brandCheckboxes]) {
     checkbox.addEventListener('change', filterProducts);
+  }
+
+  // Apply filters button
+  const filterApply = saleSection.querySelector('[data-filter-apply]');
+  if (filterApply) {
+    filterApply.addEventListener('click', () => {
+      filterProducts();
+      closeDrawer();
+    });
+  }
+
+  // Clear all filters button
+  const filterClear = saleSection.querySelector('[data-filter-clear]');
+  if (filterClear) {
+    filterClear.addEventListener('click', () => {
+      // Clear all checkboxes
+      [...categoryCheckboxes, ...brandCheckboxes].forEach(cb => {
+        cb.checked = false;
+      });
+      
+      // Reset price sliders
+      if (priceMinSlider) priceMinSlider.value = 0;
+      if (priceMaxSlider) priceMaxSlider.value = 100000;
+      if (priceMinSliderDrawer) priceMinSliderDrawer.value = 0;
+      if (priceMaxSliderDrawer) priceMaxSliderDrawer.value = 100000;
+      
+      // Reset price inputs
+      if (priceMinInput) updatePriceInputs(priceMinSlider, priceMinInput, false);
+      if (priceMaxInput) updatePriceInputs(priceMaxSlider, priceMaxInput, false);
+      if (priceMinInputDrawer) updatePriceInputs(priceMinSliderDrawer, priceMinInputDrawer, true);
+      if (priceMaxInputDrawer) updatePriceInputs(priceMaxSliderDrawer, priceMaxInputDrawer, true);
+      
+      filterProducts();
+    });
   }
 })();
 {% endjavascript %}
