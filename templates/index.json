@@ -133,7 +133,7 @@
       "type": "hero-banner",
       "settings": {
         "background_color": "rgba(0,0,0,0)",
-        "container_background_image": "shopify://shop_images/Screenshot_2026-01-09_163744.png",
+        "container_background_image": "shopify://shop_images/MacBook_Pro_Hero_Banner.png",
         "button_text": "click here",
         "button_link": "shopify://collections/apple"
       }
