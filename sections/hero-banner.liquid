@@ -55,7 +55,7 @@
 
 .hero-banner__container {
   position: relative;
-  height: 517px;
+  min-height: 420px;
   padding: 50px 70px;
   background-color: var(--hero-bg);
   border-radius: 6px;
@@ -228,6 +228,12 @@
   box-shadow: 2px 2px 0px 0px var(--color-black);
 }
 
+/* Desktop: Increase banner height */
+@media screen and (min-width: 993px) {
+  .hero-banner__container {
+    height: 517px;
+  }
+}
 
 @media screen and (max-width: 992px) {
   .hero-banner__container {
