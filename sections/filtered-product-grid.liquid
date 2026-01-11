@@ -1821,18 +1821,46 @@
 
 {% javascript %}
 (function() {
+  // Track initialized sections to prevent double initialization
+  const initializedSections = new Set();
+  
   // Wait for DOM to be ready
   function initFilteredProductGrid() {
-    const sectionElement = document.querySelector('.filtered-product-grid[data-section-id]');
+    // Try multiple selectors to find the section
+    let sectionElement = document.querySelector('.filtered-product-grid[data-section-id]');
+    
+    // If not found, try by ID
+    if (!sectionElement) {
+      const sectionId = '{{ section.id }}';
+      if (sectionId) {
+        sectionElement = document.querySelector(`#filtered-product-grid-${sectionId}`);
+      }
+    }
+    
+    // If still not found, try any filtered-product-grid section
+    if (!sectionElement) {
+      sectionElement = document.querySelector('.filtered-product-grid');
+    }
+    
     if (!sectionElement) {
       // Retry if element not found (might be loading)
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initFilteredProductGrid);
         return;
       }
-      console.warn('Filtered product grid section not found');
+      // Also retry after a short delay for dynamic content
+      setTimeout(() => {
+        initFilteredProductGrid();
+      }, 100);
       return;
     }
+    
+    // Check if already initialized
+    const sectionId = sectionElement.getAttribute('data-section-id') || sectionElement.id;
+    if (initializedSections.has(sectionId)) {
+      return; // Already initialized
+    }
+    initializedSections.add(sectionId);
 
   // Mobile Filter Drawer Elements
   const filterDrawer = sectionElement.querySelector('[data-filter-drawer]');
@@ -1974,6 +2002,12 @@
   const availabilityFilter = section.querySelector('[data-availability-filter]');
   const productGrid = section.querySelector('[data-product-grid]');
   const checkboxes = section.querySelectorAll('.filter__checkbox:not([data-filter-drawer])');
+  
+  // Verify essential elements exist
+  if (!productGrid) {
+    console.warn('Product grid not found in filtered-product-grid section');
+    // Don't return - continue with initialization for filters even if grid not found yet
+  }
 
   // Drawer price inputs and sliders
   const priceMinInputDrawer = section.querySelector('[data-price-min-drawer]');
@@ -2450,6 +2484,21 @@
   } else {
     // DOM already loaded, but wait a tick to ensure all elements are rendered
     setTimeout(initFilteredProductGrid, 0);
+  }
+  
+  // Also initialize on Shopify section load (for theme editor and dynamic loading)
+  if (typeof Shopify !== 'undefined' && Shopify.designMode) {
+    document.addEventListener('shopify:section:load', function(event) {
+      if (event.detail.sectionId === '{{ section.id }}' || 
+          event.target.querySelector('.filtered-product-grid')) {
+        setTimeout(initFilteredProductGrid, 100);
+      }
+    });
+  }
+  
+  // Re-initialize on any section load in theme editor
+  if (typeof Shopify !== 'undefined' && Shopify.designMode) {
+    document.addEventListener('shopify:section:load', initFilteredProductGrid);
   }
 })();
 {% endjavascript %}
