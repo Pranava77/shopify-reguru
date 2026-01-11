@@ -260,6 +260,19 @@
     {%- comment -%} Bottom: Search Bar {%- endcomment -%}
     {%- if show_search -%}
       <div class="header__mobile-search-wrapper">
+        {%- comment -%} Menu Toggle Button (next to search) {%- endcomment -%}
+        <button 
+          type="button" 
+          class="header__mobile-search-menu-toggle" 
+          aria-label="{{ 'general.accessibility.toggle_menu' | t }}"
+          data-mobile-menu-toggle
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="header__mobile-search-menu-icon">
+            <path d="M3 12H21" stroke="var(--color-navy)" stroke-width="2" stroke-linecap="round"/>
+            <path d="M3 6H21" stroke="var(--color-navy)" stroke-width="2" stroke-linecap="round"/>
+            <path d="M3 18H21" stroke="var(--color-navy)" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
         <form action="{{ routes.search_url }}" method="get" class="header__mobile-search" data-search-form>
           <input 
             type="search" 
@@ -286,7 +299,6 @@
 </header>
 
 {%- comment -%} Connect header mobile menu button to mega-menu drawer {%- endcomment -%}
-{%- comment -%} Note: Mobile menu button now links to franchise page, so menu toggle functionality removed {%- endcomment -%}
 <script>
   (function() {
     const megaMenu = document.querySelector('[data-mega-menu]');
@@ -294,15 +306,45 @@
 
     const mobileDrawer = megaMenu.querySelector('[data-mobile-drawer]');
     const mobileToggle = megaMenu.querySelector('[data-mobile-menu-toggle]');
+    const headerMenuToggle = document.querySelector('.header__mobile-search-menu-toggle[data-mobile-menu-toggle]');
     const mobileClose = megaMenu.querySelector('[data-mobile-menu-close]');
     const overlay = megaMenu.querySelector('[data-mobile-overlay]');
 
+    const toggleMobileMenu = () => {
+      const isOpen = mobileDrawer && mobileDrawer.classList.contains('is-open');
+      
+      if (isOpen) {
+        closeMobileMenu();
+      } else {
+        openMobileMenu();
+      }
+    };
+
+    const openMobileMenu = () => {
+      if (mobileToggle) mobileToggle.classList.add('is-active');
+      if (headerMenuToggle) headerMenuToggle.classList.add('is-active');
+      if (mobileDrawer) mobileDrawer.classList.add('is-open');
+      if (overlay) overlay.classList.add('is-active');
+      document.body.style.overflow = 'hidden';
+    };
+
     const closeMobileMenu = () => {
       if (mobileToggle) mobileToggle.classList.remove('is-active');
+      if (headerMenuToggle) headerMenuToggle.classList.remove('is-active');
       if (mobileDrawer) mobileDrawer.classList.remove('is-open');
       if (overlay) overlay.classList.remove('is-active');
       document.body.style.overflow = '';
     };
+
+    // Connect header menu toggle to mega-menu
+    if (headerMenuToggle) {
+      headerMenuToggle.addEventListener('click', toggleMobileMenu);
+    }
+
+    // Connect mega-menu toggle
+    if (mobileToggle) {
+      mobileToggle.addEventListener('click', toggleMobileMenu);
+    }
 
     // Listen for close events from the drawer
     if (mobileClose) {
@@ -782,13 +824,49 @@
 
 .header__mobile-search-wrapper {
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
   padding: 12px 16px;
   background-color: #F5F5F5;
 }
 
+.header__mobile-search-menu-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform var(--transition-fast);
+}
+
+.header__mobile-search-menu-toggle:active {
+  transform: scale(0.95);
+}
+
+.header__mobile-search-menu-icon {
+  width: 24px;
+  height: 24px;
+  transition: transform var(--transition-fast);
+}
+
+.header__mobile-search-menu-toggle.is-active .header__mobile-search-menu-icon {
+  transform: rotate(90deg);
+}
+
+.header__mobile-search-menu-toggle.is-active .header__mobile-search-menu-icon path {
+  stroke: var(--color-green);
+}
+
 .header__mobile-search {
   position: relative;
-  width: 100%;
+  flex: 1;
+  min-width: 0;
 }
 
 .header__mobile-search-input {
