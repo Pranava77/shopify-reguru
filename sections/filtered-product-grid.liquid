@@ -236,7 +236,16 @@
       <!-- Main Content Area -->
       <main class="filtered-product-grid__main">
         <h1 class="filtered-product-grid__title">{{ section_title }}</h1>
-        <div class="filtered-product-grid__products" data-product-grid data-collection-handle="{{ collection_obj.handle | default: '' }}" data-min-price="{{ min_price }}" data-max-price="{{ max_price }}">
+        {%- comment -%} Mobile Filter Button {%- endcomment -%}
+        <button type="button" class="filtered-product-grid__filter-trigger" data-filter-drawer-trigger aria-label="Open filters">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2 4H18M5 10H15M8 16H12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span>Filters</span>
+        </button>
+        <div class="filtered-product-grid__carousel-wrapper">
+          <div class="filtered-product-grid__carousel" data-filtered-carousel>
+            <div class="filtered-product-grid__products" data-product-grid data-collection-handle="{{ collection_obj.handle | default: '' }}" data-min-price="{{ min_price }}" data-max-price="{{ max_price }}">
           {%- if collection_obj != blank and collection_obj.products.size > 0 -%}
             {%- for product in collection_obj.products limit: products_per_page -%}
               <article class="filtered-product-card">
@@ -313,8 +322,213 @@
           {%- else -%}
             <p class="filtered-product-grid__empty">No products available in this collection.</p>
           {%- endif -%}
+            </div>
+          </div>
         </div>
       </main>
+    </div>
+  </div>
+
+  {%- comment -%} Mobile Filter Drawer {%- endcomment -%}
+  <div class="filtered-product-grid__filter-drawer" data-filter-drawer aria-hidden="true">
+    <div class="filtered-product-grid__filter-overlay" data-filter-overlay></div>
+    <div class="filtered-product-grid__filter-panel" data-filter-panel>
+      <div class="filtered-product-grid__filter-drawer-header">
+        <h3 class="filtered-product-grid__filter-drawer-title">Filters</h3>
+        <button type="button" class="filtered-product-grid__filter-drawer-close" data-filter-drawer-close aria-label="Close filters">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 4L20 20M20 4L4 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="filtered-product-grid__filter-drawer-content">
+        {%- comment -%} Price Filter {%- endcomment -%}
+        <div class="filter__group">
+          <h3 class="filter__title">Price</h3>
+          <div class="filter__price-inputs">
+            <input 
+              type="text" 
+              class="filter__price-input" 
+              id="price-min-drawer-{{ section.id }}"
+              value="{{ min_price | money | remove: '.00' }}"
+              data-price-min-drawer
+            >
+            <span class="filter__price-separator">To</span>
+            <input 
+              type="text" 
+              class="filter__price-input" 
+              id="price-max-drawer-{{ section.id }}"
+              value="{{ max_price | money | remove: '.00' }}"
+              data-price-max-drawer
+            >
+          </div>
+          <div class="filter__price-slider" data-price-slider-drawer>
+            <input 
+              type="range" 
+              class="filter__slider filter__slider--min" 
+              min="{{ min_price }}" 
+              max="{{ max_price }}" 
+              value="{{ min_price }}"
+              data-slider-min-drawer
+              data-min-price="{{ min_price }}"
+              data-max-price="{{ max_price }}"
+            >
+            <input 
+              type="range" 
+              class="filter__slider filter__slider--max" 
+              min="{{ min_price }}" 
+              max="{{ max_price }}" 
+              value="{{ max_price }}"
+              data-slider-max-drawer
+              data-min-price="{{ min_price }}"
+              data-max-price="{{ max_price }}"
+            >
+          </div>
+        </div>
+
+        {%- comment -%} Availability Toggle {%- endcomment -%}
+        <div class="filter__group">
+          <label class="filter__toggle">
+            <input type="checkbox" class="filter__toggle-input" data-availability-filter-drawer>
+            <span class="filter__toggle-slider"></span>
+            <span class="filter__toggle-label">Only available items</span>
+          </label>
+        </div>
+
+        {%- comment -%} Filter Categories {%- endcomment -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'filter_group' -%}
+            <div class="filter__group filter__group--collapsible" {{ block.shopify_attributes }}>
+              <details class="filter__details" open>
+                <summary class="filter__summary">
+                  <h3 class="filter__title">{{ block.settings.title }}</h3>
+                  <svg class="filter__chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </summary>
+                <div class="filter__options">
+                  {%- if block.settings.filter_type == 'product_option' -%}
+                    {%- assign option_name = block.settings.option_name -%}
+                    {%- assign unique_values = '' -%}
+                    {%- for product in collection_obj.products -%}
+                      {%- for option in product.options_with_values -%}
+                        {%- if option.name == option_name -%}
+                          {%- for value in option.values -%}
+                            {%- unless unique_values contains value -%}
+                              {%- assign unique_values = unique_values | append: value | append: ',' -%}
+                            {%- endunless -%}
+                          {%- endfor -%}
+                        {%- endif -%}
+                      {%- endfor -%}
+                    {%- endfor -%}
+                    {%- assign values_array = unique_values | split: ',' -%}
+                    {%- for value in values_array -%}
+                      {%- if value != blank -%}
+                        {%- assign count = 0 -%}
+                        {%- for product in collection_obj.products -%}
+                          {%- for option in product.options_with_values -%}
+                            {%- if option.name == option_name and option.selected_value == value -%}
+                              {%- assign count = count | plus: 1 -%}
+                            {%- endif -%}
+                          {%- endfor -%}
+                        {%- endfor -%}
+                        <label class="filter__option">
+                          <input 
+                            type="checkbox" 
+                            class="filter__checkbox" 
+                            data-filter-option="{{ option_name | handleize }}"
+                            data-filter-value="{{ value | handleize }}"
+                            data-filter-drawer
+                            value="{{ value }}"
+                          >
+                          <span class="filter__option-label">
+                            {{ value }}{% if count > 0 %}({{ count }}){% endif %}
+                          </span>
+                        </label>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  {%- elsif block.settings.filter_type == 'product_tag' -%}
+                    {%- assign tag_prefix = block.settings.tag_prefix -%}
+                    {%- assign unique_tags = '' -%}
+                    {%- for product in collection_obj.products -%}
+                      {%- for tag in product.tags -%}
+                        {%- if tag contains tag_prefix -%}
+                          {%- assign tag_value = tag | remove: tag_prefix | strip -%}
+                          {%- unless unique_tags contains tag_value -%}
+                            {%- assign unique_tags = unique_tags | append: tag_value | append: ',' -%}
+                          {%- endunless -%}
+                        {%- endif -%}
+                      {%- endfor -%}
+                    {%- endfor -%}
+                    {%- assign tags_array = unique_tags | split: ',' -%}
+                    {%- for tag_value in tags_array -%}
+                      {%- if tag_value != blank -%}
+                        {%- liquid
+                          assign count = 0
+                          assign full_tag = tag_prefix | append: tag_value
+                        -%}
+                        {%- for product in collection_obj.products -%}
+                          {%- if product.tags contains full_tag -%}
+                            {%- assign count = count | plus: 1 -%}
+                          {%- endif -%}
+                        {%- endfor -%}
+                        <label class="filter__option">
+                          <input 
+                            type="checkbox" 
+                            class="filter__checkbox" 
+                            data-filter-tag="{{ tag_prefix | handleize }}"
+                            data-filter-value="{{ tag_value | handleize }}"
+                            data-filter-drawer
+                            value="{{ tag_value }}"
+                          >
+                          <span class="filter__option-label">
+                            {{ tag_value }}{% if count > 0 %}({{ count }}){% endif %}
+                          </span>
+                        </label>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  {%- elsif block.settings.filter_type == 'vendor' -%}
+                    {%- assign unique_vendors = '' -%}
+                    {%- for product in collection_obj.products -%}
+                      {%- unless unique_vendors contains product.vendor -%}
+                        {%- assign unique_vendors = unique_vendors | append: product.vendor | append: ',' -%}
+                      {%- endunless -%}
+                    {%- endfor -%}
+                    {%- assign vendors_array = unique_vendors | split: ',' -%}
+                    {%- for vendor in vendors_array -%}
+                      {%- if vendor != blank -%}
+                        {%- assign count = 0 -%}
+                        {%- for product in collection_obj.products -%}
+                          {%- if product.vendor == vendor -%}
+                            {%- assign count = count | plus: 1 -%}
+                          {%- endif -%}
+                        {%- endfor -%}
+                        <label class="filter__option">
+                          <input 
+                            type="checkbox" 
+                            class="filter__checkbox" 
+                            data-filter-vendor
+                            data-filter-value="{{ vendor | handleize }}"
+                            data-filter-drawer
+                            value="{{ vendor }}"
+                          >
+                          <span class="filter__option-label">
+                            {{ vendor }}{% if count > 0 %} ({{ count }}){% endif %}
+                          </span>
+                        </label>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  {%- endif -%}
+                </div>
+              </details>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+      <div class="filtered-product-grid__filter-drawer-footer">
+        <button type="button" class="filtered-product-grid__filter-apply" data-filter-apply>Apply Filters</button>
+        <button type="button" class="filtered-product-grid__filter-clear" data-filter-clear>Clear All</button>
+      </div>
     </div>
   </div>
 </section>
@@ -628,10 +842,60 @@
   margin: 0;
 }
 
+.filtered-product-grid__filter-trigger {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  margin-bottom: 20px;
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--color-black);
+  background-color: var(--color-white);
+  border: 2px solid var(--color-black);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  width: 100%;
+  justify-content: center;
+}
+
+.filtered-product-grid__filter-trigger:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.filtered-product-grid__filter-trigger:active {
+  transform: translate(2px, 2px);
+  box-shadow: var(--shadow-xs);
+}
+
+.filtered-product-grid__filter-trigger svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.filtered-product-grid__carousel-wrapper {
+  position: relative;
+}
+
+.filtered-product-grid__carousel {
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 4px;
+  padding-right: 4px;
+}
+
 .filtered-product-grid__products {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
+  transition: transform 0.3s ease-in-out;
+  margin-bottom: 4px;
 }
 
 .filtered-product-grid__empty {
@@ -858,6 +1122,180 @@
   }
 }
 
+/* Mobile Filter Drawer */
+.filtered-product-grid__filter-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  pointer-events: none;
+  display: none;
+  visibility: hidden;
+}
+
+@media screen and (max-width: 768px) {
+  .filtered-product-grid__filter-drawer {
+    display: block;
+  }
+}
+
+.filtered-product-grid__filter-drawer[aria-hidden="false"] {
+  display: block;
+  visibility: visible;
+  pointer-events: all;
+}
+
+.filtered-product-grid__filter-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.filtered-product-grid__filter-drawer[aria-hidden="false"] .filtered-product-grid__filter-overlay {
+  opacity: 1;
+}
+
+.filtered-product-grid__filter-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 400px;
+  background-color: var(--color-white);
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  will-change: transform;
+}
+
+.filtered-product-grid__filter-drawer[aria-hidden="false"] .filtered-product-grid__filter-panel {
+  transform: translateX(0) !important;
+}
+
+.filtered-product-grid__filter-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  border-bottom: 1px solid #e0e0e0;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  background-color: var(--color-white);
+  z-index: 1;
+}
+
+.filtered-product-grid__filter-drawer-title {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 20px;
+  line-height: normal;
+  color: var(--color-black);
+  margin: 0;
+}
+
+.filtered-product-grid__filter-drawer-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  color: var(--color-black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 4px;
+  transition: background-color var(--transition-fast);
+}
+
+.filtered-product-grid__filter-drawer-close:hover {
+  background-color: #f5f5f5;
+}
+
+.filtered-product-grid__filter-drawer-close svg {
+  width: 24px;
+  height: 24px;
+}
+
+.filtered-product-grid__filter-drawer-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.filtered-product-grid__filter-drawer-footer {
+  display: flex;
+  gap: 12px;
+  padding: 20px;
+  border-top: 1px solid #e0e0e0;
+  flex-shrink: 0;
+  position: sticky;
+  bottom: 0;
+  background-color: var(--color-white);
+  z-index: 1;
+}
+
+.filtered-product-grid__filter-apply,
+.filtered-product-grid__filter-clear {
+  flex: 1;
+  padding: 14px 20px;
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1;
+  text-align: center;
+  border: 2px solid var(--color-black);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  min-height: 44px;
+}
+
+.filtered-product-grid__filter-apply {
+  color: var(--color-white);
+  background-color: var(--color-navy);
+  box-shadow: var(--shadow-md);
+}
+
+.filtered-product-grid__filter-apply:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.filtered-product-grid__filter-apply:active {
+  transform: translate(2px, 2px);
+  box-shadow: var(--shadow-xs);
+}
+
+.filtered-product-grid__filter-clear {
+  color: var(--color-black);
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-sm);
+}
+
+.filtered-product-grid__filter-clear:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-md);
+}
+
+.filtered-product-grid__filter-clear:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px 0px var(--color-black);
+}
+
 @media screen and (max-width: 768px) {
   .filtered-product-grid {
     padding: 24px 0;
@@ -865,39 +1303,70 @@
 
   .filtered-product-grid__container {
     padding: 0 16px;
+    max-width: 100%;
   }
 
   .filtered-product-grid__title {
     font-size: 24px;
   }
 
-  .filtered-product-grid__filters-header {
-    margin-bottom: 16px;
-    padding-bottom: 12px;
+  /* Hide desktop filters on mobile */
+  .filtered-product-grid__sidebar {
+    display: none;
   }
 
-  .filtered-product-grid__filters-title {
-    font-size: 16px;
+  /* Show mobile filter trigger button */
+  .filtered-product-grid__filter-trigger {
+    display: flex !important;
   }
 
-  .filter__group {
-    padding-bottom: 16px;
+  .filtered-product-grid__main {
+    position: relative;
   }
 
-  .filter__price-input {
+  .filtered-product-grid__carousel {
+    overflow: visible;
+    padding-bottom: 4px;
+    padding-right: 0;
+  }
+
+  .filtered-product-grid__carousel-wrapper {
     width: 100%;
-    max-width: 116px;
+    max-width: 100%;
+    overflow-x: hidden;
   }
 
   .filtered-product-grid__products {
-    grid-template-columns: 1fr;
+    display: flex;
     gap: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-left: 7.5%;
+    padding-right: calc(7.5% + 4px);
+    padding-bottom: 4px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .filtered-product-grid__products::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filtered-product-grid__products .filtered-product-card {
+    flex: 0 0 85%;
+    min-width: 85%;
+    max-width: 85%;
+    scroll-snap-align: center;
+    box-shadow: 4px 4px 0px 0px var(--color-black);
   }
 
   .filtered-product-card {
     padding: 14px;
     gap: 12px;
-    box-shadow: 4px 4px 0px 0px var(--color-black);
   }
 
   .filtered-product-card:hover {
@@ -913,70 +1382,105 @@
     padding: 10px 14px;
     font-size: 13px;
   }
+
+  /* Mobile drawer panel width */
+  .filtered-product-grid__filter-panel {
+    max-width: 85%;
+  }
+
+  .filtered-product-grid__filter-drawer-header {
+    padding: 16px;
+  }
+
+  .filtered-product-grid__filter-drawer-title {
+    font-size: 18px;
+  }
+
+  .filtered-product-grid__filter-drawer-content {
+    padding: 16px;
+  }
+
+  .filter__group {
+    padding-bottom: 20px;
+    gap: 12px;
+  }
+
+  .filter__title {
+    font-size: 15px;
+  }
+
+  .filter__price-input {
+    width: 100px;
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .filter__option {
+    min-height: 44px;
+    padding: 8px 0;
+  }
+
+  .filter__checkbox {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+  }
+
+  .filtered-product-grid__filter-drawer-footer {
+    padding: 16px;
+    gap: 10px;
+  }
+
+  .filtered-product-grid__filter-apply,
+  .filtered-product-grid__filter-clear {
+    padding: 12px 16px;
+    font-size: 15px;
+  }
 }
 
 @media screen and (max-width: 576px) {
   .filtered-product-grid__container {
     padding: 0 12px;
+    max-width: 100%;
   }
 
   .filtered-product-grid__title {
     font-size: 20px;
   }
 
-  .filtered-product-grid__filters-header {
-    margin-bottom: 12px;
-    padding-bottom: 10px;
-  }
-
-  .filtered-product-grid__filters-title {
-    font-size: 16px;
-  }
-
-  .filter__group {
-    gap: 12px;
-    padding-bottom: 16px;
-  }
-
-  .filter__title {
+  .filtered-product-grid__filter-trigger {
+    padding: 10px 16px;
     font-size: 14px;
+    margin-bottom: 16px;
   }
 
-  .filter__price-inputs {
-    gap: 6px;
+  .filtered-product-grid__filter-trigger svg {
+    width: 18px;
+    height: 18px;
   }
 
-  .filter__price-input {
+  .filtered-product-grid__carousel-wrapper {
     width: 100%;
-    max-width: 100px;
-    padding: 8px 10px;
-    font-size: 12px;
+    max-width: 100%;
+    overflow-x: hidden;
   }
 
-  .filter__price-separator {
-    font-size: 12px;
+  .filtered-product-grid__products {
+    padding-left: 5%;
+    padding-right: calc(5% + 4px);
+    padding-bottom: 4px;
+    gap: 12px;
+    width: 100%;
+    box-sizing: border-box;
   }
 
-  .filter__summary {
-    padding: 4px 0;
-  }
-
-  .filter__chevron {
-    width: 14px;
-    height: 14px;
-  }
-
-  .filter__toggle-label {
-    font-size: 12px;
-  }
-
-  .filter__option-label {
-    font-size: 12px;
-  }
-
-  .filter__checkbox {
-    width: 16px;
-    height: 16px;
+  .filtered-product-grid__products .filtered-product-card {
+    flex: 0 0 90%;
+    min-width: 90%;
+    max-width: 90%;
+    scroll-snap-align: center;
+    box-shadow: 4px 4px 0px 0px var(--color-black);
   }
 
   .filtered-product-card {
@@ -999,6 +1503,60 @@
   .filtered-product-card__btn {
     padding: 10px 12px;
     font-size: 12px;
+  }
+
+  /* Smaller drawer on very small screens */
+  .filtered-product-grid__filter-panel {
+    max-width: 90%;
+  }
+
+  .filtered-product-grid__filter-drawer-header {
+    padding: 14px;
+  }
+
+  .filtered-product-grid__filter-drawer-title {
+    font-size: 16px;
+  }
+
+  .filtered-product-grid__filter-drawer-content {
+    padding: 14px;
+  }
+
+  .filter__group {
+    padding-bottom: 16px;
+    gap: 10px;
+  }
+
+  .filter__title {
+    font-size: 14px;
+  }
+
+  .filter__price-inputs {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .filter__price-input {
+    width: 90px;
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  .filter__option-label {
+    font-size: 13px;
+  }
+
+  .filtered-product-grid__filter-drawer-footer {
+    padding: 14px;
+    gap: 8px;
+    flex-direction: column;
+  }
+
+  .filtered-product-grid__filter-apply,
+  .filtered-product-grid__filter-clear {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 14px;
   }
 }
 
@@ -1054,7 +1612,114 @@
   const sectionElement = document.querySelector('.filtered-product-grid[data-section-id]');
   if (!sectionElement) return;
 
-  // Mobile filters toggle
+  // Mobile Filter Drawer Elements
+  const filterDrawer = sectionElement.querySelector('[data-filter-drawer]');
+  const filterDrawerTrigger = sectionElement.querySelector('[data-filter-drawer-trigger]');
+  const filterDrawerClose = sectionElement.querySelector('[data-filter-drawer-close]');
+  const filterOverlay = sectionElement.querySelector('[data-filter-overlay]');
+  const filterPanel = sectionElement.querySelector('[data-filter-panel]');
+
+  // Body scroll lock helper
+  function lockBodyScroll() {
+    document.body.style.overflow = 'hidden';
+  }
+
+  function unlockBodyScroll() {
+    document.body.style.overflow = '';
+  }
+
+  // Drawer open/close functions
+  function openDrawer(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    if (!filterDrawer) {
+      console.warn('Filter drawer not found');
+      return;
+    }
+    filterDrawer.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('drawer-open');
+    lockBodyScroll();
+    // Force reflow to ensure transition works
+    void filterDrawer.offsetWidth;
+  }
+
+  function closeDrawer(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    if (!filterDrawer) return;
+    filterDrawer.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('drawer-open');
+    unlockBodyScroll();
+  }
+
+  // Drawer event listeners
+  if (filterDrawerTrigger) {
+    filterDrawerTrigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      openDrawer(e);
+      
+      // Sync drawer prices when opening
+      setTimeout(() => {
+        if (priceMinInput && priceMinInputDrawer) {
+          priceMinInputDrawer.value = priceMinInput.value;
+        }
+        if (priceMaxInput && priceMaxInputDrawer) {
+          priceMaxInputDrawer.value = priceMaxInput.value;
+        }
+        if (priceMinSlider && priceMinSliderDrawer) {
+          priceMinSliderDrawer.value = priceMinSlider.value;
+        }
+        if (priceMaxSlider && priceMaxSliderDrawer) {
+          priceMaxSliderDrawer.value = priceMaxSlider.value;
+        }
+        if (availabilityFilter && availabilityFilterDrawer) {
+          availabilityFilterDrawer.checked = availabilityFilter.checked;
+        }
+        // Sync checkboxes
+        checkboxes.forEach((cb, index) => {
+          const drawerCb = drawerCheckboxes[index];
+          if (drawerCb && cb.dataset.filterOption === drawerCb.dataset.filterOption && 
+              cb.dataset.filterValue === drawerCb.dataset.filterValue) {
+            drawerCb.checked = cb.checked;
+          }
+        });
+      }, 100);
+    });
+  }
+
+  if (filterDrawerClose) {
+    filterDrawerClose.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      closeDrawer(e);
+    });
+  }
+
+  if (filterOverlay) {
+    filterOverlay.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      closeDrawer(e);
+    });
+  }
+
+  // Escape key to close drawer
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && filterDrawer && filterDrawer.getAttribute('aria-hidden') === 'false') {
+      e.preventDefault();
+      closeDrawer();
+    }
+  });
+
+  // Prevent body scroll when drawer is open
+  document.body.classList.remove('drawer-open');
+
+  // Mobile filters toggle (desktop collapse)
   const filtersToggle = sectionElement.querySelector('[data-filters-toggle]');
   const filtersContent = sectionElement.querySelector('[data-filters-content]');
   
@@ -1073,7 +1738,15 @@
   const priceMaxSlider = section.querySelector('[data-slider-max]');
   const availabilityFilter = section.querySelector('[data-availability-filter]');
   const productGrid = section.querySelector('[data-product-grid]');
-  const checkboxes = section.querySelectorAll('.filter__checkbox');
+  const checkboxes = section.querySelectorAll('.filter__checkbox:not([data-filter-drawer])');
+
+  // Drawer price inputs and sliders
+  const priceMinInputDrawer = section.querySelector('[data-price-min-drawer]');
+  const priceMaxInputDrawer = section.querySelector('[data-price-max-drawer]');
+  const priceMinSliderDrawer = section.querySelector('[data-slider-min-drawer]');
+  const priceMaxSliderDrawer = section.querySelector('[data-slider-max-drawer]');
+  const availabilityFilterDrawer = section.querySelector('[data-availability-filter-drawer]');
+  const drawerCheckboxes = section.querySelectorAll('.filter__checkbox[data-filter-drawer]');
 
   // Get price range from data attributes or sliders
   const minPrice = productGrid ? parseInt(productGrid.dataset.minPrice) || (priceMinSlider ? parseInt(priceMinSlider.dataset.minPrice) : 0) : 0;
@@ -1092,36 +1765,60 @@
     return parseInt(value) || 0;
   }
 
-  // Update price inputs from sliders
-  function updatePriceInputs() {
-    if (priceMinSlider && priceMaxSlider && priceMinInput && priceMaxInput) {
-      const minValue = parseInt(priceMinSlider.value);
-      const maxValue = parseInt(priceMaxSlider.value);
-      
-      priceMinInput.value = formatPrice(minValue);
-      priceMaxInput.value = formatPrice(maxValue);
-      
-      // Ensure min doesn't exceed max
-      if (minValue > maxValue) {
-        priceMinSlider.value = maxValue;
-        priceMinInput.value = formatPrice(maxValue);
+  // Update price inputs from sliders (desktop)
+  function updatePriceInputs(slider, input, isDrawer = false) {
+    if (!slider || !input) return;
+    const value = parseInt(slider.value);
+    input.value = formatPrice(value);
+    
+    // Sync with drawer/desktop
+    if (isDrawer) {
+      if (priceMinInput && slider === priceMinSliderDrawer) {
+        priceMinInput.value = formatPrice(value);
+        if (priceMinSlider) priceMinSlider.value = value;
+      }
+      if (priceMaxInput && slider === priceMaxSliderDrawer) {
+        priceMaxInput.value = formatPrice(value);
+        if (priceMaxSlider) priceMaxSlider.value = value;
+      }
+    } else {
+      if (priceMinInputDrawer && slider === priceMinSlider) {
+        priceMinInputDrawer.value = formatPrice(value);
+        if (priceMinSliderDrawer) priceMinSliderDrawer.value = value;
+      }
+      if (priceMaxInputDrawer && slider === priceMaxSlider) {
+        priceMaxInputDrawer.value = formatPrice(value);
+        if (priceMaxSliderDrawer) priceMaxSliderDrawer.value = value;
       }
     }
   }
 
   // Update sliders from inputs
-  function updatePriceSliders() {
-    if (priceMinInput && priceMaxInput && priceMinSlider && priceMaxSlider) {
-      const minValue = parsePrice(priceMinInput.value) || 0;
-      const maxValue = parsePrice(priceMaxInput.value) || 100000;
-      
-      priceMinSlider.value = Math.min(minValue, parseInt(priceMaxSlider.max));
-      priceMaxSlider.value = Math.min(maxValue, parseInt(priceMaxSlider.max));
-      
-      // Ensure min doesn't exceed max
-      if (minValue > maxValue) {
-        priceMinInput.value = formatPrice(maxValue);
-        priceMinSlider.value = maxValue;
+  function updatePriceSliders(input, slider, isDrawer = false) {
+    if (!input || !slider) return;
+    const value = parsePrice(input.value) || 0;
+    const maxValue = parseInt(slider.max) || 100000;
+    slider.value = Math.min(value, maxValue);
+    input.value = formatPrice(slider.value);
+    
+    // Sync with drawer/desktop
+    if (isDrawer) {
+      if (priceMinInput && input === priceMinInputDrawer) {
+        priceMinInput.value = formatPrice(slider.value);
+        if (priceMinSlider) priceMinSlider.value = slider.value;
+      }
+      if (priceMaxInput && input === priceMaxInputDrawer) {
+        priceMaxInput.value = formatPrice(slider.value);
+        if (priceMaxSlider) priceMaxSlider.value = slider.value;
+      }
+    } else {
+      if (priceMinInputDrawer && input === priceMinInput) {
+        priceMinInputDrawer.value = formatPrice(slider.value);
+        if (priceMinSliderDrawer) priceMinSliderDrawer.value = slider.value;
+      }
+      if (priceMaxInputDrawer && input === priceMaxInput) {
+        priceMaxInputDrawer.value = formatPrice(slider.value);
+        if (priceMaxSliderDrawer) priceMaxSliderDrawer.value = slider.value;
       }
     }
   }
@@ -1131,13 +1828,14 @@
     if (!productGrid) return;
 
     const products = productGrid.querySelectorAll('.filtered-product-card');
-    const currentMinPrice = priceMinSlider ? parseInt(priceMinSlider.value) : minPrice;
-    const currentMaxPrice = priceMaxSlider ? parseInt(priceMaxSlider.value) : maxPrice;
-    const onlyAvailable = availabilityFilter ? availabilityFilter.checked : false;
+    // Use drawer values if available, otherwise desktop values
+    const currentMinPrice = priceMinSliderDrawer ? parseInt(priceMinSliderDrawer.value) : (priceMinSlider ? parseInt(priceMinSlider.value) : minPrice);
+    const currentMaxPrice = priceMaxSliderDrawer ? parseInt(priceMaxSliderDrawer.value) : (priceMaxSlider ? parseInt(priceMaxSlider.value) : maxPrice);
+    const onlyAvailable = availabilityFilterDrawer ? availabilityFilterDrawer.checked : (availabilityFilter ? availabilityFilter.checked : false);
     
-    // Get selected filter values
+    // Get selected filter values from both desktop and drawer
     const selectedFilters = {};
-    checkboxes.forEach(checkbox => {
+    [...checkboxes, ...drawerCheckboxes].forEach(checkbox => {
       if (checkbox.checked) {
         const filterType = checkbox.dataset.filterOption || checkbox.dataset.filterTag || checkbox.dataset.filterVendor;
         const filterValue = checkbox.dataset.filterValue || checkbox.value;
@@ -1145,7 +1843,9 @@
         if (!selectedFilters[filterType]) {
           selectedFilters[filterType] = [];
         }
-        selectedFilters[filterType].push(filterValue);
+        if (!selectedFilters[filterType].includes(filterValue)) {
+          selectedFilters[filterType].push(filterValue);
+        }
       }
     });
 
@@ -1200,32 +1900,57 @@
     }
   }
 
-  // Event listeners
+  // Desktop price sliders
   if (priceMinSlider) {
     priceMinSlider.addEventListener('input', () => {
-      updatePriceInputs();
+      updatePriceInputs(priceMinSlider, priceMinInput, false);
       filterProducts();
     });
   }
 
   if (priceMaxSlider) {
     priceMaxSlider.addEventListener('input', () => {
-      updatePriceInputs();
+      updatePriceInputs(priceMaxSlider, priceMaxInput, false);
       filterProducts();
     });
   }
 
   if (priceMinInput) {
     priceMinInput.addEventListener('blur', () => {
-      updatePriceSliders();
+      updatePriceSliders(priceMinInput, priceMinSlider, false);
       filterProducts();
     });
   }
 
   if (priceMaxInput) {
     priceMaxInput.addEventListener('blur', () => {
-      updatePriceSliders();
+      updatePriceSliders(priceMaxInput, priceMaxSlider, false);
       filterProducts();
+    });
+  }
+
+  // Drawer price sliders
+  if (priceMinSliderDrawer) {
+    priceMinSliderDrawer.addEventListener('input', () => {
+      updatePriceInputs(priceMinSliderDrawer, priceMinInputDrawer, true);
+    });
+  }
+
+  if (priceMaxSliderDrawer) {
+    priceMaxSliderDrawer.addEventListener('input', () => {
+      updatePriceInputs(priceMaxSliderDrawer, priceMaxInputDrawer, true);
+    });
+  }
+
+  if (priceMinInputDrawer) {
+    priceMinInputDrawer.addEventListener('blur', () => {
+      updatePriceSliders(priceMinInputDrawer, priceMinSliderDrawer, true);
+    });
+  }
+
+  if (priceMaxInputDrawer) {
+    priceMaxInputDrawer.addEventListener('blur', () => {
+      updatePriceSliders(priceMaxInputDrawer, priceMaxSliderDrawer, true);
     });
   }
 
@@ -1233,12 +1958,108 @@
     availabilityFilter.addEventListener('change', filterProducts);
   }
 
-  checkboxes.forEach(checkbox => {
-    checkbox.addEventListener('change', filterProducts);
+  if (availabilityFilterDrawer) {
+    availabilityFilterDrawer.addEventListener('change', () => {
+      if (availabilityFilter) {
+        availabilityFilter.checked = availabilityFilterDrawer.checked;
+      }
+    });
+  }
+
+  // Sync checkboxes between desktop and drawer
+  checkboxes.forEach((cb, index) => {
+    cb.addEventListener('change', () => {
+      // Find matching drawer checkbox
+      const drawerCb = Array.from(drawerCheckboxes).find(dc => 
+        dc.dataset.filterOption === cb.dataset.filterOption && 
+        dc.dataset.filterValue === cb.dataset.filterValue
+      );
+      if (drawerCb) {
+        drawerCb.checked = cb.checked;
+      }
+      filterProducts();
+    });
   });
 
+  drawerCheckboxes.forEach((cb) => {
+    cb.addEventListener('change', () => {
+      // Find matching desktop checkbox
+      const desktopCb = Array.from(checkboxes).find(dc => 
+        dc.dataset.filterOption === cb.dataset.filterOption && 
+        dc.dataset.filterValue === cb.dataset.filterValue
+      );
+      if (desktopCb) {
+        desktopCb.checked = cb.checked;
+      }
+    });
+  });
+
+  // Apply filters button
+  const filterApply = sectionElement.querySelector('[data-filter-apply]');
+  if (filterApply) {
+    filterApply.addEventListener('click', () => {
+      // Sync drawer filters to desktop
+      if (priceMinSliderDrawer && priceMinSlider) {
+        priceMinSlider.value = priceMinSliderDrawer.value;
+        if (priceMinInput) priceMinInput.value = priceMinInputDrawer.value;
+      }
+      if (priceMaxSliderDrawer && priceMaxSlider) {
+        priceMaxSlider.value = priceMaxSliderDrawer.value;
+        if (priceMaxInput) priceMaxInput.value = priceMaxInputDrawer.value;
+      }
+      if (availabilityFilterDrawer && availabilityFilter) {
+        availabilityFilter.checked = availabilityFilterDrawer.checked;
+      }
+      drawerCheckboxes.forEach((dc) => {
+        const desktopCb = Array.from(checkboxes).find(cb => 
+          cb.dataset.filterOption === dc.dataset.filterOption && 
+          cb.dataset.filterValue === dc.dataset.filterValue
+        );
+        if (desktopCb) {
+          desktopCb.checked = dc.checked;
+        }
+      });
+      filterProducts();
+      closeDrawer();
+    });
+  }
+
+  // Clear all filters button
+  const filterClear = sectionElement.querySelector('[data-filter-clear]');
+  if (filterClear) {
+    filterClear.addEventListener('click', () => {
+      // Clear all checkboxes
+      [...checkboxes, ...drawerCheckboxes].forEach(cb => {
+        cb.checked = false;
+      });
+      
+      // Reset price sliders
+      if (priceMinSlider) priceMinSlider.value = minPrice;
+      if (priceMaxSlider) priceMaxSlider.value = maxPrice;
+      if (priceMinSliderDrawer) priceMinSliderDrawer.value = minPrice;
+      if (priceMaxSliderDrawer) priceMaxSliderDrawer.value = maxPrice;
+      
+      // Reset price inputs
+      if (priceMinInput) updatePriceInputs(priceMinSlider, priceMinInput, false);
+      if (priceMaxInput) updatePriceInputs(priceMaxSlider, priceMaxInput, false);
+      if (priceMinInputDrawer) updatePriceInputs(priceMinSliderDrawer, priceMinInputDrawer, true);
+      if (priceMaxInputDrawer) updatePriceInputs(priceMaxSliderDrawer, priceMaxInputDrawer, true);
+      
+      // Reset availability
+      if (availabilityFilter) availabilityFilter.checked = false;
+      if (availabilityFilterDrawer) availabilityFilterDrawer.checked = false;
+      
+      filterProducts();
+    });
+  }
+
   // Initialize
-  updatePriceInputs();
+  if (priceMinSlider && priceMinInput) {
+    updatePriceInputs(priceMinSlider, priceMinInput, false);
+  }
+  if (priceMaxSlider && priceMaxInput) {
+    updatePriceInputs(priceMaxSlider, priceMaxInput, false);
+  }
 
   // Initialize filters as collapsed on mobile
   if (window.innerWidth <= 992 && filtersContent) {
