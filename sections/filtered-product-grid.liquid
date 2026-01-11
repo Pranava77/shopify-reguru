@@ -639,6 +639,21 @@
   gap: 24px;
 }
 
+/* Ensure sidebar is visible on desktop */
+@media screen and (min-width: 993px) {
+  .filtered-product-grid__sidebar {
+    display: block !important;
+  }
+  
+  .filtered-product-grid__filters {
+    display: flex !important;
+  }
+  
+  .filtered-product-grid__filters[data-filters-collapsed] {
+    display: flex !important;
+  }
+}
+
 .filter__group {
   display: flex;
   flex-direction: column;
@@ -1197,6 +1212,8 @@
   pointer-events: none;
   display: none;
   visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
 }
 
 @media screen and (max-width: 768px) {
@@ -1209,6 +1226,7 @@
   display: block;
   visibility: visible;
   pointer-events: all;
+  opacity: 1;
 }
 
 .filtered-product-grid__filter-overlay {
@@ -1242,6 +1260,7 @@
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   will-change: transform;
+  z-index: 10000;
 }
 
 .filtered-product-grid__filter-drawer[aria-hidden="false"] .filtered-product-grid__filter-panel {
@@ -1834,12 +1853,22 @@
       return;
     }
 
+    console.log('Initializing filtered product grid', sectionElement.id);
+
   // Mobile Filter Drawer Elements
   const filterDrawer = sectionElement.querySelector('[data-filter-drawer]');
   const filterDrawerTrigger = sectionElement.querySelector('[data-filter-drawer-trigger]');
   const filterDrawerClose = sectionElement.querySelector('[data-filter-drawer-close]');
   const filterOverlay = sectionElement.querySelector('[data-filter-overlay]');
   const filterPanel = sectionElement.querySelector('[data-filter-panel]');
+
+  console.log('Filter drawer elements found:', {
+    drawer: !!filterDrawer,
+    trigger: !!filterDrawerTrigger,
+    close: !!filterDrawerClose,
+    overlay: !!filterOverlay,
+    panel: !!filterPanel
+  });
 
   // Body scroll lock helper
   function lockBodyScroll() {
@@ -1860,11 +1889,16 @@
       console.warn('Filter drawer not found');
       return;
     }
+    console.log('Opening filter drawer');
     filterDrawer.setAttribute('aria-hidden', 'false');
     document.body.classList.add('drawer-open');
     lockBodyScroll();
     // Force reflow to ensure transition works
     void filterDrawer.offsetWidth;
+    // Ensure panel is visible
+    if (filterPanel) {
+      filterPanel.style.display = 'flex';
+    }
   }
 
   function closeDrawer(e) {
@@ -1896,11 +1930,20 @@
   const availabilityFilterDrawer = section.querySelector('[data-availability-filter-drawer]');
   const drawerCheckboxes = section.querySelectorAll('.filter__checkbox[data-filter-drawer]');
 
+  console.log('Filter elements found:', {
+    productGrid: !!productGrid,
+    checkboxes: checkboxes.length,
+    drawerCheckboxes: drawerCheckboxes.length,
+    priceMinSlider: !!priceMinSlider,
+    priceMaxSlider: !!priceMaxSlider
+  });
+
   // Drawer event listeners
   if (filterDrawerTrigger) {
     filterDrawerTrigger.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
+      console.log('Filter drawer trigger clicked');
       openDrawer(e);
       
       // Sync drawer prices and filters when opening
@@ -1988,10 +2031,20 @@
   const filtersContent = sectionElement.querySelector('[data-filters-content]');
   
   if (filtersToggle && filtersContent) {
-    filtersToggle.addEventListener('click', function() {
+    filtersToggle.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
       const isCollapsed = filtersContent.getAttribute('data-filters-collapsed') === 'true';
-      filtersContent.setAttribute('data-filters-collapsed', !isCollapsed);
-      filtersToggle.setAttribute('aria-expanded', isCollapsed);
+      const newState = !isCollapsed;
+      filtersContent.setAttribute('data-filters-collapsed', newState ? 'true' : 'false');
+      filtersToggle.setAttribute('aria-expanded', newState ? 'true' : 'false');
+      console.log('Filters toggle clicked, new state:', newState ? 'collapsed' : 'expanded');
+    });
+    console.log('Filters toggle button initialized');
+  } else {
+    console.warn('Filters toggle elements not found:', {
+      toggle: !!filtersToggle,
+      content: !!filtersContent
     });
   }
 
@@ -2072,9 +2125,16 @@
 
   // Filter products based on current filters
   function filterProducts() {
-    if (!productGrid) return;
+    if (!productGrid) {
+      console.warn('Product grid not found');
+      return;
+    }
 
     const products = productGrid.querySelectorAll('.filtered-product-card');
+    if (products.length === 0) {
+      console.warn('No products found in grid');
+      return;
+    }
     // Use drawer values if available, otherwise desktop values
     const currentMinPrice = priceMinSliderDrawer ? parseInt(priceMinSliderDrawer.value) : (priceMinSlider ? parseInt(priceMinSlider.value) : minPrice);
     const currentMaxPrice = priceMaxSliderDrawer ? parseInt(priceMaxSliderDrawer.value) : (priceMaxSlider ? parseInt(priceMaxSlider.value) : maxPrice);
@@ -2173,6 +2233,7 @@
             
             // Helper function to handleize a string (convert to lowercase, replace spaces/special chars with dashes)
             const handleize = (str) => {
+              if (!str) return '';
               return str.toLowerCase()
                 .trim()
                 .replace(/[^a-z0-9]+/g, '-')
@@ -2181,40 +2242,61 @@
             
             for (const filterValue of filterValues) {
               const normalizedFilterValue = handleize(filterValue);
+              
               // Check if any product tag matches the filter value
               // Tags can be in format: "prefix:value", "prefix-value", or just "value"
               if (productTags.some(tag => {
-                const normalizedTag = handleize(tag);
+                if (!tag) return false;
                 
-                // Check exact match (after handleizing)
-                if (normalizedTag === normalizedFilterValue) {
-                  return true;
+                const originalTag = tag.trim();
+                const normalizedTag = handleize(originalTag);
+                
+                // If no prefix specified, check for exact match
+                if (!tagPrefix) {
+                  return normalizedTag === normalizedFilterValue;
                 }
                 
-                // Check if tag has the prefix and matches the value after prefix
-                if (tagPrefix) {
-                  const normalizedPrefix = handleize(tagPrefix);
-                  // Try with colon separator: "brand:lenovo" -> "brand-lenovo"
-                  if (normalizedTag === normalizedPrefix + '-' + normalizedFilterValue) {
+                // Normalize the prefix
+                const normalizedPrefix = handleize(tagPrefix);
+                
+                // Check if tag starts with prefix (with colon or dash separator)
+                const prefixWithColon = normalizedPrefix + ':';
+                const prefixWithDash = normalizedPrefix + '-';
+                
+                // Check original tag format first (before handleizing)
+                const originalLower = originalTag.toLowerCase();
+                if (originalLower.startsWith(tagPrefix + ':') || originalLower.startsWith(tagPrefix + '-')) {
+                  // Extract value after prefix
+                  let tagValue = originalLower;
+                  if (originalLower.startsWith(tagPrefix + ':')) {
+                    tagValue = originalLower.substring(tagPrefix.length + 1).trim();
+                  } else if (originalLower.startsWith(tagPrefix + '-')) {
+                    tagValue = originalLower.substring(tagPrefix.length + 1).trim();
+                  }
+                  
+                  // Compare handleized values
+                  if (handleize(tagValue) === normalizedFilterValue) {
                     return true;
                   }
-                  // Try with dash separator: "brand-lenovo" -> "brand-lenovo"
-                  if (normalizedTag === normalizedPrefix + '-' + normalizedFilterValue) {
+                }
+                
+                // Check handleized format
+                if (normalizedTag.startsWith(normalizedPrefix + '-') || normalizedTag.startsWith(normalizedPrefix + ':')) {
+                  let tagValue = normalizedTag;
+                  if (normalizedTag.startsWith(normalizedPrefix + '-')) {
+                    tagValue = normalizedTag.substring(normalizedPrefix.length + 1).trim();
+                  } else if (normalizedTag.startsWith(normalizedPrefix + ':')) {
+                    tagValue = normalizedTag.substring(normalizedPrefix.length + 1).trim();
+                  }
+                  
+                  if (tagValue === normalizedFilterValue) {
                     return true;
                   }
-                  // Try if tag starts with prefix and contains the value
-                  if (normalizedTag.startsWith(normalizedPrefix)) {
-                    const tagAfterPrefix = normalizedTag.replace(normalizedPrefix, '').replace(/^-+/, '').trim();
-                    if (tagAfterPrefix === normalizedFilterValue) {
-                      return true;
-                    }
-                  }
-                  // Also check original tag format (before handleizing) for exact matches
-                  const originalTag = tag.toLowerCase().trim();
-                  if (originalTag === tagPrefix + ':' + filterValue.toLowerCase().trim() || 
-                      originalTag === tagPrefix + '-' + filterValue.toLowerCase().trim()) {
-                    return true;
-                  }
+                }
+                
+                // Fallback: check if normalized tag equals normalized prefix + normalized value
+                if (normalizedTag === normalizedPrefix + '-' + normalizedFilterValue) {
+                  return true;
                 }
                 
                 return false;
@@ -2288,24 +2370,28 @@
   if (priceMinSliderDrawer) {
     priceMinSliderDrawer.addEventListener('input', () => {
       updatePriceInputs(priceMinSliderDrawer, priceMinInputDrawer, true);
+      // Note: Don't filter on slider change in drawer - wait for Apply button
     });
   }
 
   if (priceMaxSliderDrawer) {
     priceMaxSliderDrawer.addEventListener('input', () => {
       updatePriceInputs(priceMaxSliderDrawer, priceMaxInputDrawer, true);
+      // Note: Don't filter on slider change in drawer - wait for Apply button
     });
   }
 
   if (priceMinInputDrawer) {
     priceMinInputDrawer.addEventListener('blur', () => {
       updatePriceSliders(priceMinInputDrawer, priceMinSliderDrawer, true);
+      // Note: Don't filter on input blur in drawer - wait for Apply button
     });
   }
 
   if (priceMaxInputDrawer) {
     priceMaxInputDrawer.addEventListener('blur', () => {
       updatePriceSliders(priceMaxInputDrawer, priceMaxSliderDrawer, true);
+      // Note: Don't filter on input blur in drawer - wait for Apply button
     });
   }
 
@@ -2318,17 +2404,30 @@
       if (availabilityFilter) {
         availabilityFilter.checked = availabilityFilterDrawer.checked;
       }
+      // Note: Don't filter on change in drawer - wait for Apply button
     });
   }
 
   // Sync checkboxes between desktop and drawer
-  checkboxes.forEach((cb, index) => {
+  checkboxes.forEach((cb) => {
     cb.addEventListener('change', () => {
-      // Find matching drawer checkbox
-      const drawerCb = Array.from(drawerCheckboxes).find(dc => 
-        dc.dataset.filterOption === cb.dataset.filterOption && 
-        dc.dataset.filterValue === cb.dataset.filterValue
-      );
+      // Find matching drawer checkbox by all possible attributes
+      const filterOption = cb.dataset.filterOption;
+      const filterTag = cb.dataset.filterTag;
+      const filterVendor = cb.dataset.filterVendor;
+      const filterValue = cb.dataset.filterValue || cb.value;
+      
+      const drawerCb = Array.from(drawerCheckboxes).find(dc => {
+        const dcOption = dc.dataset.filterOption;
+        const dcTag = dc.dataset.filterTag;
+        const dcVendor = dc.dataset.filterVendor;
+        const dcValue = dc.dataset.filterValue || dc.value;
+        
+        return (filterOption && dcOption === filterOption && dcValue === filterValue) ||
+               (filterTag && dcTag === filterTag && dcValue === filterValue) ||
+               (filterVendor !== undefined && dcVendor !== undefined && dcValue === filterValue);
+      });
+      
       if (drawerCb) {
         drawerCb.checked = cb.checked;
       }
@@ -2338,11 +2437,23 @@
 
   drawerCheckboxes.forEach((cb) => {
     cb.addEventListener('change', () => {
-      // Find matching desktop checkbox
-      const desktopCb = Array.from(checkboxes).find(dc => 
-        dc.dataset.filterOption === cb.dataset.filterOption && 
-        dc.dataset.filterValue === cb.dataset.filterValue
-      );
+      // Find matching desktop checkbox by all possible attributes
+      const filterOption = cb.dataset.filterOption;
+      const filterTag = cb.dataset.filterTag;
+      const filterVendor = cb.dataset.filterVendor;
+      const filterValue = cb.dataset.filterValue || cb.value;
+      
+      const desktopCb = Array.from(checkboxes).find(dc => {
+        const dcOption = dc.dataset.filterOption;
+        const dcTag = dc.dataset.filterTag;
+        const dcVendor = dc.dataset.filterVendor;
+        const dcValue = dc.dataset.filterValue || dc.value;
+        
+        return (filterOption && dcOption === filterOption && dcValue === filterValue) ||
+               (filterTag && dcTag === filterTag && dcValue === filterValue) ||
+               (filterVendor !== undefined && dcVendor !== undefined && dcValue === filterValue);
+      });
+      
       if (desktopCb) {
         desktopCb.checked = cb.checked;
       }
@@ -2367,10 +2478,22 @@
         availabilityFilter.checked = availabilityFilterDrawer.checked;
       }
       drawerCheckboxes.forEach((dc) => {
-        const desktopCb = Array.from(checkboxes).find(cb => 
-          cb.dataset.filterOption === dc.dataset.filterOption && 
-          cb.dataset.filterValue === dc.dataset.filterValue
-        );
+        const filterOption = dc.dataset.filterOption;
+        const filterTag = dc.dataset.filterTag;
+        const filterVendor = dc.dataset.filterVendor;
+        const filterValue = dc.dataset.filterValue || dc.value;
+        
+        const desktopCb = Array.from(checkboxes).find(cb => {
+          const cbOption = cb.dataset.filterOption;
+          const cbTag = cb.dataset.filterTag;
+          const cbVendor = cb.dataset.filterVendor;
+          const cbValue = cb.dataset.filterValue || cb.value;
+          
+          return (filterOption && cbOption === filterOption && cbValue === filterValue) ||
+                 (filterTag && cbTag === filterTag && cbValue === filterValue) ||
+                 (filterVendor !== undefined && cbVendor !== undefined && cbValue === filterValue);
+        });
+        
         if (desktopCb) {
           desktopCb.checked = dc.checked;
         }
@@ -2416,21 +2539,37 @@
   if (priceMaxSlider && priceMaxInput) {
     updatePriceInputs(priceMaxSlider, priceMaxInput, false);
   }
+  if (priceMinSliderDrawer && priceMinInputDrawer) {
+    updatePriceInputs(priceMinSliderDrawer, priceMinInputDrawer, true);
+  }
+  if (priceMaxSliderDrawer && priceMaxInputDrawer) {
+    updatePriceInputs(priceMaxSliderDrawer, priceMaxInputDrawer, true);
+  }
 
-  // Initialize filters as collapsed on mobile
+  // Initialize filters as collapsed on mobile only
   if (window.innerWidth <= 992 && filtersContent) {
     filtersContent.setAttribute('data-filters-collapsed', 'true');
     if (filtersToggle) {
       filtersToggle.setAttribute('aria-expanded', 'false');
     }
+  } else if (filtersContent) {
+    // On desktop, ensure filters are always visible
+    filtersContent.removeAttribute('data-filters-collapsed');
+    if (filtersToggle) {
+      filtersToggle.setAttribute('aria-expanded', 'true');
+    }
   }
 
+  // Initial filter run to show all products
+  filterProducts();
+
   // Handle window resize
-  window.addEventListener('resize', function() {
+  window.addEventListener('resize', ThemeUtils.debounce(function() {
     if (window.innerWidth <= 992 && filtersContent) {
-      // On mobile, ensure toggle is visible
+      // On mobile, ensure toggle is visible and check current state
       if (filtersToggle) {
-        filtersToggle.setAttribute('aria-expanded', filtersContent.getAttribute('data-filters-collapsed') !== 'true');
+        const isCollapsed = filtersContent.getAttribute('data-filters-collapsed') === 'true';
+        filtersToggle.setAttribute('aria-expanded', !isCollapsed ? 'true' : 'false');
       }
     } else {
       // On desktop, always show filters
@@ -2441,7 +2580,7 @@
         filtersToggle.setAttribute('aria-expanded', 'true');
       }
     }
-  });
+  }, 150));
   } // End of initFilteredProductGrid function
 
   // Initialize when DOM is ready
