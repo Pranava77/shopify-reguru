@@ -284,9 +284,9 @@
             data-search-input
           >
           <button type="submit" class="header__mobile-search-btn" aria-label="{{ 'general.search.submit' | t }}">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="9" cy="9" r="7" stroke="var(--color-green)" stroke-width="2" fill="none"/>
-              <path d="M14 14L18 18" stroke="var(--color-green)" stroke-width="2" stroke-linecap="round"/>
+            <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="9.5" cy="9.5" r="7.5" stroke="currentColor" stroke-width="2"/>
+              <path d="M15 15L20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
           </button>
         </form>
@@ -837,19 +837,20 @@
 
 .header__mobile-search-btn {
   position: absolute;
-  right: 12px;
+  right: 15px;
   top: 50%;
   transform: translateY(-50%);
   padding: 0;
-  width: 24px;
-  height: 24px;
+  width: 21px;
+  height: 21px;
   background: none;
   border: none;
   cursor: pointer;
+  color: var(--color-black);
+  transition: color var(--transition-fast), transform var(--transition-fast);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform var(--transition-fast);
 }
 
 .header__mobile-search-btn:active {
