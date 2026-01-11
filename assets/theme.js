@@ -1120,12 +1120,14 @@ class ThemeUtils {
 
     // Mobile: Menu drawer functionality
     const mobileToggle = megaMenu.querySelector('[data-mobile-menu-toggle]');
+    const headerMenuToggle = document.querySelector('.header__mobile-search-menu-toggle');
     const mobileDrawer = megaMenu.querySelector('[data-mobile-drawer]');
     const mobileClose = megaMenu.querySelector('[data-mobile-menu-close]');
     const overlay = megaMenu.querySelector('[data-mobile-overlay]');
 
     const openMobileMenu = () => {
       if (mobileToggle) mobileToggle.classList.add('is-active');
+      if (headerMenuToggle) headerMenuToggle.classList.add('is-active');
       if (mobileDrawer) mobileDrawer.classList.add('is-open');
       if (overlay) overlay.classList.add('is-active');
       document.body.style.overflow = 'hidden';
@@ -1133,20 +1135,28 @@ class ThemeUtils {
 
     const closeMobileMenu = () => {
       if (mobileToggle) mobileToggle.classList.remove('is-active');
+      if (headerMenuToggle) headerMenuToggle.classList.remove('is-active');
       if (mobileDrawer) mobileDrawer.classList.remove('is-open');
       if (overlay) overlay.classList.remove('is-active');
       document.body.style.overflow = '';
     };
 
+    const toggleMobileMenu = (e) => {
+      if (e) e.preventDefault();
+      if (mobileDrawer && mobileDrawer.classList.contains('is-open')) {
+        closeMobileMenu();
+      } else {
+        openMobileMenu();
+      }
+    };
+
     if (mobileToggle) {
-      mobileToggle.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (mobileToggle.classList.contains('is-active')) {
-          closeMobileMenu();
-        } else {
-          openMobileMenu();
-        }
-      });
+      mobileToggle.addEventListener('click', toggleMobileMenu);
+    }
+
+    // Also handle header menu toggle button
+    if (headerMenuToggle) {
+      headerMenuToggle.addEventListener('click', toggleMobileMenu);
     }
 
     if (mobileClose) {

@@ -298,63 +298,7 @@
   </div>
 </header>
 
-{%- comment -%} Connect header mobile menu button to mega-menu drawer {%- endcomment -%}
-<script>
-  (function() {
-    const megaMenu = document.querySelector('[data-mega-menu]');
-    if (!megaMenu) return;
-
-    const mobileDrawer = megaMenu.querySelector('[data-mobile-drawer]');
-    const mobileToggle = megaMenu.querySelector('[data-mobile-menu-toggle]');
-    const headerMenuToggle = document.querySelector('.header__mobile-search-menu-toggle[data-mobile-menu-toggle]');
-    const mobileClose = megaMenu.querySelector('[data-mobile-menu-close]');
-    const overlay = megaMenu.querySelector('[data-mobile-overlay]');
-
-    const toggleMobileMenu = () => {
-      const isOpen = mobileDrawer && mobileDrawer.classList.contains('is-open');
-      
-      if (isOpen) {
-        closeMobileMenu();
-      } else {
-        openMobileMenu();
-      }
-    };
-
-    const openMobileMenu = () => {
-      if (mobileToggle) mobileToggle.classList.add('is-active');
-      if (headerMenuToggle) headerMenuToggle.classList.add('is-active');
-      if (mobileDrawer) mobileDrawer.classList.add('is-open');
-      if (overlay) overlay.classList.add('is-active');
-      document.body.style.overflow = 'hidden';
-    };
-
-    const closeMobileMenu = () => {
-      if (mobileToggle) mobileToggle.classList.remove('is-active');
-      if (headerMenuToggle) headerMenuToggle.classList.remove('is-active');
-      if (mobileDrawer) mobileDrawer.classList.remove('is-open');
-      if (overlay) overlay.classList.remove('is-active');
-      document.body.style.overflow = '';
-    };
-
-    // Connect header menu toggle to mega-menu
-    if (headerMenuToggle) {
-      headerMenuToggle.addEventListener('click', toggleMobileMenu);
-    }
-
-    // Connect mega-menu toggle
-    if (mobileToggle) {
-      mobileToggle.addEventListener('click', toggleMobileMenu);
-    }
-
-    // Listen for close events from the drawer
-    if (mobileClose) {
-      mobileClose.addEventListener('click', closeMobileMenu);
-    }
-    if (overlay) {
-      overlay.addEventListener('click', closeMobileMenu);
-    }
-  })();
-</script>
+{%- comment -%} Header menu toggle is handled by theme.js initMegaMenu() {%- endcomment -%}
 
 {% stylesheet %}
 .header {
