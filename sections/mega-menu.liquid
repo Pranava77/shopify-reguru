@@ -817,6 +817,7 @@
   max-width: 380px;
   height: 100vh;
   background-color: var(--color-white);
+  border: 1px solid rgba(0, 0, 0, 1);
   box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.15);
   transform: translateX(-100%);
   transition: transform var(--transition-base);
@@ -959,6 +960,9 @@
 .mega-menu__mobile-item-header {
   display: flex;
   align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 0 8px;
 }
 
 .mega-menu__mobile-link {
@@ -985,14 +989,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 25px;
+  height: 24px;
+  padding: 1px 0;
   background-color: var(--color-white);
   border: 2px solid var(--color-black);
   border-left: none;
   border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
   cursor: pointer;
   color: var(--color-navy);
+  transform: rotate(1deg);
   transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
   box-shadow: var(--shadow-xs);
 }
