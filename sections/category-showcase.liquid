@@ -186,9 +186,12 @@
   position: relative;
   width: 100%;
   height: 100%;
+  min-height: 100%;
   background-color: var(--color-white);
   border-radius: 6px;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .category-showcase__card-inner::before {
@@ -416,23 +419,76 @@
     line-height: 1.4;
   }
   
+  /* Bento Grid Layout for Mobile */
   .category-showcase__grid {
-    grid-template-columns: 1fr;
-    grid-template-rows: repeat(2, 300px);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: minmax(200px, auto);
     gap: 16px;
-    max-height: calc(300px * 2 + 16px + 4px);
     overflow: visible;
     margin-top: 100px;
+    max-height: none;
   }
   
   .category-showcase__card {
     width: 100%;
-    height: 300px;
+    height: 100%;
+    min-height: 200px;
   }
   
+  /* First card - spans full width, taller */
+  .category-showcase__card:first-child {
+    grid-column: 1 / -1;
+    grid-row: span 1;
+    min-height: 280px;
+    height: 280px;
+  }
+  
+  /* Second card - normal size */
+  .category-showcase__card:nth-child(2) {
+    grid-column: span 1;
+    grid-row: span 1;
+    min-height: 240px;
+    height: 240px;
+  }
+  
+  /* Third card - normal size */
+  .category-showcase__card:nth-child(3) {
+    grid-column: span 1;
+    grid-row: span 1;
+    min-height: 240px;
+    height: 240px;
+  }
+  
+  /* Fourth card - spans full width if it exists */
+  .category-showcase__card:nth-child(4) {
+    grid-column: 1 / -1;
+    grid-row: span 1;
+    min-height: 260px;
+    height: 260px;
+  }
+  
+  /* Fifth card - spans full width if it exists */
+  .category-showcase__card:nth-child(5) {
+    grid-column: 1 / -1;
+    grid-row: span 1;
+    min-height: 280px;
+    height: 280px;
+  }
+  
+  /* Override card type classes for mobile */
   .category-showcase__card--large,
   .category-showcase__card--small {
     grid-column: span 1;
+  }
+  
+  .category-showcase__card--large:first-child {
+    grid-column: 1 / -1;
+  }
+  
+  .category-showcase__card--large:nth-child(4),
+  .category-showcase__card--large:nth-child(5) {
+    grid-column: 1 / -1;
   }
   
   .category-showcase__category-label {
@@ -440,9 +496,23 @@
     padding: 20px 0 0 16px;
   }
   
+  /* Smaller category label for compact cards */
+  .category-showcase__card:nth-child(2) .category-showcase__category-label,
+  .category-showcase__card:nth-child(3) .category-showcase__category-label {
+    font-size: 16px;
+    padding: 16px 0 0 12px;
+  }
+  
   .category-showcase__product-title {
     font-size: 32px;
     padding: 0 0 0 16px;
+  }
+  
+  /* Smaller product title for compact cards */
+  .category-showcase__card:nth-child(2) .category-showcase__product-title,
+  .category-showcase__card:nth-child(3) .category-showcase__product-title {
+    font-size: 24px;
+    padding: 0 0 0 12px;
   }
   
   .category-showcase__image-wrapper {
@@ -450,10 +520,28 @@
     padding: 0 16px 0 0;
   }
   
+  /* Adjust image wrapper for smaller cards */
+  .category-showcase__card:nth-child(2) .category-showcase__image-wrapper,
+  .category-showcase__card:nth-child(3) .category-showcase__image-wrapper {
+    width: 50%;
+    padding: 0 12px 0 0;
+  }
+  
   .category-showcase__button {
-    margin: 0 0 0 16px;
+    left: 16px;
+    top: auto;
+    bottom: 24px;
+    margin: 0;
     padding: 8px 14px;
     font-size: 11px;
+  }
+  
+  /* Adjust button for smaller cards */
+  .category-showcase__card:nth-child(2) .category-showcase__button,
+  .category-showcase__card:nth-child(3) .category-showcase__button {
+    bottom: 16px;
+    padding: 6px 12px;
+    font-size: 10px;
   }
   
   .category-showcase__button-icon {
@@ -484,22 +572,68 @@
     font-size: 13px;
   }
 
+  /* Enhanced Bento Grid for Small Mobile */
   .category-showcase__grid {
-    grid-template-columns: 1fr;
-    grid-template-rows: repeat(2, 280px);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: minmax(180px, auto);
     gap: 12px;
-    max-height: calc(280px * 2 + 12px + 4px);
     overflow: visible;
     margin-top: 90px;
+    max-height: none;
   }
   
   .category-showcase__card {
-    height: 280px;
+    height: 100%;
+    min-height: 180px;
   }
   
+  /* First card - spans full width, taller */
+  .category-showcase__card:first-child {
+    grid-column: 1 / -1;
+    grid-row: span 1;
+    min-height: 240px;
+    height: 240px;
+  }
+  
+  /* Second and third cards - side by side */
+  .category-showcase__card:nth-child(2),
+  .category-showcase__card:nth-child(3) {
+    grid-column: span 1;
+    grid-row: span 1;
+    min-height: 200px;
+    height: 200px;
+  }
+  
+  /* Fourth card - spans full width */
+  .category-showcase__card:nth-child(4) {
+    grid-column: 1 / -1;
+    grid-row: span 1;
+    min-height: 220px;
+    height: 220px;
+  }
+  
+  /* Fifth card - spans full width */
+  .category-showcase__card:nth-child(5) {
+    grid-column: 1 / -1;
+    grid-row: span 1;
+    min-height: 240px;
+    height: 240px;
+  }
+  
+  /* Override card type classes for small mobile */
   .category-showcase__card--large,
   .category-showcase__card--small {
     grid-column: span 1;
+  }
+  
+  .category-showcase__card--large:first-child {
+    grid-column: 1 / -1;
+  }
+  
+  .category-showcase__card--large:nth-child(4),
+  .category-showcase__card--large:nth-child(5) {
+    grid-column: 1 / -1;
   }
   
   .category-showcase__category-label {
@@ -507,9 +641,23 @@
     padding: 16px 0 0 12px;
   }
   
+  /* Smaller category label for compact cards */
+  .category-showcase__card:nth-child(2) .category-showcase__category-label,
+  .category-showcase__card:nth-child(3) .category-showcase__category-label {
+    font-size: 14px;
+    padding: 12px 0 0 10px;
+  }
+  
   .category-showcase__product-title {
     font-size: 28px;
     padding: 0 0 0 12px;
+  }
+  
+  /* Smaller product title for compact cards */
+  .category-showcase__card:nth-child(2) .category-showcase__product-title,
+  .category-showcase__card:nth-child(3) .category-showcase__product-title {
+    font-size: 20px;
+    padding: 0 0 0 10px;
   }
   
   .category-showcase__image-wrapper {
@@ -517,10 +665,28 @@
     padding: 0 12px 0 0;
   }
   
+  /* Adjust image wrapper for smaller cards */
+  .category-showcase__card:nth-child(2) .category-showcase__image-wrapper,
+  .category-showcase__card:nth-child(3) .category-showcase__image-wrapper {
+    width: 45%;
+    padding: 0 10px 0 0;
+  }
+  
   .category-showcase__button {
-    margin: 0 0 0 12px;
+    left: 12px;
+    top: auto;
+    bottom: 20px;
+    margin: 0;
     padding: 6px 12px;
     font-size: 10px;
+  }
+  
+  /* Adjust button for smaller cards */
+  .category-showcase__card:nth-child(2) .category-showcase__button,
+  .category-showcase__card:nth-child(3) .category-showcase__button {
+    bottom: 12px;
+    padding: 5px 10px;
+    font-size: 9px;
   }
 }
 {% endstylesheet %}
