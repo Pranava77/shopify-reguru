@@ -32,18 +32,6 @@
         {%- endfor -%}
       </div>
       
-      <!-- Navigation Buttons -->
-      <button class="hero-banner__nav hero-banner__nav--prev" data-carousel-prev aria-label="Previous slide">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-      <button class="hero-banner__nav hero-banner__nav--next" data-carousel-next aria-label="Next slide">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-      
       <!-- Dots Indicator -->
       <div class="hero-banner__dots" data-carousel-dots></div>
       
@@ -173,51 +161,6 @@
   color: var(--color-green);
 }
 
-/* Navigation Buttons */
-.hero-banner__nav {
-  position: absolute;
-  top: 295px;
-  z-index: 10;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(177, 216, 255, 1);
-  border: 2px solid var(--color-black);
-  border-radius: 6px;
-  box-shadow: 4px 4px 0px 0px var(--color-black);
-  cursor: pointer;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
-  color: rgba(0, 0, 0, 1);
-}
-
-.hero-banner__nav:hover {
-  transform: translateX(-50%) translate(-2px, -2px);
-  box-shadow: 6px 6px 0px 0px var(--color-black);
-}
-
-.hero-banner__nav:active {
-  transform: translateX(-50%) translate(2px, 2px);
-  box-shadow: 2px 2px 0px 0px var(--color-black);
-}
-
-.hero-banner__nav--prev {
-  left: 25%;
-  transform: translateX(-50%);
-}
-
-.hero-banner__nav--next {
-  left: 75%;
-  transform: translateX(-50%);
-  right: auto;
-}
-
-.hero-banner__nav svg {
-  width: 24px;
-  height: 24px;
-}
-
 /* Dots Indicator */
 .hero-banner__dots {
   position: absolute;
@@ -285,18 +228,6 @@
   box-shadow: 2px 2px 0px 0px var(--color-black);
 }
 
-@media screen and (max-width: 1200px) {
-  .hero-banner__nav--prev {
-    left: 25%;
-    transform: translateX(-50%);
-  }
-
-  .hero-banner__nav--next {
-    left: 75%;
-    transform: translateX(-50%);
-    right: auto;
-  }
-}
 
 @media screen and (max-width: 992px) {
   .hero-banner__container {
@@ -316,22 +247,6 @@
     font-size: 22px;
   }
 
-  .hero-banner__nav {
-    width: 40px;
-    height: 40px;
-  }
-
-  .hero-banner__nav--prev {
-    left: 25%;
-    transform: translateX(-50%);
-  }
-
-  .hero-banner__nav--next {
-    left: 75%;
-    transform: translateX(-50%);
-    right: auto;
-  }
-
   .hero-banner__bottom-button {
     top: 295px;
     left: 50%;
@@ -341,23 +256,6 @@
   }
 }
 
-@media screen and (max-width: 768px) {
-  .hero-banner__nav {
-    width: 38px;
-    height: 38px;
-  }
-
-  .hero-banner__nav--prev {
-    left: 25%;
-    transform: translateX(-50%);
-  }
-
-  .hero-banner__nav--next {
-    left: 75%;
-    transform: translateX(-50%);
-    right: auto;
-  }
-}
 
 @media screen and (max-width: 576px) {
   .hero-banner__heading {
@@ -367,27 +265,6 @@
   .hero-banner__subheading,
   .hero-banner__discount {
     font-size: 18px;
-  }
-
-  .hero-banner__nav {
-    width: 36px;
-    height: 36px;
-  }
-
-  .hero-banner__nav--prev {
-    left: 25%;
-    transform: translateX(-50%);
-  }
-
-  .hero-banner__nav--next {
-    left: 75%;
-    transform: translateX(-50%);
-    right: auto;
-  }
-
-  .hero-banner__nav svg {
-    width: 20px;
-    height: 20px;
   }
 
   .hero-banner__bottom-button {
@@ -409,8 +286,6 @@
   carousels.forEach(carousel => {
     const track = carousel.querySelector('[data-carousel-track]');
     const slides = carousel.querySelectorAll('[data-slide]');
-    const prevBtn = carousel.querySelector('[data-carousel-prev]');
-    const nextBtn = carousel.querySelector('[data-carousel-next]');
     const dotsContainer = carousel.querySelector('[data-carousel-dots]');
     
     if (!track || slides.length === 0) return;
@@ -456,9 +331,6 @@
       currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
       updateCarousel();
     }
-    
-    if (nextBtn) nextBtn.addEventListener('click', nextSlide);
-    if (prevBtn) prevBtn.addEventListener('click', prevSlide);
     
     // Auto-play (optional - uncomment if needed)
     // let autoplayInterval = setInterval(nextSlide, 5000);
