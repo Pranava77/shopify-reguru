@@ -1821,8 +1821,18 @@
 
 {% javascript %}
 (function() {
-  const sectionElement = document.querySelector('.filtered-product-grid[data-section-id]');
-  if (!sectionElement) return;
+  // Wait for DOM to be ready
+  function initFilteredProductGrid() {
+    const sectionElement = document.querySelector('.filtered-product-grid[data-section-id]');
+    if (!sectionElement) {
+      // Retry if element not found (might be loading)
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initFilteredProductGrid);
+        return;
+      }
+      console.warn('Filtered product grid section not found');
+      return;
+    }
 
   // Mobile Filter Drawer Elements
   const filterDrawer = sectionElement.querySelector('[data-filter-drawer]');
@@ -1850,16 +1860,11 @@
       console.warn('Filter drawer not found');
       return;
     }
-    if (!filterPanel) {
-      console.warn('Filter panel not found');
-      return;
-    }
     filterDrawer.setAttribute('aria-hidden', 'false');
     document.body.classList.add('drawer-open');
     lockBodyScroll();
     // Force reflow to ensure transition works
     void filterDrawer.offsetWidth;
-    void filterPanel.offsetWidth;
   }
 
   function closeDrawer(e) {
@@ -1880,23 +1885,29 @@
       e.stopPropagation();
       openDrawer(e);
       
-      // Sync drawer prices when opening
+      // Sync drawer prices and filters when opening
       setTimeout(() => {
+        // Sync price inputs
         if (priceMinInput && priceMinInputDrawer) {
           priceMinInputDrawer.value = priceMinInput.value;
         }
         if (priceMaxInput && priceMaxInputDrawer) {
           priceMaxInputDrawer.value = priceMaxInput.value;
         }
+        
+        // Sync price sliders
         if (priceMinSlider && priceMinSliderDrawer) {
           priceMinSliderDrawer.value = priceMinSlider.value;
         }
         if (priceMaxSlider && priceMaxSliderDrawer) {
           priceMaxSliderDrawer.value = priceMaxSlider.value;
         }
+        
+        // Sync availability filter
         if (availabilityFilter && availabilityFilterDrawer) {
           availabilityFilterDrawer.checked = availabilityFilter.checked;
         }
+        
         // Sync checkboxes - match by filter type and value
         checkboxes.forEach((cb) => {
           const filterOption = cb.dataset.filterOption;
@@ -1911,19 +1922,9 @@
             const dcVendor = dc.dataset.filterVendor;
             const dcValue = dc.dataset.filterValue || dc.value;
             
-            // Match by option
-            if (filterOption && dcOption && filterOption === dcOption && filterValue === dcValue) {
-              return true;
-            }
-            // Match by tag
-            if (filterTag && dcTag && filterTag === dcTag && filterValue === dcValue) {
-              return true;
-            }
-            // Match by vendor
-            if (filterVendor !== undefined && dcVendor !== undefined && filterValue === dcValue) {
-              return true;
-            }
-            return false;
+            return (filterOption && dcOption === filterOption && dcValue === filterValue) ||
+                   (filterTag && dcTag === filterTag && dcValue === filterValue) ||
+                   (filterVendor !== undefined && dcVendor !== undefined && dcValue === filterValue);
           });
           
           if (drawerCb) {
@@ -1932,6 +1933,7 @@
         });
       }, 100);
     });
+    console.log('Filter drawer trigger button initialized');
   } else {
     console.warn('Filter drawer trigger button not found');
   }
@@ -1963,7 +1965,7 @@
   // Prevent body scroll when drawer is open
   document.body.classList.remove('drawer-open');
 
-  // Define all filter elements first (before drawer event listeners)
+  // Define all filter elements first, before setting up event listeners
   const section = sectionElement;
   const priceMinInput = section.querySelector('[data-price-min]');
   const priceMaxInput = section.querySelector('[data-price-max]');
@@ -2440,21 +2442,14 @@
       }
     }
   });
+  } // End of initFilteredProductGrid function
 
-  // Initialize drawer state - ensure it starts closed
-  if (filterDrawer) {
-    filterDrawer.setAttribute('aria-hidden', 'true');
-  }
-
-  // Debug: Log drawer initialization (can be removed in production)
-  if (filterDrawerTrigger && filterDrawer && filterPanel) {
-    console.log('Filter drawer initialized successfully');
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initFilteredProductGrid);
   } else {
-    console.warn('Filter drawer elements missing:', {
-      trigger: !!filterDrawerTrigger,
-      drawer: !!filterDrawer,
-      panel: !!filterPanel
-    });
+    // DOM already loaded, but wait a tick to ensure all elements are rendered
+    setTimeout(initFilteredProductGrid, 0);
   }
 })();
 {% endjavascript %}
