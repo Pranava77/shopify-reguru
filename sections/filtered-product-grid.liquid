@@ -1220,13 +1220,18 @@
   .filtered-product-grid__filter-drawer {
     display: block;
   }
+  
+  /* Ensure drawer is visible when open on mobile */
+  .filtered-product-grid__filter-drawer[aria-hidden="false"] {
+    display: block !important;
+  }
 }
 
 .filtered-product-grid__filter-drawer[aria-hidden="false"] {
-  display: block;
-  visibility: visible;
-  pointer-events: all;
-  opacity: 1;
+  display: block !important;
+  visibility: visible !important;
+  pointer-events: all !important;
+  opacity: 1 !important;
 }
 
 .filtered-product-grid__filter-overlay {
@@ -1261,10 +1266,13 @@
   -webkit-overflow-scrolling: touch;
   will-change: transform;
   z-index: 10000;
+  visibility: visible;
 }
 
 .filtered-product-grid__filter-drawer[aria-hidden="false"] .filtered-product-grid__filter-panel {
-  transform: translateX(0);
+  transform: translateX(0) !important;
+  display: flex !important;
+  visibility: visible !important;
 }
 
 .filtered-product-grid__filter-drawer-header {
@@ -1890,19 +1898,45 @@
       // Store the trigger button that opened the drawer
       drawerTriggerButton = e.target.closest('[data-filter-drawer-trigger]') || filterDrawerTrigger;
     }
+    
+    // Defensive check: ensure drawer exists
     if (!filterDrawer) {
-      console.warn('Filter drawer not found');
-      return;
+      console.error('Filter drawer not found - cannot open drawer');
+      return false;
     }
-    console.log('Opening filter drawer');
+    
+    // Check if drawer is already open
+    if (filterDrawer.getAttribute('aria-hidden') === 'false') {
+      console.log('Drawer is already open');
+      return true;
+    }
+    
+    // Ensure all required elements exist
+    if (!filterPanel) {
+      console.error('Filter panel not found - drawer may not display correctly');
+    }
+    
+    console.log('Opening filter drawer', {
+      drawer: !!filterDrawer,
+      panel: !!filterPanel,
+      overlay: !!filterOverlay,
+      closeButton: !!filterDrawerClose
+    });
+    
+    // Set drawer to visible state
     filterDrawer.setAttribute('aria-hidden', 'false');
     document.body.classList.add('drawer-open');
     lockBodyScroll();
+    
     // Force reflow to ensure transition works
     void filterDrawer.offsetWidth;
-    // Ensure panel is visible
+    
+    // Ensure panel is visible and properly displayed
     if (filterPanel) {
       filterPanel.style.display = 'flex';
+      filterPanel.style.visibility = 'visible';
+      // Force reflow for panel
+      void filterPanel.offsetWidth;
     }
     
     // Focus the first focusable element in the drawer (close button)
@@ -1911,6 +1945,8 @@
         filterDrawerClose.focus();
       }, 100);
     }
+    
+    return true;
   }
 
   function closeDrawer(e) {
@@ -1965,13 +2001,26 @@
     priceMaxSlider: !!priceMaxSlider
   });
 
-  // Drawer event listeners
+  // Drawer event listeners - attach even if drawer is initially hidden
   if (filterDrawerTrigger) {
+    console.log('Attaching event listener to filter drawer trigger');
     filterDrawerTrigger.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
-      console.log('Filter drawer trigger clicked');
-      openDrawer(e);
+      console.log('Filter drawer trigger clicked', {
+        drawerExists: !!filterDrawer,
+        drawerHidden: filterDrawer ? filterDrawer.getAttribute('aria-hidden') : 'N/A'
+      });
+      
+      const opened = openDrawer(e);
+      if (!opened) {
+        console.error('Failed to open drawer - check console for details');
+        // Visual feedback - could add a temporary class or animation
+        filterDrawerTrigger.style.opacity = '0.5';
+        setTimeout(() => {
+          filterDrawerTrigger.style.opacity = '1';
+        }, 200);
+      }
       
       // Sync drawer prices and filters when opening
       setTimeout(() => {
@@ -2021,9 +2070,33 @@
         });
       }, 100);
     });
-    console.log('Filter drawer trigger button initialized');
+    console.log('Filter drawer trigger button initialized successfully');
   } else {
-    console.warn('Filter drawer trigger button not found');
+    console.error('Filter drawer trigger button not found - drawer cannot be opened via button');
+    // Try to find it again after a delay (in case DOM is still loading)
+    setTimeout(() => {
+      const retryTrigger = sectionElement.querySelector('[data-filter-drawer-trigger]');
+      if (retryTrigger) {
+        console.log('Found filter drawer trigger on retry - attaching listener');
+        retryTrigger.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          openDrawer(e);
+        });
+      } else {
+        console.error('Filter drawer trigger still not found after retry');
+      }
+    }, 500);
+  }
+  
+  // Additional check: ensure drawer elements are properly initialized
+  if (!filterDrawer) {
+    console.error('CRITICAL: Filter drawer element not found in DOM');
+  } else {
+    console.log('Filter drawer element found and initialized', {
+      ariaHidden: filterDrawer.getAttribute('aria-hidden'),
+      display: window.getComputedStyle(filterDrawer).display
+    });
   }
 
   if (filterDrawerClose) {
@@ -2617,6 +2690,25 @@
     // DOM already loaded, but wait a tick to ensure all elements are rendered
     setTimeout(initFilteredProductGrid, 0);
   }
+  
+  // Fallback: Try to initialize again after a short delay if elements weren't found
+  setTimeout(() => {
+    const sectionElement = document.querySelector('[id^="filtered-product-grid-"]');
+    if (sectionElement) {
+      const trigger = sectionElement.querySelector('[data-filter-drawer-trigger]');
+      const drawer = sectionElement.querySelector('[data-filter-drawer]');
+      
+      // If trigger exists but drawer doesn't, log a warning
+      if (trigger && !drawer) {
+        console.warn('Filter trigger button found but drawer element is missing from DOM');
+      }
+      
+      // If drawer exists but trigger doesn't, log a warning
+      if (drawer && !trigger) {
+        console.warn('Filter drawer found but trigger button is missing from DOM');
+      }
+    }
+  }, 1000);
 })();
 {% endjavascript %}
 
