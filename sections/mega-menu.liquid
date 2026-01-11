@@ -240,11 +240,11 @@
       aria-label="{{ 'general.accessibility.toggle_menu' | t }}"
       data-mobile-menu-toggle
     >
-      <span class="mega-menu__hamburger">
-        <span></span>
-        <span></span>
-        <span></span>
-      </span>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="mega-menu__mobile-toggle-icon">
+        <path d="M3 12H21" stroke="var(--color-navy)" stroke-width="2" stroke-linecap="round"/>
+        <path d="M3 6H21" stroke="var(--color-navy)" stroke-width="2" stroke-linecap="round"/>
+        <path d="M3 18H21" stroke="var(--color-navy)" stroke-width="2" stroke-linecap="round"/>
+      </svg>
     </button>
   </div>
   
@@ -744,36 +744,18 @@
   padding: 0;
 }
 
-.mega-menu__hamburger {
-  position: relative;
+.mega-menu__mobile-toggle-icon {
   width: 24px;
-  height: 18px;
+  height: 24px;
+  transition: transform var(--transition-fast);
 }
 
-.mega-menu__hamburger span {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: var(--color-navy);
-  border-radius: 2px;
-  transition: transform var(--transition-fast), opacity var(--transition-fast);
+.mega-menu__mobile-toggle.is-active .mega-menu__mobile-toggle-icon {
+  transform: rotate(90deg);
 }
 
-.mega-menu__hamburger span:nth-child(1) { top: 0; }
-.mega-menu__hamburger span:nth-child(2) { top: 50%; transform: translateY(-50%); }
-.mega-menu__hamburger span:nth-child(3) { bottom: 0; }
-
-.mega-menu__mobile-toggle.is-active .mega-menu__hamburger span:nth-child(1) {
-  transform: translateY(8px) rotate(45deg);
-}
-
-.mega-menu__mobile-toggle.is-active .mega-menu__hamburger span:nth-child(2) {
-  opacity: 0;
-}
-
-.mega-menu__mobile-toggle.is-active .mega-menu__hamburger span:nth-child(3) {
-  transform: translateY(-8px) rotate(-45deg);
+.mega-menu__mobile-toggle.is-active .mega-menu__mobile-toggle-icon path {
+  stroke: var(--color-green);
 }
 
 /* ==========================================================================
@@ -976,8 +958,8 @@
   color: var(--color-green);
 }
 
-.mega-menu--bold .mega-menu__hamburger span {
-  background-color: var(--color-white);
+.mega-menu--bold .mega-menu__mobile-toggle-icon path {
+  stroke: var(--color-white);
 }
 
 /* ==========================================================================
