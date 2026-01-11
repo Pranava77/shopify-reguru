@@ -9,6 +9,15 @@
  */
 {
   "sections": {
+    "announcement_bar_PEUW9J": {
+      "type": "announcement-bar",
+      "name": "Announcement Bar",
+      "settings": {
+        "text": "Welcome To ReGuru",
+        "background_color": "#1e1a5c",
+        "text_color": "#28d98e"
+      }
+    },
     "header_bX9UWd": {
       "type": "header",
       "name": "Header",
@@ -130,7 +139,7 @@
         "address_line_2": "sv road near mantri",
         "address_line_3": "mall seshadripuram",
         "address_line_4": "bengaluru 560020",
-        "map_image": "shopify://shop_images/Map_Image.png",
+        "map_image": "shopify://shop_images/ChatGPT_Image_Jan_11_2026_05_42_19_AM.png",
         "telephone_image": "shopify://shop_images/Telephone.png",
         "mail_icon_image": "shopify://shop_images/MailIco.png",
         "map_icon_image": "shopify://shop_images/MapIco.png",
@@ -265,15 +274,6 @@
         "address": "Address: 2nd floor central complex sv road near mantri mall seshadripuram bengaluru 560020",
         "background_color": "#041c66",
         "laptop_image": "shopify://shop_images/generated-image__20_-removebg-preview.png"
-      }
-    },
-    "announcement_bar_PEUW9J": {
-      "type": "announcement-bar",
-      "name": "Announcement Bar",
-      "settings": {
-        "text": "Welcome To ReGuru",
-        "background_color": "#1E1A5C",
-        "text_color": "#28D98E"
       }
     }
   },
