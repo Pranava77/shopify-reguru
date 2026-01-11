@@ -8,7 +8,7 @@
 <nav 
   class="mega-menu{% if enable_sticky %} mega-menu--sticky{% endif %} mega-menu--{{ menu_style }}"
   role="navigation"
-  aria-label="{{ 'general.accessibility.main_navigation' | t }}"
+  aria-label="{{ 'accessibility.main_navigation' | t }}"
   data-mega-menu
   {% if bg_image != blank %} style="background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}
 >
@@ -237,7 +237,7 @@
     <button 
       type="button" 
       class="mega-menu__mobile-toggle" 
-      aria-label="{{ 'general.accessibility.toggle_menu' | t }}"
+      aria-label="{{ 'accessibility.toggle_menu' | t }}"
       data-mobile-menu-toggle
     >
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="mega-menu__mobile-toggle-icon">
@@ -249,16 +249,33 @@
   </div>
   
   {%- comment -%} Mobile Menu Drawer {%- endcomment -%}
+  {%- liquid
+    assign franchise_url = '/pages/franchise'
+    if pages['franchise'] != blank
+      assign franchise_url = pages['franchise'].url
+    elsif pages['Franchise'] != blank
+      assign franchise_url = pages['Franchise'].url
+    endif
+  -%}
   <div class="mega-menu__mobile-drawer" data-mobile-drawer>
     <div class="mega-menu__mobile-header">
-      <span class="mega-menu__mobile-title">{{ 'general.navigation.menu' | t | default: 'Menu' }}</span>
-      <button type="button" class="mega-menu__mobile-close" data-mobile-menu-close aria-label="{{ 'general.accessibility.close_menu' | t }}">
+      <span class="mega-menu__mobile-title">{{ 'navigation.menu' | t | default: 'Menu' }}</span>
+      <button type="button" class="mega-menu__mobile-close" data-mobile-menu-close aria-label="{{ 'accessibility.close_menu' | t }}">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         </svg>
       </button>
     </div>
     <div class="mega-menu__mobile-content">
+      {%- comment -%} Reguru and Franchise Buttons {%- endcomment -%}
+      <div class="mega-menu__mobile-buttons">
+        <a href="{{ routes.root_url }}" class="mega-menu__mobile-button mega-menu__mobile-button--reguru">
+          <span class="mega-menu__mobile-button-text">ReGuru</span>
+        </a>
+        <a href="{{ franchise_url }}" class="mega-menu__mobile-button mega-menu__mobile-button--franchise">
+          <span class="mega-menu__mobile-button-text">Franchise</span>
+        </a>
+      </div>
       <ul class="mega-menu__mobile-list">
         {%- for block in section.blocks -%}
           {%- case block.type -%}
@@ -277,7 +294,7 @@
                     {{ block.settings.title }}
                   </a>
                   {%- if has_dropdown -%}
-                    <button type="button" class="mega-menu__mobile-expand" data-mobile-expand aria-label="{{ 'general.accessibility.expand_submenu' | t }}">
+                    <button type="button" class="mega-menu__mobile-expand" data-mobile-expand aria-label="{{ 'accessibility.expand_submenu' | t }}">
                       <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                         <path d="M6 2V10M2 6H10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                       </svg>
@@ -823,6 +840,56 @@
   flex: 1;
   overflow-y: auto;
   padding: 16px 0;
+}
+
+.mega-menu__mobile-buttons {
+  display: flex;
+  gap: 12px;
+  padding: 0 20px 16px 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  margin-bottom: 16px;
+}
+
+.mega-menu__mobile-button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.mega-menu__mobile-button--reguru {
+  background-color: var(--color-navy);
+  color: var(--color-white);
+  box-shadow: 2px 2px 0px 0px var(--color-black);
+}
+
+.mega-menu__mobile-button--reguru:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px 0px var(--color-black);
+}
+
+.mega-menu__mobile-button--franchise {
+  background-color: var(--color-green);
+  color: var(--color-black);
+  box-shadow: 2px 2px 0px 0px var(--color-black);
+}
+
+.mega-menu__mobile-button--franchise:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px 0px var(--color-black);
+}
+
+.mega-menu__mobile-button-text {
+  display: block;
 }
 
 .mega-menu__mobile-list {
