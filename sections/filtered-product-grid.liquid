@@ -1850,11 +1850,16 @@
       console.warn('Filter drawer not found');
       return;
     }
+    if (!filterPanel) {
+      console.warn('Filter panel not found');
+      return;
+    }
     filterDrawer.setAttribute('aria-hidden', 'false');
     document.body.classList.add('drawer-open');
     lockBodyScroll();
     // Force reflow to ensure transition works
     void filterDrawer.offsetWidth;
+    void filterPanel.offsetWidth;
   }
 
   function closeDrawer(e) {
@@ -1892,16 +1897,43 @@
         if (availabilityFilter && availabilityFilterDrawer) {
           availabilityFilterDrawer.checked = availabilityFilter.checked;
         }
-        // Sync checkboxes
-        checkboxes.forEach((cb, index) => {
-          const drawerCb = drawerCheckboxes[index];
-          if (drawerCb && cb.dataset.filterOption === drawerCb.dataset.filterOption && 
-              cb.dataset.filterValue === drawerCb.dataset.filterValue) {
+        // Sync checkboxes - match by filter type and value
+        checkboxes.forEach((cb) => {
+          const filterOption = cb.dataset.filterOption;
+          const filterTag = cb.dataset.filterTag;
+          const filterVendor = cb.dataset.filterVendor;
+          const filterValue = cb.dataset.filterValue || cb.value;
+          
+          // Find matching drawer checkbox
+          const drawerCb = Array.from(drawerCheckboxes).find(dc => {
+            const dcOption = dc.dataset.filterOption;
+            const dcTag = dc.dataset.filterTag;
+            const dcVendor = dc.dataset.filterVendor;
+            const dcValue = dc.dataset.filterValue || dc.value;
+            
+            // Match by option
+            if (filterOption && dcOption && filterOption === dcOption && filterValue === dcValue) {
+              return true;
+            }
+            // Match by tag
+            if (filterTag && dcTag && filterTag === dcTag && filterValue === dcValue) {
+              return true;
+            }
+            // Match by vendor
+            if (filterVendor !== undefined && dcVendor !== undefined && filterValue === dcValue) {
+              return true;
+            }
+            return false;
+          });
+          
+          if (drawerCb) {
             drawerCb.checked = cb.checked;
           }
         });
       }, 100);
     });
+  } else {
+    console.warn('Filter drawer trigger button not found');
   }
 
   if (filterDrawerClose) {
@@ -1931,18 +1963,7 @@
   // Prevent body scroll when drawer is open
   document.body.classList.remove('drawer-open');
 
-  // Mobile filters toggle (desktop collapse)
-  const filtersToggle = sectionElement.querySelector('[data-filters-toggle]');
-  const filtersContent = sectionElement.querySelector('[data-filters-content]');
-  
-  if (filtersToggle && filtersContent) {
-    filtersToggle.addEventListener('click', function() {
-      const isCollapsed = filtersContent.getAttribute('data-filters-collapsed') === 'true';
-      filtersContent.setAttribute('data-filters-collapsed', !isCollapsed);
-      filtersToggle.setAttribute('aria-expanded', isCollapsed);
-    });
-  }
-  
+  // Define all filter elements first (before drawer event listeners)
   const section = sectionElement;
   const priceMinInput = section.querySelector('[data-price-min]');
   const priceMaxInput = section.querySelector('[data-price-max]');
@@ -1959,6 +1980,18 @@
   const priceMaxSliderDrawer = section.querySelector('[data-slider-max-drawer]');
   const availabilityFilterDrawer = section.querySelector('[data-availability-filter-drawer]');
   const drawerCheckboxes = section.querySelectorAll('.filter__checkbox[data-filter-drawer]');
+
+  // Mobile filters toggle (desktop collapse)
+  const filtersToggle = sectionElement.querySelector('[data-filters-toggle]');
+  const filtersContent = sectionElement.querySelector('[data-filters-content]');
+  
+  if (filtersToggle && filtersContent) {
+    filtersToggle.addEventListener('click', function() {
+      const isCollapsed = filtersContent.getAttribute('data-filters-collapsed') === 'true';
+      filtersContent.setAttribute('data-filters-collapsed', !isCollapsed);
+      filtersToggle.setAttribute('aria-expanded', isCollapsed);
+    });
+  }
 
   // Get price range from data attributes or sliders
   const minPrice = productGrid ? parseInt(productGrid.dataset.minPrice) || (priceMinSlider ? parseInt(priceMinSlider.dataset.minPrice) : 0) : 0;
@@ -2407,6 +2440,22 @@
       }
     }
   });
+
+  // Initialize drawer state - ensure it starts closed
+  if (filterDrawer) {
+    filterDrawer.setAttribute('aria-hidden', 'true');
+  }
+
+  // Debug: Log drawer initialization (can be removed in production)
+  if (filterDrawerTrigger && filterDrawer && filterPanel) {
+    console.log('Filter drawer initialized successfully');
+  } else {
+    console.warn('Filter drawer elements missing:', {
+      trigger: !!filterDrawerTrigger,
+      drawer: !!filterDrawer,
+      panel: !!filterPanel
+    });
+  }
 })();
 {% endjavascript %}
 
