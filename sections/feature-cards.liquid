@@ -189,9 +189,12 @@
 .feature-card__content {
   position: absolute;
   top: 15%;
-  left: 10%;
-  right: 25%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  max-width: 80%;
   z-index: 2;
+  text-align: center;
 }
 
 .feature-card__title {
@@ -204,6 +207,7 @@
   letter-spacing: 1px;
   text-transform: capitalize;
   margin: 0;
+  text-align: center;
 }
 
 .feature-card__icon {
@@ -285,9 +289,11 @@
 
   .feature-card__content {
     top: 10%;
-    left: 8%;
-    right: 8%;
-    max-width: calc(100% - 16%);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 85%;
+    max-width: 85%;
+    text-align: center;
   }
 
   .feature-card__title {
@@ -297,6 +303,7 @@
     overflow-wrap: break-word;
     hyphens: auto;
     max-width: 100%;
+    text-align: center;
   }
 }
 
@@ -310,9 +317,11 @@
 
   .feature-card__content {
     top: 8%;
-    left: 6%;
-    right: 6%;
-    max-width: calc(100% - 12%);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 88%;
+    max-width: 88%;
+    text-align: center;
   }
 
   .feature-card__title {
@@ -322,6 +331,7 @@
     overflow-wrap: break-word;
     hyphens: auto;
     max-width: 100%;
+    text-align: center;
   }
 }
 {% endstylesheet %}
