@@ -26,9 +26,9 @@
         {%- endfor -%}
 
         {%- if section.blocks.size == 0 -%}
-          <button type="button" class="faq__tab tab--pill active" data-tab-id="general">General</button>
-          <button type="button" class="faq__tab tab--pill" data-tab-id="services">services</button>
-          <button type="button" class="faq__tab tab--pill" data-tab-id="business">Business</button>
+          <button type="button" class="faq__tab tab--pill active" data-tab-id="general">{{ 'sections.faq.general' | t }}</button>
+          <button type="button" class="faq__tab tab--pill" data-tab-id="services">{{ 'sections.faq.services' | t }}</button>
+          <button type="button" class="faq__tab tab--pill" data-tab-id="business">{{ 'sections.faq.business' | t }}</button>
         {%- endif -%}
       </div>
 
