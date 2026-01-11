@@ -1130,6 +1130,7 @@ class ThemeUtils {
       if (headerMenuToggle) headerMenuToggle.classList.add('is-active');
       if (mobileDrawer) mobileDrawer.classList.add('is-open');
       if (overlay) overlay.classList.add('is-active');
+      document.body.classList.add('mobile-menu-open');
       document.body.style.overflow = 'hidden';
     };
 
@@ -1138,6 +1139,7 @@ class ThemeUtils {
       if (headerMenuToggle) headerMenuToggle.classList.remove('is-active');
       if (mobileDrawer) mobileDrawer.classList.remove('is-open');
       if (overlay) overlay.classList.remove('is-active');
+      document.body.classList.remove('mobile-menu-open');
       document.body.style.overflow = '';
     };
 
