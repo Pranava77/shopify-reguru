@@ -3,6 +3,12 @@
   assign menu_style = section.settings.menu_style
   assign promo_position = section.settings.promo_position
   assign bg_image = section.settings.background_image
+  assign show_reguru_button = section.settings.show_reguru_button
+  assign show_franchise_button = section.settings.show_franchise_button
+  assign reguru_button_text = section.settings.reguru_button_text | default: 'ReGuru'
+  assign franchise_button_text = section.settings.franchise_button_text | default: 'Franchise'
+  assign sidebar_width = section.settings.sidebar_width | default: 380
+  assign sidebar_header_bg = section.settings.sidebar_header_bg | default: '#1E1A5C'
 -%}
 
 <nav 
@@ -257,8 +263,8 @@
       assign franchise_url = pages['Franchise'].url
     endif
   -%}
-  <div class="mega-menu__mobile-drawer" data-mobile-drawer>
-    <div class="mega-menu__mobile-header">
+  <div class="mega-menu__mobile-drawer" data-mobile-drawer style="max-width: {{ sidebar_width }}px;">
+    <div class="mega-menu__mobile-header" style="background-color: {{ sidebar_header_bg }};">
       <span class="mega-menu__mobile-title">{{ 'navigation.menu' | t | default: 'Menu' }}</span>
       <button type="button" class="mega-menu__mobile-close" data-mobile-menu-close aria-label="{{ 'accessibility.close_menu' | t }}">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -268,14 +274,20 @@
     </div>
     <div class="mega-menu__mobile-content">
       {%- comment -%} Reguru and Franchise Buttons {%- endcomment -%}
-      <div class="mega-menu__mobile-buttons">
-        <a href="{{ routes.root_url }}" class="mega-menu__mobile-button mega-menu__mobile-button--reguru">
-          <span class="mega-menu__mobile-button-text">ReGuru</span>
-        </a>
-        <a href="{{ franchise_url }}" class="mega-menu__mobile-button mega-menu__mobile-button--franchise">
-          <span class="mega-menu__mobile-button-text">Franchise</span>
-        </a>
-      </div>
+      {%- if show_reguru_button or show_franchise_button -%}
+        <div class="mega-menu__mobile-buttons">
+          {%- if show_reguru_button -%}
+            <a href="{{ routes.root_url }}" class="mega-menu__mobile-button mega-menu__mobile-button--reguru">
+              <span class="mega-menu__mobile-button-text">{{ reguru_button_text }}</span>
+            </a>
+          {%- endif -%}
+          {%- if show_franchise_button -%}
+            <a href="{{ franchise_url }}" class="mega-menu__mobile-button mega-menu__mobile-button--franchise">
+              <span class="mega-menu__mobile-button-text">{{ franchise_button_text }}</span>
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
       <ul class="mega-menu__mobile-list">
         {%- for block in section.blocks -%}
           {%- case block.type -%}
@@ -786,9 +798,9 @@
   max-width: 380px;
   height: 100vh;
   background-color: var(--color-white);
-  border: 1px solid rgba(0, 0, 0, 1);
+  border: 2px solid var(--color-black);
   border-left: none;
-  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-lg);
   transform: translateX(-100%);
   transition: transform var(--transition-base);
   z-index: 99999;
@@ -806,14 +818,15 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  border-bottom: 1px solid var(--color-black);
+  border-bottom: 2px solid var(--color-black);
   background-color: var(--color-navy);
+  box-shadow: 0px 2px 0px 0px var(--color-black);
 }
 
 .mega-menu__mobile-title {
   font-family: var(--font-heading);
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-white);
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -823,17 +836,25 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  background: none;
-  border: none;
+  width: 40px;
+  height: 40px;
+  background-color: var(--color-white);
+  border: 2px solid var(--color-black);
+  border-radius: var(--radius-xs);
   cursor: pointer;
-  color: var(--color-white);
-  transition: transform var(--transition-fast);
+  color: var(--color-navy);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  box-shadow: var(--shadow-sm);
 }
 
 .mega-menu__mobile-close:hover {
-  transform: rotate(90deg);
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px 0px var(--color-black);
+}
+
+.mega-menu__mobile-close:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px 0px var(--color-black);
 }
 
 .mega-menu__mobile-content {
@@ -845,9 +866,9 @@
 .mega-menu__mobile-buttons {
   display: flex;
   gap: 12px;
-  padding: 0 20px 16px 20px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  margin-bottom: 16px;
+  padding: 0 20px 20px 20px;
+  border-bottom: 2px solid var(--color-black);
+  margin-bottom: 20px;
 }
 
 .mega-menu__mobile-button {
@@ -856,36 +877,36 @@
   align-items: center;
   justify-content: center;
   padding: 12px 20px;
-  font-family: var(--font-heading);
-  font-size: 14px;
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   text-decoration: none;
-  border-radius: 6px;
+  border: 2px solid var(--color-black);
+  border-radius: var(--radius-xs);
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.mega-menu__mobile-button:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px 0px var(--color-black);
+}
+
+.mega-menu__mobile-button:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px 0px var(--color-black);
 }
 
 .mega-menu__mobile-button--reguru {
   background-color: var(--color-navy);
   color: var(--color-white);
-  box-shadow: 2px 2px 0px 0px var(--color-black);
-}
-
-.mega-menu__mobile-button--reguru:active {
-  transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0px 0px var(--color-black);
 }
 
 .mega-menu__mobile-button--franchise {
   background-color: var(--color-green);
   color: var(--color-black);
-  box-shadow: 2px 2px 0px 0px var(--color-black);
-}
-
-.mega-menu__mobile-button--franchise:active {
-  transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0px 0px var(--color-black);
 }
 
 .mega-menu__mobile-button-text {
@@ -898,7 +919,11 @@
 }
 
 .mega-menu__mobile-item {
-  border-bottom: 1px solid rgba(0,0,0,0.08);
+  border-bottom: 2px solid var(--color-black);
+}
+
+.mega-menu__mobile-item:last-child {
+  border-bottom: none;
 }
 
 .mega-menu__mobile-item-header {
@@ -911,16 +936,19 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 14px 20px;
+  padding: 16px 20px;
   font-family: var(--font-heading);
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--color-navy);
-  transition: background-color var(--transition-fast);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 
 .mega-menu__mobile-link:hover {
-  background-color: rgba(40, 217, 142, 0.1);
+  background-color: var(--color-green);
+  color: var(--color-black);
 }
 
 .mega-menu__mobile-expand {
@@ -929,15 +957,19 @@
   justify-content: center;
   width: 44px;
   height: 44px;
-  background: none;
-  border: none;
+  background-color: var(--color-white);
+  border: 2px solid var(--color-black);
+  border-left: none;
+  border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
   cursor: pointer;
   color: var(--color-navy);
-  transition: transform var(--transition-fast), background-color var(--transition-fast);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
+  box-shadow: var(--shadow-xs);
 }
 
 .mega-menu__mobile-expand:hover {
-  background-color: rgba(0,0,0,0.05);
+  background-color: var(--color-green);
+  box-shadow: 2px 2px 0px 0px var(--color-black);
 }
 
 .mega-menu__mobile-expand.is-expanded {
@@ -946,7 +978,9 @@
 
 .mega-menu__mobile-submenu {
   display: none;
-  padding: 0 20px 16px 32px;
+  padding: 16px 20px 16px 32px;
+  background-color: rgba(40, 217, 142, 0.05);
+  border-top: 2px solid var(--color-black);
 }
 
 .mega-menu__mobile-submenu.is-open {
@@ -958,30 +992,39 @@
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
-  color: var(--color-text-secondary);
+  color: var(--color-navy);
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin: 12px 0 8px;
-  padding-bottom: 4px;
-  border-bottom: 1px solid var(--color-gray);
+  margin: 0 0 12px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--color-black);
 }
 
 .mega-menu__mobile-sublist {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 0;
 }
 
 .mega-menu__mobile-sublink {
   display: block;
-  padding: 8px 0;
+  padding: 12px 0;
+  font-family: var(--font-body);
   font-size: 14px;
-  color: var(--color-text-secondary);
-  transition: color var(--transition-fast);
+  font-weight: 500;
+  color: var(--color-text);
+  text-transform: capitalize;
+  transition: color var(--transition-fast), transform var(--transition-fast);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.mega-menu__mobile-sublink:last-child {
+  border-bottom: none;
 }
 
 .mega-menu__mobile-sublink:hover {
-  color: var(--color-green);
+  color: var(--color-navy);
+  transform: translateX(4px);
 }
 
 /* Overlay */
@@ -1098,6 +1141,60 @@
       "type": "image_picker",
       "id": "background_image",
       "label": "Background Image"
+    },
+    {
+      "type": "header",
+      "content": "Mobile Sidebar Settings"
+    },
+    {
+      "type": "range",
+      "id": "sidebar_width",
+      "label": "Sidebar width",
+      "min": 300,
+      "max": 500,
+      "step": 10,
+      "default": 380,
+      "unit": "px",
+      "info": "Width of the mobile menu sidebar"
+    },
+    {
+      "type": "color",
+      "id": "sidebar_header_bg",
+      "label": "Sidebar header background",
+      "default": "#1E1A5C",
+      "info": "Background color for the sidebar header"
+    },
+    {
+      "type": "header",
+      "content": "Sidebar Buttons"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_reguru_button",
+      "label": "Show ReGuru button",
+      "default": true,
+      "info": "Display the ReGuru button at the top of the sidebar"
+    },
+    {
+      "type": "text",
+      "id": "reguru_button_text",
+      "label": "ReGuru button text",
+      "default": "ReGuru",
+      "info": "Text displayed on the ReGuru button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_franchise_button",
+      "label": "Show Franchise button",
+      "default": true,
+      "info": "Display the Franchise button at the top of the sidebar"
+    },
+    {
+      "type": "text",
+      "id": "franchise_button_text",
+      "label": "Franchise button text",
+      "default": "Franchise",
+      "info": "Text displayed on the Franchise button"
     }
   ],
   "blocks": [
