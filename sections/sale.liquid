@@ -725,6 +725,8 @@
   box-shadow: var(--shadow-md);
   cursor: pointer;
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  width: 100%;
+  justify-content: center;
 }
 
 .sale-section__filter-trigger:hover {
@@ -752,13 +754,18 @@
   bottom: 0;
   z-index: 9999;
   pointer-events: none;
-}
-
-.sale-section__filter-drawer[aria-hidden="true"] {
+  display: none;
   visibility: hidden;
 }
 
+@media screen and (max-width: 768px) {
+  .sale-section__filter-drawer {
+    display: block;
+  }
+}
+
 .sale-section__filter-drawer[aria-hidden="false"] {
+  display: block;
   visibility: visible;
   pointer-events: all;
 }
@@ -788,15 +795,16 @@
   background-color: var(--color-white);
   box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
   transform: translateX(100%);
-  transition: transform var(--transition-base);
+  transition: transform 0.3s ease-in-out;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  will-change: transform;
 }
 
 .sale-section__filter-drawer[aria-hidden="false"] .sale-section__filter-panel {
-  transform: translateX(0);
+  transform: translateX(0) !important;
 }
 
 .sale-section__filter-drawer-header {
@@ -997,7 +1005,7 @@
 
   /* Show mobile filter trigger button */
   .sale-section__filter-trigger {
-    display: flex;
+    display: flex !important;
   }
 
   .sale-section__products {
@@ -1190,37 +1198,67 @@
   }
 
   // Drawer open/close functions
-  function openDrawer() {
-    if (!filterDrawer) return;
+  function openDrawer(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    if (!filterDrawer) {
+      return;
+    }
     filterDrawer.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('drawer-open');
     lockBodyScroll();
+    // Force reflow to ensure transition works
+    void filterDrawer.offsetWidth;
   }
 
-  function closeDrawer() {
+  function closeDrawer(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     if (!filterDrawer) return;
     filterDrawer.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('drawer-open');
     unlockBodyScroll();
   }
 
   // Drawer event listeners
   if (filterDrawerTrigger) {
-    filterDrawerTrigger.addEventListener('click', openDrawer);
+    filterDrawerTrigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      openDrawer(e);
+    });
   }
 
   if (filterDrawerClose) {
-    filterDrawerClose.addEventListener('click', closeDrawer);
+    filterDrawerClose.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      closeDrawer(e);
+    });
   }
 
   if (filterOverlay) {
-    filterOverlay.addEventListener('click', closeDrawer);
+    filterOverlay.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      closeDrawer(e);
+    });
   }
 
   // Escape key to close drawer
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape' && filterDrawer && filterDrawer.getAttribute('aria-hidden') === 'false') {
+      e.preventDefault();
       closeDrawer();
     }
   });
+
+  // Prevent body scroll when drawer is open
+  document.body.classList.remove('drawer-open');
 
   // Filter toggle functionality (works for both desktop and drawer)
   function initializeFilterToggles() {
