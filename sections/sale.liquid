@@ -177,28 +177,14 @@
           </svg>
           <span>Filters</span>
         </button>
-        <div class="sale-section__carousel-wrapper">
-          <div class="sale-section__carousel" data-sale-carousel>
-            <button type="button" class="sale-section__carousel-btn sale-section__carousel-btn--prev" data-carousel-prev aria-label="Previous products">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
-            <div class="sale-section__products-grid" data-products-grid data-carousel-track>
-              {%- if collection != blank and collection.products.size > 0 -%}
-                {%- for product in collection.products limit: products_to_show -%}
-                  {%- render 'product-card', product: product, show_discount: true, show_rating: true -%}
-                {%- endfor -%}
-              {%- else -%}
-                <p class="sale-section__empty">{{ 'sections.sale.no_products' | t | default: 'No products available.' }}</p>
-              {%- endif -%}
-            </div>
-            <button type="button" class="sale-section__carousel-btn sale-section__carousel-btn--next" data-carousel-next aria-label="Next products">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
-          </div>
+        <div class="sale-section__products-grid" data-products-grid>
+          {%- if collection != blank and collection.products.size > 0 -%}
+            {%- for product in collection.products limit: products_to_show -%}
+              {%- render 'product-card', product: product, show_discount: true, show_rating: true -%}
+            {%- endfor -%}
+          {%- else -%}
+            <p class="sale-section__empty">{{ 'sections.sale.no_products' | t | default: 'No products available.' }}</p>
+          {%- endif -%}
         </div>
       </div>
     </div>
@@ -669,67 +655,12 @@
 
 .sale-section__products {
   flex: 1;
-  position: relative;
-}
-
-.sale-section__carousel-wrapper {
-  position: relative;
-}
-
-.sale-section__carousel {
-  position: relative;
-  overflow: hidden;
 }
 
 .sale-section__products-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 18px;
-  transition: transform 0.3s ease-in-out;
-}
-
-/* Carousel Navigation Buttons */
-.sale-section__carousel-btn {
-  display: none;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  width: 48px;
-  height: 48px;
-  background-color: var(--color-white);
-  border: 2px solid var(--color-black);
-  border-radius: 50%;
-  box-shadow: var(--shadow-md);
-  cursor: pointer;
-  align-items: center;
-  justify-content: center;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
-  padding: 0;
-}
-
-.sale-section__carousel-btn:hover {
-  transform: translateY(-50%) translate(-2px, -2px);
-  box-shadow: var(--shadow-lg);
-}
-
-.sale-section__carousel-btn:active {
-  transform: translateY(-50%) translate(2px, 2px);
-  box-shadow: var(--shadow-xs);
-}
-
-.sale-section__carousel-btn--prev {
-  left: -24px;
-}
-
-.sale-section__carousel-btn--next {
-  right: -24px;
-}
-
-.sale-section__carousel-btn svg {
-  width: 24px;
-  height: 24px;
-  color: var(--color-black);
 }
 
 .sale-section__empty {
@@ -1081,54 +1012,9 @@
     position: relative;
   }
 
-  .sale-section__carousel {
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scroll-behavior: smooth;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
-    padding: 0 56px;
-    margin: 0 -16px;
-    position: relative;
-  }
-
-  .sale-section__carousel::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
-  }
-
   .sale-section__products-grid {
-    display: flex;
-    flex-direction: row;
+    grid-template-columns: repeat(2, 1fr);
     gap: 16px;
-    grid-template-columns: none;
-    width: max-content;
-  }
-
-  .sale-section__products-grid .product-card {
-    flex: 0 0 calc(50vw - 56px);
-    min-width: calc(50vw - 56px);
-    max-width: calc(50vw - 56px);
-  }
-
-  /* Show carousel navigation buttons on mobile */
-  .sale-section__carousel-btn {
-    display: flex;
-    width: 40px;
-    height: 40px;
-  }
-
-  .sale-section__carousel-btn svg {
-    width: 20px;
-    height: 20px;
-  }
-
-  .sale-section__carousel-btn--prev {
-    left: 4px;
-  }
-
-  .sale-section__carousel-btn--next {
-    right: 4px;
   }
 
   .sale-section__franchise-button {
@@ -1351,43 +1237,26 @@
 
     // Drawer event listeners - use both direct and event delegation for maximum reliability
     if (filterDrawerTrigger) {
-      // Check if listener already attached
-      if (!filterDrawerTrigger.hasAttribute('data-listener-attached')) {
-        // Direct event listener
-        filterDrawerTrigger.addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          openDrawer(e);
-        });
-        filterDrawerTrigger.setAttribute('data-listener-attached', 'true');
-        console.log('Filter drawer trigger button found and listener attached');
-      }
+      // Direct event listener
+      filterDrawerTrigger.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        openDrawer(e);
+      });
+      console.log('Filter drawer trigger button found and listener attached');
     } else {
       console.warn('Filter drawer trigger button not found initially');
     }
     
     // Event delegation as fallback (catches clicks even if element is added dynamically)
-    // Only add once globally
-    if (!document.hasAttribute('data-filter-delegation-attached')) {
-      document.addEventListener('click', function(e) {
-        const trigger = e.target.closest('[data-filter-drawer-trigger]');
-        if (trigger) {
-          const section = trigger.closest('[id^="sale-"]');
-          if (section) {
-            e.preventDefault();
-            e.stopPropagation();
-            const drawer = section.querySelector('[data-filter-drawer]');
-            if (drawer) {
-              drawer.setAttribute('aria-hidden', 'false');
-              document.body.classList.add('drawer-open');
-              document.body.style.overflow = 'hidden';
-              void drawer.offsetWidth;
-            }
-          }
-        }
-      });
-      document.setAttribute('data-filter-delegation-attached', 'true');
-    }
+    document.addEventListener('click', function(e) {
+      const trigger = e.target.closest('[data-filter-drawer-trigger]');
+      if (trigger && saleSection.contains(trigger)) {
+        e.preventDefault();
+        e.stopPropagation();
+        openDrawer(e);
+      }
+    });
 
     if (filterDrawerClose) {
       filterDrawerClose.addEventListener('click', function(e) {
@@ -1731,159 +1600,13 @@
     });
   }
 
-  // Initialize product carousel
-  function initSaleCarousel() {
-    if (!saleSection) return;
-    const carousel = saleSection.querySelector('[data-sale-carousel]');
-    if (!carousel) return;
-
-    const track = carousel.querySelector('[data-carousel-track]');
-    const prevBtn = carousel.querySelector('[data-carousel-prev]');
-    const nextBtn = carousel.querySelector('[data-carousel-next]');
-
-    if (!track || !prevBtn || !nextBtn) return;
-
-    const cards = Array.from(track.querySelectorAll('.product-card'));
-    if (cards.length === 0) return;
-
-    let currentIndex = 0;
-    const isMobile = window.innerWidth <= 768;
-
-    function updateButtons() {
-      if (!isMobile) {
-        prevBtn.style.display = 'none';
-        nextBtn.style.display = 'none';
-        return;
-      }
-
-      prevBtn.style.display = currentIndex > 0 ? 'flex' : 'none';
-      const maxIndex = Math.max(0, cards.length - 1);
-      nextBtn.style.display = currentIndex < maxIndex ? 'flex' : 'none';
-    }
-
-    function scrollToIndex(index) {
-      if (index < 0 || index >= cards.length) return;
-
-      const card = cards[index];
-      if (!card) return;
-
-      currentIndex = index;
-
-      const trackRect = track.getBoundingClientRect();
-      const cardRect = card.getBoundingClientRect();
-      const trackScrollLeft = track.scrollLeft;
-      const cardLeftInContent = trackScrollLeft + (cardRect.left - trackRect.left);
-      const trackWidth = trackRect.width;
-      const cardWidth = cardRect.width;
-      const scrollPosition = cardLeftInContent - (trackWidth / 2) + (cardWidth / 2);
-      const maxScroll = Math.max(0, track.scrollWidth - trackWidth);
-      const finalScroll = Math.max(0, Math.min(scrollPosition, maxScroll));
-
-      track.scrollTo({
-        left: finalScroll,
-        behavior: 'smooth'
-      });
-
-      updateButtons();
-    }
-
-    function updateCurrentIndex() {
-      if (!isMobile) return;
-
-      const trackRect = track.getBoundingClientRect();
-      const trackCenter = trackRect.left + trackRect.width / 2;
-
-      let closestIndex = 0;
-      let closestDistance = Infinity;
-
-      cards.forEach((card, index) => {
-        const cardRect = card.getBoundingClientRect();
-        const cardCenter = cardRect.left + cardRect.width / 2;
-        const distance = Math.abs(cardCenter - trackCenter);
-
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          closestIndex = index;
-        }
-      });
-
-      if (closestIndex !== currentIndex) {
-        currentIndex = closestIndex;
-        updateButtons();
-      }
-    }
-
-    const handlePrevClick = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (currentIndex > 0) {
-        scrollToIndex(currentIndex - 1);
-      }
-    };
-
-    const handleNextClick = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (currentIndex < cards.length - 1) {
-        scrollToIndex(currentIndex + 1);
-      }
-    };
-
-    prevBtn.addEventListener('click', handlePrevClick);
-    nextBtn.addEventListener('click', handleNextClick);
-    prevBtn.addEventListener('touchend', handlePrevClick);
-    nextBtn.addEventListener('touchend', handleNextClick);
-
-    track.addEventListener('scroll', updateCurrentIndex, { passive: true });
-
-    let resizeTimer;
-    const handleResize = () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => {
-        updateButtons();
-        updateCurrentIndex();
-      }, 250);
-    };
-    window.addEventListener('resize', handleResize);
-
-    // Initial button state
-    requestAnimationFrame(() => {
-      updateButtons();
-    });
-  }
-
-  // Initialize carousel after all other initialization
-  initSaleCarousel();
-  }
-
   // Initialize when DOM is ready
-  function tryInit() {
-    const saleSection = document.querySelector('[id^="sale-"]');
-    if (saleSection) {
-      initSaleSection();
-    } else {
-      // Retry after a short delay if section not found
-      setTimeout(tryInit, 100);
-    }
-  }
-
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', tryInit);
+    document.addEventListener('DOMContentLoaded', initSaleSection);
   } else {
     // DOM already loaded, but wait a tick to ensure all elements are rendered
-    setTimeout(tryInit, 0);
+    setTimeout(initSaleSection, 0);
   }
-
-  // Also try on page load in case of dynamic loading
-  window.addEventListener('load', () => {
-    const saleSection = document.querySelector('[id^="sale-"]');
-    if (saleSection) {
-      const trigger = saleSection.querySelector('[data-filter-drawer-trigger]');
-      if (trigger && !trigger.hasAttribute('data-listener-attached')) {
-        initSaleSection();
-      }
-    }
-  });
 })();
 {% endjavascript %}
 
