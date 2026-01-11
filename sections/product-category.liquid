@@ -358,6 +358,7 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 24px;
+  position: relative;
 }
 
 .product-category__empty {
@@ -367,6 +368,7 @@
   font-family: var(--font-body);
   font-size: 16px;
   color: var(--color-text-secondary);
+  width: 100%;
 }
 
 @media screen and (max-width: 1200px) {
@@ -517,14 +519,44 @@
     margin: 0;
   }
 
+  /* Convert to centered carousel on mobile */
   .product-category__products {
-    grid-template-columns: repeat(2, 1fr);
+    display: flex !important;
+    grid-template-columns: none !important;
     gap: 16px;
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-left: 7.5%;
+    padding-right: calc(7.5% + 4px);
+    padding-bottom: 4px;
+    margin: 0 calc(-1 * 16px);
+    position: relative;
+  }
+
+  .product-category__products::-webkit-scrollbar {
+    display: none;
+  }
+
+  .product-category__products .product-card {
+    flex: 0 0 85%;
+    min-width: 85%;
+    max-width: 85%;
+    scroll-snap-align: center;
+    box-shadow: 4px 4px 0px 0px var(--color-black);
   }
 
   .product-category__empty {
     padding: 32px 16px;
     font-size: 14px;
+    flex: 1 1 100%;
+    min-width: 100%;
+    text-align: center;
+    scroll-snap-align: none;
   }
 }
 
@@ -614,14 +646,44 @@
     height: 16px;
   }
 
+  /* Enhanced centered carousel for small mobile */
   .product-category__products {
-    grid-template-columns: 1fr;
+    display: flex !important;
+    grid-template-columns: none !important;
     gap: 16px;
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-left: 5%;
+    padding-right: calc(5% + 4px);
+    padding-bottom: 4px;
+    margin: 0 calc(-1 * 12px);
+    position: relative;
+  }
+
+  .product-category__products::-webkit-scrollbar {
+    display: none;
+  }
+
+  .product-category__products .product-card {
+    flex: 0 0 90%;
+    min-width: 90%;
+    max-width: 90%;
+    scroll-snap-align: center;
+    box-shadow: 4px 4px 0px 0px var(--color-black);
   }
 
   .product-category__empty {
     padding: 24px 12px;
     font-size: 13px;
+    flex: 1 1 100%;
+    min-width: 100%;
+    text-align: center;
+    scroll-snap-align: none;
   }
 }
 {% endstylesheet %}
