@@ -1456,11 +1456,16 @@
       document.body.style.overflow = '';
     }
 
+    // Store reference to trigger button for focus management
+    let drawerTriggerButton = null;
+
     // Drawer open/close functions
     function openDrawer(e) {
       if (e) {
         e.preventDefault();
         e.stopPropagation();
+        // Store the trigger button that opened the drawer
+        drawerTriggerButton = e.target.closest('[data-filter-drawer-trigger]') || filterDrawerTrigger;
       }
       if (!filterDrawer) {
         console.warn('Filter drawer not found');
@@ -1471,6 +1476,13 @@
       lockBodyScroll();
       // Force reflow to ensure transition works
       void filterDrawer.offsetWidth;
+      
+      // Focus the first focusable element in the drawer (close button)
+      if (filterDrawerClose) {
+        setTimeout(() => {
+          filterDrawerClose.focus();
+        }, 100);
+      }
     }
 
     function closeDrawer(e) {
@@ -1479,9 +1491,24 @@
         e.stopPropagation();
       }
       if (!filterDrawer) return;
+      
+      // Remove focus from any focused element inside the drawer before hiding
+      const activeElement = document.activeElement;
+      if (activeElement && filterDrawer.contains(activeElement)) {
+        activeElement.blur();
+      }
+      
+      // Set aria-hidden before returning focus
       filterDrawer.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('drawer-open');
       unlockBodyScroll();
+      
+      // Return focus to the trigger button that opened the drawer
+      if (drawerTriggerButton && typeof drawerTriggerButton.focus === 'function') {
+        setTimeout(() => {
+          drawerTriggerButton.focus();
+        }, 100);
+      }
     }
 
     // Drawer event listeners
