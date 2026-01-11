@@ -248,15 +248,43 @@
             <div class="filtered-product-grid__products" data-product-grid data-collection-handle="{{ collection_obj.handle | default: '' }}" data-min-price="{{ min_price }}" data-max-price="{{ max_price }}">
           {%- if collection_obj != blank and collection_obj.products.size > 0 -%}
             {%- for product in collection_obj.products limit: products_per_page -%}
-              <article class="filtered-product-card">
-                {%- liquid
-                  assign compare_at_price = product.compare_at_price
-                  assign price = product.price
-                  
-                  if compare_at_price > price
-                    assign discount_percentage = compare_at_price | minus: price | times: 100 | divided_by: compare_at_price | round
-                  endif
-                -%}
+              {%- liquid
+                assign compare_at_price = product.compare_at_price
+                assign price = product.price
+                
+                if compare_at_price > price
+                  assign discount_percentage = compare_at_price | minus: price | times: 100 | divided_by: compare_at_price | round
+                endif
+                
+                comment
+                  Build data attributes for filtering
+                endcomment
+                assign product_data_options = ''
+                assign product_data_tags = ''
+                assign product_data_vendor = product.vendor | handleize
+                
+                for option in product.options_with_values
+                  assign option_name_handle = option.name | handleize
+                  for value in option.values
+                    assign value_handle = value | handleize
+                    assign product_data_options = product_data_options | append: option_name_handle | append: ':' | append: value_handle | append: ','
+                  endfor
+                endfor
+                
+                for tag in product.tags
+                  comment
+                    Store tag as-is (Shopify tags can have colons, dashes, etc.)
+                    We'll handleize during comparison in JavaScript
+                  endcomment
+                  assign product_data_tags = product_data_tags | append: tag | append: ','
+                endfor
+              -%}
+              <article class="filtered-product-card" 
+                data-product-price="{{ price }}"
+                data-product-vendor="{{ product_data_vendor }}"
+                data-product-options="{{ product_data_options }}"
+                data-product-tags="{{ product_data_tags }}"
+              >
                 {%- if discount_percentage -%}
                   <div class="filtered-product-card__badge">
                     {{ discount_percentage }}% off
@@ -2021,14 +2049,30 @@
     const selectedFilters = {};
     [...checkboxes, ...drawerCheckboxes].forEach(checkbox => {
       if (checkbox.checked) {
-        const filterType = checkbox.dataset.filterOption || checkbox.dataset.filterTag || checkbox.dataset.filterVendor;
-        const filterValue = checkbox.dataset.filterValue || checkbox.value;
+        let filterType = '';
+        let filterValue = '';
         
-        if (!selectedFilters[filterType]) {
-          selectedFilters[filterType] = [];
+        // Determine filter type and value
+        if (checkbox.dataset.filterOption) {
+          filterType = 'option-' + checkbox.dataset.filterOption;
+          filterValue = checkbox.dataset.filterValue || checkbox.value;
+        } else if (checkbox.dataset.filterTag) {
+          filterType = 'tag-' + checkbox.dataset.filterTag;
+          filterValue = checkbox.dataset.filterValue || checkbox.value;
+        } else if (checkbox.dataset.filterVendor !== undefined) {
+          filterType = 'vendor';
+          filterValue = checkbox.dataset.filterValue || checkbox.value;
         }
-        if (!selectedFilters[filterType].includes(filterValue)) {
-          selectedFilters[filterType].push(filterValue);
+        
+        if (filterType && filterValue) {
+          if (!selectedFilters[filterType]) {
+            selectedFilters[filterType] = [];
+          }
+          // Normalize filter value to handleize format for comparison
+          const normalizedValue = filterValue.toLowerCase().trim();
+          if (!selectedFilters[filterType].includes(normalizedValue)) {
+            selectedFilters[filterType].push(normalizedValue);
+          }
         }
       }
     });
@@ -2039,13 +2083,9 @@
       let shouldShow = true;
 
       // Price filter
-      const priceElement = product.querySelector('.filtered-product-card__price');
-      if (priceElement) {
-        const priceText = priceElement.textContent.trim();
-        const productPrice = parsePrice(priceText);
-        if (productPrice < currentMinPrice || productPrice > currentMaxPrice) {
-          shouldShow = false;
-        }
+      const productPrice = parseInt(product.dataset.productPrice) || 0;
+      if (productPrice < currentMinPrice || productPrice > currentMaxPrice) {
+        shouldShow = false;
       }
 
       // Availability filter
@@ -2058,9 +2098,105 @@
         }
       }
 
-      // Other filters (would need product data attributes or API calls)
-      // This is a simplified version - full implementation would require
-      // product data to be available in data attributes
+      // Filter by selected options, tags, and vendor
+      if (shouldShow && Object.keys(selectedFilters).length > 0) {
+        for (const [filterType, filterValues] of Object.entries(selectedFilters)) {
+          if (filterValues.length === 0) continue;
+          
+          let matchesFilter = false;
+          
+          // Check vendor filter
+          if (filterType === 'vendor') {
+            const productVendor = (product.dataset.productVendor || '').toLowerCase().trim();
+            if (filterValues.some(value => productVendor === value.toLowerCase().trim())) {
+              matchesFilter = true;
+            }
+          }
+          // Check option filters
+          else if (filterType.startsWith('option-')) {
+            const productOptions = (product.dataset.productOptions || '').split(',').filter(Boolean);
+            const filterKey = filterType.replace('option-', '').toLowerCase().trim();
+            
+            for (const filterValue of filterValues) {
+              const normalizedFilterValue = filterValue.toLowerCase().trim();
+              for (const option of productOptions) {
+                const [optionName, optionValue] = option.split(':');
+                const normalizedOptionName = (optionName || '').toLowerCase().trim();
+                const normalizedOptionValue = (optionValue || '').toLowerCase().trim();
+                if (normalizedOptionName === filterKey && normalizedOptionValue === normalizedFilterValue) {
+                  matchesFilter = true;
+                  break;
+                }
+              }
+              if (matchesFilter) break;
+            }
+          }
+          // Check tag filters
+          else if (filterType.startsWith('tag-')) {
+            const productTags = (product.dataset.productTags || '').split(',').filter(Boolean);
+            const tagPrefix = filterType.replace('tag-', '').toLowerCase().trim();
+            
+            // Helper function to handleize a string (convert to lowercase, replace spaces/special chars with dashes)
+            const handleize = (str) => {
+              return str.toLowerCase()
+                .trim()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '');
+            };
+            
+            for (const filterValue of filterValues) {
+              const normalizedFilterValue = handleize(filterValue);
+              // Check if any product tag matches the filter value
+              // Tags can be in format: "prefix:value", "prefix-value", or just "value"
+              if (productTags.some(tag => {
+                const normalizedTag = handleize(tag);
+                
+                // Check exact match (after handleizing)
+                if (normalizedTag === normalizedFilterValue) {
+                  return true;
+                }
+                
+                // Check if tag has the prefix and matches the value after prefix
+                if (tagPrefix) {
+                  const normalizedPrefix = handleize(tagPrefix);
+                  // Try with colon separator: "brand:lenovo" -> "brand-lenovo"
+                  if (normalizedTag === normalizedPrefix + '-' + normalizedFilterValue) {
+                    return true;
+                  }
+                  // Try with dash separator: "brand-lenovo" -> "brand-lenovo"
+                  if (normalizedTag === normalizedPrefix + '-' + normalizedFilterValue) {
+                    return true;
+                  }
+                  // Try if tag starts with prefix and contains the value
+                  if (normalizedTag.startsWith(normalizedPrefix)) {
+                    const tagAfterPrefix = normalizedTag.replace(normalizedPrefix, '').replace(/^-+/, '').trim();
+                    if (tagAfterPrefix === normalizedFilterValue) {
+                      return true;
+                    }
+                  }
+                  // Also check original tag format (before handleizing) for exact matches
+                  const originalTag = tag.toLowerCase().trim();
+                  if (originalTag === tagPrefix + ':' + filterValue.toLowerCase().trim() || 
+                      originalTag === tagPrefix + '-' + filterValue.toLowerCase().trim()) {
+                    return true;
+                  }
+                }
+                
+                return false;
+              })) {
+                matchesFilter = true;
+                break;
+              }
+            }
+          }
+          
+          // If this filter type has selections and product doesn't match, hide it
+          if (!matchesFilter) {
+            shouldShow = false;
+            break;
+          }
+        }
+      }
 
       if (shouldShow) {
         product.style.display = '';
@@ -2175,6 +2311,7 @@
       if (desktopCb) {
         desktopCb.checked = cb.checked;
       }
+      filterProducts();
     });
   });
 
