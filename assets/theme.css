@@ -138,6 +138,25 @@ a {
   text-decoration: none;
 }
 
+/* Remove tap highlight on mobile */
+button,
+a,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+.cursor-pointer {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+/* Prevent text selection on buttons */
+button,
+[role="button"] {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
 ul,
 ol {
   list-style: none;
