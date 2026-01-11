@@ -130,7 +130,7 @@
         "promo_position": "left",
         "sidebar_width": 380,
         "sidebar_header_bg": "#1e1a5c",
-        "show_reguru_button": false,
+        "show_reguru_button": true,
         "reguru_button_text": "ReGuru",
         "show_franchise_button": true,
         "franchise_button_text": "Franchise",
