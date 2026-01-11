@@ -9,6 +9,7 @@
   assign franchise_button_text = section.settings.franchise_button_text | default: 'Franchise'
   assign sidebar_width = section.settings.sidebar_width | default: 380
   assign sidebar_header_bg = section.settings.sidebar_header_bg | default: '#1E1A5C'
+  assign sidebar_logo = section.settings.sidebar_logo
 -%}
 
 <nav 
@@ -278,11 +279,29 @@
         <div class="mega-menu__mobile-buttons">
           {%- if show_reguru_button -%}
             <a href="{{ routes.root_url }}" class="mega-menu__mobile-button mega-menu__mobile-button--reguru">
-              <span class="mega-menu__mobile-button-text">{{ reguru_button_text }}</span>
+              {%- if sidebar_logo != blank -%}
+                <img 
+                  src="{{ sidebar_logo | image_url: width: 80 }}" 
+                  alt="{{ reguru_button_text }}"
+                  width="80"
+                  height="24"
+                  loading="eager"
+                  class="mega-menu__mobile-button-logo"
+                >
+              {%- else -%}
+                <span class="mega-menu__mobile-button-text">{{ reguru_button_text }}</span>
+              {%- endif -%}
             </a>
           {%- endif -%}
           {%- if show_franchise_button -%}
             <a href="{{ franchise_url }}" class="mega-menu__mobile-button mega-menu__mobile-button--franchise">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="mega-menu__mobile-button-icon">
+                <path d="M4 14L7 4H17L20 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4 14V20H20V14" stroke="currentColor" stroke-width="2"/>
+                <path d="M4 14C4 16.2091 5.79086 18 8 18C10.2091 18 12 16.2091 12 14" stroke="currentColor" stroke-width="2"/>
+                <path d="M12 14C12 16.2091 13.7909 18 16 18C18.2091 18 20 16.2091 20 14" stroke="currentColor" stroke-width="2"/>
+                <rect x="10" y="16" width="4" height="4" fill="currentColor"/>
+              </svg>
               <span class="mega-menu__mobile-button-text">{{ franchise_button_text }}</span>
             </a>
           {%- endif -%}
@@ -307,7 +326,7 @@
                   </a>
                   {%- if has_dropdown -%}
                     <button type="button" class="mega-menu__mobile-expand" data-mobile-expand aria-label="{{ 'accessibility.expand_submenu' | t }}">
-                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                      <svg width="14" height="14" viewBox="0 0 12 12" fill="none">
                         <path d="M6 2V10M2 6H10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                       </svg>
                     </button>
@@ -798,9 +817,7 @@
   max-width: 380px;
   height: 100vh;
   background-color: var(--color-white);
-  border: 2px solid var(--color-black);
-  border-left: none;
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.15);
   transform: translateX(-100%);
   transition: transform var(--transition-base);
   z-index: 99999;
@@ -876,6 +893,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   padding: 12px 20px;
   font-family: var(--font-mono);
   font-size: 12px;
@@ -887,6 +905,18 @@
   border-radius: var(--radius-xs);
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
   box-shadow: var(--shadow-sm);
+}
+
+.mega-menu__mobile-button-logo {
+  height: 24px;
+  width: auto;
+  object-fit: contain;
+}
+
+.mega-menu__mobile-button-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
 }
 
 .mega-menu__mobile-button:hover {
@@ -955,8 +985,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   background-color: var(--color-white);
   border: 2px solid var(--color-black);
   border-left: none;
@@ -965,6 +995,11 @@
   color: var(--color-navy);
   transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
   box-shadow: var(--shadow-xs);
+}
+
+.mega-menu__mobile-expand svg {
+  width: 14px;
+  height: 14px;
 }
 
 .mega-menu__mobile-expand:hover {
@@ -1195,6 +1230,12 @@
       "label": "Franchise button text",
       "default": "Franchise",
       "info": "Text displayed on the Franchise button"
+    },
+    {
+      "type": "image_picker",
+      "id": "sidebar_logo",
+      "label": "Sidebar logo",
+      "info": "Logo image for the ReGuru button. If not set, button text will be displayed."
     }
   ],
   "blocks": [
