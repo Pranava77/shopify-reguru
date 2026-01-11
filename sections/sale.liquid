@@ -1178,163 +1178,188 @@
 
 {% javascript %}
 (function() {
-  const saleSection = document.querySelector('[id^="sale-"]');
-  if (!saleSection) return;
-
-  // Mobile Filter Drawer Elements
-  const filterDrawer = saleSection.querySelector('[data-filter-drawer]');
-  const filterDrawerTrigger = saleSection.querySelector('[data-filter-drawer-trigger]');
-  const filterDrawerClose = saleSection.querySelector('[data-filter-drawer-close]');
-  const filterOverlay = saleSection.querySelector('[data-filter-overlay]');
-  const filterPanel = saleSection.querySelector('[data-filter-panel]');
-
-  // Body scroll lock helper
-  function lockBodyScroll() {
-    document.body.style.overflow = 'hidden';
-  }
-
-  function unlockBodyScroll() {
-    document.body.style.overflow = '';
-  }
-
-  // Drawer open/close functions
-  function openDrawer(e) {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    if (!filterDrawer) {
+  // Wait for DOM to be ready
+  function initSaleSection() {
+    const saleSection = document.querySelector('[id^="sale-"]');
+    if (!saleSection) {
+      // Retry if element not found (might be loading)
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initSaleSection);
+        return;
+      }
+      console.warn('Sale section not found');
       return;
     }
-    filterDrawer.setAttribute('aria-hidden', 'false');
-    document.body.classList.add('drawer-open');
-    lockBodyScroll();
-    // Force reflow to ensure transition works
-    void filterDrawer.offsetWidth;
-  }
 
-  function closeDrawer(e) {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
+    // Mobile Filter Drawer Elements
+    const filterDrawer = saleSection.querySelector('[data-filter-drawer]');
+    const filterDrawerTrigger = saleSection.querySelector('[data-filter-drawer-trigger]');
+    const filterDrawerClose = saleSection.querySelector('[data-filter-drawer-close]');
+    const filterOverlay = saleSection.querySelector('[data-filter-overlay]');
+    const filterPanel = saleSection.querySelector('[data-filter-panel]');
+
+    // Body scroll lock helper
+    function lockBodyScroll() {
+      document.body.style.overflow = 'hidden';
     }
-    if (!filterDrawer) return;
-    filterDrawer.setAttribute('aria-hidden', 'true');
-    document.body.classList.remove('drawer-open');
-    unlockBodyScroll();
-  }
 
-  // Drawer event listeners
-  if (filterDrawerTrigger) {
-    filterDrawerTrigger.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      openDrawer(e);
-    });
-  }
-
-  if (filterDrawerClose) {
-    filterDrawerClose.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      closeDrawer(e);
-    });
-  }
-
-  if (filterOverlay) {
-    filterOverlay.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      closeDrawer(e);
-    });
-  }
-
-  // Escape key to close drawer
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && filterDrawer && filterDrawer.getAttribute('aria-hidden') === 'false') {
-      e.preventDefault();
-      closeDrawer();
+    function unlockBodyScroll() {
+      document.body.style.overflow = '';
     }
-  });
 
-  // Prevent body scroll when drawer is open
-  document.body.classList.remove('drawer-open');
-
-  // Filter toggle functionality (works for both desktop and drawer)
-  function initializeFilterToggles() {
-    const filterToggles = saleSection.querySelectorAll('[data-filter-toggle]');
-    for (const toggle of filterToggles) {
-      // Initialize aria-expanded if not set
-      if (!toggle.hasAttribute('aria-expanded')) {
-        const filterType = toggle.getAttribute('data-filter-toggle');
-        const content = saleSection.querySelector(`[data-filter-content="${filterType}"]`);
-        if (content) {
-          toggle.setAttribute('aria-expanded', content.hidden ? 'false' : 'true');
-        }
+    // Drawer open/close functions
+    function openDrawer(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
       }
+      if (!filterDrawer) {
+        console.warn('Filter drawer not found');
+        return;
+      }
+      filterDrawer.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('drawer-open');
+      lockBodyScroll();
+      // Force reflow to ensure transition works
+      void filterDrawer.offsetWidth;
+    }
 
-      toggle.addEventListener('click', function() {
-        const filterType = this.getAttribute('data-filter-toggle');
-        const content = saleSection.querySelector(`[data-filter-content="${filterType}"]`);
-        if (!content) return;
+    function closeDrawer(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      if (!filterDrawer) return;
+      filterDrawer.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('drawer-open');
+      unlockBodyScroll();
+    }
 
-        const isExpanded = this.getAttribute('aria-expanded') === 'true';
-        this.setAttribute('aria-expanded', !isExpanded);
-        content.hidden = isExpanded;
+    // Drawer event listeners - use both direct and event delegation for maximum reliability
+    if (filterDrawerTrigger) {
+      // Direct event listener
+      filterDrawerTrigger.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        openDrawer(e);
+      });
+      console.log('Filter drawer trigger button found and listener attached');
+    } else {
+      console.warn('Filter drawer trigger button not found initially');
+    }
+    
+    // Event delegation as fallback (catches clicks even if element is added dynamically)
+    document.addEventListener('click', function(e) {
+      const trigger = e.target.closest('[data-filter-drawer-trigger]');
+      if (trigger && saleSection.contains(trigger)) {
+        e.preventDefault();
+        e.stopPropagation();
+        openDrawer(e);
+      }
+    });
+
+    if (filterDrawerClose) {
+      filterDrawerClose.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeDrawer(e);
       });
     }
-  }
 
-  initializeFilterToggles();
+    if (filterOverlay) {
+      filterOverlay.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeDrawer(e);
+      });
+    }
 
-  // Mobile filters toggle (desktop collapse)
-  const filtersToggle = saleSection.querySelector('[data-filters-toggle]');
-  const filters = saleSection.querySelector('[data-sale-filters]');
-  if (filtersToggle && filters) {
-    filtersToggle.addEventListener('click', function() {
-      const isCollapsed = filters.getAttribute('data-filters-collapsed') === 'true';
-      filters.setAttribute('data-filters-collapsed', !isCollapsed);
-      this.setAttribute('aria-expanded', isCollapsed);
+    // Escape key to close drawer
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && filterDrawer && filterDrawer.getAttribute('aria-hidden') === 'false') {
+        e.preventDefault();
+        closeDrawer();
+      }
     });
-  }
 
-  // Price range sliders and inputs (desktop)
-  const priceMinInput = saleSection.querySelector('[data-price-min]');
-  const priceMaxInput = saleSection.querySelector('[data-price-max]');
-  const priceMinSlider = saleSection.querySelector('[data-slider-min]');
-  const priceMaxSlider = saleSection.querySelector('[data-slider-max]');
+    // Prevent body scroll when drawer is open
+    document.body.classList.remove('drawer-open');
 
-  // Price range sliders and inputs (drawer)
-  const priceMinInputDrawer = saleSection.querySelector('[data-price-min-drawer]');
-  const priceMaxInputDrawer = saleSection.querySelector('[data-price-max-drawer]');
-  const priceMinSliderDrawer = saleSection.querySelector('[data-slider-min-drawer]');
-  const priceMaxSliderDrawer = saleSection.querySelector('[data-slider-max-drawer]');
-  
-  // Format price for display
-  function formatPrice(value) {
-    return '₹' + parseInt(value).toLocaleString('en-IN');
-  }
+    // Filter toggle functionality (works for both desktop and drawer)
+    function initializeFilterToggles() {
+      const filterToggles = saleSection.querySelectorAll('[data-filter-toggle]');
+      for (const toggle of filterToggles) {
+        // Initialize aria-expanded if not set
+        if (!toggle.hasAttribute('aria-expanded')) {
+          const filterType = toggle.getAttribute('data-filter-toggle');
+          const content = saleSection.querySelector(`[data-filter-content="${filterType}"]`);
+          if (content) {
+            toggle.setAttribute('aria-expanded', content.hidden ? 'false' : 'true');
+          }
+        }
 
-  // Parse price from display format
-  function parsePrice(value) {
-    if (typeof value === 'string') {
-      return parseInt(value.replace(/[₹,]/g, '')) || 0;
+        toggle.addEventListener('click', function() {
+          const filterType = this.getAttribute('data-filter-toggle');
+          const content = saleSection.querySelector(`[data-filter-content="${filterType}"]`);
+          if (!content) return;
+
+          const isExpanded = this.getAttribute('aria-expanded') === 'true';
+          this.setAttribute('aria-expanded', !isExpanded);
+          content.hidden = isExpanded;
+        });
+      }
     }
-    return parseInt(value) || 0;
-  }
 
-  // Sync price between desktop and drawer
-  function syncPriceInputs(sourceInput, targetInput, sourceSlider, targetSlider) {
-    if (sourceInput && targetInput) {
-      targetInput.value = sourceInput.value;
-    }
-    if (sourceSlider && targetSlider) {
-      targetSlider.value = sourceSlider.value;
-    }
-  }
+    initializeFilterToggles();
 
-  // Update price inputs from sliders
-  function updatePriceInputs(slider, input, isDrawer = false) {
+    // Mobile filters toggle (desktop collapse)
+    const filtersToggle = saleSection.querySelector('[data-filters-toggle]');
+    const filters = saleSection.querySelector('[data-sale-filters]');
+    if (filtersToggle && filters) {
+      filtersToggle.addEventListener('click', function() {
+        const isCollapsed = filters.getAttribute('data-filters-collapsed') === 'true';
+        filters.setAttribute('data-filters-collapsed', !isCollapsed);
+        this.setAttribute('aria-expanded', isCollapsed);
+      });
+    }
+
+    // Price range sliders and inputs (desktop)
+    const priceMinInput = saleSection.querySelector('[data-price-min]');
+    const priceMaxInput = saleSection.querySelector('[data-price-max]');
+    const priceMinSlider = saleSection.querySelector('[data-slider-min]');
+    const priceMaxSlider = saleSection.querySelector('[data-slider-max]');
+
+    // Price range sliders and inputs (drawer)
+    const priceMinInputDrawer = saleSection.querySelector('[data-price-min-drawer]');
+    const priceMaxInputDrawer = saleSection.querySelector('[data-price-max-drawer]');
+    const priceMinSliderDrawer = saleSection.querySelector('[data-slider-min-drawer]');
+    const priceMaxSliderDrawer = saleSection.querySelector('[data-slider-max-drawer]');
+    
+    // Format price for display
+    function formatPrice(value) {
+      return '₹' + parseInt(value).toLocaleString('en-IN');
+    }
+
+    // Parse price from display format
+    function parsePrice(value) {
+      if (typeof value === 'string') {
+        return parseInt(value.replace(/[₹,]/g, '')) || 0;
+      }
+      return parseInt(value) || 0;
+    }
+
+    // Sync price between desktop and drawer
+    function syncPriceInputs(sourceInput, targetInput, sourceSlider, targetSlider) {
+      if (sourceInput && targetInput) {
+        targetInput.value = sourceInput.value;
+      }
+      if (sourceSlider && targetSlider) {
+        targetSlider.value = sourceSlider.value;
+      }
+    }
+
+    // Update price inputs from sliders
+    function updatePriceInputs(slider, input, isDrawer = false) {
     if (!slider || !input) return;
     const value = parseInt(slider.value);
     input.value = formatPrice(value);
@@ -1573,6 +1598,14 @@
       
       filterProducts();
     });
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSaleSection);
+  } else {
+    // DOM already loaded, but wait a tick to ensure all elements are rendered
+    setTimeout(initSaleSection, 0);
   }
 })();
 {% endjavascript %}
