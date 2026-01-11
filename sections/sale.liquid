@@ -1178,49 +1178,6 @@
 
 {% javascript %}
 (function() {
-  // Global event delegation for filter drawer trigger (works even if section loads late)
-  // This ensures the button works immediately, even before section-specific JS initializes
-  function handleFilterButtonClick(e) {
-    // Check if click is on or inside a filter trigger button
-    const trigger = e.target.closest('[data-filter-drawer-trigger]');
-    if (!trigger) return;
-    
-    console.log('Filter button clicked - global handler');
-    
-    // Find the sale section that contains this trigger
-    const saleSection = trigger.closest('[id^="sale-"]');
-    if (!saleSection) {
-      console.warn('Sale section not found for filter trigger');
-      return;
-    }
-    
-    const filterDrawer = saleSection.querySelector('[data-filter-drawer]');
-    if (!filterDrawer) {
-      console.warn('Filter drawer not found for trigger');
-      return;
-    }
-    
-    // Don't open if already open
-    if (filterDrawer.getAttribute('aria-hidden') === 'false') {
-      console.log('Filter drawer already open');
-      return;
-    }
-    
-    e.preventDefault();
-    e.stopPropagation();
-    
-    // Open the drawer
-    filterDrawer.setAttribute('aria-hidden', 'false');
-    document.body.classList.add('drawer-open');
-    document.body.style.overflow = 'hidden';
-    void filterDrawer.offsetWidth; // Force reflow for transition
-    
-    console.log('Filter drawer opened successfully');
-  }
-  
-  // Add listener with capture phase to catch early
-  document.addEventListener('click', handleFilterButtonClick, true);
-
   // Wait for DOM to be ready
   function initSaleSection() {
     const saleSection = document.querySelector('[id^="sale-"]');
@@ -1280,15 +1237,31 @@
 
     // Drawer event listeners
     if (filterDrawerTrigger) {
+      // Direct event listener
       filterDrawerTrigger.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
-        console.log('Filter button clicked - opening drawer');
         openDrawer(e);
+        
+        // Sync drawer prices when opening
+        setTimeout(() => {
+          if (priceMinInput && priceMinInputDrawer) {
+            priceMinInputDrawer.value = priceMinInput.value;
+          }
+          if (priceMaxInput && priceMaxInputDrawer) {
+            priceMaxInputDrawer.value = priceMaxInput.value;
+          }
+          if (priceMinSlider && priceMinSliderDrawer) {
+            priceMinSliderDrawer.value = priceMinSlider.value;
+          }
+          if (priceMaxSlider && priceMaxSliderDrawer) {
+            priceMaxSliderDrawer.value = priceMaxSlider.value;
+          }
+        }, 100);
       });
       console.log('Filter drawer trigger button found and listener attached');
     } else {
-      console.warn('Filter drawer trigger button not found');
+      console.warn('Filter drawer trigger button not found initially');
     }
 
     if (filterDrawerClose) {
@@ -1507,25 +1480,7 @@
     updatePriceInputs(priceMaxSlider, priceMaxInput, false);
   }
 
-  // Sync drawer prices when opening
-  if (filterDrawerTrigger) {
-    filterDrawerTrigger.addEventListener('click', () => {
-      setTimeout(() => {
-        if (priceMinInput && priceMinInputDrawer) {
-          priceMinInputDrawer.value = priceMinInput.value;
-        }
-        if (priceMaxInput && priceMaxInputDrawer) {
-          priceMaxInputDrawer.value = priceMaxInput.value;
-        }
-        if (priceMinSlider && priceMinSliderDrawer) {
-          priceMinSliderDrawer.value = priceMinSlider.value;
-        }
-        if (priceMaxSlider && priceMaxSliderDrawer) {
-          priceMaxSliderDrawer.value = priceMaxSlider.value;
-        }
-      }, 100);
-    });
-  }
+  // Price syncing is now handled in the openDrawer function above
 
   // Sync checkboxes between desktop and drawer
   function syncCheckboxes() {
