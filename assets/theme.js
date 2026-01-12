@@ -1852,7 +1852,7 @@ class CartDrawer {
 // Initialize theme
 const theme = new ThemeUtils();
 
-// Expose theme instance globally for access from other scripts
+// Expose theme globally for access from other scripts
 window.theme = theme;
 
 // Export for module usage
