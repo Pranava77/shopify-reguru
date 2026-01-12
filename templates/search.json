@@ -31,7 +31,8 @@
         "header_icon_color_primary": "#1e1a5c",
         "header_icon_color_accent": "#28d98e",
         "franchise_page": "franchise",
-        "franchise_url": ""
+        "franchise_url": "",
+        "mobile_menu_custom_icon": "shopify://shop_images/Layer_1_1.png"
       }
     },
     "mega_menu_search": {
