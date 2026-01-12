@@ -1530,9 +1530,16 @@
       
       if (this.disabled || this.classList.contains('product-detail__btn--loading')) return;
       
-      const variantId = this.dataset.variantId;
-      if (!variantId) {
+      const variantIdStr = this.dataset.variantId;
+      if (!variantIdStr) {
         alert('Please select a variant');
+        return;
+      }
+      
+      const variantId = parseInt(variantIdStr, 10);
+      if (isNaN(variantId) || variantId <= 0) {
+        console.error('Invalid variant ID:', variantIdStr);
+        alert('Invalid product variant. Please try again.');
         return;
       }
       
@@ -1599,9 +1606,16 @@
       
       if (this.disabled || this.classList.contains('product-detail__btn--loading')) return;
       
-      const variantId = this.dataset.variantId;
-      if (!variantId) {
+      const variantIdStr = this.dataset.variantId;
+      if (!variantIdStr) {
         alert('Please select a variant');
+        return;
+      }
+      
+      const variantId = parseInt(variantIdStr, 10);
+      if (isNaN(variantId) || variantId <= 0) {
+        console.error('Invalid variant ID:', variantIdStr);
+        alert('Invalid product variant. Please try again.');
         return;
       }
       

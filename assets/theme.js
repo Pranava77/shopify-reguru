@@ -6,7 +6,6 @@
 class ThemeUtils {
   constructor() {
     this.cartTriggerHandler = null;
-    this.cartInitialized = false;
     this.init();
   }
 
@@ -340,42 +339,30 @@ class ThemeUtils {
   }
 
   #initCart() {
-    // Prevent duplicate initialization
-    if (this.cartInitialized) return;
-    this.cartInitialized = true;
-    
-    // Store reference to this for use in event handlers
-    const self = this;
-    
     // Handle add to cart buttons - add to cart and open drawer
     // Use event delegation to handle dynamically added buttons
-    document.addEventListener('click', async function(e) {
+    document.addEventListener('click', async (e) => {
       const button = e.target.closest('[data-add-to-cart]');
       if (!button) return;
       
       // Check if button is disabled or already processing
-      if (button.disabled || button.classList.contains('product-detail__btn--loading')) {
-        return;
-      }
+      if (button.disabled || button.classList.contains('product-detail__btn--loading')) return;
       
       // Allow product-detail buttons to handle themselves (they use stopPropagation)
-      if (button.closest('.product-detail')) {
-        return;
-      }
+      if (button.closest('.product-detail')) return;
       
       e.preventDefault();
       e.stopPropagation();
       
-      const variantId = button.getAttribute('data-variant-id') || button.dataset.variantId;
-      if (!variantId) {
-        console.warn('Add to cart button missing variant ID', button);
+      const variantIdStr = button.getAttribute('data-variant-id');
+      if (!variantIdStr) {
+        console.warn('Add to cart button missing variant ID');
         return;
       }
       
-      // Convert variant ID to number (Shopify API accepts both, but number is preferred)
-      const variantIdNum = parseInt(variantId, 10);
-      if (isNaN(variantIdNum)) {
-        console.error('Invalid variant ID:', variantId);
+      const variantId = parseInt(variantIdStr, 10);
+      if (isNaN(variantId) || variantId <= 0) {
+        console.error('Invalid variant ID:', variantIdStr);
         alert('Invalid product variant. Please try again.');
         return;
       }
@@ -410,7 +397,7 @@ class ThemeUtils {
         const data = await response.json();
         
         // Optimistic UI update - update cart count
-        self.#updateCartCount();
+        this.#updateCartCount();
         
         // Trigger cart update event for other components
         document.dispatchEvent(new CustomEvent('cart:updated', {
@@ -420,9 +407,9 @@ class ThemeUtils {
         // Refresh cart drawer and open it (if drawer is enabled)
         const header = document.querySelector('.header');
         const cartType = header?.getAttribute('data-cart-type') || 'drawer';
-        if (cartType === 'drawer' && self.cartDrawer) {
-          await self.cartDrawer.refreshCart();
-          self.cartDrawer.open();
+        if (cartType === 'drawer' && this.cartDrawer) {
+          await this.cartDrawer.refreshCart();
+          this.cartDrawer.open();
         } else {
           // Redirect to cart page if drawer is disabled
           window.location.href = '/cart';
@@ -445,7 +432,7 @@ class ThemeUtils {
     
     // Handle buy now buttons - add to cart and redirect to checkout
     // Use event delegation to handle dynamically added buttons
-    document.addEventListener('click', async function(e) {
+    document.addEventListener('click', async (e) => {
       const button = e.target.closest('[data-buy-now]');
       if (!button) return;
       
@@ -458,16 +445,15 @@ class ThemeUtils {
       e.preventDefault();
       e.stopPropagation();
       
-      const variantId = button.getAttribute('data-variant-id') || button.dataset.variantId;
-      if (!variantId) {
-        console.warn('Buy now button missing variant ID', button);
+      const variantIdStr = button.getAttribute('data-variant-id');
+      if (!variantIdStr) {
+        console.warn('Buy now button missing variant ID');
         return;
       }
       
-      // Convert variant ID to number (Shopify API accepts both, but number is preferred)
-      const variantIdNum = parseInt(variantId, 10);
-      if (isNaN(variantIdNum)) {
-        console.error('Invalid variant ID:', variantId);
+      const variantId = parseInt(variantIdStr, 10);
+      if (isNaN(variantId) || variantId <= 0) {
+        console.error('Invalid variant ID:', variantIdStr);
         alert('Invalid product variant. Please try again.');
         return;
       }
@@ -488,7 +474,7 @@ class ThemeUtils {
           },
           body: JSON.stringify({
             items: [{
-              id: variantIdNum,
+              id: variantId,
               quantity: quantity
             }]
           })
@@ -502,7 +488,7 @@ class ThemeUtils {
         const data = await response.json();
         
         // Optimistic UI update - update cart count
-        self.#updateCartCount();
+        this.#updateCartCount();
         
         // Trigger cart update event for other components
         document.dispatchEvent(new CustomEvent('cart:updated', {
