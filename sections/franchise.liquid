@@ -237,10 +237,12 @@
 .franchise-section__contact-panel {
   position: relative;
   background: linear-gradient(135deg, var(--color-navy) 0%, var(--color-dark-blue) 100%);
-  border-radius: var(--radius-md);
+  border: 2px solid var(--color-black);
+  border-radius: 6px;
   padding: 40px;
   min-height: 647px;
   overflow: hidden;
+  box-shadow: 4px 4px 0px 0px var(--color-black);
 }
 
 .franchise-section__contact-image {
@@ -331,10 +333,10 @@
 /* Form */
 .franchise-section__form-wrapper {
   background-color: var(--color-white);
-  border: 1px solid var(--color-black);
-  border-radius: var(--radius-md);
+  border: 2px solid var(--color-black);
+  border-radius: 6px;
   padding: 40px;
-  box-shadow: 0px 0px 60px 30px rgba(0, 0, 0, 0.03);
+  box-shadow: 4px 4px 0px 0px var(--color-black);
 }
 
 .franchise-section__form {
@@ -370,16 +372,17 @@
 .franchise-section__form-input,
 .franchise-section__form-textarea {
   width: 100%;
-  padding: 12px 0;
+  padding: 10px 16px;
   font-family: var(--font-accent);
   font-size: 14px;
   font-weight: 500;
   color: var(--color-black);
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--color-black);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-black);
+  border-radius: 6px;
+  box-shadow: 2px 2px 0px 0px var(--color-black);
   outline: none;
-  transition: border-color var(--transition-fast);
+  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
 }
 
 .franchise-section__form-input::placeholder,
@@ -389,12 +392,14 @@
 
 .franchise-section__form-input:focus,
 .franchise-section__form-textarea:focus {
-  border-bottom-color: var(--color-green);
+  outline: none;
+  box-shadow: 4px 4px 0px 0px var(--color-black);
 }
 
 .franchise-section__form-textarea {
   resize: vertical;
   min-height: 120px;
+  font-family: var(--font-accent);
 }
 
 .franchise-section__form-submit {
@@ -403,18 +408,18 @@
   font-family: var(--font-heading);
   font-size: 18px;
   font-weight: 400;
-  color: var(--color-text);
+  color: var(--color-black);
   background-color: var(--color-white);
   border: 0.5px solid var(--color-black);
-  border-radius: 0;
-  box-shadow: 3px 3px 0px 0px var(--color-black);
+  border-radius: 6px;
+  box-shadow: 4px 4px 0px 0px var(--color-black);
   cursor: pointer;
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .franchise-section__form-submit:hover {
   transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0px 0px var(--color-black);
+  box-shadow: 6px 6px 0px 0px var(--color-black);
 }
 
 .franchise-section__form-submit:active {
