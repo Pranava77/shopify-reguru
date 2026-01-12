@@ -1509,6 +1509,7 @@ class CartDrawer {
     
     if (newValue === currentValue) return;
     
+    // Optimistic UI update - update quantity input immediately for instant feedback
     input.value = newValue;
     input.setAttribute('data-original-value', newValue);
     input.disabled = true;
@@ -1520,6 +1521,7 @@ class CartDrawer {
     try {
       await this.#setQuantity(key, newValue);
     } catch (error) {
+      // Rollback optimistic update
       input.value = currentValue;
       input.setAttribute('data-original-value', currentValue);
       alert('Failed to update cart. Please try again.');
@@ -1571,9 +1573,29 @@ class CartDrawer {
         throw new Error(errorMessage);
       }
       
-      // Always fetch fresh cart data after update to ensure all prices are correct
-      // The /cart/update.js response may not always include complete price information
-      await this.refreshCart();
+      // Use the cart data from the update response - it should contain complete information
+      const cart = await response.json();
+      
+      // Verify the response has the expected structure
+      if (cart && typeof cart === 'object' && cart.items && Array.isArray(cart.items)) {
+        // Response looks complete, use it directly for faster updates
+        this.#updateCartContent(cart);
+        
+        // Update cart count
+        const cartCountElements = document.querySelectorAll('[data-cart-count]');
+        for (const element of cartCountElements) {
+          element.textContent = cart.item_count || 0;
+        }
+        
+        // Dispatch event
+        document.dispatchEvent(new CustomEvent('cart:updated', {
+          detail: { cart }
+        }));
+      } else {
+        // Response structure unexpected, fallback to refresh
+        console.warn('Cart update response incomplete, refreshing cart');
+        await this.refreshCart();
+      }
     } catch (error) {
       console.error('Error updating cart:', error);
       throw error;
@@ -1830,6 +1852,24 @@ class CartDrawer {
     const dollars = absCents / 100;
     const formatted = dollars.toFixed(2);
     return isNegative ? `-₹${formatted}` : `₹${formatted}`;
+  }
+
+  #parseMoney(moneyString) {
+    // Parse money string like "₹1,234.56" or "₹1234.56" back to cents
+    if (!moneyString || typeof moneyString !== 'string') {
+      return 0;
+    }
+    
+    // Remove currency symbol, spaces, and commas
+    const cleaned = moneyString.replace(/[₹,\s]/g, '');
+    const dollars = parseFloat(cleaned);
+    
+    if (isNaN(dollars)) {
+      return 0;
+    }
+    
+    // Convert to cents
+    return Math.round(dollars * 100);
   }
 
   #escapeHtml(text) {
