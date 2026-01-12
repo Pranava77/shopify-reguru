@@ -25,6 +25,7 @@
     "background_overlay_enable": false,
     "background_overlay_color": "#1d1c1c",
     "background_overlay_opacity": 20,
+    "favicon": "shopify://shop_images/Group_159.png",
     "sections": {
       "cart-drawer": {
         "type": "cart-drawer",
