@@ -741,6 +741,7 @@ class ThemeUtils {
     const initSearch = () => {
       if (searchInitialized) return;
       searchInitialized = true;
+    };
     
     // Debounced search function
     const performSearch = async (query) => {
