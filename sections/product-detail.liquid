@@ -1576,6 +1576,25 @@
             detail: { cart: data }
           }));
           
+          // Open cart drawer or redirect to cart page
+          const header = document.querySelector('.header');
+          const cartType = header?.getAttribute('data-cart-type') || 'drawer';
+          
+          if (cartType === 'drawer' && window.theme && window.theme.cartDrawer) {
+            // Refresh cart drawer and open it
+            try {
+              await window.theme.cartDrawer.refreshCart();
+              window.theme.cartDrawer.open();
+            } catch (error) {
+              console.error('Error opening cart drawer:', error);
+              // Fallback to cart page if drawer fails
+              window.location.href = '/cart';
+            }
+          } else {
+            // Redirect to cart page if drawer is disabled
+            window.location.href = '/cart';
+          }
+          
           // Show success feedback
           this.textContent = 'Added!';
           setTimeout(() => {
