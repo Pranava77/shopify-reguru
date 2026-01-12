@@ -133,7 +133,8 @@
         "show_reguru_button": true,
         "reguru_button_text": "ReGuru",
         "show_franchise_button": true,
-        "franchise_button_text": "Franchise"
+        "franchise_button_text": "Franchise",
+        "sidebar_logo": "shopify://shop_images/logo_bandg.png"
       }
     },
     "filtered_product_grid": {
