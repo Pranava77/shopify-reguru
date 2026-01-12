@@ -1603,11 +1603,26 @@
           }
         } else {
           const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.description || 'Failed to add to cart');
+          let errorMessage = errorData.description || 'Failed to add to cart';
+          
+          // Provide user-friendly error messages for common scenarios
+          if (response.status === 422) {
+            const errorLower = errorMessage.toLowerCase();
+            if (errorLower.includes('sold out') || errorLower.includes('already sold out')) {
+              errorMessage = 'Sorry, this product is currently sold out.';
+            } else if (errorLower.includes('inventory') || errorLower.includes('quantity')) {
+              errorMessage = 'Sorry, the requested quantity is not available.';
+            } else if (errorLower.includes('unavailable')) {
+              errorMessage = 'Sorry, this product is currently unavailable.';
+            }
+          }
+          
+          throw new Error(errorMessage);
         }
       } catch (error) {
         console.error('Error adding to cart:', error);
-        alert(error.message || 'Failed to add item to cart. Please try again.');
+        const userMessage = error.message || 'Failed to add item to cart. Please try again.';
+        alert(userMessage);
         this.textContent = originalText;
         this.disabled = false;
         this.classList.remove('product-detail__btn--loading');
@@ -1664,15 +1679,30 @@
           // Update cart count
           updateCartCount();
           
-          // Redirect to cart page (consistent with theme.js)
-          window.location.href = '/cart';
+          // Redirect to checkout
+          window.location.href = '/checkout';
         } else {
           const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.description || 'Failed to add to cart');
+          let errorMessage = errorData.description || 'Failed to add to cart';
+          
+          // Provide user-friendly error messages for common scenarios
+          if (response.status === 422) {
+            const errorLower = errorMessage.toLowerCase();
+            if (errorLower.includes('sold out') || errorLower.includes('already sold out')) {
+              errorMessage = 'Sorry, this product is currently sold out.';
+            } else if (errorLower.includes('inventory') || errorLower.includes('quantity')) {
+              errorMessage = 'Sorry, the requested quantity is not available.';
+            } else if (errorLower.includes('unavailable')) {
+              errorMessage = 'Sorry, this product is currently unavailable.';
+            }
+          }
+          
+          throw new Error(errorMessage);
         }
       } catch (error) {
         console.error('Error in buy now:', error);
-        alert(error.message || 'Failed to proceed to checkout. Please try again.');
+        const userMessage = error.message || 'Failed to proceed to checkout. Please try again.';
+        alert(userMessage);
         this.textContent = originalText;
         this.disabled = false;
         this.classList.remove('product-detail__btn--loading');

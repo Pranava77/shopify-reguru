@@ -391,7 +391,21 @@ class ThemeUtils {
         
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.description || 'Failed to add item to cart');
+          let errorMessage = errorData.description || 'Failed to add item to cart';
+          
+          // Provide user-friendly error messages for common scenarios
+          if (response.status === 422) {
+            const errorLower = errorMessage.toLowerCase();
+            if (errorLower.includes('sold out') || errorLower.includes('already sold out')) {
+              errorMessage = 'Sorry, this product is currently sold out.';
+            } else if (errorLower.includes('inventory') || errorLower.includes('quantity')) {
+              errorMessage = 'Sorry, the requested quantity is not available.';
+            } else if (errorLower.includes('unavailable')) {
+              errorMessage = 'Sorry, this product is currently unavailable.';
+            }
+          }
+          
+          throw new Error(errorMessage);
         }
         
         const data = await response.json();
@@ -434,7 +448,10 @@ class ThemeUtils {
         console.error('Error adding to cart:', error);
         button.disabled = false;
         button.textContent = originalText;
-        alert(error.message || 'Failed to add item to cart. Please try again.');
+        
+        // Show user-friendly error message
+        const userMessage = error.message || 'Failed to add item to cart. Please try again.';
+        alert(userMessage);
       }
     });
     
@@ -490,7 +507,21 @@ class ThemeUtils {
         
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.description || 'Failed to add item to cart');
+          let errorMessage = errorData.description || 'Failed to add item to cart';
+          
+          // Provide user-friendly error messages for common scenarios
+          if (response.status === 422) {
+            const errorLower = errorMessage.toLowerCase();
+            if (errorLower.includes('sold out') || errorLower.includes('already sold out')) {
+              errorMessage = 'Sorry, this product is currently sold out.';
+            } else if (errorLower.includes('inventory') || errorLower.includes('quantity')) {
+              errorMessage = 'Sorry, the requested quantity is not available.';
+            } else if (errorLower.includes('unavailable')) {
+              errorMessage = 'Sorry, this product is currently unavailable.';
+            }
+          }
+          
+          throw new Error(errorMessage);
         }
         
         const data = await response.json();
@@ -510,7 +541,10 @@ class ThemeUtils {
         console.error('Error adding to cart:', error);
         button.disabled = false;
         button.textContent = originalText;
-        alert(error.message || 'Failed to add item to cart. Please try again.');
+        
+        // Show user-friendly error message
+        const userMessage = error.message || 'Failed to add item to cart. Please try again.';
+        alert(userMessage);
       }
     });
   }
