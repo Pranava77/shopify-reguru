@@ -636,8 +636,10 @@
   width: auto;
   gap: 0;
   border: 2px solid var(--color-black);
+  border-radius: 6px;
   box-shadow: 4px 4px 0px 0px var(--color-black);
   background-color: var(--color-white);
+  overflow: hidden;
 }
 
 .product-detail__quantity-btn {
@@ -658,11 +660,15 @@
 
 .product-detail__quantity-btn:first-child {
   border-right: 2px solid var(--color-black);
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
 }
 
 .product-detail__quantity-btn:last-child {
   border-left: 2px solid var(--color-black);
   border-right: none;
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
 }
 
 .product-detail__quantity-btn:hover {
