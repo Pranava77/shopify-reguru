@@ -1587,7 +1587,7 @@ class CartDrawer {
       itemsHtml += `
         <div class="cart-drawer__item" data-line-item="${item.key}">
           <div class="cart-drawer__item-image">
-            ${imageUrl ? `<img src="${imageUrl}" alt="${this.#escapeHtml(item.product_title || 'Product')}" width="120" height="120" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'cart-drawer__item-placeholder\\'><svg width=\\'60\\' height=\\'60\\' viewBox=\\'0 0 60 60\\'><rect width=\\'60\\' height=\\'60\\' fill=\\'#f0f0f0\\'/></svg></div>'">` : '<div class="cart-drawer__item-placeholder"><svg width="60" height="60" viewBox="0 0 60 60"><rect width="60" height="60" fill="#f0f0f0"/></svg></div>'}
+            ${imageUrl ? `<img src="${imageUrl}" alt="${this.#escapeHtml(item.product_title || 'Product')}" width="120" height="120" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'cart-drawer__item-placeholder\\'><svg width=\\'60\\' height=\\'60\\' viewBox=\\'0 0 60 60\\'><rect width=\\'60\\' height=\\'60\\' fill=\\'currentColor\\' opacity=\\'0.1\\'/></svg></div>'">` : '<div class="cart-drawer__item-placeholder"><svg width="60" height="60" viewBox="0 0 60 60"><rect width="60" height="60" fill="currentColor" opacity="0.1"/></svg></div>'}
           </div>
           <div class="cart-drawer__item-details">
             <h3 class="cart-drawer__item-name"><a href="${item.url}">${this.#escapeHtml(item.product_title)}</a></h3>
@@ -1595,7 +1595,7 @@ class CartDrawer {
             <div class="cart-drawer__item-price" data-item-price>${this.#formatMoney(item.final_price)}</div>
             <div class="cart-drawer__item-quantity">
               <button type="button" class="cart-drawer__quantity-btn" data-decrease-quantity data-key="${item.key}" aria-label="Decrease quantity"><span>-</span></button>
-              <input type="number" name="updates[]" value="${item.quantity}" min="0" class="cart-drawer__quantity-input" data-key="${item.key}" data-original-value="${item.quantity}">
+              <input type="number" name="updates[]" value="${item.quantity}" min="0" max="999" class="cart-drawer__quantity-input" data-key="${item.key}" data-original-value="${item.quantity}" aria-label="Quantity for ${this.#escapeHtml(item.product_title)}">
               <button type="button" class="cart-drawer__quantity-btn" data-increase-quantity data-key="${item.key}" aria-label="Increase quantity"><span>+</span></button>
             </div>
           </div>
@@ -1648,7 +1648,7 @@ class CartDrawer {
         <div class="cart-drawer__summary-divider"></div>
         <div class="cart-drawer__summary-promo">
           <label for="cart-drawer-promo-code" class="cart-drawer__promo-label">${this.#escapeHtml(promoLabel)}</label>
-          <input type="text" id="cart-drawer-promo-code" class="cart-drawer__promo-input" placeholder="${this.#escapeHtml(promoPlaceholder)}" data-promo-code>
+          <input type="text" id="cart-drawer-promo-code" class="cart-drawer__promo-input" placeholder="${this.#escapeHtml(promoPlaceholder)}" data-promo-code aria-label="${this.#escapeHtml(promoLabel)}">
         </div>
         <div class="cart-drawer__summary-row cart-drawer__summary-row--total">
           <span class="cart-drawer__summary-label">TOTAL</span>
