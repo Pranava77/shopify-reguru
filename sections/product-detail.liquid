@@ -256,13 +256,6 @@
         >
           Specifications
         </button>
-        <button 
-          type="button"
-          class="product-detail__tab"
-          data-tab="reviews"
-        >
-          Reviews ({{ product.metafields.reviews.rating_count.value | default: 2847 }})
-        </button>
       </div>
 
       <div class="product-detail__tab-content">
@@ -297,12 +290,6 @@
         <div class="product-detail__tab-panel" data-tab-panel="specifications">
           <div class="product-detail__specifications">
             <p>Specifications content will be displayed here.</p>
-          </div>
-        </div>
-
-        <div class="product-detail__tab-panel" data-tab-panel="reviews">
-          <div class="product-detail__reviews">
-            <p>Reviews content will be displayed here.</p>
           </div>
         </div>
       </div>
@@ -984,7 +971,7 @@
 
   let currentVariantId = {{ selected_variant.id }};
 
-  // Image thumbnail switching
+  let currentVariantId = {{ selected_variant.id | json }};
   const thumbnails = productDetail.querySelectorAll('.product-detail__thumbnail');
   const mainImage = productDetail.querySelector('#product-main-image');
   
