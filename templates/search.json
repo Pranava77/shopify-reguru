@@ -31,7 +31,8 @@
         "header_icon_color_primary": "#1e1a5c",
         "header_icon_color_accent": "#28d98e",
         "franchise_page": "franchise",
-        "franchise_url": ""
+        "franchise_url": "",
+        "mobile_menu_custom_icon": "shopify://shop_images/Layer_1_1.png"
       }
     },
     "mega_menu_search": {
@@ -100,7 +101,13 @@
       "settings": {
         "enable_sticky": true,
         "menu_style": "default",
-        "promo_position": "right"
+        "promo_position": "right",
+        "sidebar_width": 380,
+        "sidebar_header_bg": "#1e1a5c",
+        "show_reguru_button": true,
+        "reguru_button_text": "ReGuru",
+        "show_franchise_button": true,
+        "franchise_button_text": "Franchise"
       }
     },
     "search_results": {
@@ -108,7 +115,15 @@
       "name": "Search Results",
       "settings": {
         "results_per_page": 12,
-        "show_product_count": true
+        "show_product_count": true,
+        "show_discount": true,
+        "show_rating": true,
+        "badge_enabled": true,
+        "badge_style": "custom",
+        "badge_text": "10% off",
+        "badge_position": "top-left",
+        "badge_color": "#b1d8ff",
+        "badge_text_color": "#1d1c1c"
       }
     },
     "footer_search": {

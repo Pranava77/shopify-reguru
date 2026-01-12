@@ -196,7 +196,15 @@
       "settings": {
         "title": "Reguru Products",
         "collection": "apple",
-        "products_to_show": 3
+        "products_to_show": 3,
+        "show_discount": false,
+        "show_rating": false,
+        "badge_enabled": true,
+        "badge_style": "custom",
+        "badge_text": "20% off",
+        "badge_position": "top-right",
+        "badge_color": "#b1d8ff",
+        "badge_text_color": "#1d1c1c"
       }
     },
     "feature-cards": {

@@ -236,7 +236,7 @@
       "name": "Category Showcase",
       "settings": {
         "padding_top": 0,
-        "padding_bottom": 0,
+        "padding_bottom": 24,
         "heading": "Checkout our products",
         "description": "Find the perfect laptop for work, play and everything in between."
       }
@@ -348,7 +348,15 @@
         "description": "Find the perfect laptop for work, play and everything in between.",
         "background_color": "#1e1a5c",
         "show_brands": true,
-        "brands_title": "Top Brands"
+        "brands_title": "Top Brands",
+        "show_discount": true,
+        "show_rating": true,
+        "badge_enabled": true,
+        "badge_style": "custom",
+        "badge_text": "45% off",
+        "badge_position": "top-right",
+        "badge_color": "#b1d8ff",
+        "badge_text_color": "#1d1c1c"
       }
     },
     "footer_MeKgAQ": {
