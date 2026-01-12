@@ -1597,7 +1597,7 @@ class CartDrawer {
   }
 
   async #removeItem(key) {
-    const form = this.drawer.querySelector('#cart-drawer-form');
+    const form = this.drawer.querySelector('[data-cart-drawer-form]');
     if (!form) return;
     
     const itemRow = form.querySelector(`[data-line-item="${key}"]`);

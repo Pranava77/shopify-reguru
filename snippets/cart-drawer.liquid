@@ -47,7 +47,7 @@
           </div>
         </div>
 
-        <form action="{{ routes.cart_url }}" method="post" id="cart-drawer-form" class="cart-drawer__form">
+        <form action="{{ routes.cart_url }}" method="post" id="cart-drawer-form" class="cart-drawer__form" data-cart-drawer-form>
           <div class="cart-drawer__items" data-cart-items>
             {%- for item in cart.items -%}
               <div class="cart-drawer__item" data-line-item="{{ item.key }}">
