@@ -426,7 +426,7 @@
       "type": "announcement-bar",
       "name": "Announcement Bar",
       "settings": {
-        "text": "built by webfixus",
+        "text": "Built By WEBFIXUS",
         "background_color": "#041c66",
         "text_color": "#28d98e"
       }
