@@ -236,7 +236,7 @@
       "name": "Category Showcase",
       "settings": {
         "padding_top": 0,
-        "padding_bottom": 0,
+        "padding_bottom": 24,
         "heading": "Checkout our products",
         "description": "Find the perfect laptop for work, play and everything in between."
       }
