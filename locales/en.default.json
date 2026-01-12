@@ -65,6 +65,12 @@
       "buy_now": "Buy Now",
       "sold_out": "Sold out",
       "unavailable": "Unavailable",
+      "no_description": "No description available.",
+      "vendor": "Vendor",
+      "type": "Type",
+      "weight": "Weight",
+      "specifications": "Specifications",
+      "no_content": "No content available.",
       "price": {
         "regular_price": "Regular price",
         "sale_price": "Sale price",

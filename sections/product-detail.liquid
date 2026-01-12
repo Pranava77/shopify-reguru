@@ -240,60 +240,113 @@
     </div>
 
     <!-- Tabs Section -->
-    <div class="product-detail__tabs-section">
-      <div class="product-detail__tabs">
-        <button 
-          type="button"
-          class="product-detail__tab product-detail__tab--active"
-          data-tab="description"
-        >
-          Description
-        </button>
-        <button 
-          type="button"
-          class="product-detail__tab"
-          data-tab="specifications"
-        >
-          Specifications
-        </button>
+    {%- if section.settings.show_tabs -%}
+    <div class="product-detail__tabs-section" data-tabs-section>
+      <div class="product-detail__tabs" role="tablist" aria-label="Product information tabs">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'tab' -%}
+            <button 
+              type="button"
+              class="product-detail__tab{% if forloop.first %} product-detail__tab--active{% endif %}"
+              data-tab="{{ block.settings.tab_id | default: block.id }}"
+              role="tab"
+              aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+              aria-controls="tab-panel-{{ block.settings.tab_id | default: block.id }}"
+              id="tab-{{ block.settings.tab_id | default: block.id }}"
+              {{ block.shopify_attributes }}
+            >
+              {{ block.settings.tab_label | default: block.type | capitalize }}
+            </button>
+          {%- endif -%}
+        {%- endfor -%}
       </div>
 
       <div class="product-detail__tab-content">
-        <div class="product-detail__tab-panel product-detail__tab-panel--active" data-tab-panel="description">
-          <div class="product-detail__description-content">
-            {%- if product.description != blank -%}
-              {{ product.description }}
-            {%- else -%}
-              <h3 class="product-detail__description-heading">Premium Audio Experience</h3>
-              <p class="product-detail__description-text">
-                Our Premium Wireless Headphones deliver studio-quality sound with deep, powerful bass and crystal-clear highs. The advanced 40mm drivers provide an immersive listening experience that brings your music to life.
-              </p>
-              
-              <h3 class="product-detail__description-heading">Active Noise Cancellation</h3>
-              <p class="product-detail__description-text">
-                Block out the world and focus on what matters. Our industry-leading ANC technology adapts to your environment, reducing unwanted noise by up to 95%. Perfect for travel, work, or simply enjoying your favorite tracks in peace.
-              </p>
-              
-              <h3 class="product-detail__description-heading">All-Day Comfort</h3>
-              <p class="product-detail__description-text">
-                Designed for extended wear, these headphones feature plush memory foam ear cushions and an adjustable headband that conforms to your head shape. The lightweight design ensures you can wear them comfortably for hours.
-              </p>
-              
-              <h3 class="product-detail__description-heading">Long-Lasting Battery</h3>
-              <p class="product-detail__description-text">
-                Enjoy up to 40 hours of wireless playback on a single charge. Quick charging technology provides 5 hours of playback from just 10 minutes of charging.
-              </p>
-            {%- endif -%}
-          </div>
-        </div>
-
-        <div class="product-detail__tab-panel" data-tab-panel="specifications">
-          <div class="product-detail__specifications">
-            <p>Specifications content will be displayed here.</p>
-          </div>
-        </div>
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'tab' -%}
+            {%- assign tab_id = block.settings.tab_id | default: block.id -%}
+            <div 
+              class="product-detail__tab-panel{% if forloop.first %} product-detail__tab-panel--active{% endif %}" 
+              data-tab-panel="{{ tab_id }}"
+              role="tabpanel"
+              aria-labelledby="tab-{{ tab_id }}"
+              id="tab-panel-{{ tab_id }}"
+              {% unless forloop.first %}aria-hidden="true"{% endunless %}
+              {{ block.shopify_attributes }}
+            >
+              {%- case block.settings.tab_type -%}
+                {%- when 'description' -%}
+                  <div class="product-detail__description-content">
+                    {%- if product.description != blank -%}
+                      {{ product.description }}
+                    {%- elsif block.settings.fallback_content != blank -%}
+                      {{ block.settings.fallback_content }}
+                    {%- else -%}
+                      <p>{{ 'products.product.no_description' | t | default: 'No description available.' }}</p>
+                    {%- endif -%}
+                  </div>
+                
+                {%- when 'specifications' -%}
+                  <div class="product-detail__specifications">
+                    {%- if block.settings.specifications_content != blank -%}
+                      {{ block.settings.specifications_content }}
+                    {%- else -%}
+                      <div class="product-detail__specs-list">
+                        {%- if product.vendor != blank -%}
+                          <div class="product-detail__spec-item">
+                            <span class="product-detail__spec-label">{{ 'products.product.vendor' | t | default: 'Vendor' }}:</span>
+                            <span class="product-detail__spec-value">{{ product.vendor }}</span>
+                          </div>
+                        {%- endif -%}
+                        
+                        {%- if product.type != blank -%}
+                          <div class="product-detail__spec-item">
+                            <span class="product-detail__spec-label">{{ 'products.product.type' | t | default: 'Type' }}:</span>
+                            <span class="product-detail__spec-value">{{ product.type }}</span>
+                          </div>
+                        {%- endif -%}
+                        
+                        {%- if product.options_with_values.size > 0 -%}
+                          {%- for option in product.options_with_values -%}
+                            <div class="product-detail__spec-item">
+                              <span class="product-detail__spec-label">{{ option.name }}:</span>
+                              <span class="product-detail__spec-value">{{ option.values | join: ', ' }}</span>
+                            </div>
+                          {%- endfor -%}
+                        {%- endif -%}
+                        
+                        {%- if product.weight > 0 -%}
+                          <div class="product-detail__spec-item">
+                            <span class="product-detail__spec-label">{{ 'products.product.weight' | t | default: 'Weight' }}:</span>
+                            <span class="product-detail__spec-value">{{ product.weight | weight_with_unit }}</span>
+                          </div>
+                        {%- endif -%}
+                        
+                        {%- if product.metafields.custom.specifications != blank -%}
+                          <div class="product-detail__spec-item">
+                            <span class="product-detail__spec-label">{{ 'products.product.specifications' | t | default: 'Specifications' }}:</span>
+                            <span class="product-detail__spec-value">{{ product.metafields.custom.specifications }}</span>
+                          </div>
+                        {%- endif -%}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                
+                {%- when 'custom' -%}
+                  <div class="product-detail__custom-content">
+                    {%- if block.settings.custom_content != blank -%}
+                      {{ block.settings.custom_content }}
+                    {%- else -%}
+                      <p>{{ 'products.product.no_content' | t | default: 'No content available.' }}</p>
+                    {%- endif -%}
+                  </div>
+              {%- endcase -%}
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
       </div>
     </div>
+    {%- endif -%}
   </div>
 </section>
 
@@ -787,6 +840,87 @@
   display: block;
 }
 
+.product-detail__tab-panel[aria-hidden="true"] {
+  display: none;
+}
+
+/* Specifications styling */
+.product-detail__specs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.product-detail__spec-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-gray);
+}
+
+.product-detail__spec-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.product-detail__spec-label {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-black);
+  min-width: 120px;
+  flex-shrink: 0;
+}
+
+.product-detail__spec-value {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  flex: 1;
+}
+
+/* Custom content styling */
+.product-detail__custom-content {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-black);
+}
+
+.product-detail__custom-content h1,
+.product-detail__custom-content h2,
+.product-detail__custom-content h3,
+.product-detail__custom-content h4,
+.product-detail__custom-content h5,
+.product-detail__custom-content h6 {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  margin-top: 24px;
+  margin-bottom: 12px;
+  color: var(--color-black);
+}
+
+.product-detail__custom-content h3 {
+  font-size: 20px;
+}
+
+.product-detail__custom-content p {
+  margin-bottom: 16px;
+}
+
+.product-detail__custom-content ul,
+.product-detail__custom-content ol {
+  margin-left: 24px;
+  margin-bottom: 16px;
+}
+
+.product-detail__custom-content li {
+  margin-bottom: 8px;
+}
+
 .product-detail__description-content {
   display: flex;
   flex-direction: column;
@@ -808,17 +942,16 @@
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
-  color: #4a5565;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
-.product-detail__specifications,
-.product-detail__reviews {
+.product-detail__specifications {
   font-family: var(--font-body);
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
-  color: #4a5565;
+  color: var(--color-text-secondary);
 }
 
 /* Responsive Styles */
@@ -848,6 +981,21 @@
     flex: 1;
     font-size: 12px;
     padding: 4px 8px;
+  }
+
+  .product-detail__spec-item {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .product-detail__spec-label {
+    min-width: auto;
+    font-weight: 600;
+  }
+
+  .product-detail__spec-value {
+    width: 100%;
   }
 }
 
@@ -937,41 +1085,59 @@
 }
 {% endstylesheet %}
 
+{%- comment -%} Generate variant and image data as JSON for JavaScript {%- endcomment -%}
+<script type="application/json" data-product-variants>
+{
+  "variants": {
+    {%- for variant in product.variants -%}
+      "{{ variant.id }}": {
+        "id": {{ variant.id }},
+        "price": {{ variant.price }},
+        "compareAtPrice": {{ variant.compare_at_price | default: 0 }},
+        "available": {{ variant.available | json }},
+        "options": {{ variant.options | json }},
+        "priceFormatted": {{ variant.price | money | json }},
+        "comparePriceFormatted": {{ variant.compare_at_price | money | json }},
+        "imageId": {% if variant.featured_image %}{{ variant.featured_image.id }}{% else %}null{% endif %},
+        "imageUrl": {% if variant.featured_image %}{{ variant.featured_image | image_url: width: 800 | json }}{% else %}null{% endif %}
+      }{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  },
+  "images": [
+    {%- for image in product.images -%}
+      {
+        "id": {{ image.id }},
+        "url": {{ image | image_url: width: 800 | json }},
+        "thumbnailUrl": {{ image | image_url: width: 200 | json }},
+        "alt": {{ image.alt | json }}
+      }{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ],
+  "currentVariantId": {{ selected_variant.id | json }}
+}
+</script>
+
 {% javascript %}
 (function() {
   const productDetail = document.querySelector('.product-detail');
   if (!productDetail) return;
 
-  // Store variant data with image information
-  const variantData = {};
-  {%- for variant in product.variants -%}
-    variantData[{{ variant.id }}] = {
-      id: {{ variant.id }},
-      price: {{ variant.price }},
-      compareAtPrice: {{ variant.compare_at_price | default: 0 }},
-      available: {{ variant.available | json }},
-      options: {{ variant.options | json }},
-      priceFormatted: '{{ variant.price | money }}',
-      comparePriceFormatted: '{{ variant.compare_at_price | money }}',
-      imageId: {% if variant.featured_image %}{{ variant.featured_image.id }}{% else %}null{% endif %},
-      imageUrl: {% if variant.featured_image %}'{{ variant.featured_image | image_url: width: 800 }}'{% else %}null{% endif %}
-    };
-  {%- endfor -%}
+  // Get variant and image data from JSON script tag
+  const dataScript = document.querySelector('[data-product-variants]');
+  let variantData = {};
+  let productImages = [];
+  let currentVariantId = null;
 
-  // Store product images with IDs for variant matching
-  const productImages = [];
-  {%- for image in product.images -%}
-    productImages.push({
-      id: {{ image.id }},
-      url: '{{ image | image_url: width: 800 }}',
-      thumbnailUrl: '{{ image | image_url: width: 200 }}',
-      alt: {{ image.alt | json }}
-    });
-  {%- endfor -%}
-
-  let currentVariantId = {{ selected_variant.id }};
-
-  let currentVariantId = {{ selected_variant.id | json }};
+  if (dataScript) {
+    try {
+      const productData = JSON.parse(dataScript.textContent);
+      variantData = productData.variants || {};
+      productImages = productData.images || [];
+      currentVariantId = productData.currentVariantId || null;
+    } catch (error) {
+      console.error('Error parsing product data:', error);
+    }
+  }
   const thumbnails = productDetail.querySelectorAll('.product-detail__thumbnail');
   const mainImage = productDetail.querySelector('#product-main-image');
   
@@ -1054,26 +1220,64 @@
     });
   }
 
-  // Tab switching
-  const tabs = productDetail.querySelectorAll('.product-detail__tab');
-  const tabPanels = productDetail.querySelectorAll('.product-detail__tab-panel');
+  // Tab switching functionality
+  const tabsSection = productDetail.querySelector('[data-tabs-section]');
+  if (tabsSection) {
+    const tabs = tabsSection.querySelectorAll('.product-detail__tab');
+    const tabPanels = tabsSection.querySelectorAll('.product-detail__tab-panel');
 
-  for (const tab of tabs) {
-    tab.addEventListener('click', function() {
-      const targetTab = this.dataset.tab;
+    for (const tab of tabs) {
+      tab.addEventListener('click', function() {
+        const targetTab = this.dataset.tab;
+        const targetPanel = tabsSection.querySelector(`[data-tab-panel="${targetTab}"]`);
+        
+        if (!targetPanel) return;
+        
+        // Update tab active state and ARIA attributes
+        tabs.forEach(t => {
+          t.classList.remove('product-detail__tab--active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        this.classList.add('product-detail__tab--active');
+        this.setAttribute('aria-selected', 'true');
+        
+        // Update panel active state and ARIA attributes
+        tabPanels.forEach(panel => {
+          panel.classList.remove('product-detail__tab-panel--active');
+          panel.setAttribute('aria-hidden', 'true');
+        });
+        targetPanel.classList.add('product-detail__tab-panel--active');
+        targetPanel.setAttribute('aria-hidden', 'false');
+        
+        // Focus management for accessibility
+        targetPanel.focus();
+      });
       
-      // Update tab active state
-      tabs.forEach(t => t.classList.remove('product-detail__tab--active'));
-      this.classList.add('product-detail__tab--active');
-      
-      // Update panel active state
-      tabPanels.forEach(panel => {
-        panel.classList.remove('product-detail__tab-panel--active');
-        if (panel.dataset.tabPanel === targetTab) {
-          panel.classList.add('product-detail__tab-panel--active');
+      // Keyboard navigation support
+      tab.addEventListener('keydown', function(e) {
+        const currentIndex = Array.from(tabs).indexOf(this);
+        let targetIndex = currentIndex;
+        
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          targetIndex = (currentIndex + 1) % tabs.length;
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          targetIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+        } else if (e.key === 'Home') {
+          e.preventDefault();
+          targetIndex = 0;
+        } else if (e.key === 'End') {
+          e.preventDefault();
+          targetIndex = tabs.length - 1;
+        }
+        
+        if (targetIndex !== currentIndex) {
+          tabs[targetIndex].click();
+          tabs[targetIndex].focus();
         }
       });
-    });
+    }
   }
 
   // Update price display
@@ -1396,11 +1600,95 @@
       "id": "product",
       "label": "Product",
       "info": "Select a product to display. If not selected, the first available product will be shown."
+    },
+    {
+      "type": "header",
+      "content": "Tabs"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tabs",
+      "label": "Show tabs",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "tab_label",
+          "label": "Label",
+          "default": "Tab"
+        },
+        {
+          "type": "text",
+          "id": "tab_id",
+          "label": "ID",
+          "info": "Unique identifier for this tab (auto-generated if empty)"
+        },
+        {
+          "type": "select",
+          "id": "tab_type",
+          "label": "Type",
+          "options": [
+            {
+              "value": "description",
+              "label": "Description"
+            },
+            {
+              "value": "specifications",
+              "label": "Specifications"
+            },
+            {
+              "value": "custom",
+              "label": "Custom"
+            }
+          ],
+          "default": "description"
+        },
+        {
+          "type": "richtext",
+          "id": "fallback_content",
+          "label": "Fallback content",
+          "info": "Shown when product description is empty (Description type only)"
+        },
+        {
+          "type": "richtext",
+          "id": "specifications_content",
+          "label": "Content",
+          "info": "Custom specifications content (Specifications type only). Leave empty to show product details automatically."
+        },
+        {
+          "type": "richtext",
+          "id": "custom_content",
+          "label": "Content",
+          "info": "Custom tab content (Custom type only)"
+        }
+      ]
     }
   ],
   "presets": [
     {
-      "name": "Product Detail"
+      "name": "Product Detail",
+      "blocks": [
+        {
+          "type": "tab",
+          "settings": {
+            "tab_label": "Description",
+            "tab_type": "description"
+          }
+        },
+        {
+          "type": "tab",
+          "settings": {
+            "tab_label": "Specifications",
+            "tab_type": "specifications"
+          }
+        }
+      ]
     }
   ]
 }
