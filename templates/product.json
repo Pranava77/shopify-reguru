@@ -139,8 +139,37 @@
     },
     "product_detail": {
       "type": "product-detail",
+      "blocks": {
+        "tab_kKTezc": {
+          "type": "tab",
+          "settings": {
+            "tab_label": "Tab",
+            "tab_id": "",
+            "tab_type": "description",
+            "fallback_content": "",
+            "specifications_content": "",
+            "custom_content": ""
+          }
+        },
+        "tab_y93JnB": {
+          "type": "tab",
+          "settings": {
+            "tab_label": "specs",
+            "tab_id": "",
+            "tab_type": "description",
+            "fallback_content": "",
+            "specifications_content": "",
+            "custom_content": ""
+          }
+        }
+      },
+      "block_order": [
+        "tab_kKTezc",
+        "tab_y93JnB"
+      ],
       "settings": {
-        "product": ""
+        "product": "",
+        "show_tabs": true
       }
     },
     "feature_cards_Mm6g4q": {
