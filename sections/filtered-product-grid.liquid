@@ -918,6 +918,13 @@
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
   width: 100%;
   justify-content: center;
+  /* Ensure button is accessible and touchable */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  user-select: none;
+  -webkit-user-select: none;
+  /* Minimum touch target size for accessibility */
+  min-height: 44px;
 }
 
 .filtered-product-grid__filter-trigger:hover {
@@ -1213,25 +1220,28 @@
   display: none;
   visibility: hidden;
   opacity: 0;
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
 }
 
+/* Show drawer on mobile devices */
 @media screen and (max-width: 768px) {
   .filtered-product-grid__filter-drawer {
     display: block;
   }
-  
-  /* Ensure drawer is visible when open on mobile */
-  .filtered-product-grid__filter-drawer[aria-hidden="false"] {
-    display: block !important;
-  }
 }
 
+/* Drawer open state - applies to all screen sizes but only visible on mobile */
 .filtered-product-grid__filter-drawer[aria-hidden="false"] {
-  display: block !important;
   visibility: visible !important;
   pointer-events: all !important;
   opacity: 1 !important;
+}
+
+/* Ensure drawer is displayed on mobile when open */
+@media screen and (max-width: 768px) {
+  .filtered-product-grid__filter-drawer[aria-hidden="false"] {
+    display: block !important;
+  }
 }
 
 .filtered-product-grid__filter-overlay {
@@ -1419,15 +1429,23 @@
 
   /* Hide desktop filters on mobile */
   .filtered-product-grid__sidebar {
-    display: none;
+    display: none !important;
+    visibility: hidden;
   }
 
   /* Show mobile filter trigger button */
   .filtered-product-grid__filter-trigger {
-    display: flex;
+    display: flex !important;
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+    /* Ensure button is clickable/touchable */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    /* Minimum touch target size for accessibility */
+    min-height: 44px;
   }
 
   .filtered-product-grid__main {
@@ -1848,6 +1866,32 @@
 
 {% javascript %}
 (function() {
+  // Helper function to check if we're on mobile
+  function isMobile() {
+    return window.innerWidth <= 768;
+  }
+
+  // Helper function to find element with retry
+  function findElementWithRetry(container, selector, retries = 3, delay = 100) {
+    let element = container.querySelector(selector);
+    if (element) return element;
+    
+    if (retries > 0) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          element = container.querySelector(selector);
+          if (element) {
+            resolve(element);
+          } else {
+            resolve(findElementWithRetry(container, selector, retries - 1, delay));
+          }
+        }, delay);
+      });
+    }
+    
+    return null;
+  }
+
   // Wait for DOM to be ready
   function initFilteredProductGrid() {
     const sectionElement = document.querySelector('[id^="filtered-product-grid-"]');
@@ -1857,25 +1901,57 @@
         document.addEventListener('DOMContentLoaded', initFilteredProductGrid);
         return;
       }
-      console.warn('Filtered product grid section not found');
+      // Additional retry for slow-loading pages
+      setTimeout(() => {
+        const retrySection = document.querySelector('[id^="filtered-product-grid-"]');
+        if (retrySection) {
+          initFilteredProductGrid();
+        } else {
+          console.warn('Filtered product grid section not found after retry');
+        }
+      }, 500);
       return;
     }
 
-    console.log('Initializing filtered product grid', sectionElement.id);
+    console.log('Initializing filtered product grid', sectionElement.id, {
+      isMobile: isMobile(),
+      viewportWidth: window.innerWidth
+    });
 
-  // Mobile Filter Drawer Elements
-  const filterDrawer = sectionElement.querySelector('[data-filter-drawer]');
-  const filterDrawerTrigger = sectionElement.querySelector('[data-filter-drawer-trigger]');
-  const filterDrawerClose = sectionElement.querySelector('[data-filter-drawer-close]');
-  const filterOverlay = sectionElement.querySelector('[data-filter-overlay]');
-  const filterPanel = sectionElement.querySelector('[data-filter-panel]');
+  // Mobile Filter Drawer Elements - try multiple times for mobile
+  let filterDrawer = sectionElement.querySelector('[data-filter-drawer]');
+  let filterDrawerTrigger = sectionElement.querySelector('[data-filter-drawer-trigger]');
+  let filterDrawerClose = sectionElement.querySelector('[data-filter-drawer-close]');
+  let filterOverlay = sectionElement.querySelector('[data-filter-overlay]');
+  let filterPanel = sectionElement.querySelector('[data-filter-panel]');
+
+  // On mobile, retry finding elements if not found initially
+  if (isMobile() && (!filterDrawer || !filterDrawerTrigger)) {
+    console.log('Mobile detected - retrying to find drawer elements...');
+    setTimeout(() => {
+      if (!filterDrawer) filterDrawer = sectionElement.querySelector('[data-filter-drawer]');
+      if (!filterDrawerTrigger) filterDrawerTrigger = sectionElement.querySelector('[data-filter-drawer-trigger]');
+      if (!filterDrawerClose) filterDrawerClose = sectionElement.querySelector('[data-filter-drawer-close]');
+      if (!filterOverlay) filterOverlay = sectionElement.querySelector('[data-filter-overlay]');
+      if (!filterPanel) filterPanel = sectionElement.querySelector('[data-filter-panel]');
+      
+      console.log('Retry results:', {
+        drawer: !!filterDrawer,
+        trigger: !!filterDrawerTrigger,
+        close: !!filterDrawerClose,
+        overlay: !!filterOverlay,
+        panel: !!filterPanel
+      });
+    }, 200);
+  }
 
   console.log('Filter drawer elements found:', {
     drawer: !!filterDrawer,
     trigger: !!filterDrawerTrigger,
     close: !!filterDrawerClose,
     overlay: !!filterOverlay,
-    panel: !!filterPanel
+    panel: !!filterPanel,
+    isMobile: isMobile()
   });
 
   // Body scroll lock helper
@@ -2001,15 +2077,56 @@
     priceMaxSlider: !!priceMaxSlider
   });
 
+  // Helper function to handle both click and touch events (for mobile compatibility)
+  function addMobileEventListeners(element, handler) {
+    if (!element) return;
+    
+    let touchStartTime = 0;
+    let touchStartX = 0;
+    let touchStartY = 0;
+    
+    // Handle click events (desktop and mobile)
+    element.addEventListener('click', handler);
+    
+    // Handle touch events (mobile)
+    element.addEventListener('touchstart', function(e) {
+      touchStartTime = Date.now();
+      const touch = e.touches[0];
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+    }, { passive: true });
+    
+    element.addEventListener('touchend', function(e) {
+      const touchEndTime = Date.now();
+      const timeDiff = touchEndTime - touchStartTime;
+      
+      // Only trigger if it was a quick tap (not a swipe or long press)
+      if (timeDiff < 300) {
+        const touch = e.changedTouches[0];
+        const deltaX = Math.abs(touch.clientX - touchStartX);
+        const deltaY = Math.abs(touch.clientY - touchStartY);
+        
+        // Only trigger if movement was minimal (tap, not swipe)
+        if (deltaX < 10 && deltaY < 10) {
+          e.preventDefault();
+          e.stopPropagation();
+          handler(e);
+        }
+      }
+    });
+  }
+
   // Drawer event listeners - attach even if drawer is initially hidden
   if (filterDrawerTrigger) {
     console.log('Attaching event listener to filter drawer trigger');
-    filterDrawerTrigger.addEventListener('click', function(e) {
+    
+    const handleTriggerClick = function(e) {
       e.preventDefault();
       e.stopPropagation();
-      console.log('Filter drawer trigger clicked', {
+      console.log('Filter drawer trigger activated', {
         drawerExists: !!filterDrawer,
-        drawerHidden: filterDrawer ? filterDrawer.getAttribute('aria-hidden') : 'N/A'
+        drawerHidden: filterDrawer ? filterDrawer.getAttribute('aria-hidden') : 'N/A',
+        eventType: e.type
       });
       
       const opened = openDrawer(e);
@@ -2069,7 +2186,9 @@
           }
         });
       }, 100);
-    });
+    };
+    
+    addMobileEventListeners(filterDrawerTrigger, handleTriggerClick);
     console.log('Filter drawer trigger button initialized successfully');
   } else {
     console.error('Filter drawer trigger button not found - drawer cannot be opened via button');
@@ -2078,7 +2197,7 @@
       const retryTrigger = sectionElement.querySelector('[data-filter-drawer-trigger]');
       if (retryTrigger) {
         console.log('Found filter drawer trigger on retry - attaching listener');
-        retryTrigger.addEventListener('click', function(e) {
+        addMobileEventListeners(retryTrigger, function(e) {
           e.preventDefault();
           e.stopPropagation();
           openDrawer(e);
@@ -2092,15 +2211,48 @@
   // Additional check: ensure drawer elements are properly initialized
   if (!filterDrawer) {
     console.error('CRITICAL: Filter drawer element not found in DOM');
+    // Final retry attempt, especially important for mobile
+    if (isMobile()) {
+      setTimeout(() => {
+        const retryDrawer = sectionElement.querySelector('[data-filter-drawer]');
+        if (retryDrawer) {
+          console.log('Found drawer on final retry - reinitializing...');
+          // Re-run initialization if drawer is found
+          const retryTrigger = sectionElement.querySelector('[data-filter-drawer-trigger]');
+          if (retryTrigger && !retryTrigger.hasAttribute('data-listener-attached')) {
+            retryTrigger.setAttribute('data-listener-attached', 'true');
+            addMobileEventListeners(retryTrigger, function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              openDrawer(e);
+            });
+          }
+        }
+      }, 1000);
+    }
   } else {
-    console.log('Filter drawer element found and initialized', {
-      ariaHidden: filterDrawer.getAttribute('aria-hidden'),
-      display: window.getComputedStyle(filterDrawer).display
-    });
+    // Ensure drawer is properly initialized on mobile
+    if (isMobile()) {
+      // Ensure drawer starts in closed state
+      filterDrawer.setAttribute('aria-hidden', 'true');
+      // Verify drawer is in DOM and accessible
+      const drawerStyle = window.getComputedStyle(filterDrawer);
+      console.log('Filter drawer element found and initialized', {
+        ariaHidden: filterDrawer.getAttribute('aria-hidden'),
+        display: drawerStyle.display,
+        visibility: drawerStyle.visibility,
+        isMobile: true
+      });
+    } else {
+      console.log('Filter drawer element found (desktop)', {
+        ariaHidden: filterDrawer.getAttribute('aria-hidden'),
+        display: window.getComputedStyle(filterDrawer).display
+      });
+    }
   }
 
   if (filterDrawerClose) {
-    filterDrawerClose.addEventListener('click', function(e) {
+    addMobileEventListeners(filterDrawerClose, function(e) {
       e.preventDefault();
       e.stopPropagation();
       closeDrawer(e);
@@ -2108,7 +2260,7 @@
   }
 
   if (filterOverlay) {
-    filterOverlay.addEventListener('click', function(e) {
+    addMobileEventListeners(filterOverlay, function(e) {
       e.preventDefault();
       e.stopPropagation();
       closeDrawer(e);
@@ -2660,11 +2812,28 @@
     }
   }
 
+  // Ensure drawer is properly initialized on mobile
+  if (isMobile() && filterDrawer) {
+    // Ensure drawer starts closed
+    filterDrawer.setAttribute('aria-hidden', 'true');
+    // Verify drawer elements are accessible
+    if (filterPanel) {
+      filterPanel.style.display = 'flex';
+      filterPanel.style.visibility = 'visible';
+    }
+    console.log('Mobile drawer initialized', {
+      ariaHidden: filterDrawer.getAttribute('aria-hidden'),
+      panelExists: !!filterPanel
+    });
+  }
+
   // Initial filter run to show all products
   filterProducts();
 
   // Handle window resize
   window.addEventListener('resize', ThemeUtils.debounce(function() {
+    const currentIsMobile = isMobile();
+    
     if (window.innerWidth <= 992 && filtersContent) {
       // On mobile, ensure toggle is visible and check current state
       if (filtersToggle) {
@@ -2678,6 +2847,18 @@
       }
       if (filtersToggle) {
         filtersToggle.setAttribute('aria-expanded', 'true');
+      }
+    }
+    
+    // Ensure drawer state is correct on resize
+    if (filterDrawer) {
+      // If switching to mobile and drawer is open, ensure it's properly displayed
+      if (currentIsMobile && filterDrawer.getAttribute('aria-hidden') === 'false') {
+        filterDrawer.setAttribute('aria-hidden', 'false'); // Force update
+        if (filterPanel) {
+          filterPanel.style.display = 'flex';
+          filterPanel.style.visibility = 'visible';
+        }
       }
     }
   }, 150));
