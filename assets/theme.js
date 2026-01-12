@@ -340,114 +340,157 @@ class ThemeUtils {
 
   #initCart() {
     // Handle add to cart buttons - add to cart and open drawer
-    const addToCartButtons = document.querySelectorAll('[data-add-to-cart]');
-    
-    for (const button of addToCartButtons) {
-      button.addEventListener('click', async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        const variantId = button.getAttribute('data-variant-id');
-        if (!variantId) {
-          console.warn('Add to cart button missing variant ID');
-          return;
-        }
-        
-        // Disable button during request
-        const originalText = button.textContent;
-        button.disabled = true;
-        button.textContent = 'Adding...';
-        
-        try {
-          const response = await fetch('/cart/add.js', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
+    // Use event delegation to handle dynamically added buttons
+    document.addEventListener('click', async (e) => {
+      const button = e.target.closest('[data-add-to-cart]');
+      if (!button) return;
+      
+      // Check if button is disabled or already processing
+      if (button.disabled || button.classList.contains('product-detail__btn--loading')) return;
+      
+      // Allow product-detail buttons to handle themselves (they use stopPropagation)
+      if (button.closest('.product-detail')) return;
+      
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const variantId = button.getAttribute('data-variant-id');
+      if (!variantId) {
+        console.warn('Add to cart button missing variant ID');
+        return;
+      }
+      
+      // Get quantity from data attribute or default to 1
+      const quantity = parseInt(button.getAttribute('data-quantity')) || 1;
+      
+      // Disable button during request
+      const originalText = button.textContent;
+      button.disabled = true;
+      button.textContent = 'Adding...';
+      
+      try {
+        const response = await fetch('/cart/add.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            items: [{
               id: variantId,
-              quantity: 1
-            })
-          });
-          
-          if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.description || 'Failed to add item to cart');
-          }
-          
-          // Optimistic UI update - update cart count
-          this.#updateCartCount();
-          
-          // Refresh cart drawer and open it (if drawer is enabled)
-          const header = document.querySelector('.header');
-          const cartType = header?.getAttribute('data-cart-type') || 'drawer';
-          if (cartType === 'drawer' && this.cartDrawer) {
-            await this.cartDrawer.refreshCart();
-            this.cartDrawer.open();
-          } else {
-            // Redirect to cart page if drawer is disabled
-            window.location.href = '/cart';
-          }
-          
-        } catch (error) {
-          console.error('Error adding to cart:', error);
-          button.disabled = false;
-          button.textContent = originalText;
-          alert('Failed to add item to cart. Please try again.');
+              quantity: quantity
+            }]
+          })
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.description || 'Failed to add item to cart');
         }
-      });
-    }
+        
+        const data = await response.json();
+        
+        // Optimistic UI update - update cart count
+        this.#updateCartCount();
+        
+        // Trigger cart update event for other components
+        document.dispatchEvent(new CustomEvent('cart:updated', {
+          detail: { cart: data }
+        }));
+        
+        // Refresh cart drawer and open it (if drawer is enabled)
+        const header = document.querySelector('.header');
+        const cartType = header?.getAttribute('data-cart-type') || 'drawer';
+        if (cartType === 'drawer' && this.cartDrawer) {
+          await this.cartDrawer.refreshCart();
+          this.cartDrawer.open();
+        } else {
+          // Redirect to cart page if drawer is disabled
+          window.location.href = '/cart';
+        }
+        
+        // Show success feedback
+        button.textContent = 'Added!';
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.disabled = false;
+        }, 1000);
+        
+      } catch (error) {
+        console.error('Error adding to cart:', error);
+        button.disabled = false;
+        button.textContent = originalText;
+        alert(error.message || 'Failed to add item to cart. Please try again.');
+      }
+    });
     
     // Handle buy now buttons - add to cart and redirect to checkout
-    const buyNowButtons = document.querySelectorAll('[data-buy-now]');
-    
-    for (const button of buyNowButtons) {
-      button.addEventListener('click', async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        const variantId = button.getAttribute('data-variant-id');
-        if (!variantId) {
-          console.warn('Buy now button missing variant ID');
-          return;
-        }
-        
-        // Disable button during request
-        const originalText = button.textContent;
-        button.disabled = true;
-        button.textContent = 'Adding...';
-        
-        try {
-          const response = await fetch('/cart/add.js', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
+    // Use event delegation to handle dynamically added buttons
+    document.addEventListener('click', async (e) => {
+      const button = e.target.closest('[data-buy-now]');
+      if (!button) return;
+      
+      // Check if button is disabled or already processing
+      if (button.disabled || button.classList.contains('product-detail__btn--loading')) return;
+      
+      // Allow product-detail buttons to handle themselves (they use stopPropagation)
+      if (button.closest('.product-detail')) return;
+      
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const variantId = button.getAttribute('data-variant-id');
+      if (!variantId) {
+        console.warn('Buy now button missing variant ID');
+        return;
+      }
+      
+      // Get quantity from data attribute or default to 1
+      const quantity = parseInt(button.getAttribute('data-quantity')) || 1;
+      
+      // Disable button during request
+      const originalText = button.textContent;
+      button.disabled = true;
+      button.textContent = 'Adding...';
+      
+      try {
+        const response = await fetch('/cart/add.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            items: [{
               id: variantId,
-              quantity: 1
-            })
-          });
-          
-          if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.description || 'Failed to add item to cart');
-          }
-          
-          // Optimistic UI update - update cart count
-          this.#updateCartCount();
-          
-          // Redirect to checkout
-          window.location.href = '/checkout';
-          
-        } catch (error) {
-          console.error('Error adding to cart:', error);
-          button.disabled = false;
-          button.textContent = originalText;
-          alert('Failed to add item to cart. Please try again.');
+              quantity: quantity
+            }]
+          })
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.description || 'Failed to add item to cart');
         }
-      });
-    }
+        
+        const data = await response.json();
+        
+        // Optimistic UI update - update cart count
+        this.#updateCartCount();
+        
+        // Trigger cart update event for other components
+        document.dispatchEvent(new CustomEvent('cart:updated', {
+          detail: { cart: data }
+        }));
+        
+        // Redirect to checkout
+        window.location.href = '/checkout';
+        
+      } catch (error) {
+        console.error('Error adding to cart:', error);
+        button.disabled = false;
+        button.textContent = originalText;
+        alert(error.message || 'Failed to add item to cart. Please try again.');
+      }
+    });
   }
 
   #initCartDrawer() {
