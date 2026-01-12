@@ -743,7 +743,8 @@
 /* Service Guarantees */
 .product-detail__guarantees {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
   gap: 16px;
   margin-top: 24px;
 }
@@ -752,7 +753,8 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  width: 100%;
+  flex: 1 1 calc(50% - 8px);
+  min-width: 150px;
 }
 
 .product-detail__guarantee-icon {
@@ -959,16 +961,8 @@
 
 /* Responsive Styles */
 @media screen and (min-width: 769px) {
-  .product-detail__guarantees {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-
   .product-detail__guarantee {
-    width: auto;
     flex: 1 1 calc(33.333% - 11px);
-    min-width: 150px;
   }
 }
 
