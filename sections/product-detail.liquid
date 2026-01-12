@@ -607,15 +607,17 @@
 .product-detail__quantity-section {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 12px;
 }
 
 .product-detail__quantity-label {
   font-family: var(--font-heading);
-  font-weight: 400;
+  font-weight: 600;
   font-size: 16px;
   line-height: 24px;
   color: var(--color-black);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .product-detail__quantity-controls {
@@ -628,59 +630,78 @@
 .product-detail__quantity-selector {
   display: flex;
   align-items: center;
-  height: 36px;
+  height: 48px;
   width: auto;
   gap: 0;
-  border-radius: 6px;
-  overflow: hidden;
+  border: 2px solid var(--color-black);
+  box-shadow: 4px 4px 0px 0px var(--color-black);
+  background-color: var(--color-white);
 }
 
 .product-detail__quantity-btn {
-  width: 36px;
-  height: 36px;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f3f4f6;
-  border: 0.5px solid var(--color-black);
+  background-color: var(--color-white);
+  border: none;
+  border-right: 2px solid var(--color-black);
   cursor: pointer;
-  transition: background-color var(--transition-fast);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
   color: var(--color-black);
   flex-shrink: 0;
+  touch-action: manipulation;
 }
 
 .product-detail__quantity-btn:first-child {
-  border-top-left-radius: 6px;
-  border-bottom-left-radius: 6px;
-  border-right: none;
+  border-right: 2px solid var(--color-black);
 }
 
 .product-detail__quantity-btn:last-child {
-  border-top-right-radius: 6px;
-  border-bottom-right-radius: 6px;
-  border-left: none;
+  border-left: 2px solid var(--color-black);
+  border-right: none;
 }
 
 .product-detail__quantity-btn:hover {
-  background-color: #e5e7eb;
+  background-color: var(--color-green);
+  transform: translate(-2px, -2px);
+  box-shadow: 2px 2px 0px 0px var(--color-black);
+}
+
+.product-detail__quantity-btn:active {
+  transform: translate(0, 0);
+  box-shadow: none;
+}
+
+.product-detail__quantity-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .product-detail__quantity-input {
   flex: 1;
   min-width: 60px;
   height: 100%;
-  border: 0.5px solid var(--color-black);
-  border-left: none;
-  border-right: none;
+  border: none;
+  border-left: 2px solid var(--color-black);
+  border-right: 2px solid var(--color-black);
   text-align: center;
-  font-family: var(--font-body);
-  font-weight: 400;
-  font-size: 16px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 18px;
   line-height: 24px;
   color: var(--color-black);
   background-color: var(--color-white);
   -moz-appearance: textfield;
   appearance: textfield;
+  outline: none;
+}
+
+.product-detail__quantity-input:focus {
+  background-color: var(--color-green);
 }
 
 .product-detail__quantity-input::-webkit-outer-spin-button,
@@ -1165,16 +1186,22 @@
   const increaseBtn = productDetail.querySelector('[data-quantity-increase]');
 
   if (quantityInput && decreaseBtn && increaseBtn) {
-    // Function to update quantity value
+    // Function to update quantity value and button states
     function updateQuantity(newValue) {
       const min = parseInt(quantityInput.min) || 1;
       const value = Math.max(min, parseInt(newValue) || min);
       quantityInput.value = value;
       
+      // Update button disabled states
+      decreaseBtn.disabled = value <= min;
+      
       // Trigger input and change events
       quantityInput.dispatchEvent(new Event('input', { bubbles: true }));
       quantityInput.dispatchEvent(new Event('change', { bubbles: true }));
     }
+
+    // Initialize button states
+    updateQuantity(quantityInput.value);
 
     // Decrease button
     decreaseBtn.addEventListener('click', function(e) {
@@ -1202,7 +1229,17 @@
       if (value < min) {
         this.value = min;
       }
-      this.dispatchEvent(new Event('change', { bubbles: true }));
+      updateQuantity(this.value);
+    });
+
+    // Handle input changes
+    quantityInput.addEventListener('input', function() {
+      const min = parseInt(this.min) || 1;
+      const value = parseInt(this.value) || min;
+      if (this.value === '' || isNaN(parseInt(this.value))) {
+        this.value = min;
+      }
+      updateQuantity(this.value);
     });
 
     // Prevent invalid input
