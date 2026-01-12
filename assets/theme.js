@@ -1571,25 +1571,9 @@ class CartDrawer {
         throw new Error(errorMessage);
       }
       
-      // Use the cart data from the update response instead of making another request
-      const cart = await response.json();
-      if (cart && typeof cart === 'object') {
-        this.#updateCartContent(cart);
-        
-        // Update cart count
-        const cartCountElements = document.querySelectorAll('[data-cart-count]');
-        for (const element of cartCountElements) {
-          element.textContent = cart.item_count || 0;
-        }
-        
-        // Dispatch event
-        document.dispatchEvent(new CustomEvent('cart:updated', {
-          detail: { cart }
-        }));
-      } else {
-        // Fallback to refresh if response format is unexpected
-        await this.refreshCart();
-      }
+      // Always fetch fresh cart data after update to ensure all prices are correct
+      // The /cart/update.js response may not always include complete price information
+      await this.refreshCart();
     } catch (error) {
       console.error('Error updating cart:', error);
       throw error;
@@ -1828,11 +1812,21 @@ class CartDrawer {
   }
 
   #formatMoney(cents) {
-    if (typeof cents !== 'number' || isNaN(cents)) {
+    // Handle null, undefined, or invalid values
+    if (cents == null || (typeof cents !== 'number' && typeof cents !== 'string')) {
       return '₹0.00';
     }
-    const isNegative = cents < 0;
-    const absCents = Math.abs(cents);
+    
+    // Convert string to number if needed
+    const numCents = typeof cents === 'string' ? parseFloat(cents) : cents;
+    
+    // Check if conversion resulted in valid number
+    if (isNaN(numCents)) {
+      return '₹0.00';
+    }
+    
+    const isNegative = numCents < 0;
+    const absCents = Math.abs(numCents);
     const dollars = absCents / 100;
     const formatted = dollars.toFixed(2);
     return isNegative ? `-₹${formatted}` : `₹${formatted}`;
