@@ -1875,6 +1875,15 @@
     return window.innerWidth <= 768;
   }
 
+  // Local debounce function (fallback if ThemeUtils not available)
+  function debounce(fn, delay = 300) {
+    let timeoutId;
+    return function(...args) {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => fn.apply(this, args), delay);
+    };
+  }
+
   // Helper function to find element with retry
   function findElementWithRetry(container, selector, retries = 3, delay = 100) {
     let element = container.querySelector(selector);
@@ -2835,7 +2844,8 @@
   filterProducts();
 
   // Handle window resize
-  window.addEventListener('resize', ThemeUtils.debounce(function() {
+  const debounceFn = (typeof ThemeUtils !== 'undefined' && ThemeUtils.debounce) ? ThemeUtils.debounce : debounce;
+  window.addEventListener('resize', debounceFn(function() {
     const currentIsMobile = isMobile();
     
     if (window.innerWidth <= 992 && filtersContent) {
