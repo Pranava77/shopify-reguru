@@ -24,7 +24,7 @@
       "settings": {
         "logo": "shopify://shop_images/gin.png",
         "show_search": true,
-        "show_location": true,
+        "show_location": false,
         "location_text": "Bengaluru",
         "header_icon_type": "bag",
         "header_custom_icon": "shopify://shop_images/Layer_1_1.png",
@@ -97,10 +97,6 @@
             "badge_style": "sale"
           }
         },
-        "separator_WKnKAx": {
-          "type": "separator",
-          "settings": {}
-        },
         "simple_link_WtAE3C": {
           "type": "simple_link",
           "settings": {
@@ -124,7 +120,6 @@
         "menu_item_HXcEV3",
         "menu_item_dFiBff",
         "simple_link_a8EMJc",
-        "separator_WKnKAx",
         "simple_link_WtAE3C",
         "simple_link_8KrntT"
       ],
