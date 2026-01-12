@@ -1255,7 +1255,7 @@ class CartDrawer {
     this.panel = drawerElement.querySelector('[data-cart-drawer-panel]');
     this.closeBtn = drawerElement.querySelector('[data-cart-drawer-close]');
     this.content = drawerElement.querySelector('[data-cart-drawer-content]');
-    this.form = drawerElement.querySelector('#cart-drawer-form');
+    this.form = drawerElement.querySelector('[data-cart-drawer-form]');
     this.escapeHandler = null;
     
     this.#init();
@@ -1370,7 +1370,7 @@ class CartDrawer {
     
     // Form submission - use event delegation
     this.drawer.addEventListener('submit', (e) => {
-      const form = e.target.closest('#cart-drawer-form');
+      const form = e.target.closest('[data-cart-drawer-form]');
       if (form) {
         const submitButton = e.submitter;
         if (!submitButton || submitButton.name !== 'checkout') {
@@ -1383,7 +1383,7 @@ class CartDrawer {
   }
 
   async #updateQuantity(key, change) {
-    const form = this.drawer.querySelector('#cart-drawer-form');
+    const form = this.drawer.querySelector('[data-cart-drawer-form]');
     if (!form) return;
     const input = form.querySelector(`input[data-key="${key}"]`);
     if (!input) return;
@@ -1415,7 +1415,7 @@ class CartDrawer {
 
   async #setQuantity(key, quantity) {
     // Get the form - it might have been updated
-    const form = this.drawer.querySelector('#cart-drawer-form');
+    const form = this.drawer.querySelector('[data-cart-drawer-form]');
     if (!form) {
       throw new Error('Cart form not found');
     }
@@ -1498,7 +1498,7 @@ class CartDrawer {
     } catch (error) {
       console.error('Error refreshing cart:', error);
       // Fallback: reload page if cart is empty
-      const form = this.drawer.querySelector('#cart-drawer-form');
+      const form = this.drawer.querySelector('[data-cart-drawer-form]');
       if (form) {
         const cartData = await fetch('/cart.js').then(r => r.json()).catch(() => null);
         if (!cartData || !cartData.items || cartData.items.length === 0) {
@@ -1515,7 +1515,7 @@ class CartDrawer {
     const emptyTitleEl = this.content.querySelector('.cart-drawer__empty-title');
     const emptyTextEl = this.content.querySelector('.cart-drawer__empty-text');
     const continueShoppingEl = this.content.querySelector('[data-continue-shopping]');
-    const buyNowBtn = this.content.querySelector('.cart-drawer__btn--primary[name="checkout"]');
+    const buyNowBtn = this.content.querySelector('.cart-drawer__btn--primary[type="submit"]');
     const promoLabelEl = this.content.querySelector('.cart-drawer__promo-label');
     const promoInputEl = this.content.querySelector('.cart-drawer__promo-input');
     
@@ -1563,7 +1563,7 @@ class CartDrawer {
     
     // Build items HTML
     let itemsHtml = '<div class="cart-drawer__progress"><div class="cart-drawer__progress-bar"><span class="cart-drawer__progress-text" data-cart-item-count>' + cart.item_count + ' ITEMS SELECTED</span></div></div>';
-    itemsHtml += '<form action="/cart" method="post" id="cart-drawer-form" class="cart-drawer__form">';
+    itemsHtml += '<form action="/cart" method="post" class="cart-drawer__form" data-cart-drawer-form>';
     itemsHtml += '<div class="cart-drawer__items" data-cart-items>';
     
     for (const item of cart.items) {
@@ -1668,7 +1668,7 @@ class CartDrawer {
     this.content.innerHTML = itemsHtml;
     
     // Update form reference (for compatibility)
-    this.form = this.content.querySelector('#cart-drawer-form');
+    this.form = this.content.querySelector('[data-cart-drawer-form]');
     
     // Restore scroll position if possible
     if (scrollTop > 0 && this.content.scrollHeight > scrollTop) {
@@ -1707,7 +1707,7 @@ class CartDrawer {
       console.error('Error refreshing cart on open:', error);
     });
     // Update form reference in case it was updated
-    this.form = this.drawer.querySelector('#cart-drawer-form');
+    this.form = this.drawer.querySelector('[data-cart-drawer-form]');
   }
 
   close() {

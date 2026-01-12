@@ -23,12 +23,12 @@
   endfor
 -%}
 
-<div class="cart-drawer" id="cart-drawer" data-cart-drawer aria-hidden="true" data-cart-drawer-wrapper>
+<div class="cart-drawer" data-cart-drawer aria-hidden="true" data-cart-drawer-wrapper role="dialog" aria-modal="true" aria-labelledby="cart-drawer-title">
   <div class="cart-drawer__overlay" data-cart-drawer-overlay></div>
   
   <div class="cart-drawer__panel" data-cart-drawer-panel>
     <div class="cart-drawer__header">
-      <h2 class="cart-drawer__title">{{ cart_title }}</h2>
+      <h2 class="cart-drawer__title" id="cart-drawer-title">{{ cart_title }}</h2>
       <button 
         type="button" 
         class="cart-drawer__close" 
@@ -49,7 +49,7 @@
           </div>
         </div>
 
-        <form action="{{ routes.cart_url }}" method="post" id="cart-drawer-form" class="cart-drawer__form">
+        <form action="{{ routes.cart_url }}" method="post" class="cart-drawer__form" data-cart-drawer-form>
           <div class="cart-drawer__items" data-cart-items>
             {%- for item in cart.items -%}
               <div class="cart-drawer__item" data-line-item="{{ item.key }}">
@@ -96,8 +96,10 @@
                       name="updates[]" 
                       value="{{ item.quantity }}" 
                       min="0" 
+                      max="999"
                       class="cart-drawer__quantity-input"
                       data-key="{{ item.key }}"
+                      aria-label="Quantity for {{ item.product.title }}"
                     >
                     <button 
                       type="button" 
@@ -176,6 +178,7 @@
                 class="cart-drawer__promo-input" 
                 placeholder="{{ promo_code_placeholder }}"
                 data-promo-code
+                aria-label="{{ promo_code_label }}"
               >
             </div>
 
@@ -304,6 +307,8 @@
   justify-content: center;
   width: 40px;
   height: 40px;
+  min-width: 40px;
+  min-height: 40px;
   padding: 0;
   background-color: var(--color-white);
   border: 1px solid var(--color-black);
@@ -324,6 +329,11 @@
   box-shadow: 1px 1px 0px 0px var(--color-black);
 }
 
+.cart-drawer__close:focus {
+  outline: 2px solid var(--color-black);
+  outline-offset: 2px;
+}
+
 .cart-drawer__close svg {
   width: 20px;
   height: 20px;
@@ -332,9 +342,12 @@
 .cart-drawer__content {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 24px;
   display: flex;
   flex-direction: column;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
 }
 
 .cart-drawer__progress {
@@ -377,16 +390,19 @@
   flex-direction: column;
   flex: 1;
   min-height: 0;
+  gap: 24px;
 }
 
 .cart-drawer__items {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-bottom: 24px;
   flex: 1;
-  overflow-y: auto;
   min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 4px;
+  margin-right: -4px;
 }
 
 .cart-drawer__item {
@@ -399,6 +415,7 @@
   border: 1px solid var(--color-black);
   border-radius: 6px;
   box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 0.5);
+  align-items: start;
 }
 
 .cart-drawer__item-image {
@@ -437,6 +454,7 @@
   flex-direction: column;
   gap: 8px;
   min-width: 0;
+  flex: 1;
 }
 
 .cart-drawer__item-name {
@@ -446,11 +464,17 @@
   line-height: 1.2;
   color: var(--color-black);
   margin: 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .cart-drawer__item-name a {
   color: inherit;
   text-decoration: none;
+}
+
+.cart-drawer__item-name a:hover {
+  text-decoration: underline;
 }
 
 .cart-drawer__item-variant {
@@ -480,8 +504,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
   padding: 0;
   background-color: var(--color-white);
   border: 1px solid var(--color-black);
@@ -506,6 +532,18 @@
   box-shadow: 1px 1px 0px 0px var(--color-black);
 }
 
+.cart-drawer__quantity-btn:focus {
+  outline: 2px solid var(--color-black);
+  outline-offset: 2px;
+}
+
+.cart-drawer__quantity-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 2px 2px 0px 0px var(--color-black);
+}
+
 .cart-drawer__quantity-input {
   width: 50px;
   height: 28px;
@@ -517,6 +555,15 @@
   background-color: var(--color-white);
   border: 1px solid var(--color-black);
   border-radius: 6px;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.cart-drawer__quantity-input::-webkit-outer-spin-button,
+.cart-drawer__quantity-input::-webkit-inner-spin-button {
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .cart-drawer__item-total {
@@ -528,25 +575,41 @@
   text-align: right;
   align-self: start;
   padding-top: 8px;
+  white-space: nowrap;
 }
 
 .cart-drawer__item-remove {
   position: absolute;
   top: 8px;
   right: 8px;
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
   padding: 0;
   background-color: transparent;
   border: none;
   color: var(--color-text-secondary);
   cursor: pointer;
   opacity: 0;
-  transition: opacity var(--transition-fast);
+  transition: opacity var(--transition-fast), color var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
 }
 
-.cart-drawer__item:hover .cart-drawer__item-remove {
+.cart-drawer__item:hover .cart-drawer__item-remove,
+.cart-drawer__item-remove:focus {
   opacity: 1;
+}
+
+.cart-drawer__item-remove:hover,
+.cart-drawer__item-remove:focus {
+  color: var(--color-black);
+  background-color: rgba(0, 0, 0, 0.05);
+  outline: 2px solid var(--color-black);
+  outline-offset: 2px;
 }
 
 .cart-drawer__summary {
@@ -555,6 +618,7 @@
   border-radius: 6px;
   box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
   flex-shrink: 0;
+  margin-top: auto;
 }
 
 .cart-drawer__summary-row {
@@ -621,6 +685,7 @@
 .cart-drawer__promo-input {
   width: 100%;
   height: 36px;
+  min-height: 36px;
   padding: 0 12px;
   font-family: var(--font-body);
   font-size: 14px;
@@ -632,6 +697,11 @@
 
 .cart-drawer__promo-input::placeholder {
   color: var(--color-text-secondary);
+}
+
+.cart-drawer__promo-input:focus {
+  outline: 2px solid var(--color-black);
+  outline-offset: 2px;
 }
 
 .cart-drawer__actions {
@@ -646,6 +716,7 @@
   align-items: center;
   justify-content: center;
   width: 100%;
+  min-height: 44px;
   height: 44px;
   padding: 0 24px;
   font-family: var(--font-heading);
@@ -657,6 +728,11 @@
   border: 2px solid var(--color-black);
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
   cursor: pointer;
+}
+
+.cart-drawer__btn:focus {
+  outline: 2px solid var(--color-black);
+  outline-offset: 2px;
 }
 
 .cart-drawer__btn--primary {
@@ -728,38 +804,80 @@
   }
 
   .cart-drawer__header {
-    padding: 20px;
+    padding: 16px;
   }
 
   .cart-drawer__title {
-    font-size: 20px;
+    font-size: 18px;
   }
 
   .cart-drawer__content {
-    padding: 20px;
+    padding: 16px;
   }
 
   .cart-drawer__item {
-    grid-template-columns: 80px 1fr auto;
+    grid-template-columns: 70px 1fr auto;
     gap: 12px;
     padding: 12px;
   }
 
   .cart-drawer__item-image {
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
   }
 
   .cart-drawer__item-name {
     font-size: 14px;
   }
 
+  .cart-drawer__item-price {
+    font-size: 14px;
+  }
+
+  .cart-drawer__item-total {
+    font-size: 16px;
+  }
+
+  .cart-drawer__quantity-btn {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    min-height: 28px;
+    font-size: 14px;
+  }
+
+  .cart-drawer__quantity-input {
+    width: 45px;
+    height: 28px;
+    font-size: 12px;
+  }
+
   .cart-drawer__summary {
     padding: 16px;
   }
 
+  .cart-drawer__summary-label {
+    font-size: 12px;
+  }
+
+  .cart-drawer__summary-value {
+    font-size: 14px;
+  }
+
   .cart-drawer__summary-value--total {
     font-size: 20px;
+  }
+
+  .cart-drawer__btn {
+    min-height: 44px;
+    height: 44px;
+    font-size: 13px;
+    padding: 0 20px;
+  }
+
+  .cart-drawer__progress-text {
+    font-size: 12px;
+    padding: 0 12px;
   }
 }
 {% endstylesheet %}
