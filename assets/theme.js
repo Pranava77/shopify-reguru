@@ -408,11 +408,19 @@ class ThemeUtils {
         const header = document.querySelector('.header');
         const cartType = header?.getAttribute('data-cart-type') || 'drawer';
         if (cartType === 'drawer' && this.cartDrawer) {
-          await this.cartDrawer.refreshCart();
-          this.cartDrawer.open();
+          try {
+            await this.cartDrawer.refreshCart();
+            this.cartDrawer.open();
+          } catch (drawerError) {
+            console.error('Error opening cart drawer:', drawerError);
+            // Fallback to redirect if drawer fails
+            window.location.href = '/cart';
+            return;
+          }
         } else {
           // Redirect to cart page if drawer is disabled
           window.location.href = '/cart';
+          return;
         }
         
         // Show success feedback

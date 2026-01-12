@@ -1576,13 +1576,31 @@
             detail: { cart: data }
           }));
           
-          // Show success feedback
-          this.textContent = 'Added!';
-          setTimeout(() => {
-            this.textContent = originalText;
-            this.disabled = false;
-            this.classList.remove('product-detail__btn--loading');
-          }, 1000);
+          // Open cart drawer or redirect to cart page
+          const header = document.querySelector('.header');
+          const cartType = header?.getAttribute('data-cart-type') || 'drawer';
+          const cartDrawer = window.theme?.cartDrawer;
+          
+          if (cartType === 'drawer' && cartDrawer) {
+            try {
+              await cartDrawer.refreshCart();
+              cartDrawer.open();
+              // Show success feedback
+              this.textContent = 'Added!';
+              setTimeout(() => {
+                this.textContent = originalText;
+                this.disabled = false;
+                this.classList.remove('product-detail__btn--loading');
+              }, 1000);
+            } catch (drawerError) {
+              console.error('Error opening cart drawer:', drawerError);
+              // Fallback to redirect if drawer fails
+              window.location.href = '/cart';
+            }
+          } else {
+            // Redirect to cart page if drawer is disabled
+            window.location.href = '/cart';
+          }
         } else {
           const errorData = await response.json().catch(() => ({}));
           throw new Error(errorData.description || 'Failed to add to cart');
