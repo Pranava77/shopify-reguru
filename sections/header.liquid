@@ -12,7 +12,7 @@
   assign mobile_menu_custom_icon = section.settings.mobile_menu_custom_icon
 -%}
 
-<header class="header" data-cart-type="{{ cart_type }}"{% if bg_image != blank %} style="background-image: url('{{ bg_image | image_url: width: 1920 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
+<header class="header" data-cart-type="{{ cart_type }}"{% if bg_image != blank %} style="--bg-image-mobile: url('{{ bg_image | image_url: width: 800 }}'); --bg-image-desktop: url('{{ bg_image | image_url: width: 1920 }}'); background-image: url('{{ bg_image | image_url: width: 1200 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
   {%- comment -%} Desktop Header {%- endcomment -%}
   <div class="header__inner header__desktop">
     <div class="header__content">
@@ -21,10 +21,15 @@
         {%- if logo != blank -%}
           <img 
             src="{{ logo | image_url: width: 140 }}" 
+            srcset="{{ logo | image_url: width: 70 }} 70w,
+                    {{ logo | image_url: width: 140 }} 140w,
+                    {{ logo | image_url: width: 280 }} 280w"
+            sizes="(max-width: 576px) 70px, 140px"
             alt="{{ shop.name }}"
             width="140"
             height="41"
             loading="eager"
+            fetchpriority="high"
           >
         {%- else -%}
           <div class="header__logo-placeholder">
@@ -87,10 +92,14 @@
         {%- if custom_icon != blank -%}
           <img 
             src="{{ custom_icon | image_url: width: 74 }}" 
+            srcset="{{ custom_icon | image_url: width: 37 }} 37w,
+                    {{ custom_icon | image_url: width: 74 }} 74w"
+            sizes="37px"
             alt="Franchise"
             width="37"
             height="38"
             loading="eager"
+            fetchpriority="high"
             class="header__cart-custom-icon"
           >
         {%- elsif icon_type == 'cart' -%}
@@ -184,10 +193,14 @@
         {%- if mobile_menu_custom_icon != blank -%}
           <img 
             src="{{ mobile_menu_custom_icon | image_url: width: 48 }}" 
+            srcset="{{ mobile_menu_custom_icon | image_url: width: 24 }} 24w,
+                    {{ mobile_menu_custom_icon | image_url: width: 48 }} 48w"
+            sizes="24px"
             alt="{{ 'navigation.menu' | t | default: 'Franchise' }}"
             width="24"
             height="24"
             loading="eager"
+            fetchpriority="high"
             class="header__mobile-menu-custom-icon"
           >
         {%- else -%}
@@ -218,10 +231,15 @@
         {%- if logo != blank -%}
           <img 
             src="{{ logo | image_url: width: 140 }}" 
+            srcset="{{ logo | image_url: width: 70 }} 70w,
+                    {{ logo | image_url: width: 140 }} 140w,
+                    {{ logo | image_url: width: 280 }} 280w"
+            sizes="(max-width: 576px) 70px, 140px"
             alt="{{ shop.name }}"
             width="140"
             height="41"
             loading="eager"
+            fetchpriority="high"
           >
         {%- else -%}
           <div class="header__mobile-logo-placeholder">
@@ -306,6 +324,22 @@
   top: 0;
   z-index: 100;
   width: 100%;
+}
+
+/* Responsive background images */
+@media screen and (max-width: 768px) {
+  .header[data-bg-image-mobile] {
+    background-image: url(var(--bg-image-mobile)) !important;
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .header[data-bg-image-desktop] {
+    background-image: url(var(--bg-image-desktop)) !important;
+  }
+}
+
+.header {
   height: 76px;
   background-color: var(--color-white);
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);

@@ -24,10 +24,16 @@
             <img 
               id="product-main-image"
               src="{{ product.featured_image | image_url: width: 800 }}"
+              srcset="{{ product.featured_image | image_url: width: 400 }} 400w,
+                      {{ product.featured_image | image_url: width: 600 }} 600w,
+                      {{ product.featured_image | image_url: width: 800 }} 800w,
+                      {{ product.featured_image | image_url: width: 1200 }} 1200w"
+              sizes="(max-width: 768px) 100vw, (max-width: 992px) 50vw, 50vw"
               alt="{{ product.featured_image.alt | default: product.title }}"
               width="800"
               height="800"
               loading="eager"
+              fetchpriority="high"
             >
           {%- else -%}
             <div class="product-detail__placeholder">
@@ -48,6 +54,9 @@
             >
               <img 
                 src="{{ image | image_url: width: 200 }}"
+                srcset="{{ image | image_url: width: 134 }} 134w,
+                        {{ image | image_url: width: 200 }} 200w"
+                sizes="134px"
                 alt="{{ image.alt | default: product.title }}"
                 width="134"
                 height="134"

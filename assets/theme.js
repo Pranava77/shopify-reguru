@@ -26,38 +26,58 @@ class ThemeUtils {
   }
 
   #initializeComponents() {
-    // Initialize FAQ accordions
-    this.#initAccordions();
-    
-    // Initialize testimonial slider
-    this.#initTestimonialSlider();
-    
-    // Initialize category navigation
-    this.#initCategoryNav();
-    
-    // Initialize mega menu
-    this.#initMegaMenu();
-    
-    // Initialize product grid tabs
-    this.#initProductGridTabs();
-    
-    // Initialize cart functionality
+    // Critical: Initialize immediately (needed for above-fold functionality)
     this.#initCart();
-    
-    // Initialize cart drawer
     this.#initCartDrawer();
-    
-    // Initialize FAQ tabs
-    this.#initFaqTabs();
-    
-    // Initialize universal search
+    this.#initMegaMenu();
     this.#initUniversalSearch();
-    
-    // Initialize smooth scroll
-    this.#initSmoothScroll();
-    
-    // Initialize cart count on page load
     this.#updateCartCount();
+    
+    // Non-critical: Defer initialization using requestIdleCallback or setTimeout
+    // This allows the browser to prioritize critical rendering
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => {
+        this.#initNonCriticalComponents();
+      }, { timeout: 2000 });
+    } else {
+      // Fallback for browsers without requestIdleCallback
+      setTimeout(() => {
+        this.#initNonCriticalComponents();
+      }, 100);
+    }
+  }
+
+  #initNonCriticalComponents() {
+    // Only initialize features if their elements exist on the page
+    // This prevents unnecessary code execution
+    
+    // Initialize FAQ accordions (only if FAQ items exist)
+    if (document.querySelector('.faq__item')) {
+      this.#initAccordions();
+    }
+    
+    // Initialize testimonial slider (lazy loaded when visible)
+    if (document.querySelector('.testimonials__container')) {
+      this.#initTestimonialSlider();
+    }
+    
+    // Initialize category navigation (only if category nav exists)
+    if (document.querySelector('.category-nav__item')) {
+      this.#initCategoryNav();
+    }
+    
+    // Initialize product grid tabs (only if product grids with tabs exist)
+    if (document.querySelector('[data-product-grid-tabs]')) {
+      this.#initProductGridTabs();
+    }
+    
+    // Initialize FAQ tabs (only if FAQ tabs exist)
+    if (document.querySelector('.faq__tab')) {
+      this.#initFaqTabs();
+    }
+    
+    // Initialize smooth scroll (always needed for anchor links)
+    this.#initSmoothScroll();
   }
 
   #initAccordions() {
@@ -87,6 +107,21 @@ class ThemeUtils {
   #initTestimonialSlider() {
     const container = document.querySelector('.testimonials__container');
     if (!container) return;
+    
+    // Use Intersection Observer to lazy load slider only when visible
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          this.#setupTestimonialSlider(container);
+          observer.disconnect();
+        }
+      });
+    }, { rootMargin: '50px' });
+    
+    observer.observe(container);
+  }
+
+  #setupTestimonialSlider(container) {
 
     const slider = container.querySelector('.testimonials__slider');
     const prevBtn = container.querySelector('[data-testimonial-prev]');
@@ -627,13 +662,20 @@ class ThemeUtils {
     const searchResults = document.querySelector('[data-search-results]');
     const searchResultsContent = document.querySelector('[data-search-results-content]');
     
+    // Only initialize if search elements exist
     if (!searchInput || !searchResults || !searchResultsContent) return;
     
+    // Lazy load search functionality - only activate when user interacts
+    let searchInitialized = false;
     let searchTimeout;
     let currentSearchQuery = '';
     let selectedIndex = -1;
     let searchResultsData = [];
     let isSearching = false;
+    
+    const initSearch = () => {
+      if (searchInitialized) return;
+      searchInitialized = true;
     
     // Debounced search function
     const performSearch = async (query) => {
@@ -884,8 +926,10 @@ class ThemeUtils {
       }));
     };
     
-    // Handle input
+    // Handle input - initialize search on first interaction
+    searchInput.addEventListener('focus', initSearch, { once: true });
     searchInput.addEventListener('input', (e) => {
+      initSearch();
       const query = e.target.value.trim();
       
       clearTimeout(searchTimeout);
@@ -902,6 +946,7 @@ class ThemeUtils {
     
     // Handle keyboard navigation
     searchInput.addEventListener('keydown', (e) => {
+      initSearch();
       const allLinks = searchResultsContent.querySelectorAll('.header__search-result-link');
       
       if (e.key === 'ArrowDown') {
@@ -948,6 +993,7 @@ class ThemeUtils {
     
     // Handle form submission
     searchForm.addEventListener('submit', (e) => {
+      initSearch();
       const query = searchInput.value.trim();
       if (query.length === 0) {
         e.preventDefault();
