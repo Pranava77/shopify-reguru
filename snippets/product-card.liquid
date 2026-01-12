@@ -99,8 +99,19 @@
       <a href="{{ product.url }}" class="product-card__btn product-card__btn--primary">
         View Details
       </a>
-      <button type="button" class="product-card__btn product-card__btn--secondary" data-add-to-cart data-variant-id="{{ product.selected_or_first_available_variant.id }}">
-        Add to cart
+      {%- assign card_variant = product.selected_or_first_available_variant -%}
+      <button 
+        type="button" 
+        class="product-card__btn product-card__btn--secondary{% unless card_variant.available %} product-card__btn--sold-out{% endunless %}" 
+        data-add-to-cart 
+        data-variant-id="{{ card_variant.id }}"
+        {% unless card_variant.available %}disabled{% endunless %}
+      >
+        {%- if card_variant.available -%}
+          Add to cart
+        {%- else -%}
+          Sold out
+        {%- endif -%}
       </button>
     </div>
   </div>
@@ -290,6 +301,16 @@
 .product-card__btn--secondary {
   background-color: rgba(40, 217, 142, 1);
   color: var(--color-black);
+}
+
+.product-card__btn--sold-out,
+.product-card__btn--sold-out:hover {
+  background-color: var(--color-gray);
+  color: var(--color-black);
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
+  box-shadow: 3px 3px 0px 0px var(--color-black);
 }
 
 .product-card__btn:hover {
