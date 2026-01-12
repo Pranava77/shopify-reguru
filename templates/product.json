@@ -156,7 +156,7 @@
           "settings": {
             "tab_label": "specs",
             "tab_id": "",
-            "tab_type": "description",
+            "tab_type": "specifications",
             "fallback_content": "",
             "specifications_content": "<p>sadasdasdasdasdasd</p>",
             "custom_content": ""
