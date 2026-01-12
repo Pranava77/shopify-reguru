@@ -58,7 +58,7 @@
           <div class="search-results__grid">
             {%- for item in search.results -%}
               {%- if item.object_type == 'product' -%}
-                {%- render 'product-card', product: item -%}
+                {%- render 'product-card', product: item, badge_enabled: section.settings.badge_enabled, badge_text: section.settings.badge_text, badge_position: section.settings.badge_position, badge_style: section.settings.badge_style, badge_color: section.settings.badge_color, badge_text_color: section.settings.badge_text_color, show_discount: section.settings.show_discount, show_rating: section.settings.show_rating -%}
               {%- endif -%}
             {%- endfor -%}
           </div>
@@ -517,6 +517,90 @@
       "type": "image_picker",
       "id": "background_image",
       "label": "Background Image"
+    },
+    {
+      "type": "header",
+      "content": "Product Card Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_discount",
+      "label": "Show discount badge",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Show rating",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Badge Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "badge_enabled",
+      "label": "Badge",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "badge_style",
+      "label": "Style",
+      "options": [
+        {
+          "value": "discount",
+          "label": "Discount"
+        },
+        {
+          "value": "custom",
+          "label": "Custom"
+        }
+      ],
+      "default": "discount"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Text",
+      "info": "Only used when style is set to Custom"
+    },
+    {
+      "type": "select",
+      "id": "badge_position",
+      "label": "Position",
+      "options": [
+        {
+          "value": "top-left",
+          "label": "Top left"
+        },
+        {
+          "value": "top-right",
+          "label": "Top right"
+        },
+        {
+          "value": "bottom-left",
+          "label": "Bottom left"
+        },
+        {
+          "value": "bottom-right",
+          "label": "Bottom right"
+        }
+      ],
+      "default": "top-left"
+    },
+    {
+      "type": "color",
+      "id": "badge_color",
+      "label": "Background",
+      "default": "#1E88E5"
+    },
+    {
+      "type": "color",
+      "id": "badge_text_color",
+      "label": "Text",
+      "default": "#FFFFFF"
     }
   ],
   "presets": [

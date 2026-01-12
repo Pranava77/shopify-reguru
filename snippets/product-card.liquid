@@ -5,11 +5,22 @@
   - product: {Object} Product Liquid object
   - show_discount: {Boolean} Whether to show discount badge (default: true)
   - show_rating: {Boolean} Whether to show rating (default: true)
+  - badge_enabled: {Boolean} Whether badge is enabled (default: true)
+  - badge_text: {String} Custom badge text (default: auto-calculated discount)
+  - badge_position: {String} Badge position: "top-left", "top-right", "bottom-left", "bottom-right" (default: "top-left")
+  - badge_style: {String} Badge style: "discount", "custom" (default: "discount")
+  - badge_color: {String} Badge background color (default: var(--color-blue))
+  - badge_text_color: {String} Badge text color (default: var(--color-white))
 {%- endcomment -%}
 
 {%- liquid
   assign show_discount = show_discount | default: true
   assign show_rating = show_rating | default: true
+  assign badge_enabled = badge_enabled | default: true
+  assign badge_position = badge_position | default: 'top-left'
+  assign badge_style = badge_style | default: 'discount'
+  assign badge_color = badge_color | default: 'var(--color-blue)'
+  assign badge_text_color = badge_text_color | default: 'var(--color-white)'
   
   assign compare_at_price = product.compare_at_price
   assign price = product.price
@@ -17,12 +28,25 @@
   if compare_at_price > price
     assign discount_percentage = compare_at_price | minus: price | times: 100 | divided_by: compare_at_price | round
   endif
+  
+  assign show_badge = false
+  assign badge_display_text = ''
+  
+  if badge_enabled
+    if badge_style == 'discount' and show_discount and discount_percentage
+      assign show_badge = true
+      assign badge_display_text = discount_percentage | append: '% off'
+    elsif badge_style == 'custom' and badge_text != blank
+      assign show_badge = true
+      assign badge_display_text = badge_text
+    endif
+  endif
 -%}
 
 <article class="product-card card--sm">
-  {%- if show_discount and discount_percentage -%}
-    <div class="product-card__badge">
-      {{ discount_percentage }}% off
+  {%- if show_badge -%}
+    <div class="product-card__badge product-card__badge--{{ badge_position }}" style="background-color: {{ badge_color }}; color: {{ badge_text_color }};">
+      {{ badge_display_text }}
     </div>
   {%- endif -%}
 
@@ -103,17 +127,37 @@
 
 .product-card__badge {
   position: absolute;
-  top: 0;
-  left: 0;
   padding: 4px 12px;
   font-family: var(--font-body);
   font-weight: 500;
   font-size: 14px;
-  color: var(--color-white);
-  background-color: var(--color-blue);
   border-radius: 0 2px 0 0;
   box-shadow: 1px 2px 0px 0.5px var(--color-black);
   z-index: 2;
+}
+
+.product-card__badge--top-left {
+  top: 0;
+  left: 0;
+  border-radius: 0 2px 0 0;
+}
+
+.product-card__badge--top-right {
+  top: 0;
+  right: 0;
+  border-radius: 2px 0 0 0;
+}
+
+.product-card__badge--bottom-left {
+  bottom: 0;
+  left: 0;
+  border-radius: 0 0 2px 0;
+}
+
+.product-card__badge--bottom-right {
+  bottom: 0;
+  right: 0;
+  border-radius: 0 0 0 2px;
 }
 
 .product-card__link {
