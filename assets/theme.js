@@ -1471,8 +1471,12 @@ class CartDrawer {
         try {
           await this.#setQuantity(key, newValue);
         } catch (error) {
-          input.value = originalValue;
-          input.setAttribute('data-original-value', originalValue);
+          // Only revert if not a 422 (which is handled by setQuantity with refresh)
+          const currentInput = this.drawer.querySelector(`input[data-key="${key}"]`);
+          if (currentInput) {
+            currentInput.value = originalValue;
+            currentInput.setAttribute('data-original-value', originalValue);
+          }
           alert('Failed to update cart. Please try again.');
         } finally {
           input.disabled = false;
@@ -1548,8 +1552,23 @@ class CartDrawer {
       });
       
       if (!response.ok) {
-        const error = await response.json().catch(() => ({}));
-        throw new Error(error.description || 'Failed to update cart');
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage = errorData.description || 'Failed to update cart';
+        
+        // If cart state changed (item sold out, inventory changed), refresh to sync UI
+        if (response.status === 422) {
+          console.warn('Cart state changed, refreshing cart:', errorMessage);
+          await this.refreshCart();
+          
+          // Show user-friendly message
+          const userMessage = errorMessage.toLowerCase().includes('sold out') 
+            ? 'This item is no longer available and has been updated in your cart.'
+            : 'Your cart has been updated. Some items may have changed availability.';
+          alert(userMessage);
+          return; // Don't throw - we've handled it by refreshing
+        }
+        
+        throw new Error(errorMessage);
       }
       
       // Use the cart data from the update response instead of making another request
