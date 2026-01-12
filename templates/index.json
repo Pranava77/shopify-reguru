@@ -199,12 +199,12 @@
         "products_to_show": 3,
         "show_discount": true,
         "show_rating": true,
-        "badge_enabled": true,
+        "badge_enabled": false,
         "badge_style": "custom",
         "badge_text": "20% off",
-        "badge_position": "top-left",
-        "badge_color": "#1e88e5",
-        "badge_text_color": "#ffffff"
+        "badge_position": "top-right",
+        "badge_color": "#b1d8ff",
+        "badge_text_color": "#1d1c1c"
       }
     },
     "feature-cards": {
