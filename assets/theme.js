@@ -1440,7 +1440,25 @@ class CartDrawer {
         throw new Error(error.description || 'Failed to update cart');
       }
       
-      await this.refreshCart();
+      // Use the cart data from the update response instead of making another request
+      const cart = await response.json();
+      if (cart && typeof cart === 'object') {
+        this.#updateCartContent(cart);
+        
+        // Update cart count
+        const cartCountElements = document.querySelectorAll('[data-cart-count]');
+        for (const element of cartCountElements) {
+          element.textContent = cart.item_count || 0;
+        }
+        
+        // Dispatch event
+        document.dispatchEvent(new CustomEvent('cart:updated', {
+          detail: { cart }
+        }));
+      } else {
+        // Fallback to refresh if response format is unexpected
+        await this.refreshCart();
+      }
     } catch (error) {
       console.error('Error updating cart:', error);
       throw error;
