@@ -156,31 +156,39 @@
         "card_abiPcy": {
           "type": "card",
           "settings": {
-            "title": "RRR Policy"
+            "title": "RRR Policy",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "icon_image": "shopify://shop_images/Group_176_04654fd9-7d93-4057-89f3-839d4af8ef9b.png"
           }
         },
         "card_DVNq6L": {
           "type": "card",
           "settings": {
-            "title": "Affordable"
+            "title": "Affordable",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "icon_image": "shopify://shop_images/Group_161.png"
           }
         },
         "card_Xyj8Cg": {
           "type": "card",
           "settings": {
-            "title": "Online & Offline Model"
+            "title": "Online & Offline Model",
+            "background_image": "shopify://shop_images/Rectangle_7.png",
+            "icon_image": "shopify://shop_images/Group_173.png"
           }
         },
         "card_TKNWfA": {
           "type": "card",
           "settings": {
-            "title": "Tailored Solutions"
+            "title": "Tailored Solutions",
+            "background_image": "shopify://shop_images/Rectangle_7.png"
           }
         },
         "card_tcHfTk": {
           "type": "card",
           "settings": {
-            "title": "Sustainability"
+            "title": "Sustainability",
+            "background_image": "shopify://shop_images/Rectangle_7.png"
           }
         }
       },
