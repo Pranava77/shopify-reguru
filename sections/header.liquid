@@ -227,14 +227,14 @@
       <a href="{{ routes.root_url }}" class="header__mobile-logo">
         {%- if logo != blank -%}
           <img 
-            src="{{ logo | image_url: width: 140 }}" 
-            srcset="{{ logo | image_url: width: 70 }} 70w,
-                    {{ logo | image_url: width: 140 }} 140w,
-                    {{ logo | image_url: width: 280 }} 280w"
-            sizes="(max-width: 576px) 70px, 140px"
+            src="{{ logo | image_url: width: 280 }}" 
+            srcset="{{ logo | image_url: width: 140 }} 140w,
+                    {{ logo | image_url: width: 280 }} 280w,
+                    {{ logo | image_url: width: 420 }} 420w"
+            sizes="(max-width: 576px) 140px, 280px"
             alt="{{ shop.name }}"
-            width="140"
-            height="41"
+            width="280"
+            height="82"
             loading="eager"
             fetchpriority="high"
           >
