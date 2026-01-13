@@ -344,18 +344,18 @@
               -%}
               
               <li class="mega-menu__mobile-item{% if has_dropdown %} has-children{% endif %}">
-                <div class="mega-menu__mobile-item-header">
-                  <a href="{{ block.settings.link }}" class="mega-menu__mobile-link">
-                    {{ block.settings.title }}
+                {%- if has_dropdown -%}
+                  <button type="button" class="mega-menu__mobile-item-header" data-mobile-expand aria-label="{{ 'accessibility.expand_submenu' | t }}">
+                    <span class="mega-menu__mobile-link-text">{{ block.settings.title }}</span>
+                    <svg class="mega-menu__mobile-expand-icon" width="14" height="14" viewBox="0 0 12 12" fill="none">
+                      <path d="M6 2V10M2 6H10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                {%- else -%}
+                  <a href="{{ block.settings.link }}" class="mega-menu__mobile-item-header">
+                    <span class="mega-menu__mobile-link-text">{{ block.settings.title }}</span>
                   </a>
-                  {%- if has_dropdown -%}
-                    <button type="button" class="mega-menu__mobile-expand" data-mobile-expand aria-label="{{ 'accessibility.expand_submenu' | t }}">
-                      <svg width="14" height="14" viewBox="0 0 12 12" fill="none">
-                        <path d="M6 2V10M2 6H10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                      </svg>
-                    </button>
-                  {%- endif -%}
-                </div>
+                {%- endif -%}
                 
                 {%- if has_dropdown -%}
                   <div class="mega-menu__mobile-submenu" data-mobile-submenu>
@@ -1031,16 +1031,8 @@
 .mega-menu__mobile-item-header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0;
-  padding: 0 8px;
-}
-
-.mega-menu__mobile-link {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  justify-content: space-between;
+  width: 100%;
   padding: 16px 20px;
   font-family: var(--font-heading);
   font-size: 15px;
@@ -1048,43 +1040,31 @@
   color: var(--color-navy);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
   transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 
-.mega-menu__mobile-link:hover {
+.mega-menu__mobile-item-header:hover {
   background-color: var(--color-green);
   color: var(--color-black);
 }
 
-.mega-menu__mobile-expand {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 25px;
-  height: 24px;
-  padding: 1px 0;
-  background-color: var(--color-white);
-  border: 2px solid var(--color-black);
-  border-left: none;
-  border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
-  cursor: pointer;
-  color: var(--color-navy);
-  transform: rotate(1deg);
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
-  box-shadow: var(--shadow-xs);
+.mega-menu__mobile-link-text {
+  flex: 1;
 }
 
-.mega-menu__mobile-expand svg {
+.mega-menu__mobile-expand-icon {
   width: 14px;
   height: 14px;
+  flex-shrink: 0;
+  margin-left: 12px;
+  transition: transform var(--transition-fast);
 }
 
-.mega-menu__mobile-expand:hover {
-  background-color: var(--color-green);
-  box-shadow: 2px 2px 0px 0px var(--color-black);
-}
-
-.mega-menu__mobile-expand.is-expanded {
+.mega-menu__mobile-item-header.is-expanded .mega-menu__mobile-expand-icon {
   transform: rotate(45deg);
 }
 
