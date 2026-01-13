@@ -2405,6 +2405,15 @@
     const currentMaxPrice = priceMaxSliderDrawer ? parseInt(priceMaxSliderDrawer.value) : (priceMaxSlider ? parseInt(priceMaxSlider.value) : maxPrice);
     const onlyAvailable = availabilityFilterDrawer ? availabilityFilterDrawer.checked : (availabilityFilter ? availabilityFilter.checked : false);
     
+    // Helper function to handleize (match Liquid's handleize filter)
+    const handleize = (str) => {
+      if (!str) return '';
+      return str.toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    };
+    
     // Get selected filter values from both desktop and drawer
     const selectedFilters = {};
     [...checkboxes, ...drawerCheckboxes].forEach(checkbox => {
@@ -2428,8 +2437,8 @@
           if (!selectedFilters[filterType]) {
             selectedFilters[filterType] = [];
           }
-          // Normalize filter value to handleize format for comparison
-          const normalizedValue = filterValue.toLowerCase().trim();
+          // Normalize filter value to handleize format for comparison (matches Liquid handleize)
+          const normalizedValue = handleize(filterValue);
           if (!selectedFilters[filterType].includes(normalizedValue)) {
             selectedFilters[filterType].push(normalizedValue);
           }
@@ -2451,10 +2460,10 @@
       // Availability filter
       if (onlyAvailable && shouldShow) {
         const addToCartBtn = product.querySelector('[data-add-to-cart]');
-        if (addToCartBtn) {
-          const variantId = addToCartBtn.dataset.variantId;
-          // This would need to check actual availability via API
-          // For now, we'll assume all products are available
+        // Check if product has availability data attribute or if button is disabled (indicating unavailable)
+        const isAvailable = addToCartBtn && !addToCartBtn.disabled && addToCartBtn.dataset.variantId;
+        if (!isAvailable) {
+          shouldShow = false;
         }
       }
 
@@ -2467,6 +2476,7 @@
           
           // Check vendor filter
           if (filterType === 'vendor') {
+            // Product vendor is already handleized in Liquid
             const productVendor = (product.dataset.productVendor || '').toLowerCase().trim();
             if (filterValues.some(value => productVendor === value.toLowerCase().trim())) {
               matchesFilter = true;
@@ -2475,15 +2485,18 @@
           // Check option filters
           else if (filterType.startsWith('option-')) {
             const productOptions = (product.dataset.productOptions || '').split(',').filter(Boolean);
+            // Filter key is already handleized (from checkbox.dataset.filterOption)
             const filterKey = filterType.replace('option-', '').toLowerCase().trim();
             
             for (const filterValue of filterValues) {
-              const normalizedFilterValue = filterValue.toLowerCase().trim();
+              // Filter values are already handleized from the collection step above
               for (const option of productOptions) {
                 const [optionName, optionValue] = option.split(':');
+                // Product options are already handleized in Liquid
                 const normalizedOptionName = (optionName || '').toLowerCase().trim();
                 const normalizedOptionValue = (optionValue || '').toLowerCase().trim();
-                if (normalizedOptionName === filterKey && normalizedOptionValue === normalizedFilterValue) {
+                // Compare handleized values
+                if (normalizedOptionName === filterKey && normalizedOptionValue === filterValue) {
                   matchesFilter = true;
                   break;
                 }
@@ -2494,19 +2507,11 @@
           // Check tag filters
           else if (filterType.startsWith('tag-')) {
             const productTags = (product.dataset.productTags || '').split(',').filter(Boolean);
+            // Tag prefix is already handleized (from checkbox.dataset.filterTag)
             const tagPrefix = filterType.replace('tag-', '').toLowerCase().trim();
             
-            // Helper function to handleize a string (convert to lowercase, replace spaces/special chars with dashes)
-            const handleize = (str) => {
-              if (!str) return '';
-              return str.toLowerCase()
-                .trim()
-                .replace(/[^a-z0-9]+/g, '-')
-                .replace(/^-+|-+$/g, '');
-            };
-            
             for (const filterValue of filterValues) {
-              const normalizedFilterValue = handleize(filterValue);
+              // Filter values are already handleized from the collection step above
               
               // Check if any product tag matches the filter value
               // Tags can be in format: "prefix:value", "prefix-value", or just "value"
@@ -2514,54 +2519,29 @@
                 if (!tag) return false;
                 
                 const originalTag = tag.trim();
-                const normalizedTag = handleize(originalTag);
-                
-                // If no prefix specified, check for exact match
-                if (!tagPrefix) {
-                  return normalizedTag === normalizedFilterValue;
-                }
-                
-                // Normalize the prefix
-                const normalizedPrefix = handleize(tagPrefix);
-                
-                // Check if tag starts with prefix (with colon or dash separator)
-                const prefixWithColon = normalizedPrefix + ':';
-                const prefixWithDash = normalizedPrefix + '-';
-                
-                // Check original tag format first (before handleizing)
                 const originalLower = originalTag.toLowerCase();
-                if (originalLower.startsWith(tagPrefix + ':') || originalLower.startsWith(tagPrefix + '-')) {
-                  // Extract value after prefix
-                  let tagValue = originalLower;
-                  if (originalLower.startsWith(tagPrefix + ':')) {
-                    tagValue = originalLower.substring(tagPrefix.length + 1).trim();
-                  } else if (originalLower.startsWith(tagPrefix + '-')) {
-                    tagValue = originalLower.substring(tagPrefix.length + 1).trim();
-                  }
-                  
-                  // Compare handleized values
-                  if (handleize(tagValue) === normalizedFilterValue) {
-                    return true;
-                  }
+                
+                // If no prefix specified, check for exact match (handleized)
+                if (!tagPrefix || tagPrefix === '') {
+                  return handleize(originalTag) === filterValue;
                 }
                 
-                // Check handleized format
-                if (normalizedTag.startsWith(normalizedPrefix + '-') || normalizedTag.startsWith(normalizedPrefix + ':')) {
-                  let tagValue = normalizedTag;
-                  if (normalizedTag.startsWith(normalizedPrefix + '-')) {
-                    tagValue = normalizedTag.substring(normalizedPrefix.length + 1).trim();
-                  } else if (normalizedTag.startsWith(normalizedPrefix + ':')) {
-                    tagValue = normalizedTag.substring(normalizedPrefix.length + 1).trim();
-                  }
-                  
-                  if (tagValue === normalizedFilterValue) {
-                    return true;
-                  }
+                // Check if tag starts with prefix (case-insensitive, with colon or dash separator)
+                const prefixLower = tagPrefix.toLowerCase();
+                let tagValue = null;
+                
+                if (originalLower.startsWith(prefixLower + ':')) {
+                  tagValue = originalTag.substring(prefixLower.length + 1).trim();
+                } else if (originalLower.startsWith(prefixLower + '-')) {
+                  tagValue = originalTag.substring(prefixLower.length + 1).trim();
+                } else if (originalLower === prefixLower) {
+                  // Tag is exactly the prefix (no value)
+                  return false;
                 }
                 
-                // Fallback: check if normalized tag equals normalized prefix + normalized value
-                if (normalizedTag === normalizedPrefix + '-' + normalizedFilterValue) {
-                  return true;
+                // If we found a tag value, compare handleized versions
+                if (tagValue !== null) {
+                  return handleize(tagValue) === filterValue;
                 }
                 
                 return false;
