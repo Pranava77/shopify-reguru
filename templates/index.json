@@ -24,7 +24,7 @@
       "settings": {
         "logo": "shopify://shop_images/gin.png",
         "show_search": true,
-        "show_location": true,
+        "show_location": false,
         "location_text": "Bengaluru",
         "header_icon_type": "user",
         "header_custom_icon": "shopify://shop_images/Layer_1_1.png",
