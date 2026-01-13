@@ -14,8 +14,8 @@
       "name": "Announcement Bar",
       "settings": {
         "text": "Welcome To ReGuru",
-        "background_color": "#1E1A5C",
-        "text_color": "#28D98E"
+        "background_color": "#1e1a5c",
+        "text_color": "#28d98e"
       }
     },
     "header_JcHWKW": {
@@ -31,7 +31,8 @@
         "header_icon_color_primary": "#1e1a5c",
         "header_icon_color_accent": "#28d98e",
         "franchise_page": "",
-        "franchise_url": ""
+        "franchise_url": "",
+        "mobile_menu_custom_icon": "shopify://shop_images/Layer_1_1.png"
       }
     },
     "mega_menu_8gmpVq": {
@@ -126,7 +127,13 @@
       "settings": {
         "enable_sticky": true,
         "menu_style": "default",
-        "promo_position": "right"
+        "promo_position": "right",
+        "sidebar_width": 380,
+        "sidebar_header_bg": "#1e1a5c",
+        "show_reguru_button": true,
+        "reguru_button_text": "ReGuru",
+        "show_franchise_button": true,
+        "franchise_button_text": "Franchise"
       }
     },
     "cart": {
