@@ -307,6 +307,30 @@
           {%- endif -%}
         </div>
       {%- endif -%}
+      
+      {%- comment -%} Profile/Account Link {%- endcomment -%}
+      {%- if shop.customer_accounts_enabled -%}
+        <div class="mega-menu__mobile-profile">
+          {%- if customer -%}
+            <a href="{{ routes.account_url }}" class="mega-menu__mobile-profile-link" rel="nofollow">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="mega-menu__mobile-profile-icon">
+                <circle cx="12" cy="8" r="5" stroke="currentColor" stroke-width="2" fill="none"/>
+                <path d="M4 20C4 15.5817 7.58172 12 12 12C16.4183 12 20 15.5817 20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <span class="mega-menu__mobile-profile-text">{{ 'customer.account.title' | t | default: 'Account' }}</span>
+            </a>
+          {%- else -%}
+            <a href="{{ routes.account_login_url }}" class="mega-menu__mobile-profile-link" rel="nofollow">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="mega-menu__mobile-profile-icon">
+                <circle cx="12" cy="8" r="5" stroke="currentColor" stroke-width="2" fill="none"/>
+                <path d="M4 20C4 15.5817 7.58172 12 12 12C16.4183 12 20 15.5817 20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <span class="mega-menu__mobile-profile-text">{{ 'customer.login.sign_in' | t | default: 'Login' }}</span>
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+      
       <ul class="mega-menu__mobile-list">
         {%- for block in section.blocks -%}
           {%- case block.type -%}
@@ -942,6 +966,53 @@
 
 .mega-menu__mobile-button-text {
   display: block;
+}
+
+.mega-menu__mobile-profile {
+  padding: 0 20px 20px 20px;
+  border-bottom: 2px solid var(--color-black);
+  margin-bottom: 20px;
+}
+
+.mega-menu__mobile-profile-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  border: 2px solid var(--color-black);
+  border-radius: var(--radius-xs);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+  color: var(--color-navy);
+  background-color: var(--color-white);
+}
+
+.mega-menu__mobile-profile-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.mega-menu__mobile-profile-text {
+  display: block;
+}
+
+.mega-menu__mobile-profile-link:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px 0px var(--color-black);
+  background-color: var(--color-green);
+  color: var(--color-black);
+}
+
+.mega-menu__mobile-profile-link:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px 0px var(--color-black);
 }
 
 .mega-menu__mobile-list {

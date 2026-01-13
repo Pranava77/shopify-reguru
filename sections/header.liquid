@@ -265,15 +265,15 @@
           {%- endif -%}
         </a>
 
-        {%- comment -%} User Profile Icon {%- endcomment -%}
+        {%- comment -%} User Profile Icon - Hidden on mobile, moved to menu drawer {%- endcomment -%}
         {%- if shop.customer_accounts_enabled -%}
           {%- if customer -%}
-            <a href="{{ routes.account_url }}" class="header__mobile-user" aria-label="{{ 'customer.account.title' | t | default: 'Account' }}" rel="nofollow">
+            <a href="{{ routes.account_url }}" class="header__mobile-user header__mobile-user--desktop-only" aria-label="{{ 'customer.account.title' | t | default: 'Account' }}" rel="nofollow">
           {%- else -%}
-            <a href="{{ routes.account_login_url }}" class="header__mobile-user" aria-label="{{ 'customer.login.sign_in' | t | default: 'Login' }}" rel="nofollow">
+            <a href="{{ routes.account_login_url }}" class="header__mobile-user header__mobile-user--desktop-only" aria-label="{{ 'customer.login.sign_in' | t | default: 'Login' }}" rel="nofollow">
           {%- endif -%}
         {%- else -%}
-          <button type="button" class="header__mobile-user" aria-label="Account" disabled>
+          <button type="button" class="header__mobile-user header__mobile-user--desktop-only" aria-label="Account" disabled>
         {%- endif -%}
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="12" cy="8" r="5" stroke="var(--color-navy)" stroke-width="2" fill="none"/>
@@ -837,6 +837,13 @@
 .header__mobile-user svg {
   width: 100%;
   height: 100%;
+}
+
+/* Hide profile icon on mobile - it's moved to menu drawer */
+@media screen and (max-width: 992px) {
+  .header__mobile-user--desktop-only {
+    display: none;
+  }
 }
 
 .header__mobile-right {
