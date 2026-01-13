@@ -902,15 +902,15 @@
 .mega-menu__mobile-content {
   flex: 1;
   overflow-y: auto;
-  padding: 16px 0;
+  padding: 16px 0 0 0;
 }
 
 .mega-menu__mobile-buttons {
   display: flex;
   gap: 12px;
-  padding: 0 20px 20px 20px;
+  padding: 0 20px 16px 20px;
   border-bottom: 2px solid var(--color-black);
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .mega-menu__mobile-button {
@@ -969,16 +969,16 @@
 }
 
 .mega-menu__mobile-profile {
-  padding: 0 20px 20px 20px;
+  padding: 0 20px 0 20px;
   border-bottom: 2px solid var(--color-black);
-  margin-bottom: 20px;
+  margin-bottom: 0;
 }
 
 .mega-menu__mobile-profile-link {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 20px;
+  padding: 16px 20px;
   font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 700;
@@ -991,6 +991,7 @@
   box-shadow: var(--shadow-sm);
   color: var(--color-navy);
   background-color: var(--color-white);
+  width: 100%;
 }
 
 .mega-menu__mobile-profile-icon {
@@ -1045,6 +1046,7 @@
   border: none;
   cursor: pointer;
   transition: background-color var(--transition-fast), color var(--transition-fast);
+  text-decoration: none;
 }
 
 .mega-menu__mobile-item-header:hover {
