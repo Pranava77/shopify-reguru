@@ -14,7 +14,7 @@
       "name": "Announcement Bar",
       "settings": {
         "text": "Welcome To ReGuru",
-        "background_color": "#1e1a5c",
+        "background_color": "#151875",
         "text_color": "#28d98e"
       }
     },
