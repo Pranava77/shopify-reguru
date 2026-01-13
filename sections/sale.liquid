@@ -1622,6 +1622,119 @@
     const priceMinSliderDrawer = saleSection.querySelector('[data-slider-min-drawer]');
     const priceMaxSliderDrawer = saleSection.querySelector('[data-slider-max-drawer]');
     
+    // Get filter elements for filterProducts function
+    const categoryCheckboxes = saleSection.querySelectorAll('[data-filter-category], [data-filter-category-drawer]');
+    const brandCheckboxes = saleSection.querySelectorAll('[data-filter-brand], [data-filter-brand-drawer]');
+    const productsGrid = saleSection.querySelector('[data-products-grid]');
+
+    // Filter products function - defined early so it can be used by price sliders
+    const filterProducts = () => {
+      if (!productsGrid) return;
+
+      const selectedCategories = Array.from(categoryCheckboxes)
+        .filter(cb => cb.checked)
+        .map(cb => cb.value.toLowerCase().trim());
+
+      const selectedBrands = Array.from(brandCheckboxes)
+        .filter(cb => cb.checked)
+        .map(cb => cb.value.toLowerCase().trim());
+
+      // Get price range
+      const getPriceValue = (input) => {
+        if (!input || !input.value) return null;
+        const value = input.value.replace(/[₹,]/g, '').trim();
+        return value ? parseInt(value) : null;
+      };
+
+      const minPrice = priceMinInput ? getPriceValue(priceMinInput) : (priceMinInputDrawer ? getPriceValue(priceMinInputDrawer) : null);
+      const maxPrice = priceMaxInput ? getPriceValue(priceMaxInput) : (priceMaxInputDrawer ? getPriceValue(priceMaxInputDrawer) : null);
+
+      const productCards = productsGrid.querySelectorAll('.product-card');
+      let visibleCount = 0;
+      
+      for (const card of productCards) {
+        let show = true;
+
+        // Category filter
+        if (selectedCategories.length > 0) {
+          // Skip filtering if "all devices" or "all-devices" is selected
+          const hasAllDevices = selectedCategories.some(cat => 
+            cat === 'all-devices' || cat === 'all devices' || cat === 'all'
+          );
+          
+          if (!hasAllDevices) {
+            const productCategory = (card.getAttribute('data-product-category') || '').toLowerCase().trim();
+            const productTags = (card.getAttribute('data-product-tags') || '').toLowerCase().split(' ').filter(t => t);
+            
+            // Check if product category or tags match any selected category
+            const matchesCategory = selectedCategories.some(selectedCat => {
+              // Skip "all devices" in matching
+              if (selectedCat === 'all-devices' || selectedCat === 'all devices' || selectedCat === 'all') {
+                return true;
+              }
+              
+              return productCategory === selectedCat || 
+                     productTags.includes(selectedCat) ||
+                     productCategory.includes(selectedCat) ||
+                     selectedCat.includes(productCategory);
+            });
+            
+            if (!matchesCategory) {
+              show = false;
+            }
+          }
+        }
+
+        // Brand filter
+        if (show && selectedBrands.length > 0) {
+          const productBrand = (card.getAttribute('data-product-brand') || '').toLowerCase().trim();
+          const matchesBrand = selectedBrands.some(selectedBrand => {
+            return productBrand === selectedBrand ||
+                   productBrand.includes(selectedBrand) ||
+                   selectedBrand.includes(productBrand);
+          });
+          
+          if (!matchesBrand) {
+            show = false;
+          }
+        }
+
+        // Price filter
+        if (show) {
+          const productPrice = parseInt(card.getAttribute('data-product-price')) || 0;
+          
+          if (minPrice !== null && productPrice < minPrice) {
+            show = false;
+          }
+          
+          if (maxPrice !== null && productPrice > maxPrice) {
+            show = false;
+          }
+        }
+
+        // Show/hide product card
+        if (show) {
+          card.style.display = '';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      }
+
+      // Show empty message if no products visible
+      let emptyMessage = productsGrid.querySelector('.sale-section__empty');
+      if (visibleCount === 0) {
+        if (!emptyMessage) {
+          emptyMessage = document.createElement('p');
+          emptyMessage.className = 'sale-section__empty';
+          emptyMessage.textContent = 'No products match your filters.';
+          productsGrid.appendChild(emptyMessage);
+        }
+      } else if (emptyMessage) {
+        emptyMessage.remove();
+      }
+    };
+    
     // Format price for display
     function formatPrice(value) {
       return '₹' + parseInt(value).toLocaleString('en-IN');
@@ -1707,24 +1820,28 @@
   if (priceMinSlider) {
     priceMinSlider.addEventListener('input', () => {
       updatePriceInputs(priceMinSlider, priceMinInput, false);
+      filterProducts();
     });
   }
 
   if (priceMaxSlider) {
     priceMaxSlider.addEventListener('input', () => {
       updatePriceInputs(priceMaxSlider, priceMaxInput, false);
+      filterProducts();
     });
   }
 
   if (priceMinInput) {
     priceMinInput.addEventListener('blur', () => {
       updatePriceSliders(priceMinInput, priceMinSlider, false);
+      filterProducts();
     });
   }
 
   if (priceMaxInput) {
     priceMaxInput.addEventListener('blur', () => {
       updatePriceSliders(priceMaxInput, priceMaxSlider, false);
+      filterProducts();
     });
   }
 
@@ -1732,24 +1849,28 @@
   if (priceMinSliderDrawer) {
     priceMinSliderDrawer.addEventListener('input', () => {
       updatePriceInputs(priceMinSliderDrawer, priceMinInputDrawer, true);
+      filterProducts();
     });
   }
 
   if (priceMaxSliderDrawer) {
     priceMaxSliderDrawer.addEventListener('input', () => {
       updatePriceInputs(priceMaxSliderDrawer, priceMaxInputDrawer, true);
+      filterProducts();
     });
   }
 
   if (priceMinInputDrawer) {
     priceMinInputDrawer.addEventListener('blur', () => {
       updatePriceSliders(priceMinInputDrawer, priceMinSliderDrawer, true);
+      filterProducts();
     });
   }
 
   if (priceMaxInputDrawer) {
     priceMaxInputDrawer.addEventListener('blur', () => {
       updatePriceSliders(priceMaxInputDrawer, priceMaxSliderDrawer, true);
+      filterProducts();
     });
   }
 
@@ -1799,38 +1920,7 @@
 
   syncCheckboxes();
 
-  // Filter products (basic implementation)
-  const categoryCheckboxes = saleSection.querySelectorAll('[data-filter-category], [data-filter-category-drawer]');
-  const brandCheckboxes = saleSection.querySelectorAll('[data-filter-brand], [data-filter-brand-drawer]');
-  const productsGrid = saleSection.querySelector('[data-products-grid]');
-
-  const filterProducts = () => {
-    if (!productsGrid) return;
-
-    const selectedCategories = Array.from(categoryCheckboxes)
-      .filter(cb => cb.checked)
-      .map(cb => cb.value.toLowerCase());
-
-    const selectedBrands = Array.from(brandCheckboxes)
-      .filter(cb => cb.checked)
-      .map(cb => cb.value.toLowerCase());
-
-    const productCards = productsGrid.querySelectorAll('.product-card');
-    
-    for (const card of productCards) {
-      let show = true;
-
-      // Basic filtering - can be enhanced with actual product data attributes
-      if (selectedCategories.length > 0 || selectedBrands.length > 0) {
-        // This is a placeholder - in a real implementation, you'd check product data attributes
-        // or make an AJAX request to filter products
-        show = true;
-      }
-
-      card.style.display = show ? '' : 'none';
-    }
-  };
-
+  // Attach filter event listeners to checkboxes
   for (const checkbox of [...categoryCheckboxes, ...brandCheckboxes]) {
     checkbox.addEventListener('change', filterProducts);
   }
@@ -1860,10 +1950,22 @@
       if (priceMaxSliderDrawer) priceMaxSliderDrawer.value = 100000;
       
       // Reset price inputs
-      if (priceMinInput) updatePriceInputs(priceMinSlider, priceMinInput, false);
-      if (priceMaxInput) updatePriceInputs(priceMaxSlider, priceMaxInput, false);
-      if (priceMinInputDrawer) updatePriceInputs(priceMinSliderDrawer, priceMinInputDrawer, true);
-      if (priceMaxInputDrawer) updatePriceInputs(priceMaxSliderDrawer, priceMaxInputDrawer, true);
+      if (priceMinInput) {
+        updatePriceInputs(priceMinSlider, priceMinInput, false);
+        priceMinInput.value = '';
+      }
+      if (priceMaxInput) {
+        updatePriceInputs(priceMaxSlider, priceMaxInput, false);
+        priceMaxInput.value = '';
+      }
+      if (priceMinInputDrawer) {
+        updatePriceInputs(priceMinSliderDrawer, priceMinInputDrawer, true);
+        priceMinInputDrawer.value = '';
+      }
+      if (priceMaxInputDrawer) {
+        updatePriceInputs(priceMaxSliderDrawer, priceMaxInputDrawer, true);
+        priceMaxInputDrawer.value = '';
+      }
       
       filterProducts();
     });
