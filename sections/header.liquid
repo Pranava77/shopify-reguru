@@ -227,15 +227,15 @@
       <a href="{{ routes.root_url }}" class="header__mobile-logo">
         {%- if logo != blank -%}
           <img 
-            src="{{ logo | image_url: width: 120 }}" 
-            srcset="{{ logo | image_url: width: 80 }} 80w,
-                    {{ logo | image_url: width: 120 }} 120w,
-                    {{ logo | image_url: width: 160 }} 160w,
-                    {{ logo | image_url: width: 240 }} 240w"
-            sizes="(max-width: 576px) 120px, 160px"
+            src="{{ logo | image_url: width: 200 }}" 
+            srcset="{{ logo | image_url: width: 140 }} 140w,
+                    {{ logo | image_url: width: 200 }} 200w,
+                    {{ logo | image_url: width: 280 }} 280w,
+                    {{ logo | image_url: width: 400 }} 400w"
+            sizes="(max-width: 576px) 200px, 280px"
             alt="{{ shop.name }}"
-            width="120"
-            height="35"
+            width="200"
+            height="58"
             loading="eager"
             fetchpriority="high"
           >
@@ -789,7 +789,7 @@
   justify-content: center;
   text-decoration: none;
   min-width: 0;
-  height: 32px;
+  height: 60px;
   padding-top: 0;
   padding-bottom: 0;
 }
