@@ -408,13 +408,15 @@
               
             {%- when 'simple_link' -%}
               <li class="mega-menu__mobile-item">
-                <a href="{{ block.settings.link }}" class="mega-menu__mobile-link">
-                  {{ block.settings.title }}
-                  {%- if block.settings.badge != blank -%}
-                    <span class="mega-menu__badge mega-menu__badge--{{ block.settings.badge_style }}">
-                      {{ block.settings.badge }}
-                    </span>
-                  {%- endif -%}
+                <a href="{{ block.settings.link }}" class="mega-menu__mobile-item-header">
+                  <span class="mega-menu__mobile-link-text">
+                    {{ block.settings.title }}
+                    {%- if block.settings.badge != blank -%}
+                      <span class="mega-menu__badge mega-menu__badge--{{ block.settings.badge_style }}">
+                        {{ block.settings.badge }}
+                      </span>
+                    {%- endif -%}
+                  </span>
                 </a>
               </li>
               
@@ -529,6 +531,8 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   border-radius: 3px;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .mega-menu__badge--new {
@@ -1034,7 +1038,7 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 16px 20px;
+  padding: 16px 11px;
   font-family: var(--font-heading);
   font-size: 15px;
   font-weight: 600;
@@ -1056,6 +1060,11 @@
 
 .mega-menu__mobile-link-text {
   flex: 1;
+  margin-top: -2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .mega-menu__mobile-expand-icon {
