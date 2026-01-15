@@ -1629,15 +1629,24 @@
 
     // Filter products function - defined early so it can be used by price sliders
     const filterProducts = () => {
-      if (!productsGrid) return;
+      if (!productsGrid) {
+        console.warn('Products grid not found');
+        return;
+      }
 
-      const selectedCategories = Array.from(categoryCheckboxes)
-        .filter(cb => cb.checked)
-        .map(cb => cb.value.toLowerCase().trim());
+      // Re-query checkboxes to ensure we have the latest state
+      const allCategoryCheckboxes = saleSection.querySelectorAll('[data-filter-category], [data-filter-category-drawer]');
+      const allBrandCheckboxes = saleSection.querySelectorAll('[data-filter-brand], [data-filter-brand-drawer]');
 
-      const selectedBrands = Array.from(brandCheckboxes)
-        .filter(cb => cb.checked)
-        .map(cb => cb.value.toLowerCase().trim());
+      const selectedCategories = Array.from(allCategoryCheckboxes)
+        .filter(cb => cb.checked && cb.value)
+        .map(cb => cb.value.toLowerCase().trim())
+        .filter(v => v); // Remove empty values
+
+      const selectedBrands = Array.from(allBrandCheckboxes)
+        .filter(cb => cb.checked && cb.value)
+        .map(cb => cb.value.toLowerCase().trim())
+        .filter(v => v); // Remove empty values
 
       // Get price range
       const getPriceValue = (input) => {
@@ -1652,88 +1661,96 @@
       const productCards = productsGrid.querySelectorAll('.product-card');
       let visibleCount = 0;
       
+      // If no filters are selected, show all products
+      const hasActiveFilters = selectedCategories.length > 0 || selectedBrands.length > 0 || minPrice !== null || maxPrice !== null;
+      
       for (const card of productCards) {
         let show = true;
 
-        // Category filter
-        if (selectedCategories.length > 0) {
-          // Skip filtering if "all devices" or "all-devices" is selected
-          const hasAllDevices = selectedCategories.some(cat => 
-            cat === 'all-devices' || cat === 'all devices' || cat === 'all'
-          );
-          
-          if (!hasAllDevices) {
-            const productCategory = (card.getAttribute('data-product-category') || '').toLowerCase().trim();
-            const productTags = (card.getAttribute('data-product-tags') || '').toLowerCase().split(' ').filter(t => t);
+        // Only apply filters if any are active
+        if (hasActiveFilters) {
+          // Category filter
+          if (selectedCategories.length > 0) {
+            // Skip filtering if "all devices" or "all-devices" is selected
+            const hasAllDevices = selectedCategories.some(cat => 
+              cat === 'all-devices' || cat === 'all devices' || cat === 'all' || cat === ''
+            );
+            
+            if (!hasAllDevices) {
+              const productCategory = (card.getAttribute('data-product-category') || '').toLowerCase().trim();
+              const productTags = (card.getAttribute('data-product-tags') || '').toLowerCase().split(/\s+/).filter(t => t);
+              const productMetafields = (card.getAttribute('data-product-metafields') || '').split(',').filter(Boolean);
+              
+              // Check metafield category first, then fallback to product_type/tags
+              let categoryFromMetafield = null;
+              productMetafields.forEach(metafield => {
+                if (metafield.startsWith('custom:category:')) {
+                  categoryFromMetafield = metafield.split(':').slice(2).join(':').toLowerCase().trim();
+                }
+              });
+              
+              const effectiveCategory = categoryFromMetafield || productCategory;
+              
+              // Check if product category or tags match any selected category
+              const matchesCategory = selectedCategories.some(selectedCat => {
+                // Skip "all devices" in matching
+                if (selectedCat === 'all-devices' || selectedCat === 'all devices' || selectedCat === 'all' || selectedCat === '') {
+                  return true;
+                }
+                
+                const selectedCatLower = selectedCat.toLowerCase().trim();
+                // More flexible matching
+                return effectiveCategory === selectedCatLower || 
+                       effectiveCategory.includes(selectedCatLower) ||
+                       selectedCatLower.includes(effectiveCategory) ||
+                       productTags.some(tag => tag === selectedCatLower || tag.includes(selectedCatLower) || selectedCatLower.includes(tag));
+              });
+              
+              if (!matchesCategory) {
+                show = false;
+              }
+            }
+          }
+
+          // Brand filter
+          if (show && selectedBrands.length > 0) {
+            const productBrand = (card.getAttribute('data-product-brand') || '').toLowerCase().trim();
             const productMetafields = (card.getAttribute('data-product-metafields') || '').split(',').filter(Boolean);
             
-            // Check metafield category first, then fallback to product_type/tags
-            let categoryFromMetafield = null;
+            // Check metafield brand first, then fallback to vendor
+            let brandFromMetafield = null;
             productMetafields.forEach(metafield => {
-              if (metafield.startsWith('custom:category:')) {
-                categoryFromMetafield = metafield.split(':').slice(2).join(':').toLowerCase().trim();
+              if (metafield.startsWith('custom:brand:')) {
+                brandFromMetafield = metafield.split(':').slice(2).join(':').toLowerCase().trim();
               }
             });
             
-            const effectiveCategory = categoryFromMetafield || productCategory;
+            const effectiveBrand = brandFromMetafield || productBrand;
             
-            // Check if product category or tags match any selected category
-            const matchesCategory = selectedCategories.some(selectedCat => {
-              // Skip "all devices" in matching
-              if (selectedCat === 'all-devices' || selectedCat === 'all devices' || selectedCat === 'all') {
-                return true;
-              }
-              
-              const selectedCatLower = selectedCat.toLowerCase().trim();
-              return effectiveCategory === selectedCatLower || 
-                     productTags.includes(selectedCatLower) ||
-                     effectiveCategory.includes(selectedCatLower) ||
-                     selectedCatLower.includes(effectiveCategory);
+            const matchesBrand = selectedBrands.some(selectedBrand => {
+              const selectedBrandLower = selectedBrand.toLowerCase().trim();
+              // More flexible matching
+              return effectiveBrand === selectedBrandLower ||
+                     effectiveBrand.includes(selectedBrandLower) ||
+                     selectedBrandLower.includes(effectiveBrand);
             });
             
-            if (!matchesCategory) {
+            if (!matchesBrand) {
               show = false;
             }
           }
-        }
 
-        // Brand filter
-        if (show && selectedBrands.length > 0) {
-          const productBrand = (card.getAttribute('data-product-brand') || '').toLowerCase().trim();
-          const productMetafields = (card.getAttribute('data-product-metafields') || '').split(',').filter(Boolean);
-          
-          // Check metafield brand first, then fallback to vendor
-          let brandFromMetafield = null;
-          productMetafields.forEach(metafield => {
-            if (metafield.startsWith('custom:brand:')) {
-              brandFromMetafield = metafield.split(':').slice(2).join(':').toLowerCase().trim();
+          // Price filter
+          if (show) {
+            const productPrice = parseInt(card.getAttribute('data-product-price')) || 0;
+            
+            if (minPrice !== null && productPrice < minPrice) {
+              show = false;
             }
-          });
-          
-          const effectiveBrand = brandFromMetafield || productBrand;
-          
-          const matchesBrand = selectedBrands.some(selectedBrand => {
-            const selectedBrandLower = selectedBrand.toLowerCase().trim();
-            return effectiveBrand === selectedBrandLower ||
-                   effectiveBrand.includes(selectedBrandLower) ||
-                   selectedBrandLower.includes(effectiveBrand);
-          });
-          
-          if (!matchesBrand) {
-            show = false;
-          }
-        }
-
-        // Price filter
-        if (show) {
-          const productPrice = parseInt(card.getAttribute('data-product-price')) || 0;
-          
-          if (minPrice !== null && productPrice < minPrice) {
-            show = false;
-          }
-          
-          if (maxPrice !== null && productPrice > maxPrice) {
-            show = false;
+            
+            if (maxPrice !== null && productPrice > maxPrice) {
+              show = false;
+            }
           }
         }
 
@@ -1748,7 +1765,7 @@
 
       // Show empty message if no products visible
       let emptyMessage = productsGrid.querySelector('.sale-section__empty');
-      if (visibleCount === 0) {
+      if (visibleCount === 0 && hasActiveFilters) {
         if (!emptyMessage) {
           emptyMessage = document.createElement('p');
           emptyMessage.className = 'sale-section__empty';
@@ -1945,10 +1962,44 @@
 
   syncCheckboxes();
 
-  // Attach filter event listeners to checkboxes
-  for (const checkbox of [...categoryCheckboxes, ...brandCheckboxes]) {
-    checkbox.addEventListener('change', filterProducts);
-  }
+  // Attach filter event listeners to checkboxes using event delegation
+  // This ensures checkboxes work even if they're added dynamically
+  saleSection.addEventListener('change', function(e) {
+    const checkbox = e.target;
+    if (checkbox.matches('[data-filter-category], [data-filter-category-drawer], [data-filter-brand], [data-filter-brand-drawer]')) {
+      // Sync checkbox state between desktop and drawer
+      const isDesktop = checkbox.hasAttribute('data-filter-category') || checkbox.hasAttribute('data-filter-brand');
+      const isDrawer = checkbox.hasAttribute('data-filter-category-drawer') || checkbox.hasAttribute('data-filter-brand-drawer');
+      
+      if (isDesktop) {
+        // Find corresponding drawer checkbox
+        const filterType = checkbox.hasAttribute('data-filter-category') ? 'category' : 'brand';
+        const drawerAttr = filterType === 'category' ? 'data-filter-category-drawer' : 'data-filter-brand-drawer';
+        const drawerCheckboxes = saleSection.querySelectorAll(`[${drawerAttr}]`);
+        const desktopCheckboxes = saleSection.querySelectorAll(`[data-filter-${filterType}]`);
+        const index = Array.from(desktopCheckboxes).indexOf(checkbox);
+        if (drawerCheckboxes[index]) {
+          drawerCheckboxes[index].checked = checkbox.checked;
+        }
+      } else if (isDrawer) {
+        // Find corresponding desktop checkbox
+        const filterType = checkbox.hasAttribute('data-filter-category-drawer') ? 'category' : 'brand';
+        const drawerAttr = filterType === 'category' ? 'data-filter-category-drawer' : 'data-filter-brand-drawer';
+        const desktopAttr = filterType === 'category' ? 'data-filter-category' : 'data-filter-brand';
+        const drawerCheckboxes = saleSection.querySelectorAll(`[${drawerAttr}]`);
+        const desktopCheckboxes = saleSection.querySelectorAll(`[${desktopAttr}]`);
+        const index = Array.from(drawerCheckboxes).indexOf(checkbox);
+        if (desktopCheckboxes[index]) {
+          desktopCheckboxes[index].checked = checkbox.checked;
+        }
+      }
+      
+      filterProducts();
+    }
+  });
+
+  // Initial filter call to show all products
+  filterProducts();
 
   // Apply filters button
   const filterApply = saleSection.querySelector('[data-filter-apply]');
