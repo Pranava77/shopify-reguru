@@ -10,6 +10,7 @@
   assign bg_image = section.settings.background_image
   assign cart_type = settings.cart_type | default: 'drawer'
   assign mobile_menu_custom_icon = section.settings.mobile_menu_custom_icon
+  assign cart_custom_icon = section.settings.cart_custom_icon
 -%}
 
 <header class="header" data-cart-type="{{ cart_type }}"{% if bg_image != blank %} style="--bg-image-mobile: url('{{ bg_image | image_url: width: 800 }}'); --bg-image-desktop: url('{{ bg_image | image_url: width: 1920 }}'); background-image: url('{{ bg_image | image_url: width: 1200 }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"{% endif %}>
@@ -71,11 +72,26 @@
 
       <!-- Cart Icon -->
       <a href="{{ routes.cart_url }}" class="header__cart" aria-label="{{ 'general.cart.title' | t | default: 'Cart' }}"{% if cart_type == 'drawer' %} data-cart-drawer-trigger{% endif %}>
-        <svg width="37" height="38" viewBox="0 0 37 38" fill="none" xmlns="http://www.w3.org/2000/svg" class="header__cart-svg">
-          <path d="M5 5H8L11 25H29L33 10H9" stroke="{{ icon_color_primary }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="13" cy="32" r="3" fill="{{ icon_color_accent }}"/>
-          <circle cx="27" cy="32" r="3" fill="{{ icon_color_accent }}"/>
-        </svg>
+        {%- if cart_custom_icon != blank -%}
+          <img 
+            src="{{ cart_custom_icon | image_url: width: 74 }}" 
+            srcset="{{ cart_custom_icon | image_url: width: 37 }} 37w,
+                    {{ cart_custom_icon | image_url: width: 74 }} 74w"
+            sizes="37px"
+            alt="{{ 'general.cart.title' | t | default: 'Cart' }}"
+            width="37"
+            height="38"
+            loading="eager"
+            fetchpriority="high"
+            class="header__cart-custom-icon"
+          >
+        {%- else -%}
+          <svg width="37" height="38" viewBox="0 0 37 38" fill="none" xmlns="http://www.w3.org/2000/svg" class="header__cart-svg">
+            <path d="M5 5H8L11 25H29L33 10H9" stroke="{{ icon_color_primary }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="13" cy="32" r="3" fill="{{ icon_color_accent }}"/>
+            <circle cx="27" cy="32" r="3" fill="{{ icon_color_accent }}"/>
+          </svg>
+        {%- endif -%}
         <span class="header__cart-count" data-cart-count>{{ cart.item_count }}</span>
       </a>
 
@@ -256,11 +272,26 @@
       <div class="header__mobile-right">
         {%- comment -%} Cart Icon {%- endcomment -%}
         <a href="{{ routes.cart_url }}" class="header__mobile-cart" aria-label="{{ 'general.cart.title' | t | default: 'Cart' }}"{% if cart_type == 'drawer' %} data-cart-drawer-trigger{% endif %}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M3 3H6L9 19H21L23 8H7" stroke="var(--color-navy)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="9" cy="21" r="2" fill="var(--color-green)"/>
-            <circle cx="20" cy="21" r="2" fill="var(--color-green)"/>
-          </svg>
+          {%- if cart_custom_icon != blank -%}
+            <img 
+              src="{{ cart_custom_icon | image_url: width: 48 }}" 
+              srcset="{{ cart_custom_icon | image_url: width: 24 }} 24w,
+                      {{ cart_custom_icon | image_url: width: 48 }} 48w"
+              sizes="24px"
+              alt="{{ 'general.cart.title' | t | default: 'Cart' }}"
+              width="24"
+              height="24"
+              loading="eager"
+              fetchpriority="high"
+              class="header__mobile-cart-custom-icon"
+            >
+          {%- else -%}
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 3H6L9 19H21L23 8H7" stroke="var(--color-navy)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="9" cy="21" r="2" fill="var(--color-green)"/>
+              <circle cx="20" cy="21" r="2" fill="var(--color-green)"/>
+            </svg>
+          {%- endif -%}
           {%- if cart.item_count > 0 -%}
             <span class="header__mobile-cart-count" data-cart-count>{{ cart.item_count }}</span>
           {%- endif -%}
@@ -881,6 +912,12 @@
   height: 100%;
 }
 
+.header__mobile-cart-custom-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
 .header__mobile-cart-count {
   position: absolute;
   top: -5px;
@@ -1317,6 +1354,16 @@
       "id": "mobile_menu_custom_icon",
       "label": "Mobile Menu Icon",
       "info": "Upload a custom icon for the mobile menu button. Recommended size: 24x24 pixels. If not set, the default hierarchical icon will be used."
+    },
+    {
+      "type": "header",
+      "content": "Cart Icon"
+    },
+    {
+      "type": "image_picker",
+      "id": "cart_custom_icon",
+      "label": "Custom Cart Icon",
+      "info": "Upload a custom icon image to replace the default cart icon. Recommended size: 74x76 pixels for desktop, 24x24 pixels for mobile. If not set, the default cart SVG icon will be used."
     }
   ],
   "presets": [
