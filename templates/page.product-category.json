@@ -145,7 +145,7 @@
           "settings": {
             "card_type": "large",
             "category_label": "Home & Living",
-            "product_title": "monitor",
+            "product_title": "Laptop",
             "product_image": "shopify://shop_images/103-1039011_flat-screen-tv-png-transparent-png-removebg-preview_d55a1354-b90e-4170-bfb9-6e60c57970d4.png",
             "collection": "television",
             "show_button": true,
@@ -162,7 +162,7 @@
           "settings": {
             "card_type": "small",
             "category_label": "Clothing & Shoes",
-            "product_title": "laptop",
+            "product_title": "phone",
             "product_image": "shopify://shop_images/20251112034016.png",
             "collection": "",
             "show_button": false,
@@ -179,7 +179,7 @@
           "settings": {
             "card_type": "small",
             "category_label": "Toys & Entertainment",
-            "product_title": "iphone",
+            "product_title": "monitor",
             "product_image": "shopify://shop_images/FAb9jtNpEjJeGtMP.webp",
             "collection": "",
             "show_button": false,
@@ -196,7 +196,7 @@
           "settings": {
             "card_type": "small",
             "category_label": "Toys & Entertainment",
-            "product_title": "headphone",
+            "product_title": "television",
             "product_image": "shopify://shop_images/pngimg.com-headphones_PNG7645.png",
             "collection": "",
             "show_button": false,
@@ -213,7 +213,7 @@
           "settings": {
             "card_type": "large",
             "category_label": "Jewelry & Accessories",
-            "product_title": "tv",
+            "product_title": "accessories",
             "product_image": "shopify://shop_images/71Q-uiqUGSL._AC_CR0_0_0_0_SX480_SY360_-removebg-preview.png",
             "collection": "",
             "show_button": true,
