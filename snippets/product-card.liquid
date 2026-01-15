@@ -43,12 +43,33 @@
   endif
 -%}
 
+{%- liquid
+  comment
+    Get category from metafield if available, otherwise use product_type
+  endcomment
+  assign product_category = product.metafields.custom.category.value | default: product.metafields.custom.category | default: product.product_type
+  assign product_brand = product.metafields.custom.brand.value | default: product.metafields.custom.brand | default: product.vendor
+  
+  comment
+    Build metafield data attributes for filtering
+  endcomment
+  assign product_metafields_data = ''
+  if product.metafields.custom.category != blank
+    assign category_value = product.metafields.custom.category.value | default: product.metafields.custom.category
+    assign product_metafields_data = product_metafields_data | append: 'custom:category:' | append: category_value | handleize | append: ','
+  endif
+  if product.metafields.custom.brand != blank
+    assign brand_value = product.metafields.custom.brand.value | default: product.metafields.custom.brand
+    assign product_metafields_data = product_metafields_data | append: 'custom:brand:' | append: brand_value | handleize | append: ','
+  endif
+-%}
 <article 
   class="product-card card--sm"
-  data-product-category="{{ product.product_type | handleize }}"
-  data-product-brand="{{ product.vendor | handleize }}"
+  data-product-category="{{ product_category | handleize }}"
+  data-product-brand="{{ product_brand | handleize }}"
   data-product-price="{{ product.price }}"
   data-product-tags="{% for tag in product.tags %}{{ tag | handleize }}{% unless forloop.last %} {% endunless %}{% endfor %}"
+  data-product-metafields="{{ product_metafields_data }}"
 >
   {%- if show_badge -%}
     <div class="product-card__badge product-card__badge--{{ badge_position }}" style="background-color: {{ badge_color }}; color: {{ badge_text_color }};">

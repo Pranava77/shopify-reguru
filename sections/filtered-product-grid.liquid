@@ -222,8 +222,51 @@
                         {%- endif -%}
                       {%- endfor -%}
                     {%- elsif block.settings.filter_type == 'metafield' -%}
-                      {%- comment -%} Metafield filtering would require specific metafield setup {%- endcomment -%}
-                      <p class="filter__note">Configure metafield filters in theme settings</p>
+                      {%- assign metafield_namespace = block.settings.metafield_namespace | default: 'custom' -%}
+                      {%- assign metafield_key = block.settings.metafield_key -%}
+                      {%- if metafield_key != blank -%}
+                        {%- assign unique_values = '' -%}
+                        {%- assign metafield_key_handle = metafield_key | handleize -%}
+                        {%- for product in collection_obj.products -%}
+                          {%- assign metafield_value = product.metafields[metafield_namespace][metafield_key] -%}
+                          {%- if metafield_value != blank -%}
+                            {%- assign metafield_value_string = metafield_value.value | default: metafield_value -%}
+                            {%- unless unique_values contains metafield_value_string -%}
+                              {%- assign unique_values = unique_values | append: metafield_value_string | append: ',' -%}
+                            {%- endunless -%}
+                          {%- endif -%}
+                        {%- endfor -%}
+                        {%- assign values_array = unique_values | split: ',' -%}
+                        {%- for value in values_array -%}
+                          {%- if value != blank -%}
+                            {%- assign count = 0 -%}
+                            {%- for product in collection_obj.products -%}
+                              {%- assign product_metafield = product.metafields[metafield_namespace][metafield_key] -%}
+                              {%- if product_metafield != blank -%}
+                                {%- assign product_value = product_metafield.value | default: product_metafield -%}
+                                {%- if product_value == value -%}
+                                  {%- assign count = count | plus: 1 -%}
+                                {%- endif -%}
+                              {%- endif -%}
+                            {%- endfor -%}
+                            <label class="filter__option">
+                              <input 
+                                type="checkbox" 
+                                class="filter__checkbox" 
+                                data-filter-metafield="{{ metafield_namespace }}"
+                                data-filter-metafield-key="{{ metafield_key_handle }}"
+                                data-filter-value="{{ value | handleize }}"
+                                value="{{ value }}"
+                              >
+                              <span class="filter__option-label">
+                                {{ value }}{% if count > 0 %} ({{ count }}){% endif %}
+                              </span>
+                            </label>
+                          {%- endif -%}
+                        {%- endfor -%}
+                      {%- else -%}
+                        <p class="filter__note">Please configure metafield namespace and key in theme settings</p>
+                      {%- endif -%}
                     {%- endif -%}
                   </div>
                 </details>
@@ -262,6 +305,7 @@
                 assign product_data_options = ''
                 assign product_data_tags = ''
                 assign product_data_vendor = product.vendor | handleize
+                assign product_data_metafields = ''
                 
                 for option in product.options_with_values
                   assign option_name_handle = option.name | handleize
@@ -278,12 +322,46 @@
                   endcomment
                   assign product_data_tags = product_data_tags | append: tag | append: ','
                 endfor
+                
+                comment
+                  Build metafield data attributes for filtering
+                  Store as namespace:key:value format
+                endcomment
+                if product.metafields.custom.screen_size != blank
+                  assign screen_size_value = product.metafields.custom.screen_size.value | default: product.metafields.custom.screen_size
+                  assign product_data_metafields = product_data_metafields | append: 'custom:screen_size:' | append: screen_size_value | handleize | append: ','
+                endif
+                if product.metafields.custom.ram != blank
+                  assign ram_value = product.metafields.custom.ram.value | default: product.metafields.custom.ram
+                  assign product_data_metafields = product_data_metafields | append: 'custom:ram:' | append: ram_value | handleize | append: ','
+                endif
+                if product.metafields.custom.operating_system != blank
+                  assign os_value = product.metafields.custom.operating_system.value | default: product.metafields.custom.operating_system
+                  assign product_data_metafields = product_data_metafields | append: 'custom:operating_system:' | append: os_value | handleize | append: ','
+                endif
+                if product.metafields.custom.memory_type != blank
+                  assign memory_value = product.metafields.custom.memory_type.value | default: product.metafields.custom.memory_type
+                  assign product_data_metafields = product_data_metafields | append: 'custom:memory_type:' | append: memory_value | handleize | append: ','
+                endif
+                if product.metafields.custom.refresh_rate != blank
+                  assign refresh_value = product.metafields.custom.refresh_rate.value | default: product.metafields.custom.refresh_rate
+                  assign product_data_metafields = product_data_metafields | append: 'custom:refresh_rate:' | append: refresh_value | handleize | append: ','
+                endif
+                if product.metafields.custom.category != blank
+                  assign category_value = product.metafields.custom.category.value | default: product.metafields.custom.category
+                  assign product_data_metafields = product_data_metafields | append: 'custom:category:' | append: category_value | handleize | append: ','
+                endif
+                if product.metafields.custom.brand != blank
+                  assign brand_value = product.metafields.custom.brand.value | default: product.metafields.custom.brand
+                  assign product_data_metafields = product_data_metafields | append: 'custom:brand:' | append: brand_value | handleize | append: ','
+                endif
               -%}
               <article class="filtered-product-card" 
                 data-product-price="{{ price }}"
                 data-product-vendor="{{ product_data_vendor }}"
                 data-product-options="{{ product_data_options }}"
                 data-product-tags="{{ product_data_tags }}"
+                data-product-metafields="{{ product_data_metafields }}"
               >
                 {%- if discount_percentage -%}
                   <div class="filtered-product-card__badge">
@@ -550,6 +628,53 @@
                         </label>
                       {%- endif -%}
                     {%- endfor -%}
+                  {%- elsif block.settings.filter_type == 'metafield' -%}
+                    {%- assign metafield_namespace = block.settings.metafield_namespace | default: 'custom' -%}
+                    {%- assign metafield_key = block.settings.metafield_key -%}
+                    {%- if metafield_key != blank -%}
+                      {%- assign unique_values = '' -%}
+                      {%- assign metafield_key_handle = metafield_key | handleize -%}
+                      {%- for product in collection_obj.products -%}
+                        {%- assign metafield_value = product.metafields[metafield_namespace][metafield_key] -%}
+                        {%- if metafield_value != blank -%}
+                          {%- assign metafield_value_string = metafield_value.value | default: metafield_value -%}
+                          {%- unless unique_values contains metafield_value_string -%}
+                            {%- assign unique_values = unique_values | append: metafield_value_string | append: ',' -%}
+                          {%- endunless -%}
+                        {%- endif -%}
+                      {%- endfor -%}
+                      {%- assign values_array = unique_values | split: ',' -%}
+                      {%- for value in values_array -%}
+                        {%- if value != blank -%}
+                          {%- assign count = 0 -%}
+                          {%- for product in collection_obj.products -%}
+                            {%- assign product_metafield = product.metafields[metafield_namespace][metafield_key] -%}
+                            {%- if product_metafield != blank -%}
+                              {%- assign product_value = product_metafield.value | default: product_metafield -%}
+                              {%- if product_value == value -%}
+                                {%- assign count = count | plus: 1 -%}
+                              {%- endif -%}
+                            {%- endif -%}
+                          {%- endfor -%}
+                          <label class="filter__option">
+                            <input 
+                              type="checkbox" 
+                              class="filter__checkbox" 
+                              data-filter-metafield="{{ metafield_namespace }}"
+                              data-filter-metafield-key="{{ metafield_key_handle }}"
+                              data-filter-value="{{ value | handleize }}"
+                              data-filter-drawer
+                              value="{{ value }}"
+                            >
+                            <span class="filter__option-label">
+                              {{ value }}{% if count > 0 %} ({{ count }}){% endif %}
+                            </span>
+                          </label>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    {%- else -%}
+                      <p class="filter__note">Please configure metafield namespace and key in theme settings</p>
+                    {%- endif -%}
                   {%- endif -%}
                 </div>
               </details>
@@ -2180,6 +2305,8 @@
           const filterOption = cb.dataset.filterOption;
           const filterTag = cb.dataset.filterTag;
           const filterVendor = cb.dataset.filterVendor;
+          const filterMetafield = cb.dataset.filterMetafield;
+          const filterMetafieldKey = cb.dataset.filterMetafieldKey;
           const filterValue = cb.dataset.filterValue || cb.value;
           
           // Find matching drawer checkbox
@@ -2187,11 +2314,14 @@
             const dcOption = dc.dataset.filterOption;
             const dcTag = dc.dataset.filterTag;
             const dcVendor = dc.dataset.filterVendor;
+            const dcMetafield = dc.dataset.filterMetafield;
+            const dcMetafieldKey = dc.dataset.filterMetafieldKey;
             const dcValue = dc.dataset.filterValue || dc.value;
             
             return (filterOption && dcOption === filterOption && dcValue === filterValue) ||
                    (filterTag && dcTag === filterTag && dcValue === filterValue) ||
-                   (filterVendor !== undefined && dcVendor !== undefined && dcValue === filterValue);
+                   (filterVendor !== undefined && dcVendor !== undefined && dcValue === filterValue) ||
+                   (filterMetafield && filterMetafieldKey && dcMetafield === filterMetafield && dcMetafieldKey === filterMetafieldKey && dcValue === filterValue);
           });
           
           if (drawerCb) {
@@ -2431,6 +2561,9 @@
         } else if (checkbox.dataset.filterVendor !== undefined) {
           filterType = 'vendor';
           filterValue = checkbox.dataset.filterValue || checkbox.value;
+        } else if (checkbox.dataset.filterMetafield && checkbox.dataset.filterMetafieldKey) {
+          filterType = 'metafield-' + checkbox.dataset.filterMetafield + '-' + checkbox.dataset.filterMetafieldKey;
+          filterValue = checkbox.dataset.filterValue || checkbox.value;
         }
         
         if (filterType && filterValue) {
@@ -2544,6 +2677,38 @@
                   return handleize(tagValue) === filterValue;
                 }
                 
+                return false;
+              })) {
+                matchesFilter = true;
+                break;
+              }
+            }
+          }
+          // Check metafield filters
+          else if (filterType.startsWith('metafield-')) {
+            const productMetafields = (product.dataset.productMetafields || '').split(',').filter(Boolean);
+            // Filter type format: "metafield-{namespace}-{key}"
+            const metafieldParts = filterType.replace('metafield-', '').split('-');
+            const metafieldNamespace = metafieldParts[0] || '';
+            const metafieldKey = metafieldParts.slice(1).join('-') || '';
+            
+            for (const filterValue of filterValues) {
+              // Check if any product metafield matches the filter
+              // Metafields are stored as "namespace:key:value" format
+              if (productMetafields.some(metafield => {
+                if (!metafield) return false;
+                
+                const parts = metafield.split(':');
+                if (parts.length >= 3) {
+                  const fieldNamespace = parts[0].toLowerCase().trim();
+                  const fieldKey = parts[1].toLowerCase().trim();
+                  const fieldValue = parts.slice(2).join(':').toLowerCase().trim();
+                  
+                  // Compare namespace, key, and value (all handleized)
+                  return fieldNamespace === metafieldNamespace.toLowerCase().trim() &&
+                         fieldKey === metafieldKey.toLowerCase().trim() &&
+                         fieldValue === filterValue.toLowerCase().trim();
+                }
                 return false;
               })) {
                 matchesFilter = true;
@@ -2686,17 +2851,22 @@
       const filterOption = cb.dataset.filterOption;
       const filterTag = cb.dataset.filterTag;
       const filterVendor = cb.dataset.filterVendor;
+      const filterMetafield = cb.dataset.filterMetafield;
+      const filterMetafieldKey = cb.dataset.filterMetafieldKey;
       const filterValue = cb.dataset.filterValue || cb.value;
       
       const desktopCb = Array.from(checkboxes).find(dc => {
         const dcOption = dc.dataset.filterOption;
         const dcTag = dc.dataset.filterTag;
         const dcVendor = dc.dataset.filterVendor;
+        const dcMetafield = dc.dataset.filterMetafield;
+        const dcMetafieldKey = dc.dataset.filterMetafieldKey;
         const dcValue = dc.dataset.filterValue || dc.value;
         
         return (filterOption && dcOption === filterOption && dcValue === filterValue) ||
                (filterTag && dcTag === filterTag && dcValue === filterValue) ||
-               (filterVendor !== undefined && dcVendor !== undefined && dcValue === filterValue);
+               (filterVendor !== undefined && dcVendor !== undefined && dcValue === filterValue) ||
+               (filterMetafield && filterMetafieldKey && dcMetafield === filterMetafield && dcMetafieldKey === filterMetafieldKey && dcValue === filterValue);
       });
       
       if (desktopCb) {
@@ -2726,17 +2896,22 @@
         const filterOption = dc.dataset.filterOption;
         const filterTag = dc.dataset.filterTag;
         const filterVendor = dc.dataset.filterVendor;
+        const filterMetafield = dc.dataset.filterMetafield;
+        const filterMetafieldKey = dc.dataset.filterMetafieldKey;
         const filterValue = dc.dataset.filterValue || dc.value;
         
         const desktopCb = Array.from(checkboxes).find(cb => {
           const cbOption = cb.dataset.filterOption;
           const cbTag = cb.dataset.filterTag;
           const cbVendor = cb.dataset.filterVendor;
+          const cbMetafield = cb.dataset.filterMetafield;
+          const cbMetafieldKey = cb.dataset.filterMetafieldKey;
           const cbValue = cb.dataset.filterValue || cb.value;
           
           return (filterOption && cbOption === filterOption && cbValue === filterValue) ||
                  (filterTag && cbTag === filterTag && cbValue === filterValue) ||
-                 (filterVendor !== undefined && cbVendor !== undefined && cbValue === filterValue);
+                 (filterVendor !== undefined && cbVendor !== undefined && cbValue === filterValue) ||
+                 (filterMetafield && filterMetafieldKey && cbMetafield === filterMetafield && cbMetafieldKey === filterMetafieldKey && cbValue === filterValue);
         });
         
         if (desktopCb) {
@@ -2964,6 +3139,19 @@
           "label": "Tag Prefix",
           "info": "For Product Tag type: e.g., 'brand:' for tags like 'brand:lenovo'",
           "default": "brand:"
+        },
+        {
+          "type": "text",
+          "id": "metafield_namespace",
+          "label": "Metafield Namespace",
+          "info": "For Metafield type: e.g., 'custom' (default namespace for theme metafields)",
+          "default": "custom"
+        },
+        {
+          "type": "text",
+          "id": "metafield_key",
+          "label": "Metafield Key",
+          "info": "For Metafield type: e.g., 'screen_size', 'ram', 'operating_system'. Must match the key in your metafield definition."
         }
       ]
     }

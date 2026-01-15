@@ -1665,6 +1665,17 @@
           if (!hasAllDevices) {
             const productCategory = (card.getAttribute('data-product-category') || '').toLowerCase().trim();
             const productTags = (card.getAttribute('data-product-tags') || '').toLowerCase().split(' ').filter(t => t);
+            const productMetafields = (card.getAttribute('data-product-metafields') || '').split(',').filter(Boolean);
+            
+            // Check metafield category first, then fallback to product_type/tags
+            let categoryFromMetafield = null;
+            productMetafields.forEach(metafield => {
+              if (metafield.startsWith('custom:category:')) {
+                categoryFromMetafield = metafield.split(':').slice(2).join(':').toLowerCase().trim();
+              }
+            });
+            
+            const effectiveCategory = categoryFromMetafield || productCategory;
             
             // Check if product category or tags match any selected category
             const matchesCategory = selectedCategories.some(selectedCat => {
@@ -1673,10 +1684,11 @@
                 return true;
               }
               
-              return productCategory === selectedCat || 
-                     productTags.includes(selectedCat) ||
-                     productCategory.includes(selectedCat) ||
-                     selectedCat.includes(productCategory);
+              const selectedCatLower = selectedCat.toLowerCase().trim();
+              return effectiveCategory === selectedCatLower || 
+                     productTags.includes(selectedCatLower) ||
+                     effectiveCategory.includes(selectedCatLower) ||
+                     selectedCatLower.includes(effectiveCategory);
             });
             
             if (!matchesCategory) {
@@ -1688,10 +1700,23 @@
         // Brand filter
         if (show && selectedBrands.length > 0) {
           const productBrand = (card.getAttribute('data-product-brand') || '').toLowerCase().trim();
+          const productMetafields = (card.getAttribute('data-product-metafields') || '').split(',').filter(Boolean);
+          
+          // Check metafield brand first, then fallback to vendor
+          let brandFromMetafield = null;
+          productMetafields.forEach(metafield => {
+            if (metafield.startsWith('custom:brand:')) {
+              brandFromMetafield = metafield.split(':').slice(2).join(':').toLowerCase().trim();
+            }
+          });
+          
+          const effectiveBrand = brandFromMetafield || productBrand;
+          
           const matchesBrand = selectedBrands.some(selectedBrand => {
-            return productBrand === selectedBrand ||
-                   productBrand.includes(selectedBrand) ||
-                   selectedBrand.includes(productBrand);
+            const selectedBrandLower = selectedBrand.toLowerCase().trim();
+            return effectiveBrand === selectedBrandLower ||
+                   effectiveBrand.includes(selectedBrandLower) ||
+                   selectedBrandLower.includes(effectiveBrand);
           });
           
           if (!matchesBrand) {
