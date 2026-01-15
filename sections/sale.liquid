@@ -102,10 +102,105 @@
           </div>
         </div>
 
-        {%- comment -%} Category Filter {%- endcomment -%}
+        {%- comment -%} Dynamic Metafield Filters {%- endcomment -%}
+        {%- if collection != blank and collection.products.size > 0 -%}
+          {%- comment -%} Define metafields to show as filters {%- endcomment -%}
+          {%- assign metafield_filters = section.settings.metafield_filters | default: 'category,brand' | split: ',' -%}
+          
+          {%- for metafield_key in metafield_filters -%}
+            {%- assign metafield_key_trimmed = metafield_key | strip -%}
+            {%- if metafield_key_trimmed != blank -%}
+              {%- assign metafield_namespace = 'custom' -%}
+              {%- assign metafield_key_handle = metafield_key_trimmed | handleize -%}
+              
+              {%- comment -%} Extract unique values from products {%- endcomment -%}
+              {%- assign unique_values = '' -%}
+              {%- assign value_counts = '' -%}
+              
+              {%- for product in collection.products -%}
+                {%- assign metafield_value = product.metafields[metafield_namespace][metafield_key_trimmed] -%}
+                {%- if metafield_value != blank -%}
+                  {%- assign metafield_value_string = metafield_value.value | default: metafield_value | strip -%}
+                  {%- if metafield_value_string != blank -%}
+                    {%- assign value_handle = metafield_value_string | handleize -%}
+                    {%- unless unique_values contains value_handle -%}
+                      {%- assign unique_values = unique_values | append: value_handle | append: '|' | append: metafield_value_string | append: ',' -%}
+                    {%- endunless -%}
+                  {%- endif -%}
+                {%- endif -%}
+              {%- endfor -%}
+              
+              {%- if unique_values != blank -%}
+                {%- assign values_array = unique_values | split: ',' -%}
+                {%- if values_array.size > 0 -%}
+                  <div class="sale-section__filter-group" data-metafield-filter="{{ metafield_key_handle }}">
+                    <div class="sale-section__filter-header">
+                      <h4 class="sale-section__filter-title">
+                        {%- case metafield_key_trimmed -%}
+                          {%- when 'category' -%}{{ 'sections.sale.category' | t | default: 'Category' }}
+                          {%- when 'brand' -%}{{ 'sections.sale.brand' | t | default: 'Brand' }}
+                          {%- when 'screen_size' -%}Screen Size
+                          {%- when 'ram' -%}RAM
+                          {%- when 'operating_system' -%}Operating System
+                          {%- when 'memory_type' -%}Memory Type
+                          {%- when 'refresh_rate' -%}Refresh Rate
+                          {%- else -%}{{ metafield_key_trimmed | replace: '_', ' ' | capitalize }}
+                        {%- endcase -%}
+                      </h4>
+                      <button type="button" class="sale-section__filter-toggle" data-filter-toggle="{{ metafield_key_handle }}" aria-label="Toggle {{ metafield_key_trimmed }} filter">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </button>
+                    </div>
+                    <div class="sale-section__filter-content" data-filter-content="{{ metafield_key_handle }}">
+                      {%- for value_pair in values_array -%}
+                        {%- if value_pair != blank -%}
+                          {%- assign pair_parts = value_pair | split: '|' -%}
+                          {%- assign value_handle = pair_parts[0] -%}
+                          {%- assign value_display = pair_parts[1] | default: pair_parts[0] -%}
+                          
+                          {%- comment -%} Count products with this value {%- endcomment -%}
+                          {%- assign count = 0 -%}
+                          {%- for product in collection.products -%}
+                            {%- assign product_metafield = product.metafields[metafield_namespace][metafield_key_trimmed] -%}
+                            {%- if product_metafield != blank -%}
+                              {%- assign product_value = product_metafield.value | default: product_metafield | strip | handleize -%}
+                              {%- if product_value == value_handle -%}
+                                {%- assign count = count | plus: 1 -%}
+                              {%- endif -%}
+                            {%- endif -%}
+                          {%- endfor -%}
+                          
+                          <label class="sale-section__filter-checkbox">
+                            <input 
+                              type="checkbox" 
+                              value="{{ value_handle }}"
+                              data-filter-metafield="{{ metafield_namespace }}"
+                              data-filter-metafield-key="{{ metafield_key_handle }}"
+                              data-filter-value="{{ value_handle }}"
+                            >
+                            <span class="sale-section__filter-checkbox-label">
+                              {{ value_display }}
+                              {%- if count > 0 -%}
+                                <span class="sale-section__filter-count">({{ count }})</span>
+                              {%- endif -%}
+                            </span>
+                          </label>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </div>
+                  </div>
+                {%- endif -%}
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+        
+        {%- comment -%} Legacy Category Filter (for backward compatibility) {%- endcomment -%}
         {%- if section.blocks.size > 0 -%}
           {%- assign category_blocks = section.blocks | where: 'type', 'category' -%}
-          {%- if category_blocks.size > 0 -%}
+          {%- if category_blocks.size > 0 and section.settings.use_legacy_filters -%}
             <div class="sale-section__filter-group">
               <div class="sale-section__filter-header">
                 <h4 class="sale-section__filter-title">{{ 'sections.sale.category' | t | default: 'Category' }}</h4>
@@ -132,10 +227,10 @@
           {%- endif -%}
         {%- endif -%}
 
-        {%- comment -%} Brand Filter {%- endcomment -%}
+        {%- comment -%} Legacy Brand Filter (for backward compatibility) {%- endcomment -%}
         {%- if section.blocks.size > 0 -%}
           {%- assign brand_blocks = section.blocks | where: 'type', 'brand' -%}
-          {%- if brand_blocks.size > 0 -%}
+          {%- if brand_blocks.size > 0 and section.settings.use_legacy_filters -%}
             <div class="sale-section__filter-group">
               <div class="sale-section__filter-header">
                 <h4 class="sale-section__filter-title">{{ 'sections.sale.brand' | t | default: 'Brand' }}</h4>
@@ -263,69 +358,98 @@
           </div>
         </div>
 
-        {%- comment -%} Category Filter {%- endcomment -%}
-        {%- if section.blocks.size > 0 -%}
-          {%- assign category_blocks = section.blocks | where: 'type', 'category' -%}
-          {%- if category_blocks.size > 0 -%}
-            <div class="sale-section__filter-group">
-              <div class="sale-section__filter-header">
-                <h4 class="sale-section__filter-title">{{ 'sections.sale.category' | t | default: 'Category' }}</h4>
-                <button type="button" class="sale-section__filter-toggle" data-filter-toggle="category-drawer" aria-label="Toggle category filter" aria-expanded="true">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </button>
-              </div>
-              <div class="sale-section__filter-content" data-filter-content="category-drawer">
-                {%- for block in category_blocks -%}
-                  <label class="sale-section__filter-checkbox">
-                    <input 
-                      type="checkbox" 
-                      value="{{ block.settings.value | default: block.settings.label | handleize }}"
-                      data-filter-category-drawer
-                      {{ block.shopify_attributes }}
-                    >
-                    <span class="sale-section__filter-checkbox-label">{{ block.settings.label | default: 'Category' }}</span>
-                  </label>
-                {%- endfor -%}
-              </div>
-            </div>
-          {%- endif -%}
-        {%- endif -%}
-
-        {%- comment -%} Brand Filter {%- endcomment -%}
-        {%- if section.blocks.size > 0 -%}
-          {%- assign brand_blocks = section.blocks | where: 'type', 'brand' -%}
-          {%- if brand_blocks.size > 0 -%}
-            <div class="sale-section__filter-group">
-              <div class="sale-section__filter-header">
-                <h4 class="sale-section__filter-title">{{ 'sections.sale.brand' | t | default: 'Brand' }}</h4>
-                <button type="button" class="sale-section__filter-toggle" data-filter-toggle="brand-drawer" aria-label="Toggle brand filter" aria-expanded="true">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </button>
-              </div>
-              <div class="sale-section__filter-content" data-filter-content="brand-drawer">
-                {%- for block in brand_blocks -%}
-                  <label class="sale-section__filter-checkbox">
-                    <input 
-                      type="checkbox" 
-                      value="{{ block.settings.value | default: block.settings.label | handleize }}"
-                      data-filter-brand-drawer
-                      {{ block.shopify_attributes }}
-                    >
-                    <span class="sale-section__filter-checkbox-label">
-                      {{ block.settings.label | default: 'Brand' }}
-                      {%- if block.settings.count != blank -%}
-                        <span class="sale-section__filter-count">({{ block.settings.count }})</span>
-                      {%- endif -%}
-                    </span>
-                  </label>
-                {%- endfor -%}
-              </div>
-            </div>
-          {%- endif -%}
+        {%- comment -%} Dynamic Metafield Filters (Drawer) {%- endcomment -%}
+        {%- if collection != blank and collection.products.size > 0 -%}
+          {%- assign metafield_filters = section.settings.metafield_filters | default: 'category,brand' | split: ',' -%}
+          
+          {%- for metafield_key in metafield_filters -%}
+            {%- assign metafield_key_trimmed = metafield_key | strip -%}
+            {%- if metafield_key_trimmed != blank -%}
+              {%- assign metafield_namespace = 'custom' -%}
+              {%- assign metafield_key_handle = metafield_key_trimmed | handleize -%}
+              
+              {%- comment -%} Extract unique values from products {%- endcomment -%}
+              {%- assign unique_values = '' -%}
+              
+              {%- for product in collection.products -%}
+                {%- assign metafield_value = product.metafields[metafield_namespace][metafield_key_trimmed] -%}
+                {%- if metafield_value != blank -%}
+                  {%- assign metafield_value_string = metafield_value.value | default: metafield_value | strip -%}
+                  {%- if metafield_value_string != blank -%}
+                    {%- assign value_handle = metafield_value_string | handleize -%}
+                    {%- unless unique_values contains value_handle -%}
+                      {%- assign unique_values = unique_values | append: value_handle | append: '|' | append: metafield_value_string | append: ',' -%}
+                    {%- endunless -%}
+                  {%- endif -%}
+                {%- endif -%}
+              {%- endfor -%}
+              
+              {%- if unique_values != blank -%}
+                {%- assign values_array = unique_values | split: ',' -%}
+                {%- if values_array.size > 0 -%}
+                  <div class="sale-section__filter-group" data-metafield-filter="{{ metafield_key_handle }}">
+                    <div class="sale-section__filter-header">
+                      <h4 class="sale-section__filter-title">
+                        {%- case metafield_key_trimmed -%}
+                          {%- when 'category' -%}{{ 'sections.sale.category' | t | default: 'Category' }}
+                          {%- when 'brand' -%}{{ 'sections.sale.brand' | t | default: 'Brand' }}
+                          {%- when 'screen_size' -%}Screen Size
+                          {%- when 'ram' -%}RAM
+                          {%- when 'operating_system' -%}Operating System
+                          {%- when 'memory_type' -%}Memory Type
+                          {%- when 'refresh_rate' -%}Refresh Rate
+                          {%- else -%}{{ metafield_key_trimmed | replace: '_', ' ' | capitalize }}
+                        {%- endcase -%}
+                      </h4>
+                      <button type="button" class="sale-section__filter-toggle" data-filter-toggle="{{ metafield_key_handle }}-drawer" aria-label="Toggle {{ metafield_key_trimmed }} filter" aria-expanded="true">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </button>
+                    </div>
+                    <div class="sale-section__filter-content" data-filter-content="{{ metafield_key_handle }}-drawer">
+                      {%- for value_pair in values_array -%}
+                        {%- if value_pair != blank -%}
+                          {%- assign pair_parts = value_pair | split: '|' -%}
+                          {%- assign value_handle = pair_parts[0] -%}
+                          {%- assign value_display = pair_parts[1] | default: pair_parts[0] -%}
+                          
+                          {%- comment -%} Count products with this value {%- endcomment -%}
+                          {%- assign count = 0 -%}
+                          {%- for product in collection.products -%}
+                            {%- assign product_metafield = product.metafields[metafield_namespace][metafield_key_trimmed] -%}
+                            {%- if product_metafield != blank -%}
+                              {%- assign product_value = product_metafield.value | default: product_metafield | strip | handleize -%}
+                              {%- if product_value == value_handle -%}
+                                {%- assign count = count | plus: 1 -%}
+                              {%- endif -%}
+                            {%- endif -%}
+                          {%- endfor -%}
+                          
+                          <label class="sale-section__filter-checkbox">
+                            <input 
+                              type="checkbox" 
+                              value="{{ value_handle }}"
+                              data-filter-metafield="{{ metafield_namespace }}"
+                              data-filter-metafield-key="{{ metafield_key_handle }}"
+                              data-filter-value="{{ value_handle }}"
+                              data-filter-drawer
+                            >
+                            <span class="sale-section__filter-checkbox-label">
+                              {{ value_display }}
+                              {%- if count > 0 -%}
+                                <span class="sale-section__filter-count">({{ count }})</span>
+                              {%- endif -%}
+                            </span>
+                          </label>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </div>
+                  </div>
+                {%- endif -%}
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
         {%- endif -%}
       </div>
       <div class="sale-section__filter-drawer-footer">
@@ -1634,19 +1758,40 @@
         return;
       }
 
-      // Re-query checkboxes to ensure we have the latest state
+      // Get all metafield filter checkboxes
+      const metafieldCheckboxes = saleSection.querySelectorAll('[data-filter-metafield][data-filter-metafield-key][data-filter-value]');
+      
+      // Group selected filters by metafield key
+      const selectedFilters = {};
+      metafieldCheckboxes.forEach(checkbox => {
+        if (checkbox.checked && checkbox.value) {
+          const namespace = checkbox.getAttribute('data-filter-metafield') || 'custom';
+          const key = checkbox.getAttribute('data-filter-metafield-key');
+          const value = checkbox.value.toLowerCase().trim();
+          
+          if (key && value) {
+            const filterKey = `${namespace}:${key}`;
+            if (!selectedFilters[filterKey]) {
+              selectedFilters[filterKey] = [];
+            }
+            selectedFilters[filterKey].push(value);
+          }
+        }
+      });
+
+      // Legacy category and brand filters (for backward compatibility)
       const allCategoryCheckboxes = saleSection.querySelectorAll('[data-filter-category], [data-filter-category-drawer]');
       const allBrandCheckboxes = saleSection.querySelectorAll('[data-filter-brand], [data-filter-brand-drawer]');
 
       const selectedCategories = Array.from(allCategoryCheckboxes)
         .filter(cb => cb.checked && cb.value)
         .map(cb => cb.value.toLowerCase().trim())
-        .filter(v => v); // Remove empty values
+        .filter(v => v);
 
       const selectedBrands = Array.from(allBrandCheckboxes)
         .filter(cb => cb.checked && cb.value)
         .map(cb => cb.value.toLowerCase().trim())
-        .filter(v => v); // Remove empty values
+        .filter(v => v);
 
       // Get price range
       const getPriceValue = (input) => {
@@ -1661,17 +1806,59 @@
       const productCards = productsGrid.querySelectorAll('.product-card');
       let visibleCount = 0;
       
-      // If no filters are selected, show all products
-      const hasActiveFilters = selectedCategories.length > 0 || selectedBrands.length > 0 || minPrice !== null || maxPrice !== null;
+      // Check if any filters are active
+      const hasActiveFilters = Object.keys(selectedFilters).length > 0 || 
+                               selectedCategories.length > 0 || 
+                               selectedBrands.length > 0 || 
+                               minPrice !== null || 
+                               maxPrice !== null;
       
       for (const card of productCards) {
         let show = true;
 
         // Only apply filters if any are active
         if (hasActiveFilters) {
-          // Category filter
-          if (selectedCategories.length > 0) {
-            // Skip filtering if "all devices" or "all-devices" is selected
+          // Metafield filters
+          for (const [filterKey, filterValues] of Object.entries(selectedFilters)) {
+            if (!show) break;
+            
+            const [namespace, key] = filterKey.split(':');
+            const productMetafields = (card.getAttribute('data-product-metafields') || '').split(',').filter(Boolean);
+            
+            // Check if product has matching metafield value
+            let matchesMetafield = false;
+            productMetafields.forEach(metafield => {
+              if (!metafield) return;
+              
+              const parts = metafield.split(':');
+              if (parts.length >= 3) {
+                const fieldNamespace = parts[0].toLowerCase().trim();
+                const fieldKey = parts[1].toLowerCase().trim();
+                const fieldValue = parts.slice(2).join(':').toLowerCase().trim();
+                
+                if (fieldNamespace === namespace.toLowerCase().trim() && 
+                    fieldKey === key.toLowerCase().trim()) {
+                  // Check if value matches any selected filter value
+                  if (filterValues.some(fv => {
+                    const filterValueLower = fv.toLowerCase().trim();
+                    return fieldValue === filterValueLower ||
+                           fieldValue.includes(filterValueLower) ||
+                           filterValueLower.includes(fieldValue);
+                  })) {
+                    matchesMetafield = true;
+                  }
+                }
+              }
+            });
+            
+            if (!matchesMetafield) {
+              show = false;
+              break;
+            }
+          }
+
+          // Legacy category filter (for backward compatibility)
+          if (show && selectedCategories.length > 0) {
             const hasAllDevices = selectedCategories.some(cat => 
               cat === 'all-devices' || cat === 'all devices' || cat === 'all' || cat === ''
             );
@@ -1681,7 +1868,6 @@
               const productTags = (card.getAttribute('data-product-tags') || '').toLowerCase().split(/\s+/).filter(t => t);
               const productMetafields = (card.getAttribute('data-product-metafields') || '').split(',').filter(Boolean);
               
-              // Check metafield category first, then fallback to product_type/tags
               let categoryFromMetafield = null;
               productMetafields.forEach(metafield => {
                 if (metafield.startsWith('custom:category:')) {
@@ -1691,15 +1877,12 @@
               
               const effectiveCategory = categoryFromMetafield || productCategory;
               
-              // Check if product category or tags match any selected category
               const matchesCategory = selectedCategories.some(selectedCat => {
-                // Skip "all devices" in matching
                 if (selectedCat === 'all-devices' || selectedCat === 'all devices' || selectedCat === 'all' || selectedCat === '') {
                   return true;
                 }
                 
                 const selectedCatLower = selectedCat.toLowerCase().trim();
-                // More flexible matching
                 return effectiveCategory === selectedCatLower || 
                        effectiveCategory.includes(selectedCatLower) ||
                        selectedCatLower.includes(effectiveCategory) ||
@@ -1712,12 +1895,11 @@
             }
           }
 
-          // Brand filter
+          // Legacy brand filter (for backward compatibility)
           if (show && selectedBrands.length > 0) {
             const productBrand = (card.getAttribute('data-product-brand') || '').toLowerCase().trim();
             const productMetafields = (card.getAttribute('data-product-metafields') || '').split(',').filter(Boolean);
             
-            // Check metafield brand first, then fallback to vendor
             let brandFromMetafield = null;
             productMetafields.forEach(metafield => {
               if (metafield.startsWith('custom:brand:')) {
@@ -1729,7 +1911,6 @@
             
             const matchesBrand = selectedBrands.some(selectedBrand => {
               const selectedBrandLower = selectedBrand.toLowerCase().trim();
-              // More flexible matching
               return effectiveBrand === selectedBrandLower ||
                      effectiveBrand.includes(selectedBrandLower) ||
                      selectedBrandLower.includes(effectiveBrand);
