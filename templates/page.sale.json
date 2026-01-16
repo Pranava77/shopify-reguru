@@ -143,6 +143,7 @@
       "blocks": {
         "category_TH4irk": {
           "type": "category",
+          "disabled": true,
           "settings": {
             "label": "All devices",
             "value": ""
@@ -150,6 +151,7 @@
         },
         "category_XPyApa": {
           "type": "category",
+          "disabled": true,
           "settings": {
             "label": "Mobile & Tablets",
             "value": ""
@@ -157,6 +159,7 @@
         },
         "category_8a9J8H": {
           "type": "category",
+          "disabled": true,
           "settings": {
             "label": "Laptops",
             "value": ""
@@ -164,6 +167,7 @@
         },
         "category_4WMLtL": {
           "type": "category",
+          "disabled": true,
           "settings": {
             "label": "Television",
             "value": ""
@@ -171,6 +175,7 @@
         },
         "category_VdgkDH": {
           "type": "category",
+          "disabled": true,
           "settings": {
             "label": "Headphones",
             "value": ""
@@ -178,6 +183,7 @@
         },
         "brand_CGnWB7": {
           "type": "brand",
+          "disabled": true,
           "settings": {
             "label": "Lenovo",
             "value": "",
@@ -186,6 +192,7 @@
         },
         "brand_tgDAk9": {
           "type": "brand",
+          "disabled": true,
           "settings": {
             "label": "Asus",
             "value": "",
@@ -194,6 +201,7 @@
         },
         "brand_ATM4gB": {
           "type": "brand",
+          "disabled": true,
           "settings": {
             "label": "HP",
             "value": "",
@@ -202,6 +210,7 @@
         },
         "brand_qEaegK": {
           "type": "brand",
+          "disabled": true,
           "settings": {
             "label": "Macbook",
             "value": "",
