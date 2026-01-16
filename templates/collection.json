@@ -146,7 +146,9 @@
             "title": "Screen size",
             "filter_type": "product_tag",
             "option_name": "Screen size",
-            "tag_prefix": "brand:"
+            "tag_prefix": "brand:",
+            "metafield_namespace": "custom",
+            "metafield_key": ""
           }
         },
         "filter_ram": {
@@ -155,7 +157,9 @@
             "title": "Ram",
             "filter_type": "product_option",
             "option_name": "Ram",
-            "tag_prefix": "brand:"
+            "tag_prefix": "brand:",
+            "metafield_namespace": "custom",
+            "metafield_key": ""
           }
         },
         "filter_brand": {
@@ -164,7 +168,9 @@
             "title": "Brand",
             "filter_type": "vendor",
             "option_name": "Size",
-            "tag_prefix": "brand:"
+            "tag_prefix": "brand:",
+            "metafield_namespace": "custom",
+            "metafield_key": ""
           }
         },
         "filter_os": {
@@ -173,7 +179,9 @@
             "title": "Operating system",
             "filter_type": "product_option",
             "option_name": "Operating system",
-            "tag_prefix": "brand:"
+            "tag_prefix": "brand:",
+            "metafield_namespace": "custom",
+            "metafield_key": ""
           }
         },
         "filter_memory": {
@@ -182,7 +190,9 @@
             "title": "Internal memory type",
             "filter_type": "product_option",
             "option_name": "Internal memory type",
-            "tag_prefix": "brand:"
+            "tag_prefix": "brand:",
+            "metafield_namespace": "custom",
+            "metafield_key": ""
           }
         },
         "filter_refresh_rate": {
@@ -191,7 +201,9 @@
             "title": "Image refresh rate",
             "filter_type": "product_option",
             "option_name": "Image refresh rate",
-            "tag_prefix": "brand:"
+            "tag_prefix": "brand:",
+            "metafield_namespace": "custom",
+            "metafield_key": ""
           }
         }
       },
@@ -204,7 +216,7 @@
         "filter_refresh_rate"
       ],
       "settings": {
-        "title": "Laptops",
+        "title": "{{ section.settings.collection.title }}",
         "collection": "",
         "products_per_page": 9
       }
