@@ -45,7 +45,7 @@
             "title": "Shop",
             "link": "",
             "enable_mega_dropdown": true,
-            "dropdown_columns": "3",
+            "dropdown_columns": "2",
             "column_1_title": "Products",
             "menu_1": "main-menu",
             "column_2_title": "Collections",
