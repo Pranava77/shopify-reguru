@@ -217,7 +217,7 @@
       ],
       "settings": {
         "title": "{{ section.settings.collection.title }}",
-        "collection": "",
+        "collection": "{{ collection }}",
         "products_per_page": 9
       }
     },
