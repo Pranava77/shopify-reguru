@@ -52,16 +52,20 @@
   
   comment
     Build metafield data attributes for filtering
+    Include all common metafields for dynamic filtering
   endcomment
   assign product_metafields_data = ''
-  if product.metafields.custom.category != blank
-    assign category_value = product.metafields.custom.category.value | default: product.metafields.custom.category
-    assign product_metafields_data = product_metafields_data | append: 'custom:category:' | append: category_value | handleize | append: ','
-  endif
-  if product.metafields.custom.brand != blank
-    assign brand_value = product.metafields.custom.brand.value | default: product.metafields.custom.brand
-    assign product_metafields_data = product_metafields_data | append: 'custom:brand:' | append: brand_value | handleize | append: ','
-  endif
+  assign metafield_keys = 'category,brand,screen_size,ram,operating_system,memory_type,refresh_rate' | split: ','
+  
+  for metafield_key in metafield_keys
+    assign metafield_value = product.metafields.custom[metafield_key]
+    if metafield_value != blank
+      assign metafield_value_string = metafield_value.value | default: metafield_value
+      if metafield_value_string != blank
+        assign product_metafields_data = product_metafields_data | append: 'custom:' | append: metafield_key | append: ':' | append: metafield_value_string | handleize | append: ','
+      endif
+    endif
+  endfor
 -%}
 <article 
   class="product-card card--sm"

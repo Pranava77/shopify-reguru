@@ -115,7 +115,6 @@
               
               {%- comment -%} Extract unique values from products {%- endcomment -%}
               {%- assign unique_values = '' -%}
-              {%- assign value_counts = '' -%}
               
               {%- for product in collection.products -%}
                 {%- assign metafield_value = product.metafields[metafield_namespace][metafield_key_trimmed] -%}
@@ -2147,13 +2146,33 @@
   // This ensures checkboxes work even if they're added dynamically
   saleSection.addEventListener('change', function(e) {
     const checkbox = e.target;
-    if (checkbox.matches('[data-filter-category], [data-filter-category-drawer], [data-filter-brand], [data-filter-brand-drawer]')) {
-      // Sync checkbox state between desktop and drawer
+    
+    // Handle metafield filters
+    if (checkbox.matches('[data-filter-metafield][data-filter-metafield-key][data-filter-value]')) {
+      const namespace = checkbox.getAttribute('data-filter-metafield');
+      const key = checkbox.getAttribute('data-filter-metafield-key');
+      const value = checkbox.value;
+      const isDrawer = checkbox.hasAttribute('data-filter-drawer');
+      
+      // Sync with corresponding checkbox (desktop/drawer)
+      const allMetafieldCheckboxes = saleSection.querySelectorAll(
+        `[data-filter-metafield="${namespace}"][data-filter-metafield-key="${key}"][data-filter-value="${value}"]`
+      );
+      
+      allMetafieldCheckboxes.forEach(cb => {
+        if (cb !== checkbox) {
+          cb.checked = checkbox.checked;
+        }
+      });
+      
+      filterProducts();
+    }
+    // Handle legacy category/brand filters
+    else if (checkbox.matches('[data-filter-category], [data-filter-category-drawer], [data-filter-brand], [data-filter-brand-drawer]')) {
       const isDesktop = checkbox.hasAttribute('data-filter-category') || checkbox.hasAttribute('data-filter-brand');
       const isDrawer = checkbox.hasAttribute('data-filter-category-drawer') || checkbox.hasAttribute('data-filter-brand-drawer');
       
       if (isDesktop) {
-        // Find corresponding drawer checkbox
         const filterType = checkbox.hasAttribute('data-filter-category') ? 'category' : 'brand';
         const drawerAttr = filterType === 'category' ? 'data-filter-category-drawer' : 'data-filter-brand-drawer';
         const drawerCheckboxes = saleSection.querySelectorAll(`[${drawerAttr}]`);
@@ -2163,7 +2182,6 @@
           drawerCheckboxes[index].checked = checkbox.checked;
         }
       } else if (isDrawer) {
-        // Find corresponding desktop checkbox
         const filterType = checkbox.hasAttribute('data-filter-category-drawer') ? 'category' : 'brand';
         const drawerAttr = filterType === 'category' ? 'data-filter-category-drawer' : 'data-filter-brand-drawer';
         const desktopAttr = filterType === 'category' ? 'data-filter-category' : 'data-filter-brand';
@@ -2195,7 +2213,13 @@
   const filterClear = saleSection.querySelector('[data-filter-clear]');
   if (filterClear) {
     filterClear.addEventListener('click', () => {
-      // Clear all checkboxes
+      // Clear all metafield checkboxes
+      const metafieldCheckboxes = saleSection.querySelectorAll('[data-filter-metafield][data-filter-metafield-key][data-filter-value]');
+      metafieldCheckboxes.forEach(cb => {
+        cb.checked = false;
+      });
+      
+      // Clear legacy category and brand checkboxes
       [...categoryCheckboxes, ...brandCheckboxes].forEach(cb => {
         cb.checked = false;
       });
@@ -2301,6 +2325,24 @@
       "max": 24,
       "step": 4,
       "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Filter Settings"
+    },
+    {
+      "type": "text",
+      "id": "metafield_filters",
+      "label": "Metafield Filters",
+      "info": "Comma-separated list of metafield keys to show as filters (e.g., 'category,brand,screen_size,ram'). Filters will be dynamically generated from product metafields.",
+      "default": "category,brand"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_legacy_filters",
+      "label": "Use Legacy Filters",
+      "info": "Enable to show category and brand filters from section blocks (for backward compatibility)",
+      "default": false
     },
     {
       "type": "header",
